@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://animeshpandey.github.io/sitemap.xml
+Sitemap: https://anmshpndy.com/sitemap.xml
