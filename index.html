@@ -62,7 +62,13 @@
         "url": "https://animeshpandey.github.io/",
         "sameAs": [
           "https://linkedin.com/in/pandeyanimesh",
-          "https://github.com/AnimeshPandey"
+          "https://github.com/AnimeshPandey",
+          "https://x.com/anmshpndy",
+          "https://hackernoon.com/u/anmshpndy",
+          "https://anmshpndy.medium.com/",
+          "https://dev.to/anmshpndy",
+          "https://app.daily.dev/anmshpndy",
+          "https://hashnode.com/@anmshpndy"
         ],
         "address": {
           "@type": "PostalAddress",
@@ -93,6 +99,42 @@
           "educationalLevel": "Bachelor's Degree",
           "credentialCategory": "degree"
         }
+      },
+      {
+        "@type": "Article",
+        "@id": "https://hackernoon.com/everything-you-need-to-know-about-this-vo2933yg",
+        "headline": "Everything You Need to Know About \"this\" in JavaScript",
+        "description": "An in-depth explanation of the deceptively simple concepts around 'this' and its binding (implicit, explicit, and new) in JavaScript.",
+        "url": "https://hackernoon.com/everything-you-need-to-know-about-this-vo2933yg",
+        "datePublished": "2021-03-11",
+        "author": {"@id": "https://animeshpandey.github.io/#person"},
+        "publisher": {"@type": "Organization", "name": "HackerNoon"},
+        "inLanguage": "en",
+        "keywords": ["JavaScript", "this keyword", "binding", "frontend"]
+      },
+      {
+        "@type": "Article",
+        "@id": "https://javascript.plainenglish.io/functional-javascript-fundamentals-469859265014",
+        "headline": "Fundamentals of Functional JavaScript",
+        "description": "An introduction to functional programming concepts in JavaScript — pure functions, declarative vs imperative programming, and understanding function inputs and outputs.",
+        "url": "https://javascript.plainenglish.io/functional-javascript-fundamentals-469859265014",
+        "datePublished": "2021-03-06",
+        "author": {"@id": "https://animeshpandey.github.io/#person"},
+        "publisher": {"@type": "Organization", "name": "JavaScript in Plain English"},
+        "inLanguage": "en",
+        "keywords": ["JavaScript", "functional programming", "pure functions", "webdev"]
+      },
+      {
+        "@type": "Article",
+        "@id": "https://javascript.plainenglish.io/how-well-do-you-know-this-ce4355bc9b",
+        "headline": "How Well Do You Know \"this\"?",
+        "description": "An exploration of JavaScript's 'this' keyword and how it is determined by call-site context, covering four binding rules in order of precedence.",
+        "url": "https://javascript.plainenglish.io/how-well-do-you-know-this-ce4355bc9b",
+        "datePublished": "2021-02-28",
+        "author": {"@id": "https://animeshpandey.github.io/#person"},
+        "publisher": {"@type": "Organization", "name": "JavaScript in Plain English"},
+        "inLanguage": "en",
+        "keywords": ["JavaScript", "this keyword", "binding", "webdev"]
       }
     ]
   }
@@ -435,6 +477,89 @@
     }
     .foot-links a:hover { color: var(--accent); }
 
+    /* ── Published Articles ── */
+    .articles-list {
+      border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .article-item {
+      background: var(--surface); padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    .article-item:last-child { border-bottom: none; }
+    .article-item:hover { background: var(--accent-bg); }
+    .article-meta {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap; margin-bottom: 10px;
+    }
+    .article-date {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--ink-3); letter-spacing: .07em;
+    }
+    .article-badge {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+      text-transform: uppercase; padding: 2px 10px;
+      border-radius: 100px; border: 1px solid var(--accent-bg);
+      color: var(--accent); background: var(--accent-bg);
+    }
+    .article-crosspost {
+      display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+      font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);
+    }
+    .article-crosspost a {
+      color: var(--ink-3); text-decoration: none;
+      transition: color .15s;
+    }
+    .article-crosspost a:hover { color: var(--accent); }
+    h3.article-title {
+      font-family: var(--serif); font-size: 19px; font-weight: 400;
+      line-height: 1.3; margin-bottom: 9px;
+    }
+    h3.article-title a {
+      color: var(--ink); text-decoration: none;
+      transition: color .15s;
+    }
+    h3.article-title a:hover { color: var(--accent); }
+    .article-arrow {
+      color: var(--ink-3); font-size: 14px; margin-left: 4px;
+      transition: color .15s;
+    }
+    .article-item:hover .article-arrow { color: var(--accent); }
+    .article-excerpt {
+      font-size: 14px; color: var(--ink-2); line-height: 1.65;
+    }
+
+    /* ── Writing platform profiles ── */
+    .writing-profiles {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      padding: 16px 22px; margin-bottom: 44px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .profiles-label {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+      color: var(--ink-3); text-transform: uppercase; white-space: nowrap;
+    }
+    .profile-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .profile-chip {
+      font-family: var(--mono); font-size: 11.5px;
+      color: var(--ink-2); text-decoration: none;
+      padding: 5px 14px; border-radius: 100px;
+      border: 1px solid var(--border-2);
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .profile-chip:hover {
+      color: var(--accent); border-color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    /* ── Drafts sub-section ── */
+    .drafts-label {
+      font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+      color: var(--ink-3); text-transform: uppercase; margin-bottom: 16px;
+    }
+
     /* ── Scroll reveal ── */
     .fade-up { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
     .fade-up.in { opacity: 1; transform: none; }
@@ -685,6 +810,76 @@
   <section id="writing" aria-labelledby="writing-heading">
     <p class="section-label">// writing</p>
     <h2 id="writing-heading">On the craft</h2>
+
+    <!-- Published articles -->
+    <div class="articles-list" role="list">
+
+      <article class="article-item fade-up" role="listitem">
+        <div class="article-meta">
+          <span class="article-date"><time datetime="2021-03-11">Mar 2021</time></span>
+          <span class="article-badge">HackerNoon</span>
+        </div>
+        <h3 class="article-title">
+          <a href="https://hackernoon.com/everything-you-need-to-know-about-this-vo2933yg" target="_blank" rel="noopener noreferrer">
+            Everything You Need to Know About <code>this</code> in JavaScript <span class="article-arrow" aria-hidden="true">↗</span>
+          </a>
+        </h3>
+        <p class="article-excerpt">An in-depth look at JavaScript's most misunderstood keyword — implicit, explicit, and new binding rules demystified with real examples. 923 reads.</p>
+      </article>
+
+      <article class="article-item fade-up" role="listitem">
+        <div class="article-meta">
+          <span class="article-date"><time datetime="2021-03-06">Mar 2021</time></span>
+          <span class="article-badge">Medium</span>
+          <div class="article-crosspost" aria-label="Also published on">
+            Also on
+            <a href="https://dev.to/anmshpndy/functional-javascript-fundamentals-44f2" target="_blank" rel="noopener noreferrer">Dev.to</a>
+            <span aria-hidden="true">·</span>
+            <a href="https://app.daily.dev/posts/fundamentals-of-functional-javascript-kl1qrpj68" target="_blank" rel="noopener noreferrer">Daily.dev</a>
+          </div>
+        </div>
+        <h3 class="article-title">
+          <a href="https://javascript.plainenglish.io/functional-javascript-fundamentals-469859265014" target="_blank" rel="noopener noreferrer">
+            Fundamentals of Functional JavaScript <span class="article-arrow" aria-hidden="true">↗</span>
+          </a>
+        </h3>
+        <p class="article-excerpt">What makes a function pure, why procedures aren't functions, and how declarative thinking transforms the way you write JavaScript. A primer on functional programming fundamentals.</p>
+      </article>
+
+      <article class="article-item fade-up" role="listitem">
+        <div class="article-meta">
+          <span class="article-date"><time datetime="2021-02-28">Feb 2021</time></span>
+          <span class="article-badge">Medium</span>
+          <div class="article-crosspost" aria-label="Also published on">
+            Also on
+            <a href="https://dev.to/anmshpndy/how-well-do-you-know-this-2cg1" target="_blank" rel="noopener noreferrer">Dev.to</a>
+          </div>
+        </div>
+        <h3 class="article-title">
+          <a href="https://javascript.plainenglish.io/how-well-do-you-know-this-ce4355bc9b" target="_blank" rel="noopener noreferrer">
+            How Well Do You Know <code>this</code>? <span class="article-arrow" aria-hidden="true">↗</span>
+          </a>
+        </h3>
+        <p class="article-excerpt">JavaScript's <code>this</code> is a runtime binding determined by call-site context. This piece works through all four binding rules — new, explicit, implicit, default — in order of precedence.</p>
+      </article>
+
+    </div>
+
+    <!-- Blog platform profiles -->
+    <div class="writing-profiles fade-up">
+      <span class="profiles-label">Find me on</span>
+      <div class="profile-chips">
+        <a href="https://hackernoon.com/u/anmshpndy" class="profile-chip" target="_blank" rel="noopener noreferrer">HackerNoon</a>
+        <a href="https://anmshpndy.medium.com/" class="profile-chip" target="_blank" rel="noopener noreferrer">Medium</a>
+        <a href="https://dev.to/anmshpndy" class="profile-chip" target="_blank" rel="noopener noreferrer">Dev.to</a>
+        <a href="https://app.daily.dev/anmshpndy" class="profile-chip" target="_blank" rel="noopener noreferrer">Daily.dev</a>
+        <a href="https://hashnode.com/@anmshpndy" class="profile-chip" target="_blank" rel="noopener noreferrer">Hashnode</a>
+        <a href="https://x.com/anmshpndy" class="profile-chip" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+      </div>
+    </div>
+
+    <!-- Drafts in progress -->
+    <p class="drafts-label">// in the pipeline</p>
     <div class="writing-list">
 
       <div class="wi fade-up">
@@ -774,6 +969,7 @@
         <a href="mailto:animeshpandey1909@gmail.com" aria-label="Send email">Email</a>
         <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">LinkedIn</a>
         <a href="https://github.com/AnimeshPandey" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">GitHub</a>
+        <a href="https://x.com/anmshpndy" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter profile">X</a>
         <a href="resume.pdf" download aria-label="Download resume PDF">Resume</a>
       </div>
     </nav>
