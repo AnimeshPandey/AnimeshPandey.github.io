@@ -1,16 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-IN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Animesh Pandey — Senior Frontend Engineer</title>
-  <meta name="description" content="Senior Frontend Engineer based in Bangalore, building scalable SaaS platforms with React, TypeScript, and modern frontend architecture." />
+
+  <!-- Primary SEO -->
+  <title>Animesh Pandey — Senior Frontend Engineer | React, TypeScript, Next.js</title>
+  <meta name="description" content="Animesh Pandey is a Senior Frontend Engineer based in Bangalore with 7+ years building scalable SaaS platforms using React, TypeScript, Next.js, and microfrontend architectures. Open to full-time roles." />
+  <meta name="keywords" content="Animesh Pandey, Senior Frontend Engineer, React, ReactJS, TypeScript, Next.js, Microfrontends, Design Systems, SSR, Frontend Developer Bangalore, SaaS, Lifesight, Tekion, IIITDM Jabalpur" />
+  <meta name="author" content="Animesh Pandey" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="theme-color" content="#1C1714" />
+  <link rel="canonical" href="https://animeshpandey.github.io/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="profile" />
+  <meta property="og:url" content="https://animeshpandey.github.io/" />
   <meta property="og:title" content="Animesh Pandey — Senior Frontend Engineer" />
-  <meta property="og:description" content="7+ years crafting high-performance platforms for enterprise users." />
-  <meta property="og:type" content="website" />
+  <meta property="og:description" content="7+ years crafting high-performance SaaS platforms with React, TypeScript, and Next.js. Based in Bangalore. Open to opportunities." />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:site_name" content="Animesh Pandey" />
+  <meta property="profile:first_name" content="Animesh" />
+  <meta property="profile:last_name" content="Pandey" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Animesh Pandey — Senior Frontend Engineer" />
+  <meta name="twitter:description" content="7+ years crafting high-performance SaaS platforms with React, TypeScript & Next.js. Based in Bangalore." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://animeshpandey.github.io/#website",
+        "url": "https://animeshpandey.github.io/",
+        "name": "Animesh Pandey — Senior Frontend Engineer",
+        "description": "Portfolio of Animesh Pandey, Senior Frontend Engineer with 7+ years building scalable SaaS platforms.",
+        "inLanguage": "en-IN"
+      },
+      {
+        "@type": "Person",
+        "@id": "https://animeshpandey.github.io/#person",
+        "name": "Animesh Pandey",
+        "givenName": "Animesh",
+        "familyName": "Pandey",
+        "jobTitle": "Senior Frontend Engineer",
+        "description": "Senior Frontend Engineer with 7+ years of experience building scalable, high-performance SaaS platforms across analytics, automotive retail, and geospatial domains.",
+        "email": "animeshpandey1909@gmail.com",
+        "telephone": "+91-8318717926",
+        "url": "https://animeshpandey.github.io/",
+        "sameAs": [
+          "https://linkedin.com/in/pandeyanimesh",
+          "https://github.com/AnimeshPandey"
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Bangalore",
+          "addressRegion": "Karnataka",
+          "addressCountry": "IN"
+        },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Indian Institute of Information Technology, Design and Management Jabalpur",
+          "alternateName": "IIITDM Jabalpur"
+        },
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Lifesight"
+        },
+        "knowsAbout": [
+          "React", "ReactJS", "Next.js", "TypeScript", "JavaScript",
+          "Microfrontends", "Design Systems", "Server-Side Rendering",
+          "Performance Optimization", "Accessibility", "WCAG 2.1",
+          "Webpack", "Module Federation", "Redux", "Storybook",
+          "GraphQL", "REST APIs", "Node.js", "CI/CD", "GitHub Actions",
+          "Agentic AI", "LLM Tooling", "Frontend Architecture"
+        ],
+        "hasCredential": {
+          "@type": "EducationalOccupationalCredential",
+          "name": "B.Tech — Computer Science and Engineering",
+          "educationalLevel": "Bachelor's Degree",
+          "credentialCategory": "degree"
+        }
+      }
+    ]
+  }
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -45,6 +132,23 @@
       cursor: none;
     }
 
+    /* ── Skip link (accessibility + SEO) ── */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 16px;
+      background: var(--accent);
+      color: var(--bg);
+      padding: 10px 20px;
+      border-radius: 0 0 8px 8px;
+      z-index: 10000;
+      font-family: var(--mono);
+      font-size: 13px;
+      text-decoration: none;
+      transition: top 0.1s;
+    }
+    .skip-link:focus { top: 0; }
+
     /* ── Cursor ── */
     #cursor {
       width: 10px; height: 10px;
@@ -61,7 +165,7 @@
     #cursor.big { width: 26px; height: 26px; opacity: .4; }
 
     /* ── Nav ── */
-    nav {
+    header {
       position: fixed; inset: 0 0 auto 0;
       height: var(--nav-h);
       background: rgba(250,248,244,.88);
@@ -84,10 +188,10 @@
       font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
       color: var(--ink-2); text-decoration: none; transition: color .2s;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover,
+    .nav-links a[aria-current="true"] { color: var(--accent); }
 
     /* ── Layout helpers ── */
-    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
     section { max-width: var(--max); margin: 0 auto; padding: 88px 28px; }
     .divider { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
     .divider hr { border: none; border-top: 1px solid var(--border); }
@@ -187,7 +291,7 @@
     .t-date { font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .07em; }
     .t-co { font-weight: 600; font-size: 15px; color: var(--ink); }
     .t-loc { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
-    .t-role { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--ink); margin-bottom: 10px; }
+    h3.t-role { font-family: var(--serif); font-style: italic; font-size: 19px; font-weight: 400; color: var(--ink); margin-bottom: 10px; }
     .t-desc { font-size: 14px; color: var(--ink-2); line-height: 1.72; }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
     .tag {
@@ -195,13 +299,11 @@
       background: var(--surface); color: var(--ink-2);
       padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border);
     }
-
-    /* ── Sub-role (second role at same company) ── */
     .t-sub {
       margin-top: 26px; padding-top: 22px;
       border-top: 1px dashed var(--border-2);
     }
-    .t-sub .t-role { font-size: 17px; }
+    .t-sub h3.t-role { font-size: 17px; }
 
     /* ── Skills ── */
     .skills-grid { display: flex; flex-direction: column; gap: 28px; }
@@ -240,18 +342,11 @@
       font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
       color: var(--accent); text-transform: uppercase; margin-bottom: 10px;
     }
-    .pc-name {
-      font-family: var(--serif); font-size: 21px;
+    h3.pc-name {
+      font-family: var(--serif); font-size: 21px; font-weight: 400;
       color: var(--ink); margin-bottom: 10px; line-height: 1.3;
     }
     .pc-desc { font-size: 14px; color: var(--ink-2); line-height: 1.7; margin-bottom: 18px; }
-    .pc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
-    .pc-link {
-      font-family: var(--mono); font-size: 12px; color: var(--accent);
-      text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
-      transition: gap .15s;
-    }
-    .pc-link:hover { gap: 10px; }
 
     /* ── Writing ── */
     .writing-list {
@@ -267,7 +362,7 @@
       font-family: var(--mono); font-size: 11px; color: var(--ink-3);
       letter-spacing: .07em; margin-bottom: 6px;
     }
-    .wi-title { font-family: var(--serif); font-size: 18px; color: var(--ink); margin-bottom: 5px; }
+    h3.wi-title { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); margin-bottom: 5px; }
     .wi-excerpt { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
     .wi-badge {
       font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
@@ -283,17 +378,13 @@
       display: flex; justify-content: space-between; align-items: flex-start;
       flex-wrap: wrap; gap: 20px;
     }
-    .edu-inst {
-      font-family: var(--serif); font-size: 20px;
+    h3.edu-inst {
+      font-family: var(--serif); font-size: 20px; font-weight: 400;
       color: var(--ink); line-height: 1.35; margin-bottom: 8px;
     }
     .edu-deg { font-size: 14.5px; color: var(--ink-2); margin-bottom: 10px; }
-    .edu-meta {
-      font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .07em;
-    }
-    .edu-cpi {
-      font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1;
-    }
+    .edu-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .07em; }
+    .edu-cpi { font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1; }
     .edu-cpi-label {
       font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
       color: var(--ink-3); text-transform: uppercase; margin-top: 5px; text-align: right;
@@ -365,318 +456,327 @@
 </head>
 <body>
 
-<div id="cursor"></div>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<div id="cursor" aria-hidden="true"></div>
 
-<!-- NAV -->
-<nav>
+<!-- HEADER / NAV -->
+<header>
   <div class="nav-inner">
-    <a href="#hero" class="nav-logo">AP<span>.</span></a>
-    <ul class="nav-links">
-      <li><a href="#about">about</a></li>
-      <li><a href="#experience">experience</a></li>
-      <li><a href="#skills">skills</a></li>
-      <li><a href="#projects">projects</a></li>
-      <li><a href="#writing">writing</a></li>
-      <li><a href="#education">education</a></li>
-      <li><a href="#contact">contact</a></li>
-    </ul>
+    <a href="#hero" class="nav-logo" aria-label="Animesh Pandey — home">AP<span>.</span></a>
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="#about">about</a></li>
+        <li><a href="#experience">experience</a></li>
+        <li><a href="#skills">skills</a></li>
+        <li><a href="#projects">projects</a></li>
+        <li><a href="#writing">writing</a></li>
+        <li><a href="#education">education</a></li>
+        <li><a href="#contact">contact</a></li>
+      </ul>
+    </nav>
   </div>
-</nav>
+</header>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="badge"><span class="badge-dot"></span>Open to opportunities</div>
-  <h1 class="hero-name">Animesh<br>Pandey<span class="dot">.</span></h1>
-  <p class="hero-sub">Senior Frontend Engineer</p>
-  <p class="hero-tag">7+ years crafting high-performance platforms for enterprise users — from analytics dashboards to AI-powered products. I care deeply about speed, scale, and the humans on the other side of the screen.</p>
-  <div class="ctas">
-    <a href="resume.pdf" download class="btn btn-dark">Download Resume ↓</a>
-    <a href="#contact" class="btn btn-outline">Let's talk →</a>
-  </div>
-</section>
+<main id="main-content">
 
-<div class="divider"><hr /></div>
-
-<!-- ABOUT -->
-<section id="about">
-  <p class="section-label">// about</p>
-  <h2>Thoughtful engineer,<br><em>product thinker</em></h2>
-  <div class="about-body fade-up">
-    <p>I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
-    <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform — building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
-    <p>I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage — not just the code that ships.</p>
-  </div>
-  <div class="stats fade-up">
-    <div><div class="stat-n">7+</div><div class="stat-l">Years experience</div></div>
-    <div><div class="stat-n">50k+</div><div class="stat-l">Daily users served</div></div>
-    <div><div class="stat-n">30%</div><div class="stat-l">Load time reduction</div></div>
-    <div><div class="stat-n">8+</div><div class="stat-l">Engineers mentored</div></div>
-  </div>
-</section>
-
-<div class="divider"><hr /></div>
-
-<!-- EXPERIENCE -->
-<section id="experience">
-  <p class="section-label">// experience</p>
-  <h2>Where I've built</h2>
-  <div class="timeline">
-
-    <div class="t-item fade-up">
-      <div class="t-dot"></div>
-      <div class="t-meta">
-        <span class="t-date">Sept 2025 — Present</span>
-        <span class="t-co">Lifesight</span>
-        <span class="t-loc">Bangalore</span>
-      </div>
-      <div class="t-role">Senior Software Engineer</div>
-      <p class="t-desc">Leading frontend development for Lifesight's Unified Measurement OS — a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards.</p>
-      <div class="tags">
-        <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">Storybook</span><span class="tag">Playwright</span><span class="tag">A/B Testing</span>
-      </div>
+  <!-- HERO -->
+  <section id="hero" aria-label="Introduction">
+    <div class="badge"><span class="badge-dot" aria-hidden="true"></span>Open to opportunities</div>
+    <h1 class="hero-name">Animesh<br>Pandey<span class="dot" aria-hidden="true">.</span></h1>
+    <p class="hero-sub">Senior Frontend Engineer</p>
+    <p class="hero-tag">7+ years crafting high-performance platforms for enterprise users — from analytics dashboards to AI-powered products. I care deeply about speed, scale, and the humans on the other side of the screen.</p>
+    <div class="ctas">
+      <a href="resume.pdf" download class="btn btn-dark">Download Resume ↓</a>
+      <a href="#contact" class="btn btn-outline">Let's talk →</a>
     </div>
+  </section>
 
-    <div class="t-item fade-up">
-      <div class="t-dot"></div>
-      <div class="t-meta">
-        <span class="t-date">Apr 2022 — Sept 2025</span>
-        <span class="t-co">Tekion</span>
-        <span class="t-loc">Bangalore</span>
-      </div>
-      <div class="t-role">Software Engineer</div>
-      <p class="t-desc">Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by 30% for 50k+ daily users. Introduced AI-driven development tooling cutting team toil by 30%.</p>
-      <div class="tags">
-        <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Redux</span><span class="tag">Next.js</span><span class="tag">GraphQL</span><span class="tag">Microfrontends</span><span class="tag">Webpack</span><span class="tag">GitHub Actions</span>
-      </div>
-      <div class="t-sub">
+  <div class="divider" aria-hidden="true"><hr /></div>
+
+  <!-- ABOUT -->
+  <section id="about" aria-labelledby="about-heading">
+    <p class="section-label">// about</p>
+    <h2 id="about-heading">Thoughtful engineer,<br><em>product thinker</em></h2>
+    <div class="about-body fade-up">
+      <p>I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
+      <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform — building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
+      <p>I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage — not just the code that ships.</p>
+    </div>
+    <div class="stats fade-up" role="list" aria-label="Key stats">
+      <div role="listitem"><div class="stat-n">7+</div><div class="stat-l">Years experience</div></div>
+      <div role="listitem"><div class="stat-n">50k+</div><div class="stat-l">Daily users served</div></div>
+      <div role="listitem"><div class="stat-n">30%</div><div class="stat-l">Load time reduction</div></div>
+      <div role="listitem"><div class="stat-n">8+</div><div class="stat-l">Engineers mentored</div></div>
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"><hr /></div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" aria-labelledby="experience-heading">
+    <p class="section-label">// experience</p>
+    <h2 id="experience-heading">Where I've built</h2>
+    <div class="timeline">
+
+      <article class="t-item fade-up">
+        <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date">Jan 2021 — Apr 2022</span>
+          <span class="t-date"><time datetime="2025-09">Sept 2025</time> — <time>Present</time></span>
+          <span class="t-co">Lifesight</span>
+          <span class="t-loc">Bangalore</span>
         </div>
-        <div class="t-role">Associate Software Engineer</div>
-        <p class="t-desc">Developed enterprise automotive retail applications using ReactJS, Redux, and React Native. Built 20+ reusable UI components and microfrontend modules documented in Storybook, accelerating feature delivery across engineering teams.</p>
-        <div class="tags">
-          <span class="tag">ReactJS</span><span class="tag">Redux</span><span class="tag">React Native</span><span class="tag">Storybook</span>
+        <h3 class="t-role">Senior Software Engineer</h3>
+        <p class="t-desc">Leading frontend development for Lifesight's Unified Measurement OS — a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards.</p>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">Storybook</span><span class="tag">Playwright</span><span class="tag">A/B Testing</span>
         </div>
-      </div>
-    </div>
+      </article>
 
-    <div class="t-item fade-up">
-      <div class="t-dot"></div>
-      <div class="t-meta">
-        <span class="t-date">Jun 2019 — Jan 2021</span>
-        <span class="t-co">Vassar Labs</span>
-        <span class="t-loc">Hyderabad</span>
-      </div>
-      <div class="t-role">Software Development Engineer</div>
-      <p class="t-desc">Led frontend development of Kerala-WRIS dashboards providing real-time water resource visibility to millions of residents. Built geospatial visualisation systems for government clients and reduced API overhead by 30% through frontend optimisation.</p>
-      <div class="tags">
-        <span class="tag">Angular 8</span><span class="tag">Highcharts</span><span class="tag">Leaflet</span><span class="tag">D3.js</span><span class="tag">AngularJS</span>
-      </div>
-      <div class="t-sub">
+      <article class="t-item fade-up">
+        <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date">May 2018 — Nov 2018</span>
+          <span class="t-date"><time datetime="2022-04">Apr 2022</time> — <time datetime="2025-09">Sept 2025</time></span>
+          <span class="t-co">Tekion</span>
+          <span class="t-loc">Bangalore</span>
         </div>
-        <div class="t-role">Software Development Intern</div>
-        <p class="t-desc">Developed a real-time SCADA monitoring system for Andhra Pradesh Water Resources using AngularJS and D3.js, enabling operational dashboards for field teams.</p>
-        <div class="tags">
-          <span class="tag">AngularJS</span><span class="tag">D3.js</span>
+        <h3 class="t-role">Software Engineer</h3>
+        <p class="t-desc">Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by 30% for 50k+ daily users. Introduced AI-driven development tooling cutting team toil by 30%.</p>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Redux</span><span class="tag">Next.js</span><span class="tag">GraphQL</span><span class="tag">Microfrontends</span><span class="tag">Webpack</span><span class="tag">GitHub Actions</span>
+        </div>
+        <div class="t-sub">
+          <div class="t-meta">
+            <span class="t-date"><time datetime="2021-01">Jan 2021</time> — <time datetime="2022-04">Apr 2022</time></span>
+          </div>
+          <h3 class="t-role">Associate Software Engineer</h3>
+          <p class="t-desc">Developed enterprise automotive retail applications using ReactJS, Redux, and React Native. Built 20+ reusable UI components and microfrontend modules documented in Storybook, accelerating feature delivery across engineering teams.</p>
+          <div class="tags" aria-label="Technologies used">
+            <span class="tag">ReactJS</span><span class="tag">Redux</span><span class="tag">React Native</span><span class="tag">Storybook</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="t-item fade-up">
+        <div class="t-dot" aria-hidden="true"></div>
+        <div class="t-meta">
+          <span class="t-date"><time datetime="2019-06">Jun 2019</time> — <time datetime="2021-01">Jan 2021</time></span>
+          <span class="t-co">Vassar Labs</span>
+          <span class="t-loc">Hyderabad</span>
+        </div>
+        <h3 class="t-role">Software Development Engineer</h3>
+        <p class="t-desc">Led frontend development of Kerala-WRIS dashboards providing real-time water resource visibility to millions of residents. Built geospatial visualisation systems for government clients and reduced API overhead by 30% through frontend optimisation.</p>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">Angular 8</span><span class="tag">Highcharts</span><span class="tag">Leaflet</span><span class="tag">D3.js</span><span class="tag">AngularJS</span>
+        </div>
+        <div class="t-sub">
+          <div class="t-meta">
+            <span class="t-date"><time datetime="2018-05">May 2018</time> — <time datetime="2018-11">Nov 2018</time></span>
+          </div>
+          <h3 class="t-role">Software Development Intern</h3>
+          <p class="t-desc">Developed a real-time SCADA monitoring system for Andhra Pradesh Water Resources using AngularJS and D3.js, enabling operational dashboards for field teams.</p>
+          <div class="tags" aria-label="Technologies used">
+            <span class="tag">AngularJS</span><span class="tag">D3.js</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <div class="divider" aria-hidden="true"><hr /></div>
+
+  <!-- SKILLS -->
+  <section id="skills" aria-labelledby="skills-heading">
+    <p class="section-label">// skills</p>
+    <h2 id="skills-heading">Built with</h2>
+    <div class="skills-grid">
+      <div class="fade-up">
+        <p class="sg-name">Frontend</p>
+        <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">React / ReactJS</span><span class="sk" role="listitem">Next.js</span><span class="sk" role="listitem">TypeScript</span><span class="sk" role="listitem">JavaScript</span><span class="sk" role="listitem">HTML5</span><span class="sk" role="listitem">CSS3</span><span class="sk" role="listitem">Redux</span><span class="sk" role="listitem">Angular</span><span class="sk" role="listitem">React Native</span><span class="sk" role="listitem">Tailwind CSS</span>
+        </div>
+      </div>
+      <div class="fade-up">
+        <p class="sg-name">Architecture &amp; Platform</p>
+        <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">Microfrontends</span><span class="sk" role="listitem">Design Systems</span><span class="sk" role="listitem">SSR</span><span class="sk" role="listitem">Storybook</span><span class="sk" role="listitem">Module Federation</span><span class="sk" role="listitem">Performance Budgets</span><span class="sk" role="listitem">Accessibility (WCAG 2.1)</span><span class="sk" role="listitem">Responsive Design</span>
+        </div>
+      </div>
+      <div class="fade-up">
+        <p class="sg-name">Testing</p>
+        <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">Jest</span><span class="sk" role="listitem">React Testing Library</span><span class="sk" role="listitem">Playwright</span><span class="sk" role="listitem">Cypress</span><span class="sk" role="listitem">Unit / Integration / E2E</span>
+        </div>
+      </div>
+      <div class="fade-up">
+        <p class="sg-name">Build &amp; Tooling</p>
+        <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">Webpack</span><span class="sk" role="listitem">Vite</span><span class="sk" role="listitem">Turborepo</span><span class="sk" role="listitem">GitHub Actions</span><span class="sk" role="listitem">CI/CD</span><span class="sk" role="listitem">Git</span><span class="sk" role="listitem">Docker</span>
+        </div>
+      </div>
+      <div class="fade-up">
+        <p class="sg-name">Analytics &amp; Data Viz</p>
+        <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">GraphQL</span><span class="sk" role="listitem">REST APIs</span><span class="sk" role="listitem">Highcharts</span><span class="sk" role="listitem">Leaflet</span><span class="sk" role="listitem">D3.js</span><span class="sk" role="listitem">Reporting Platforms</span><span class="sk" role="listitem">A/B Testing</span>
+        </div>
+      </div>
+      <div class="fade-up">
+        <p class="sg-name">Backend &amp; Cloud</p>
+        <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">Node.js</span><span class="sk" role="listitem">Express</span><span class="sk" role="listitem">Microservices</span><span class="sk" role="listitem">AWS</span><span class="sk" role="listitem">Azure</span>
+        </div>
+      </div>
+      <div class="fade-up">
+        <p class="sg-name">AI &amp; Automation</p>
+        <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">Agentic AI</span><span class="sk" role="listitem">OpenAI API</span><span class="sk" role="listitem">LangChain</span><span class="sk" role="listitem">GitHub Copilot</span><span class="sk" role="listitem">LLM Tooling</span>
+        </div>
+      </div>
+      <div class="fade-up">
+        <p class="sg-name">Languages</p>
+        <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">JavaScript</span><span class="sk" role="listitem">TypeScript</span><span class="sk" role="listitem">Python</span><span class="sk" role="listitem">Java</span>
         </div>
       </div>
     </div>
+  </section>
 
-  </div>
-</section>
+  <div class="divider" aria-hidden="true"><hr /></div>
 
-<div class="divider"><hr /></div>
+  <!-- PROJECTS -->
+  <section id="projects" aria-labelledby="projects-heading">
+    <p class="section-label">// projects</p>
+    <h2 id="projects-heading">Things I've shipped</h2>
+    <div class="projects-grid">
 
-<!-- SKILLS -->
-<section id="skills">
-  <p class="section-label">// skills</p>
-  <h2>Built with</h2>
-  <div class="skills-grid">
-    <div class="fade-up">
-      <div class="sg-name">Frontend</div>
-      <div class="sg-tags">
-        <span class="sk">React / ReactJS</span><span class="sk">Next.js</span><span class="sk">TypeScript</span><span class="sk">JavaScript</span><span class="sk">HTML5</span><span class="sk">CSS3</span><span class="sk">Redux</span><span class="sk">Angular</span><span class="sk">React Native</span><span class="sk">Tailwind CSS</span>
-      </div>
+      <article class="pc fade-up">
+        <p class="pc-type">Analytics Platform</p>
+        <h3 class="pc-name">Marketing Intelligence Dashboard</h3>
+        <p class="pc-desc">Enterprise analytics dashboard with real-time MMM, attribution modelling, and causal insights. Built for high-volume datasets with SSR, performance budgets, and Lighthouse-driven optimisation.</p>
+        <div class="tags" aria-label="Technologies used" style="margin-bottom:18px">
+          <span class="tag">ReactJS</span><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">SSR</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
+        <p class="pc-type">Frontend Platform</p>
+        <h3 class="pc-name">Enterprise Component Library</h3>
+        <p class="pc-desc">Storybook-driven design system and shared component library used across 10+ product modules. Reduced duplicate code by 25% and accelerated delivery velocity across multiple squads.</p>
+        <div class="tags" aria-label="Technologies used" style="margin-bottom:18px">
+          <span class="tag">Storybook</span><span class="tag">TypeScript</span><span class="tag">Design Systems</span>
+        </div>
+      </article>
+
+      <article class="pc wide fade-up">
+        <p class="pc-type">Architecture</p>
+        <h3 class="pc-name">Microfrontend Architecture at Scale</h3>
+        <p class="pc-desc">Designed and shipped a microfrontend architecture using Webpack Module Federation across enterprise automotive retail products. Served 50k+ daily users with 30% improvement in load times through code splitting, lazy loading, and bundle-level Lighthouse optimisation. The architecture enabled independent deployments across 10+ frontend teams.</p>
+        <div class="tags" aria-label="Technologies used" style="margin-bottom:18px">
+          <span class="tag">Webpack</span><span class="tag">Module Federation</span><span class="tag">ReactJS</span><span class="tag">Performance</span><span class="tag">CI/CD</span>
+        </div>
+      </article>
+
     </div>
-    <div class="fade-up">
-      <div class="sg-name">Architecture &amp; Platform</div>
-      <div class="sg-tags">
-        <span class="sk">Microfrontends</span><span class="sk">Design Systems</span><span class="sk">SSR</span><span class="sk">Storybook</span><span class="sk">Module Federation</span><span class="sk">Performance Budgets</span><span class="sk">Accessibility (WCAG 2.1)</span><span class="sk">Responsive Design</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <div class="sg-name">Testing</div>
-      <div class="sg-tags">
-        <span class="sk">Jest</span><span class="sk">React Testing Library</span><span class="sk">Playwright</span><span class="sk">Cypress</span><span class="sk">Unit / Integration / E2E</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <div class="sg-name">Build &amp; Tooling</div>
-      <div class="sg-tags">
-        <span class="sk">Webpack</span><span class="sk">Vite</span><span class="sk">Turborepo</span><span class="sk">GitHub Actions</span><span class="sk">CI/CD</span><span class="sk">Git</span><span class="sk">Docker</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <div class="sg-name">Analytics &amp; Data Viz</div>
-      <div class="sg-tags">
-        <span class="sk">GraphQL</span><span class="sk">REST APIs</span><span class="sk">Highcharts</span><span class="sk">Leaflet</span><span class="sk">D3.js</span><span class="sk">Reporting Platforms</span><span class="sk">A/B Testing</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <div class="sg-name">Backend &amp; Cloud</div>
-      <div class="sg-tags">
-        <span class="sk">Node.js</span><span class="sk">Express</span><span class="sk">Microservices</span><span class="sk">AWS</span><span class="sk">Azure</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <div class="sg-name">AI &amp; Automation</div>
-      <div class="sg-tags">
-        <span class="sk">Agentic AI</span><span class="sk">OpenAI API</span><span class="sk">LangChain</span><span class="sk">GitHub Copilot</span><span class="sk">LLM Tooling</span>
-      </div>
-    </div>
-    <div class="fade-up">
-      <div class="sg-name">Languages</div>
-      <div class="sg-tags">
-        <span class="sk">JavaScript</span><span class="sk">TypeScript</span><span class="sk">Python</span><span class="sk">Java</span>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<div class="divider"><hr /></div>
+  <div class="divider" aria-hidden="true"><hr /></div>
 
-<!-- PROJECTS -->
-<section id="projects">
-  <p class="section-label">// projects</p>
-  <h2>Things I've shipped</h2>
-  <div class="projects-grid">
+  <!-- WRITING -->
+  <section id="writing" aria-labelledby="writing-heading">
+    <p class="section-label">// writing</p>
+    <h2 id="writing-heading">On the craft</h2>
+    <div class="writing-list">
 
-    <div class="pc fade-up">
-      <div class="pc-type">Analytics Platform</div>
-      <div class="pc-name">Marketing Intelligence Dashboard</div>
-      <p class="pc-desc">Enterprise analytics dashboard with real-time MMM, attribution modelling, and causal insights. Built for high-volume datasets with SSR, performance budgets, and Lighthouse-driven optimisation.</p>
-      <div class="tags" style="margin-bottom:18px">
-        <span class="tag">ReactJS</span><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">SSR</span>
+      <div class="wi fade-up">
+        <div>
+          <p class="wi-date">Coming soon</p>
+          <h3 class="wi-title">Building Performance Budgets at Scale</h3>
+          <p class="wi-excerpt">How we used Lighthouse CI, Core Web Vitals, and bundle analysis to keep 50k daily users happy.</p>
+        </div>
+        <span class="wi-badge" aria-label="Status: Draft">Draft</span>
       </div>
-    </div>
 
-    <div class="pc fade-up">
-      <div class="pc-type">Frontend Platform</div>
-      <div class="pc-name">Enterprise Component Library</div>
-      <p class="pc-desc">Storybook-driven design system and shared component library used across 10+ product modules. Reduced duplicate code by 25% and accelerated delivery velocity across multiple squads.</p>
-      <div class="tags" style="margin-bottom:18px">
-        <span class="tag">Storybook</span><span class="tag">TypeScript</span><span class="tag">Design Systems</span>
+      <div class="wi fade-up">
+        <div>
+          <p class="wi-date">Coming soon</p>
+          <h3 class="wi-title">Microfrontends: Lessons from Three Years in Production</h3>
+          <p class="wi-excerpt">What nobody tells you about Module Federation, team autonomy, and debugging across deployment boundaries.</p>
+        </div>
+        <span class="wi-badge" aria-label="Status: Draft">Draft</span>
       </div>
-    </div>
 
-    <div class="pc wide fade-up">
-      <div class="pc-type">Architecture</div>
-      <div class="pc-name">Microfrontend Architecture at Scale</div>
-      <p class="pc-desc">Designed and shipped a microfrontend architecture using Webpack Module Federation across enterprise automotive retail products. Served 50k+ daily users with 30% improvement in load times through code splitting, lazy loading, and bundle-level Lighthouse optimisation. The architecture enabled independent deployments across 10+ frontend teams.</p>
-      <div class="tags" style="margin-bottom:18px">
-        <span class="tag">Webpack</span><span class="tag">Module Federation</span><span class="tag">ReactJS</span><span class="tag">Performance</span><span class="tag">CI/CD</span>
+      <div class="wi fade-up">
+        <div>
+          <p class="wi-date">Coming soon</p>
+          <h3 class="wi-title">AI-Powered Engineering: From Hype to 30% Less Toil</h3>
+          <p class="wi-excerpt">A practical account of integrating Agentic AI and LLM tooling into a real frontend engineering workflow.</p>
+        </div>
+        <span class="wi-badge" aria-label="Status: Draft">Draft</span>
       </div>
+
     </div>
+  </section>
 
-  </div>
-</section>
+  <div class="divider" aria-hidden="true"><hr /></div>
 
-<div class="divider"><hr /></div>
-
-<!-- WRITING -->
-<section id="writing">
-  <p class="section-label">// writing</p>
-  <h2>On the craft</h2>
-  <div class="writing-list">
-
-    <div class="wi fade-up">
+  <!-- EDUCATION -->
+  <section id="education" aria-labelledby="education-heading">
+    <p class="section-label">// education</p>
+    <h2 id="education-heading">Where I <em>studied</em></h2>
+    <div class="edu-card fade-up">
       <div>
-        <div class="wi-date">Coming soon</div>
-        <div class="wi-title">Building Performance Budgets at Scale</div>
-        <div class="wi-excerpt">How we used Lighthouse CI, Core Web Vitals, and bundle analysis to keep 50k daily users happy.</div>
+        <h3 class="edu-inst">Indian Institute of Information Technology,<br>Design and Management (IIITDM) Jabalpur</h3>
+        <p class="edu-deg">B.Tech — Computer Science and Engineering</p>
+        <p class="edu-meta"><time datetime="2015">2015</time> – <time datetime="2019">2019</time></p>
       </div>
-      <div class="wi-badge">Draft</div>
-    </div>
-
-    <div class="wi fade-up">
       <div>
-        <div class="wi-date">Coming soon</div>
-        <div class="wi-title">Microfrontends: Lessons from Three Years in Production</div>
-        <div class="wi-excerpt">What nobody tells you about Module Federation, team autonomy, and debugging across deployment boundaries.</div>
+        <div class="edu-cpi" aria-label="CPI: 7.9">7.9</div>
+        <div class="edu-cpi-label" aria-hidden="true">CPI</div>
       </div>
-      <div class="wi-badge">Draft</div>
     </div>
+  </section>
 
-    <div class="wi fade-up">
-      <div>
-        <div class="wi-date">Coming soon</div>
-        <div class="wi-title">AI-Powered Engineering: From Hype to 30% Less Toil</div>
-        <div class="wi-excerpt">A practical account of integrating Agentic AI and LLM tooling into a real frontend engineering workflow.</div>
-      </div>
-      <div class="wi-badge">Draft</div>
-    </div>
+  <div class="divider" aria-hidden="true"><hr /></div>
 
-  </div>
-</section>
-
-<div class="divider"><hr /></div>
-
-<!-- EDUCATION -->
-<section id="education">
-  <p class="section-label">// education</p>
-  <h2>Where I <em>studied</em></h2>
-  <div class="edu-card fade-up">
-    <div>
-      <div class="edu-inst">Indian Institute of Information Technology,<br>Design and Management (IIITDM) Jabalpur</div>
-      <div class="edu-deg">B.Tech — Computer Science and Engineering</div>
-      <div class="edu-meta">2015 – 2019</div>
-    </div>
-    <div>
-      <div class="edu-cpi">7.9</div>
-      <div class="edu-cpi-label">CPI</div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"><hr /></div>
-
-<!-- CONTACT -->
-<section id="contact">
-  <p class="section-label">// contact</p>
-  <h2>Let's build something</h2>
-  <p class="contact-intro">Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.</p>
-  <form class="form" id="contactForm" novalidate>
-    <div class="form-row">
-      <div class="field">
-        <label for="fname">Name</label>
-        <input type="text" id="fname" name="name" placeholder="Your name" required />
+  <!-- CONTACT -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <p class="section-label">// contact</p>
+    <h2 id="contact-heading">Let's build something</h2>
+    <p class="contact-intro">Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.</p>
+    <form class="form" id="contactForm" novalidate aria-label="Contact form">
+      <div class="form-row">
+        <div class="field">
+          <label for="fname">Name</label>
+          <input type="text" id="fname" name="name" placeholder="Your name" required autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="femail">Email</label>
+          <input type="email" id="femail" name="email" placeholder="you@company.com" required autocomplete="email" />
+        </div>
       </div>
       <div class="field">
-        <label for="femail">Email</label>
-        <input type="email" id="femail" name="email" placeholder="you@company.com" required />
+        <label for="fmsg">Message</label>
+        <textarea id="fmsg" name="message" placeholder="Tell me about the role or project..." required></textarea>
       </div>
-    </div>
-    <div class="field">
-      <label for="fmsg">Message</label>
-      <textarea id="fmsg" name="message" placeholder="Tell me about the role or project..." required></textarea>
-    </div>
-    <button type="submit" class="form-btn">Send message →</button>
-    <div class="form-success" id="formSuccess">✓ Opening your email client…</div>
-  </form>
-</section>
+      <button type="submit" class="form-btn">Send message →</button>
+      <div class="form-success" id="formSuccess" role="status" aria-live="polite">✓ Opening your email client…</div>
+    </form>
+  </section>
+
+</main>
 
 <!-- FOOTER -->
 <footer>
   <div class="foot-inner">
     <div class="foot-l">Animesh Pandey · Bangalore, India</div>
-    <div class="foot-links">
-      <a href="mailto:animeshpandey1909@gmail.com">Email</a>
-      <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://github.com/AnimeshPandey" target="_blank" rel="noopener">GitHub</a>
-      <a href="resume.pdf" download>Resume</a>
-    </div>
+    <nav aria-label="Social links">
+      <div class="foot-links">
+        <a href="mailto:animeshpandey1909@gmail.com" aria-label="Send email">Email</a>
+        <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">LinkedIn</a>
+        <a href="https://github.com/AnimeshPandey" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">GitHub</a>
+        <a href="resume.pdf" download aria-label="Download resume PDF">Resume</a>
+      </div>
+    </nav>
   </div>
 </footer>
 
@@ -723,15 +823,19 @@
   /* ── Active nav highlight on scroll ── */
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
+  const onScroll = () => {
     let current = '';
     sections.forEach(s => {
       if (window.scrollY >= s.offsetTop - 100) current = s.id;
     });
     navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+      const active = a.getAttribute('href') === '#' + current;
+      a.style.color = active ? 'var(--accent)' : '';
+      a.setAttribute('aria-current', active ? 'true' : 'false');
     });
-  }, { passive: true });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 </script>
 </body>
 </html>
