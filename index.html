@@ -79,9 +79,9 @@
       color: var(--ink); text-decoration: none; letter-spacing: -.02em;
     }
     .nav-logo span { color: var(--accent); }
-    .nav-links { display: flex; gap: 26px; list-style: none; }
+    .nav-links { display: flex; gap: 20px; list-style: none; }
     .nav-links a {
-      font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em;
+      font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
       color: var(--ink-2); text-decoration: none; transition: color .2s;
     }
     .nav-links a:hover { color: var(--accent); }
@@ -196,6 +196,13 @@
       padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border);
     }
 
+    /* ── Sub-role (second role at same company) ── */
+    .t-sub {
+      margin-top: 26px; padding-top: 22px;
+      border-top: 1px dashed var(--border-2);
+    }
+    .t-sub .t-role { font-size: 17px; }
+
     /* ── Skills ── */
     .skills-grid { display: flex; flex-direction: column; gap: 28px; }
     .sg-name {
@@ -253,22 +260,44 @@
     .wi {
       background: var(--surface); padding: 22px 26px;
       display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
-      text-decoration: none; transition: background .15s;
       border-bottom: 1px solid var(--border);
     }
     .wi:last-child { border-bottom: none; }
-    .wi:hover { background: var(--accent-bg); }
     .wi-date {
       font-family: var(--mono); font-size: 11px; color: var(--ink-3);
       letter-spacing: .07em; margin-bottom: 6px;
     }
     .wi-title { font-family: var(--serif); font-size: 18px; color: var(--ink); margin-bottom: 5px; }
     .wi-excerpt { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
-    .wi-arrow {
-      color: var(--ink-3); font-size: 20px; flex-shrink: 0; margin-top: 2px;
-      transition: transform .15s, color .15s;
+    .wi-badge {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+      color: var(--ink-3); background: var(--surface-2);
+      padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border);
+      flex-shrink: 0; white-space: nowrap; align-self: flex-start;
     }
-    .wi:hover .wi-arrow { transform: translate(3px,-3px); color: var(--accent); }
+
+    /* ── Education ── */
+    .edu-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px 30px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .edu-inst {
+      font-family: var(--serif); font-size: 20px;
+      color: var(--ink); line-height: 1.35; margin-bottom: 8px;
+    }
+    .edu-deg { font-size: 14.5px; color: var(--ink-2); margin-bottom: 10px; }
+    .edu-meta {
+      font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .07em;
+    }
+    .edu-cpi {
+      font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1;
+    }
+    .edu-cpi-label {
+      font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+      color: var(--ink-3); text-transform: uppercase; margin-top: 5px; text-align: right;
+    }
 
     /* ── Contact ── */
     .contact-intro { font-size: 16px; color: var(--ink-2); max-width: 520px; line-height: 1.75; margin-bottom: 44px; }
@@ -330,6 +359,7 @@
       .btn { text-align: center; }
       body { cursor: auto; }
       #cursor { display: none; }
+      .edu-card { flex-direction: column; }
     }
   </style>
 </head>
@@ -347,6 +377,7 @@
       <li><a href="#skills">skills</a></li>
       <li><a href="#projects">projects</a></li>
       <li><a href="#writing">writing</a></li>
+      <li><a href="#education">education</a></li>
       <li><a href="#contact">contact</a></li>
     </ul>
   </div>
@@ -372,7 +403,7 @@
   <h2>Thoughtful engineer,<br><em>product thinker</em></h2>
   <div class="about-body fade-up">
     <p>I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
-    <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform — building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 3+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
+    <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform — building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
     <p>I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage — not just the code that ships.</p>
   </div>
   <div class="stats fade-up">
@@ -408,28 +439,48 @@
     <div class="t-item fade-up">
       <div class="t-dot"></div>
       <div class="t-meta">
-        <span class="t-date">Jan 2021 — Sept 2025</span>
+        <span class="t-date">Apr 2022 — Sept 2025</span>
         <span class="t-co">Tekion</span>
         <span class="t-loc">Bangalore</span>
       </div>
-      <div class="t-role">Software Engineer → Associate Software Engineer</div>
-      <p class="t-desc">Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by 30% for 50k+ daily users. Mentored 8+ engineers and introduced AI-driven development tooling cutting team toil by 30%.</p>
+      <div class="t-role">Software Engineer</div>
+      <p class="t-desc">Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by 30% for 50k+ daily users. Introduced AI-driven development tooling cutting team toil by 30%.</p>
       <div class="tags">
-        <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Redux</span><span class="tag">Microfrontends</span><span class="tag">Webpack</span><span class="tag">GitHub Actions</span><span class="tag">React Native</span>
+        <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Redux</span><span class="tag">Next.js</span><span class="tag">GraphQL</span><span class="tag">Microfrontends</span><span class="tag">Webpack</span><span class="tag">GitHub Actions</span>
+      </div>
+      <div class="t-sub">
+        <div class="t-meta">
+          <span class="t-date">Jan 2021 — Apr 2022</span>
+        </div>
+        <div class="t-role">Associate Software Engineer</div>
+        <p class="t-desc">Developed enterprise automotive retail applications using ReactJS, Redux, and React Native. Built 20+ reusable UI components and microfrontend modules documented in Storybook, accelerating feature delivery across engineering teams.</p>
+        <div class="tags">
+          <span class="tag">ReactJS</span><span class="tag">Redux</span><span class="tag">React Native</span><span class="tag">Storybook</span>
+        </div>
       </div>
     </div>
 
     <div class="t-item fade-up">
       <div class="t-dot"></div>
       <div class="t-meta">
-        <span class="t-date">May 2018 — Jan 2021</span>
+        <span class="t-date">Jun 2019 — Jan 2021</span>
         <span class="t-co">Vassar Labs</span>
         <span class="t-loc">Hyderabad</span>
       </div>
-      <div class="t-role">Software Development Engineer → Intern</div>
-      <p class="t-desc">Led frontend development of Kerala-WRIS dashboards providing real-time water resource visibility to millions of residents. Built geospatial visualisation systems for government clients and reduced API overhead by 30% through frontend optimisation. Developed a real-time SCADA monitoring system using AngularJS and D3.js.</p>
+      <div class="t-role">Software Development Engineer</div>
+      <p class="t-desc">Led frontend development of Kerala-WRIS dashboards providing real-time water resource visibility to millions of residents. Built geospatial visualisation systems for government clients and reduced API overhead by 30% through frontend optimisation.</p>
       <div class="tags">
         <span class="tag">Angular 8</span><span class="tag">Highcharts</span><span class="tag">Leaflet</span><span class="tag">D3.js</span><span class="tag">AngularJS</span>
+      </div>
+      <div class="t-sub">
+        <div class="t-meta">
+          <span class="t-date">May 2018 — Nov 2018</span>
+        </div>
+        <div class="t-role">Software Development Intern</div>
+        <p class="t-desc">Developed a real-time SCADA monitoring system for Andhra Pradesh Water Resources using AngularJS and D3.js, enabling operational dashboards for field teams.</p>
+        <div class="tags">
+          <span class="tag">AngularJS</span><span class="tag">D3.js</span>
+        </div>
       </div>
     </div>
 
@@ -468,9 +519,27 @@
       </div>
     </div>
     <div class="fade-up">
+      <div class="sg-name">Analytics &amp; Data Viz</div>
+      <div class="sg-tags">
+        <span class="sk">GraphQL</span><span class="sk">REST APIs</span><span class="sk">Highcharts</span><span class="sk">Leaflet</span><span class="sk">D3.js</span><span class="sk">Reporting Platforms</span><span class="sk">A/B Testing</span>
+      </div>
+    </div>
+    <div class="fade-up">
+      <div class="sg-name">Backend &amp; Cloud</div>
+      <div class="sg-tags">
+        <span class="sk">Node.js</span><span class="sk">Express</span><span class="sk">Microservices</span><span class="sk">AWS</span><span class="sk">Azure</span>
+      </div>
+    </div>
+    <div class="fade-up">
       <div class="sg-name">AI &amp; Automation</div>
       <div class="sg-tags">
         <span class="sk">Agentic AI</span><span class="sk">OpenAI API</span><span class="sk">LangChain</span><span class="sk">GitHub Copilot</span><span class="sk">LLM Tooling</span>
+      </div>
+    </div>
+    <div class="fade-up">
+      <div class="sg-name">Languages</div>
+      <div class="sg-tags">
+        <span class="sk">JavaScript</span><span class="sk">TypeScript</span><span class="sk">Python</span><span class="sk">Java</span>
       </div>
     </div>
   </div>
@@ -482,7 +551,6 @@
 <section id="projects">
   <p class="section-label">// projects</p>
   <h2>Things I've shipped</h2>
-  <!-- UPDATE: Replace href="#" with real links and update descriptions with your actual projects -->
   <div class="projects-grid">
 
     <div class="pc fade-up">
@@ -491,9 +559,6 @@
       <p class="pc-desc">Enterprise analytics dashboard with real-time MMM, attribution modelling, and causal insights. Built for high-volume datasets with SSR, performance budgets, and Lighthouse-driven optimisation.</p>
       <div class="tags" style="margin-bottom:18px">
         <span class="tag">ReactJS</span><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">SSR</span>
-      </div>
-      <div class="pc-foot">
-        <a href="#" class="pc-link">View case study <span>→</span></a>
       </div>
     </div>
 
@@ -504,9 +569,6 @@
       <div class="tags" style="margin-bottom:18px">
         <span class="tag">Storybook</span><span class="tag">TypeScript</span><span class="tag">Design Systems</span>
       </div>
-      <div class="pc-foot">
-        <a href="#" class="pc-link">View case study <span>→</span></a>
-      </div>
     </div>
 
     <div class="pc wide fade-up">
@@ -515,9 +577,6 @@
       <p class="pc-desc">Designed and shipped a microfrontend architecture using Webpack Module Federation across enterprise automotive retail products. Served 50k+ daily users with 30% improvement in load times through code splitting, lazy loading, and bundle-level Lighthouse optimisation. The architecture enabled independent deployments across 10+ frontend teams.</p>
       <div class="tags" style="margin-bottom:18px">
         <span class="tag">Webpack</span><span class="tag">Module Federation</span><span class="tag">ReactJS</span><span class="tag">Performance</span><span class="tag">CI/CD</span>
-      </div>
-      <div class="pc-foot">
-        <a href="#" class="pc-link">View case study <span>→</span></a>
       </div>
     </div>
 
@@ -530,36 +589,54 @@
 <section id="writing">
   <p class="section-label">// writing</p>
   <h2>On the craft</h2>
-  <!-- UPDATE: Replace href="#" with real blog/medium links when articles are published -->
   <div class="writing-list">
 
-    <a href="#" class="wi fade-up">
+    <div class="wi fade-up">
       <div>
         <div class="wi-date">Coming soon</div>
         <div class="wi-title">Building Performance Budgets at Scale</div>
         <div class="wi-excerpt">How we used Lighthouse CI, Core Web Vitals, and bundle analysis to keep 50k daily users happy.</div>
       </div>
-      <div class="wi-arrow">↗</div>
-    </a>
+      <div class="wi-badge">Draft</div>
+    </div>
 
-    <a href="#" class="wi fade-up">
+    <div class="wi fade-up">
       <div>
         <div class="wi-date">Coming soon</div>
         <div class="wi-title">Microfrontends: Lessons from Three Years in Production</div>
         <div class="wi-excerpt">What nobody tells you about Module Federation, team autonomy, and debugging across deployment boundaries.</div>
       </div>
-      <div class="wi-arrow">↗</div>
-    </a>
+      <div class="wi-badge">Draft</div>
+    </div>
 
-    <a href="#" class="wi fade-up">
+    <div class="wi fade-up">
       <div>
         <div class="wi-date">Coming soon</div>
         <div class="wi-title">AI-Powered Engineering: From Hype to 30% Less Toil</div>
         <div class="wi-excerpt">A practical account of integrating Agentic AI and LLM tooling into a real frontend engineering workflow.</div>
       </div>
-      <div class="wi-arrow">↗</div>
-    </a>
+      <div class="wi-badge">Draft</div>
+    </div>
 
+  </div>
+</section>
+
+<div class="divider"><hr /></div>
+
+<!-- EDUCATION -->
+<section id="education">
+  <p class="section-label">// education</p>
+  <h2>Where I <em>studied</em></h2>
+  <div class="edu-card fade-up">
+    <div>
+      <div class="edu-inst">Indian Institute of Information Technology,<br>Design and Management (IIITDM) Jabalpur</div>
+      <div class="edu-deg">B.Tech — Computer Science and Engineering</div>
+      <div class="edu-meta">2015 – 2019</div>
+    </div>
+    <div>
+      <div class="edu-cpi">7.9</div>
+      <div class="edu-cpi-label">CPI</div>
+    </div>
   </div>
 </section>
 
@@ -597,6 +674,7 @@
     <div class="foot-links">
       <a href="mailto:animeshpandey1909@gmail.com">Email</a>
       <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/AnimeshPandey" target="_blank" rel="noopener">GitHub</a>
       <a href="resume.pdf" download>Resume</a>
     </div>
   </div>
@@ -635,9 +713,11 @@
     const subject = encodeURIComponent('Hello from ' + name);
     const body    = encodeURIComponent(message + '\n\n— ' + name + '\n' + email);
     document.getElementById('formSuccess').style.display = 'block';
-    setTimeout(() => {
-      window.location.href = 'mailto:animeshpandey1909@gmail.com?subject=' + subject + '&body=' + body;
-    }, 600);
+    const a = document.createElement('a');
+    a.href = 'mailto:animeshpandey1909@gmail.com?subject=' + subject + '&body=' + body;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   });
 
   /* ── Active nav highlight on scroll ── */
