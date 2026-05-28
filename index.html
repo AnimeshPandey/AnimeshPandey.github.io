@@ -2,12 +2,18 @@
 <html lang="en-IN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- FOUC prevention: apply theme before CSS loads -->
+  <script>
+  (function(){var t=localStorage.getItem('theme');var d=t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.dataset.theme='dark'})();
+  </script>
 
   <!-- Primary SEO -->
-  <title>Animesh Pandey — Senior Frontend Engineer | React, TypeScript, Next.js</title>
-  <meta name="description" content="Animesh Pandey is a Senior Frontend Engineer based in Bangalore with 7+ years building scalable SaaS platforms using React, TypeScript, Next.js, and microfrontend architectures. Open to full-time roles." />
+  <title>Animesh Pandey · Senior Frontend Engineer | React, TypeScript, Next.js</title>
+  <meta name="description" content="Animesh Pandey is a Senior Frontend Engineer based in Bangalore with 7+ years building scalable SaaS platforms: MMM dashboards, microfrontends for 50k+ daily users, and agentic AI products. Open to senior & staff roles." />
   <meta name="keywords" content="Animesh Pandey, Senior Frontend Engineer, React Developer, ReactJS, TypeScript, Next.js, Microfrontends, Design Systems, SSR, Frontend Developer Bangalore, SaaS, Lifesight, Tekion, IIITDM Jabalpur, hire frontend engineer, React consultant India, staff engineer, JavaScript developer, functional JavaScript, frontend architect" />
+
   <!-- Geographic -->
   <meta name="geo.region" content="IN-KA" />
   <meta name="geo.placename" content="Bangalore, Karnataka, India" />
@@ -15,8 +21,9 @@
   <meta name="ICBM" content="12.9716, 77.5946" />
   <meta name="author" content="Animesh Pandey" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
-  <meta name="theme-color" content="#1C1714" />
+  <meta name="theme-color" content="#FAF8F4" />
   <link rel="canonical" href="https://anmshpndy.com/" />
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
   <!-- Identity verification -->
   <link rel="me" href="https://github.com/AnimeshPandey" />
@@ -26,27 +33,37 @@
   <!-- Open Graph -->
   <meta property="og:type" content="profile" />
   <meta property="og:url" content="https://anmshpndy.com/" />
-  <meta property="og:title" content="Animesh Pandey — Senior Frontend Engineer" />
-  <meta property="og:description" content="7+ years crafting high-performance SaaS platforms with React, TypeScript, and Next.js. Based in Bangalore. Open to opportunities." />
+  <meta property="og:title" content="Animesh Pandey · Senior Frontend Engineer" />
+  <meta property="og:description" content="7+ years building fast, accessible SaaS interfaces: MMM dashboards, microfrontends for 50k+ users, agentic AI products. Based in Bangalore." />
   <meta property="og:locale" content="en_IN" />
   <meta property="og:site_name" content="Animesh Pandey" />
+  <meta property="og:image" content="https://anmshpndy.com/assets/og-image.svg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Animesh Pandey · Senior Frontend Engineer, Bangalore" />
   <meta property="profile:first_name" content="Animesh" />
   <meta property="profile:last_name" content="Pandey" />
 
   <!-- Twitter / X Card -->
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@anmshpndy" />
   <meta name="twitter:creator" content="@anmshpndy" />
-  <meta name="twitter:title" content="Animesh Pandey — Senior Frontend Engineer" />
-  <meta name="twitter:description" content="7+ years crafting high-performance SaaS platforms with React, TypeScript & Next.js. Based in Bangalore." />
+  <meta name="twitter:title" content="Animesh Pandey · Senior Frontend Engineer" />
+  <meta name="twitter:description" content="7+ years building fast, accessible SaaS interfaces: dashboards, microfrontends, agentic AI. Bangalore." />
+  <meta name="twitter:image" content="https://anmshpndy.com/assets/og-image.svg" />
 
-  <!-- Favicon -->
+  <!-- Favicon & manifest -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/theme.css" />
+  <link rel="stylesheet" href="/assets/site.css" />
 
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -57,7 +74,7 @@
         "@type": "WebSite",
         "@id": "https://anmshpndy.com/#website",
         "url": "https://anmshpndy.com/",
-        "name": "Animesh Pandey — Senior Frontend Engineer",
+        "name": "Animesh Pandey · Senior Frontend Engineer",
         "description": "Portfolio of Animesh Pandey, Senior Frontend Engineer with 7+ years building scalable SaaS platforms.",
         "inLanguage": "en-IN"
       },
@@ -72,6 +89,7 @@
         "email": "animeshpandey1909@gmail.com",
         "telephone": "+91-8318717926",
         "url": "https://anmshpndy.com/",
+        "image": "https://anmshpndy.com/assets/og-image.svg",
         "sameAs": [
           "https://linkedin.com/in/pandeyanimesh",
           "https://github.com/AnimeshPandey",
@@ -107,7 +125,7 @@
         ],
         "hasCredential": {
           "@type": "EducationalOccupationalCredential",
-          "name": "B.Tech — Computer Science and Engineering",
+          "name": "B.Tech in Computer Science and Engineering",
           "educationalLevel": "Bachelor's Degree",
           "credentialCategory": "degree"
         }
@@ -129,7 +147,7 @@
             "name": "Is Animesh Pandey available for hire?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Animesh Pandey is currently open to full-time senior or staff frontend engineering roles, frontend architect positions, and consulting engagements. Based in Bangalore, India — open to remote opportunities globally. Contact him at animeshpandey1909@gmail.com or via LinkedIn."
+              "text": "Yes. Animesh Pandey is currently open to full-time senior or staff frontend engineering roles, frontend architect positions, and consulting engagements. Based in Bangalore, India, open to remote opportunities globally. Contact him at animeshpandey1909@gmail.com or via LinkedIn."
             }
           },
           {
@@ -161,7 +179,7 @@
             "name": "Has Animesh Pandey published any technical articles?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Animesh Pandey has published articles on JavaScript and functional programming, including 'Fundamentals of Functional JavaScript' (Medium / JavaScript in Plain English) and 'Everything You Need to Know About this in JavaScript' (HackerNoon). His writing is available at anmshpndy.com/fundamentals-of-functional-javascript and anmshpndy.com/how-well-do-you-know-this."
+              "text": "Yes. Animesh Pandey has published articles on JavaScript and functional programming, including 'Fundamentals of Functional JavaScript' (Medium / JavaScript in Plain English) and 'Everything You Need to Know About this in JavaScript' (HackerNoon). His writing is available at anmshpndy.com/fundamentals-of-functional-javascript/ and anmshpndy.com/how-well-do-you-know-this/."
             }
           }
         ]
@@ -183,7 +201,7 @@
         "@type": "Article",
         "@id": "https://anmshpndy.com/fundamentals-of-functional-javascript/",
         "headline": "Fundamentals of Functional JavaScript",
-        "description": "An introduction to functional programming concepts in JavaScript — pure functions, first-class functions, higher-order functions, immutability, and declarative thinking.",
+        "description": "An introduction to functional programming concepts in JavaScript: pure functions, first-class functions, higher-order functions, immutability, and declarative thinking.",
         "url": "https://anmshpndy.com/fundamentals-of-functional-javascript/",
         "datePublished": "2021-03-06",
         "dateModified": "2021-03-06",
@@ -196,7 +214,7 @@
         "@type": "Article",
         "@id": "https://anmshpndy.com/how-well-do-you-know-this/",
         "headline": "How Well Do You Know \"this\"?",
-        "description": "A deep dive into JavaScript's this keyword — the four binding rules, call-site context, and how to predict what this refers to at runtime.",
+        "description": "A deep dive into JavaScript's this keyword: the four binding rules, call-site context, and how to predict what this refers to at runtime.",
         "url": "https://anmshpndy.com/how-well-do-you-know-this/",
         "datePublished": "2021-02-28",
         "dateModified": "2021-02-28",
@@ -208,604 +226,6 @@
     ]
   }
   </script>
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:         #FAF8F4;
-      --surface:    #F2EDE4;
-      --surface-2:  #E9E2D5;
-      --ink:        #1C1714;
-      --ink-2:      #5C4F47;
-      --ink-3:      #9B8C84;
-      --accent:     #BF5A32;
-      --accent-bg:  #F8E5DA;
-      --accent-dim: rgba(191,90,50,.12);
-      --sage:       #4E7A68;
-      --sage-bg:    #D3E8DF;
-      --border:     #DDD6C9;
-      --border-2:   #CAC2B4;
-      --serif:      'DM Serif Display', Georgia, serif;
-      --sans:       'Plus Jakarta Sans', system-ui, sans-serif;
-      --mono:       'JetBrains Mono', 'Courier New', monospace;
-      --max:        820px;
-      --nav-h:      60px;
-      --radius:     12px;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--sans);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-      cursor: none;
-    }
-
-    /* ── Icons ── */
-    .icon    { width: 16px; height: 16px; display: inline-block; vertical-align: middle; flex-shrink: 0; }
-    .icon-sm { width: 13px; height: 13px; }
-    .icon-md { width: 18px; height: 18px; }
-    .icon-lg { width: 20px; height: 20px; }
-    .icon-xl { width: 24px; height: 24px; }
-
-    /* ── Focus styles ── */
-    :focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
-      border-radius: 4px;
-    }
-
-    /* ── Skip link ── */
-    .skip-link {
-      position: absolute; top: -100%; left: 16px;
-      background: var(--accent); color: var(--bg);
-      padding: 10px 20px; border-radius: 0 0 8px 8px;
-      z-index: 10000; font-family: var(--mono); font-size: 13px;
-      text-decoration: none; transition: top 0.1s;
-    }
-    .skip-link:focus { top: 0; }
-
-    /* ── Cursor ── */
-    #cursor {
-      width: 10px; height: 10px; background: var(--accent);
-      border-radius: 50%; position: fixed; pointer-events: none;
-      z-index: 9999; top: 0; left: 0; transform: translate(-50%,-50%);
-      transition: width .18s ease, height .18s ease, opacity .18s ease;
-      mix-blend-mode: multiply;
-    }
-    #cursor.big { width: 26px; height: 26px; opacity: .4; }
-
-    /* ── Nav ── */
-    header {
-      position: fixed; inset: 0 0 auto 0; height: var(--nav-h);
-      background: rgba(250,248,244,.9); backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border); z-index: 100;
-      display: flex; align-items: center;
-    }
-    .nav-inner {
-      max-width: var(--max); margin: 0 auto; padding: 0 28px;
-      width: 100%; display: flex; align-items: center; justify-content: space-between;
-    }
-    .nav-logo {
-      font-family: var(--serif); font-size: 20px;
-      color: var(--ink); text-decoration: none; letter-spacing: -.02em;
-    }
-    .nav-logo span { color: var(--accent); }
-    .nav-right { display: flex; align-items: center; gap: 24px; }
-    .nav-links { display: flex; gap: 20px; list-style: none; }
-    .nav-links a {
-      font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
-      color: var(--ink-2); text-decoration: none; transition: color .2s;
-    }
-    .nav-links a:hover, .nav-links a[aria-current="true"] { color: var(--accent); }
-    .nav-resume {
-      font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
-      color: var(--accent); text-decoration: none;
-      border: 1px solid var(--accent); border-radius: 6px;
-      padding: 5px 12px; display: inline-flex; align-items: center; gap: 5px;
-      transition: background .2s, color .2s;
-    }
-    .nav-resume:hover { background: var(--accent); color: var(--bg); }
-
-    /* ── Layout ── */
-    section { max-width: var(--max); margin: 0 auto; padding: 88px 28px; }
-    .divider { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
-    .divider hr { border: none; border-top: 1px solid var(--border); }
-    .section-label {
-      font-family: var(--mono); font-size: 11px; letter-spacing: .16em;
-      color: var(--accent); text-transform: uppercase; margin-bottom: 14px;
-    }
-    h2 {
-      font-family: var(--serif); font-size: clamp(30px, 5vw, 40px);
-      font-weight: 400; line-height: 1.2; color: var(--ink); margin-bottom: 44px;
-    }
-    h2 em { font-style: italic; color: var(--ink-2); }
-
-    /* ── Hero ── */
-    #hero {
-      min-height: 100vh; position: relative;
-      display: grid;
-      grid-template-columns: 1fr 270px;
-      gap: 48px;
-      align-items: center;
-      padding-top: calc(var(--nav-h) + 28px); padding-bottom: 64px;
-      max-width: var(--max); margin: 0 auto; padding-left: 28px; padding-right: 28px;
-      overflow: hidden;
-    }
-    .hero-left { position: relative; z-index: 1; }
-    /* Dot-grid background */
-    #hero::before {
-      content: '';
-      position: absolute; inset: -20px; z-index: 0;
-      background-image: radial-gradient(var(--border) 1.2px, transparent 1.2px);
-      background-size: 30px 30px;
-      opacity: .55; pointer-events: none;
-    }
-    /* Warm radial glow */
-    #hero::after {
-      content: '';
-      position: absolute; inset: 0; z-index: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 5% 60%, rgba(191,90,50,.07) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 90% 10%, rgba(78,122,104,.05) 0%, transparent 60%),
-        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(250,248,244,.9) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    #hero > .hero-left,
-    #hero > .hero-card,
-    #hero > .scroll-cue { position: relative; z-index: 1; }
-
-    /* Floating tech keywords */
-    .hero-float {
-      position: absolute; font-family: var(--mono); font-weight: 500;
-      color: var(--ink); opacity: .045; pointer-events: none;
-      user-select: none; z-index: 0; letter-spacing: .02em;
-    }
-
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--sage-bg); color: var(--sage);
-      font-family: var(--mono); font-size: 11.5px;
-      padding: 5px 14px; border-radius: 100px;
-      margin-bottom: 36px; width: fit-content;
-    }
-    .badge-dot {
-      width: 7px; height: 7px; background: var(--sage);
-      border-radius: 50%; animation: pulse 2.2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50%      { opacity:.45; transform:scale(.75); }
-    }
-    .hero-name {
-      font-family: var(--serif); font-size: clamp(56px, 9vw, 86px);
-      font-weight: 400; line-height: .97; letter-spacing: -.03em;
-      color: var(--ink); margin-bottom: 10px;
-    }
-    .hero-name .dot { color: var(--accent); }
-    .hero-sub {
-      font-family: var(--serif); font-style: italic;
-      font-size: clamp(19px, 2.8vw, 24px); color: var(--ink-2); margin-bottom: 24px;
-    }
-    .hero-tag {
-      font-size: 15.5px; color: var(--ink-2); max-width: 500px;
-      line-height: 1.75; margin-bottom: 44px;
-    }
-    .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
-    .btn {
-      font-family: var(--sans); font-size: 14px; font-weight: 500;
-      padding: 13px 24px; border-radius: 9px; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px;
-      transition: background .2s, color .2s, border-color .2s, transform .15s;
-      cursor: none;
-    }
-    .btn-dark { background: var(--ink); color: var(--bg); border: 1.5px solid var(--ink); }
-    .btn-dark:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
-    .btn-outline { background: transparent; color: var(--ink-2); border: 1.5px solid var(--border-2); }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-    /* Scroll cue */
-    .scroll-cue {
-      position: absolute; bottom: 32px; left: 28px;
-      display: flex; align-items: center; gap: 10px; z-index: 1;
-      font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
-      color: var(--ink-3); text-transform: uppercase;
-      animation: cue-fade 3s ease-in-out infinite;
-    }
-    .scroll-cue svg { animation: cue-bounce .9s ease-in-out infinite; }
-    @keyframes cue-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
-    @keyframes cue-fade   { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
-
-    /* ── Hero info card ── */
-    .hero-card {
-      background: var(--ink); border-radius: 16px;
-      padding: 26px 24px; position: relative; z-index: 1;
-      box-shadow: 0 24px 60px rgba(28,23,20,.2), 0 4px 16px rgba(28,23,20,.14);
-      border: 1px solid rgba(255,255,255,.04);
-      align-self: center;
-    }
-    .hc-comment {
-      display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em;
-      text-transform: uppercase; color: rgba(155,140,132,.6); margin-bottom: 6px;
-    }
-    .hc-val { font-family: var(--mono); font-size: 13px; color: rgba(250,248,244,.82); line-height: 1.5; }
-    .hc-link { color: var(--accent); text-decoration: none; }
-    .hc-link:hover { text-decoration: underline; }
-    .hc-divider { border: none; border-top: 1px solid rgba(255,255,255,.07); margin: 16px 0; }
-    .hc-stack { display: flex; flex-wrap: wrap; gap: 5px; }
-    .hc-stack span {
-      font-family: var(--mono); font-size: 10.5px;
-      background: rgba(255,255,255,.07); color: rgba(250,248,244,.72);
-      padding: 3px 9px; border-radius: 4px;
-    }
-    .hc-status {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: var(--mono); font-size: 12.5px; color: #6db899;
-    }
-    .hc-pulse {
-      width: 7px; height: 7px; background: #6db899; border-radius: 50%;
-      flex-shrink: 0; animation: pulse 2.2s ease-in-out infinite;
-    }
-    .hc-dl {
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      margin-top: 18px; font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
-      color: rgba(250,248,244,.45); text-decoration: none;
-      border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 9px;
-      transition: color .2s, border-color .2s, background .2s;
-    }
-    .hc-dl:hover { color: var(--bg); border-color: rgba(191,90,50,.5); background: rgba(191,90,50,.15); }
-
-    /* ── About ── */
-    .about-body { font-size: 16.5px; color: var(--ink-2); line-height: 1.8; max-width: 640px; }
-    .about-body p + p { margin-top: 18px; }
-    .about-body strong { color: var(--ink); font-weight: 600; }
-
-    .stats {
-      display: flex; gap: 0; margin-top: 52px; flex-wrap: wrap;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); overflow: hidden;
-    }
-    .stat {
-      flex: 1; min-width: 120px; padding: 24px 28px;
-      border-right: 1px solid var(--border); text-align: center;
-    }
-    .stat:last-child { border-right: none; }
-    .stat-icon { color: var(--ink-3); margin-bottom: 8px; display: flex; justify-content: center; }
-    .stat-n { font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1; }
-    .stat-l {
-      font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
-      color: var(--ink-3); text-transform: uppercase; margin-top: 5px;
-    }
-
-    /* ── Timeline ── */
-    .timeline { position: relative; padding-left: 30px; }
-    .timeline::before {
-      content: ''; position: absolute; left: 0; top: 10px; bottom: 10px;
-      width: 1px; background: var(--border-2);
-    }
-    .t-item { position: relative; margin-bottom: 52px; }
-    .t-item:last-child { margin-bottom: 0; }
-    .t-dot {
-      position: absolute; left: -34px; top: 9px;
-      width: 9px; height: 9px; background: var(--accent); border-radius: 50%;
-      outline: 2px solid var(--accent); outline-offset: 2px;
-      box-shadow: 0 0 0 4px var(--bg);
-    }
-    .t-meta {
-      display: flex; align-items: center; gap: 10px;
-      flex-wrap: wrap; margin-bottom: 4px;
-    }
-    .t-date { font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .07em; }
-    .t-co {
-      font-weight: 600; font-size: 15px; color: var(--ink);
-      text-decoration: none; transition: color .2s;
-    }
-    a.t-co:hover { color: var(--accent); }
-    .t-loc {
-      display: inline-flex; align-items: center; gap: 3px;
-      font-family: var(--mono); font-size: 11px; color: var(--ink-3);
-    }
-    .t-industry {
-      font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
-      color: var(--sage); background: var(--sage-bg);
-      padding: 2px 9px; border-radius: 100px; text-transform: uppercase;
-    }
-    h3.t-role { font-family: var(--serif); font-style: italic; font-size: 19px; font-weight: 400; color: var(--ink); margin-bottom: 10px; }
-    .t-desc { font-size: 14px; color: var(--ink-2); line-height: 1.72; }
-    .t-desc strong { color: var(--accent); font-weight: 600; }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-    .tag {
-      font-family: var(--mono); font-size: 11px;
-      background: var(--surface); color: var(--ink-2);
-      padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border);
-    }
-    .t-sub { margin-top: 26px; padding-top: 22px; border-top: 1px dashed var(--border-2); }
-    .t-sub h3.t-role { font-size: 17px; }
-
-    /* ── Skills ── */
-    .skills-grid { display: flex; flex-direction: column; }
-    .sg-row {
-      display: grid; grid-template-columns: 148px 1fr;
-      gap: 20px; align-items: start;
-      padding: 20px 0; border-bottom: 1px solid var(--border);
-    }
-    .sg-row:last-child { border-bottom: none; }
-    .sg-cat {
-      display: flex; align-items: center; gap: 9px; padding-top: 5px;
-    }
-    .sg-cat-icon {
-      width: 30px; height: 30px; border-radius: 8px;
-      background: var(--surface); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--ink-3); flex-shrink: 0;
-    }
-    .sg-name {
-      font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
-      color: var(--ink-3); text-transform: uppercase; line-height: 1.3;
-    }
-    .sg-tags { display: flex; flex-wrap: wrap; gap: 7px; }
-    .sk {
-      font-size: 13px; font-weight: 500;
-      background: var(--surface); color: var(--ink-2);
-      padding: 5px 13px; border-radius: 7px; border: 1px solid var(--border);
-      transition: background .15s, color .15s, border-color .15s;
-      cursor: default;
-    }
-    .sk:hover { background: var(--accent-bg); color: var(--accent); border-color: var(--accent-bg); }
-    .sk.featured {
-      background: var(--accent-bg); color: var(--accent);
-      border-color: rgba(191,90,50,.25); font-weight: 600;
-    }
-    .sk.featured:hover { background: var(--accent); color: var(--bg); }
-
-    /* ── Projects ── */
-    .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .pc {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 26px;
-      transition: transform .2s, border-color .2s, box-shadow .2s;
-      position: relative; overflow: hidden;
-    }
-    .pc::after {
-      content: ''; position: absolute; top: 0; left: 0; right: 0;
-      height: 3px; background: linear-gradient(90deg, var(--accent), #e87c50);
-      transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
-    }
-    .pc:hover { transform: translateY(-4px); border-color: var(--border-2); box-shadow: 0 8px 30px rgba(28,23,20,.07); }
-    .pc:hover::after { transform: scaleX(1); }
-    .pc.wide { grid-column: 1 / -1; }
-    .pc-type {
-      font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
-      color: var(--accent); text-transform: uppercase; margin-bottom: 10px;
-    }
-    h3.pc-name { font-family: var(--serif); font-size: 21px; font-weight: 400; color: var(--ink); margin-bottom: 10px; line-height: 1.3; }
-    .pc-desc { font-size: 14px; color: var(--ink-2); line-height: 1.7; margin-bottom: 18px; }
-    .pc-metric {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-family: var(--mono); font-size: 11px; color: var(--sage);
-      background: var(--sage-bg); padding: 3px 10px; border-radius: 100px;
-      margin-bottom: 14px;
-    }
-
-    /* ── Writing ── */
-    .articles-list {
-      border: 1px solid var(--border); border-radius: 14px;
-      overflow: hidden; margin-bottom: 20px;
-    }
-    .article-item {
-      background: var(--surface); padding: 24px 28px;
-      border-bottom: 1px solid var(--border);
-      transition: background .15s, transform .15s;
-      position: relative;
-    }
-    .article-item::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-      width: 3px; background: var(--accent);
-      transform: scaleY(0); transform-origin: bottom;
-      transition: transform .25s ease;
-    }
-    .article-item:last-child { border-bottom: none; }
-    .article-item:hover { background: var(--accent-bg); }
-    .article-item:hover::before { transform: scaleY(1); }
-    .article-meta {
-      display: flex; align-items: center; gap: 10px;
-      flex-wrap: wrap; margin-bottom: 10px;
-    }
-    .article-date { font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .07em; }
-    .article-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
-      text-transform: uppercase; padding: 3px 10px;
-      border-radius: 100px; border: 1px solid rgba(191,90,50,.3);
-      color: var(--accent); background: var(--accent-bg);
-    }
-    .article-crosspost {
-      display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
-      font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);
-    }
-    .article-crosspost a { color: var(--ink-3); text-decoration: none; transition: color .15s; }
-    .article-crosspost a:hover { color: var(--accent); }
-    .article-readtime {
-      font-family: var(--mono); font-size: 10px; color: var(--ink-3);
-      display: inline-flex; align-items: center; gap: 4px; margin-left: auto;
-    }
-    h3.article-title { font-family: var(--serif); font-size: 19px; font-weight: 400; line-height: 1.3; margin-bottom: 9px; }
-    h3.article-title a { color: var(--ink); text-decoration: none; transition: color .15s; display: inline-flex; align-items: baseline; gap: 6px; }
-    h3.article-title a:hover { color: var(--accent); }
-    .ext-icon { color: var(--ink-3); transition: color .15s, transform .15s; }
-    .article-item:hover .ext-icon { color: var(--accent); transform: translate(2px,-2px); }
-    .article-excerpt { font-size: 14px; color: var(--ink-2); line-height: 1.65; }
-
-    /* Platform profile chips */
-    .writing-profiles {
-      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-      padding: 16px 22px; margin-bottom: 44px;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    }
-    .profiles-label {
-      font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
-      color: var(--ink-3); text-transform: uppercase; white-space: nowrap;
-    }
-    .profile-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-    .profile-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-family: var(--mono); font-size: 11.5px;
-      color: var(--ink-2); text-decoration: none;
-      padding: 5px 13px; border-radius: 100px; border: 1px solid var(--border-2);
-      transition: color .15s, border-color .15s, background .15s;
-    }
-    .profile-chip:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); }
-    .profile-chip svg { opacity: .7; }
-    .profile-chip:hover svg { opacity: 1; }
-
-    /* Drafts */
-    .drafts-label {
-      font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
-      color: var(--ink-3); text-transform: uppercase; margin-bottom: 16px;
-    }
-    .writing-list { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-    .wi {
-      background: var(--surface); padding: 22px 26px;
-      display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    .wi:last-child { border-bottom: none; }
-    .wi-date { font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .07em; margin-bottom: 6px; }
-    h3.wi-title { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--ink); margin-bottom: 5px; }
-    .wi-excerpt { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
-    .wi-badge {
-      font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
-      color: var(--ink-3); background: var(--surface-2);
-      padding: 3px 10px; border-radius: 100px; border: 1px solid var(--border);
-      flex-shrink: 0; white-space: nowrap; align-self: flex-start;
-    }
-
-    /* ── Education ── */
-    .edu-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 14px; padding: 28px 30px;
-      display: flex; justify-content: space-between; align-items: flex-start;
-      flex-wrap: wrap; gap: 20px;
-    }
-    .edu-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 8px; }
-    .edu-icon {
-      width: 40px; height: 40px; border-radius: 10px;
-      background: var(--accent-bg); border: 1px solid rgba(191,90,50,.2);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--accent); flex-shrink: 0; margin-top: 2px;
-    }
-    h3.edu-inst { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--ink); line-height: 1.35; }
-    .edu-deg { font-size: 14.5px; color: var(--ink-2); margin-bottom: 10px; }
-    .edu-meta { font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .07em; }
-    .edu-cpi { font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1; }
-    .edu-cpi-label { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--ink-3); text-transform: uppercase; margin-top: 5px; text-align: right; }
-
-    /* ── Contact ── */
-    .contact-intro { font-size: 16px; color: var(--ink-2); max-width: 520px; line-height: 1.75; margin-bottom: 32px; }
-    .contact-quick {
-      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 40px;
-    }
-    .cq-btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      font-family: var(--mono); font-size: 12px; letter-spacing: .04em;
-      color: var(--ink-2); text-decoration: none;
-      padding: 9px 18px; border-radius: 9px;
-      border: 1px solid var(--border-2); background: var(--surface);
-      transition: color .2s, border-color .2s, background .2s, transform .15s;
-    }
-    .cq-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-bg); transform: translateY(-1px); }
-    .form { display: flex; flex-direction: column; gap: 18px; max-width: 540px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .field { display: flex; flex-direction: column; gap: 7px; }
-    .field label {
-      font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em;
-      color: var(--ink-3); text-transform: uppercase;
-    }
-    .field input, .field textarea {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 9px; padding: 13px 16px;
-      font-family: var(--sans); font-size: 15px; color: var(--ink);
-      outline: none; transition: border-color .2s; width: 100%; resize: none;
-    }
-    .field input:focus, .field textarea:focus { border-color: var(--accent); }
-    .field textarea { min-height: 130px; }
-    .form-btn {
-      background: var(--ink); color: var(--bg); border: none;
-      border-radius: 9px; padding: 14px 28px;
-      font-family: var(--sans); font-size: 15px; font-weight: 500;
-      display: inline-flex; align-items: center; gap: 8px;
-      cursor: none; transition: background .2s, transform .15s;
-      align-self: flex-start;
-    }
-    .form-btn:hover { background: var(--accent); transform: translateY(-2px); }
-    .form-success {
-      display: none; font-family: var(--mono); font-size: 13px;
-      color: var(--sage); background: var(--sage-bg);
-      padding: 12px 18px; border-radius: 9px; margin-top: 8px;
-    }
-
-    /* ── Footer ── */
-    footer { border-top: 1px solid var(--border); padding: 36px 28px; margin-top: 0; }
-    .foot-inner {
-      max-width: var(--max); margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
-    }
-    .foot-l { font-family: var(--serif); font-size: 14px; color: var(--ink-3); }
-    .foot-socials { display: flex; gap: 4px; }
-    .social-btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      color: var(--ink-3); text-decoration: none;
-      font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
-      padding: 7px 12px; border-radius: 8px;
-      transition: color .2s, background .2s;
-    }
-    .social-btn:hover { color: var(--accent); background: var(--accent-bg); }
-
-    /* ── Scroll reveal ── */
-    .fade-up { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
-    .fade-up.in { opacity: 1; transform: none; }
-
-    /* ── Reduced motion ── */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-      html { scroll-behavior: auto; }
-    }
-
-    /* ── Print ── */
-    @media print {
-      header, #cursor, .skip-link, .scroll-cue, .ctas, .contact-quick, .form { display: none !important; }
-      body { color: #000; background: #fff; cursor: auto; }
-      section { padding: 24px 0; }
-      a { color: #000; }
-      .hero-name { font-size: 48px; }
-      .badge { display: none; }
-    }
-
-    /* ── Mobile ── */
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      #hero { grid-template-columns: 1fr; gap: 32px; }
-      .hero-card { display: none; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .pc.wide { grid-column: 1; }
-      .form-row { grid-template-columns: 1fr; }
-      .stats { gap: 0; flex-direction: column; }
-      .stat { border-right: none; border-bottom: 1px solid var(--border); }
-      .stat:last-child { border-bottom: none; }
-      .ctas { flex-direction: column; }
-      .btn { text-align: center; justify-content: center; }
-      body { cursor: auto; }
-      #cursor { display: none; }
-      .edu-card { flex-direction: column; }
-      .sg-row { grid-template-columns: 1fr; gap: 10px; }
-      .scroll-cue { display: none; }
-      .foot-socials { flex-wrap: wrap; }
-    }
-  </style>
 </head>
 <body>
 
@@ -877,6 +297,26 @@
       <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
       <path d="M6 12v5c3 3 9 3 12 0v-5"/>
     </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+      <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
     <!-- Platform logos -->
     <symbol id="i-hackernoon" viewBox="0 0 24 24" fill="currentColor">
       <path d="M3 2h4v9h10V2h4v20h-4v-8H7v8H3z"/>
@@ -897,12 +337,12 @@
 </svg>
 
 <a class="skip-link" href="#main-content">Skip to main content</a>
-<div id="cursor" aria-hidden="true"></div>
+<div class="copy-toast" id="copyToast" role="status" aria-live="polite"></div>
 
 <!-- HEADER / NAV -->
 <header>
   <div class="nav-inner">
-    <a href="#hero" class="nav-logo" aria-label="Animesh Pandey — home">AP<span>.</span></a>
+    <a href="#hero" class="nav-logo" aria-label="Animesh Pandey, home">AP<span>.</span></a>
     <div class="nav-right">
       <nav aria-label="Main navigation">
         <ul class="nav-links">
@@ -911,49 +351,102 @@
           <li><a href="#skills">skills</a></li>
           <li><a href="#projects">projects</a></li>
           <li><a href="#writing">writing</a></li>
-          <li><a href="#education">education</a></li>
           <li><a href="#contact">contact</a></li>
         </ul>
       </nav>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+        <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      </button>
       <a href="resume.pdf" download class="nav-resume" aria-label="Download resume PDF">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
         Resume
       </a>
+      <button id="hamburger" class="hamburger" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+        <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
     </div>
   </div>
 </header>
+
+<!-- Mobile nav overlay -->
+<div id="nav-overlay" aria-hidden="true"></div>
+
+<!-- Mobile nav panel -->
+<nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="mobile-nav-header">
+    <a href="#hero" class="nav-logo" aria-label="Animesh Pandey, home">AP<span>.</span></a>
+    <button id="mobile-nav-close" class="mobile-nav-close" aria-label="Close menu">
+      <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li><a href="#about">about</a></li>
+    <li><a href="#experience">experience</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#writing">writing</a></li>
+    <li><a href="#education">education</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+  <div class="mobile-nav-footer">
+    <a href="resume.pdf" download class="nav-resume" aria-label="Download resume PDF">
+      <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+      Download Resume
+    </a>
+  </div>
+</nav>
 
 <main id="main-content">
 
   <!-- HERO -->
   <section id="hero" aria-label="Introduction">
-    <!-- Floating tech keywords — left side only -->
-    <span class="hero-float" style="font-size:68px;top:14%;left:-1%">React</span>
-    <span class="hero-float" style="font-size:44px;top:72%;left:2%">TypeScript</span>
-    <span class="hero-float" style="font-size:30px;top:84%;left:28%">Next.js</span>
-    <span class="hero-float" style="font-size:22px;top:22%;left:40%">Microfrontends</span>
-    <span class="hero-float" style="font-size:18px;top:58%;left:35%">SSR</span>
+    <!-- Floating tech keywords — desktop only via CSS -->
+    <span class="hero-float" style="font-size:68px;top:14%;left:-1%" aria-hidden="true">React</span>
+    <span class="hero-float" style="font-size:44px;top:72%;left:2%" aria-hidden="true">TypeScript</span>
+    <span class="hero-float" style="font-size:30px;top:84%;left:28%" aria-hidden="true">Next.js</span>
+    <span class="hero-float" style="font-size:22px;top:22%;left:40%" aria-hidden="true">Microfrontends</span>
+    <span class="hero-float" style="font-size:18px;top:58%;left:35%" aria-hidden="true">SSR</span>
 
-    <!-- Left column: main content -->
+    <!-- Left column -->
     <div class="hero-left">
-      <div class="badge"><span class="badge-dot" aria-hidden="true"></span>Open to opportunities</div>
+      <div class="badge"><span class="badge-dot" aria-hidden="true"></span>Open to senior &amp; staff roles</div>
       <h1 class="hero-name">Animesh<br>Pandey<span class="dot" aria-hidden="true">.</span></h1>
-      <p class="hero-sub">Senior Frontend Engineer</p>
-      <p class="hero-tag">7+ years crafting high-performance platforms for enterprise users — from analytics dashboards to AI-powered products. I care deeply about speed, scale, and the humans on the other side of the screen.</p>
+      <p class="hero-sub">Senior Frontend Engineer · React, TypeScript, Next.js</p>
+      <p class="hero-tag">I ship interfaces that survive real data: marketing intelligence dashboards, microfrontend platforms for 50k+ daily users, and agentic AI products. Based in Bangalore · open to remote-friendly roles.</p>
       <div class="ctas">
-        <a href="resume.pdf" download class="btn btn-dark">
+        <a href="#experience" class="btn btn-dark">
+          View experience
+          <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+        </a>
+        <a href="resume.pdf" download class="btn btn-outline">
           <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
-          Download Resume
+          Resume
         </a>
         <a href="#contact" class="btn btn-outline">
           Let's talk
           <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
         </a>
       </div>
+
+      <!-- Fact strip — mobile only, card hidden -->
+      <div class="hero-facts" aria-label="Quick facts" role="list">
+        <span class="hero-fact" role="listitem"><span class="fact-dot" aria-hidden="true"></span>Open to roles</span>
+        <span class="hero-fact" role="listitem">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore
+        </span>
+        <span class="hero-fact" role="listitem">7+ years</span>
+        <span class="hero-fact" role="listitem">React</span>
+        <span class="hero-fact" role="listitem">TypeScript</span>
+        <span class="hero-fact" role="listitem">Next.js</span>
+        <span class="hero-fact" role="listitem">Microfrontends</span>
+      </div>
     </div>
 
-    <!-- Right column: info card -->
+    <!-- Right column: info card — desktop only -->
     <aside class="hero-card" aria-label="Quick facts">
+      <span class="hc-comment">// frontend lead · measurement &amp; AI</span>
+      <hr class="hc-divider" />
       <span class="hc-comment">// currently</span>
       <p class="hc-val">Senior Software Engineer at <a href="https://lifesight.io" class="hc-link" target="_blank" rel="noopener noreferrer">Lifesight</a></p>
       <hr class="hc-divider" />
@@ -998,8 +491,8 @@
     <h2 id="about-heading">Thoughtful engineer,<br><em>product thinker</em></h2>
     <div class="about-body fade-up">
       <p>I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
-      <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform — building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
-      <p>I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage — not just the code that ships.</p>
+      <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform, building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
+      <p>I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage, not just the code that ships.</p>
     </div>
     <div class="stats fade-up" role="list" aria-label="Key stats">
       <div class="stat" role="listitem">
@@ -1023,6 +516,35 @@
         <div class="stat-l">Engineers mentored</div>
       </div>
     </div>
+
+    <!-- FAQ accordion — supports FAQPage schema -->
+    <div class="faq-section fade-up" style="margin-top:52px">
+      <p class="section-label" style="margin-bottom:20px">// common questions</p>
+      <div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
+
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-q" itemprop="name">Is Animesh available for hire?</summary>
+          <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">Yes, currently open to full-time senior or staff frontend engineering roles and consulting engagements. Based in Bangalore, open to remote globally. Reach me at <a href="mailto:animeshpandey1909@gmail.com">animeshpandey1909@gmail.com</a> or <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer">LinkedIn</a>.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-q" itemprop="name">What technologies does Animesh specialise in?</summary>
+          <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">React, TypeScript, Next.js, Webpack Module Federation (microfrontends), design systems, SSR, performance optimisation, accessibility (WCAG 2.1), Playwright/Jest testing, and CI/CD with GitHub Actions.</p>
+          </div>
+        </details>
+
+        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-q" itemprop="name">Where does Animesh currently work?</summary>
+          <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+            <p itemprop="text">Senior Software Engineer at <a href="https://lifesight.io" target="_blank" rel="noopener noreferrer">Lifesight</a>, a marketing intelligence SaaS in Bangalore, where he leads frontend for the Unified Measurement OS platform.</p>
+          </div>
+        </details>
+
+      </div>
+    </div>
   </section>
 
   <div class="divider" aria-hidden="true"><hr /></div>
@@ -1036,13 +558,13 @@
       <article class="t-item fade-up">
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date"><time datetime="2025-09">Sept 2025</time> — <time>Present</time></span>
+          <span class="t-date"><time datetime="2025-09">Sept 2025</time> to <time>Present</time></span>
           <a href="https://lifesight.io" class="t-co" target="_blank" rel="noopener noreferrer">Lifesight</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
           <span class="t-industry">SaaS Analytics</span>
         </div>
         <h3 class="t-role">Senior Software Engineer</h3>
-        <p class="t-desc">Leading frontend development for Lifesight's Unified Measurement OS — a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards.</p>
+        <p class="t-desc">Leading frontend development for Lifesight's Unified Measurement OS, a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards.</p>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">Storybook</span><span class="tag">Playwright</span><span class="tag">A/B Testing</span>
         </div>
@@ -1051,7 +573,7 @@
       <article class="t-item fade-up">
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date"><time datetime="2022-04">Apr 2022</time> — <time datetime="2025-09">Sept 2025</time></span>
+          <span class="t-date"><time datetime="2022-04">Apr 2022</time> to <time datetime="2025-09">Sept 2025</time></span>
           <a href="https://tekion.com" class="t-co" target="_blank" rel="noopener noreferrer">Tekion</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
           <span class="t-industry">Automotive Retail</span>
@@ -1063,7 +585,7 @@
         </div>
         <div class="t-sub">
           <div class="t-meta">
-            <span class="t-date"><time datetime="2021-01">Jan 2021</time> — <time datetime="2022-04">Apr 2022</time></span>
+            <span class="t-date"><time datetime="2021-01">Jan 2021</time> to <time datetime="2022-04">Apr 2022</time></span>
           </div>
           <h3 class="t-role">Associate Software Engineer</h3>
           <p class="t-desc">Developed enterprise automotive retail applications using ReactJS, Redux, and React Native. Built <strong>20+ reusable UI components</strong> and microfrontend modules documented in Storybook, accelerating feature delivery across engineering teams.</p>
@@ -1076,7 +598,7 @@
       <article class="t-item fade-up">
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date"><time datetime="2019-06">Jun 2019</time> — <time datetime="2021-01">Jan 2021</time></span>
+          <span class="t-date"><time datetime="2019-06">Jun 2019</time> to <time datetime="2021-01">Jan 2021</time></span>
           <a href="https://vassarlabs.com" class="t-co" target="_blank" rel="noopener noreferrer">Vassar Labs</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Hyderabad</span>
           <span class="t-industry">GovTech</span>
@@ -1088,7 +610,7 @@
         </div>
         <div class="t-sub">
           <div class="t-meta">
-            <span class="t-date"><time datetime="2018-05">May 2018</time> — <time datetime="2018-11">Nov 2018</time></span>
+            <span class="t-date"><time datetime="2018-05">May 2018</time> to <time datetime="2018-11">Nov 2018</time></span>
           </div>
           <h3 class="t-role">Software Development Intern</h3>
           <p class="t-desc">Developed a real-time SCADA monitoring system for Andhra Pradesh Water Resources using AngularJS and D3.js, enabling operational dashboards for field teams.</p>
@@ -1227,70 +749,71 @@
   <section id="projects" aria-labelledby="projects-heading">
     <p class="section-label">// projects</p>
     <h2 id="projects-heading">Things I've shipped</h2>
+    <p class="projects-intro">Selected work across SaaS analytics, automotive retail, and GovTech.</p>
     <div class="projects-grid">
 
-      <article class="pc fade-up">
-        <p class="pc-type">Analytics Platform</p>
-        <h3 class="pc-name">Marketing Intelligence Dashboard</h3>
-        <p class="pc-desc">Enterprise analytics dashboard with real-time MMM, attribution modelling, and causal insights. Built for high-volume datasets with SSR, performance budgets, and Lighthouse-driven optimisation.</p>
-        <div class="pc-metric" aria-label="Performance metric">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
-          SSR + Core Web Vitals optimised
-        </div>
-        <div class="tags" aria-label="Technologies used">
-          <span class="tag">ReactJS</span><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">SSR</span>
-        </div>
-      </article>
-
-      <article class="pc fade-up">
-        <p class="pc-type">Frontend Platform</p>
-        <h3 class="pc-name">Enterprise Component Library</h3>
-        <p class="pc-desc">Storybook-driven design system and shared component library used across 10+ product modules. Reduced duplicate code by 25% and accelerated delivery velocity across multiple squads.</p>
-        <div class="pc-metric" aria-label="Impact">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
-          25% less duplicate code
-        </div>
-        <div class="tags" aria-label="Technologies used">
-          <span class="tag">Storybook</span><span class="tag">TypeScript</span><span class="tag">Design Systems</span>
-        </div>
-      </article>
-
       <article class="pc wide fade-up">
-        <p class="pc-type">Architecture</p>
+        <p class="pc-type">Architecture · Tekion</p>
         <h3 class="pc-name">Microfrontend Architecture at Scale</h3>
-        <p class="pc-desc">Designed and shipped a microfrontend architecture using Webpack Module Federation across enterprise automotive retail products. Served 50k+ daily users with 30% improvement in load times through code splitting, lazy loading, and bundle-level Lighthouse optimisation. Enabled independent deployments across 10+ frontend teams.</p>
+        <p class="pc-desc">Architected and shipped a production microfrontend system using Webpack Module Federation across 10+ mission-critical enterprise automotive retail modules, each owned by an independent squad and deployed without cross-team coordination. Achieved a 30% reduction in load times through aggressive code splitting, route-level lazy loading, and bundle-level Lighthouse budgets enforced in CI. Introduced AI-driven development tooling that cut engineering toil by 30%. The platform serves 50,000+ daily active users across dealership and OEM workflows.</p>
         <div class="pc-metric" aria-label="Scale achieved">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-users"/></svg>
-          50k+ daily users · 30% faster loads
+          50k+ daily users · 30% faster loads · 10+ independent teams
         </div>
         <div class="tags" aria-label="Technologies used">
-          <span class="tag">Webpack</span><span class="tag">Module Federation</span><span class="tag">ReactJS</span><span class="tag">Performance</span><span class="tag">CI/CD</span>
+          <span class="tag">Webpack Module Federation</span><span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Performance</span><span class="tag">GitHub Actions</span><span class="tag">Lighthouse</span>
         </div>
       </article>
 
       <article class="pc fade-up">
-        <p class="pc-type">Government Platform</p>
+        <p class="pc-type">GovTech · Vassar Labs</p>
         <h3 class="pc-name">Kerala-WRIS Water Intelligence Platform</h3>
-        <p class="pc-desc">Real-time water resource monitoring dashboards deployed statewide for the Government of Kerala. Geospatial visualisations over Leaflet maps, time-series charts with Highcharts, and D3.js-powered data layers — serving millions of residents and field teams with live hydrology data.</p>
+        <p class="pc-desc">Led frontend development for the Government of Kerala's statewide water resource information system. Built real-time geospatial dashboards over Leaflet with district-level overlays, time-series hydrology charts in Highcharts, and D3.js data-layer visualisations for field operations teams. Reduced API overhead by 30% through frontend caching and request batching strategies. Concurrently built a real-time SCADA monitoring system for Andhra Pradesh Water Resources used by field teams for operational visibility.</p>
         <div class="pc-metric" aria-label="Impact">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
-          30% API overhead reduction · millions of users
+          30% API reduction · millions of residents served
         </div>
         <div class="tags" aria-label="Technologies used">
-          <span class="tag">Angular 8</span><span class="tag">Highcharts</span><span class="tag">Leaflet</span><span class="tag">D3.js</span><span class="tag">GovTech</span>
+          <span class="tag">Angular 8</span><span class="tag">Highcharts</span><span class="tag">Leaflet</span><span class="tag">D3.js</span><span class="tag">AngularJS</span><span class="tag">GovTech</span>
         </div>
       </article>
 
       <article class="pc fade-up">
-        <p class="pc-type">AI Product</p>
-        <h3 class="pc-name">Mia — Agentic AI Analytics Interface</h3>
-        <p class="pc-desc">Frontend for Lifesight's agentic AI assistant that interprets marketing data and surfaces actionable insights through a streaming conversational UI. Built with Next.js and TypeScript, with real-time streamed LLM responses, tool-call visualisation, and tight integration with the Unified Measurement OS data layer.</p>
+        <p class="pc-type">AI Product · Lifesight</p>
+        <h3 class="pc-name">Mia: Agentic AI Analytics Interface</h3>
+        <p class="pc-desc">Built the frontend for Lifesight's agentic AI assistant, which interprets complex marketing datasets and surfaces attribution insights through a streaming conversational interface. Implemented real-time LLM response streaming, tool-call visualisation panels that expose reasoning steps, and deep integration with the Unified Measurement OS data layer. Designed to handle ambiguous multi-step queries from non-technical marketing stakeholders with progressive disclosure of confidence and caveats.</p>
         <div class="pc-metric" aria-label="Category">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-sparkle"/></svg>
-          Agentic AI · Streaming UI · LLM tooling
+          Agentic AI · Streaming UI · Tool-call visualisation
         </div>
         <div class="tags" aria-label="Technologies used">
-          <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">Agentic AI</span><span class="tag">Streaming</span>
+          <span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">ReactJS</span><span class="tag">Agentic AI</span><span class="tag">LLM Streaming</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
+        <p class="pc-type">Analytics Platform · Lifesight</p>
+        <h3 class="pc-name">Marketing Intelligence Dashboard</h3>
+        <p class="pc-desc">Delivered enterprise-grade analytics dashboards powering Lifesight's Unified Measurement OS: MMM (Media Mix Modelling) curves, incrementality test results, and causal attribution breakdowns for enterprise brands managing multi-million-dollar ad budgets. Built with Next.js SSR for fast first-paint on dense data-heavy views, enforced Core Web Vitals budgets in CI, and established platform-wide Playwright testing standards that became the team baseline.</p>
+        <div class="pc-metric" aria-label="Performance metric">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
+          SSR · Core Web Vitals · Playwright coverage
+        </div>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">ReactJS</span><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">SSR</span><span class="tag">Playwright</span><span class="tag">A/B Testing</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
+        <p class="pc-type">Design System · Tekion</p>
+        <h3 class="pc-name">Enterprise Component Library</h3>
+        <p class="pc-desc">Designed and maintained a Storybook-documented shared component library used across 10+ product modules at Tekion. Built 20+ reusable, accessible UI components (forms, data tables, modal flows, navigation patterns) with full TypeScript typing, WCAG 2.1 compliance, and interactive documentation. Reduced per-team duplicate code by 25% and measurably shortened time-to-feature across multiple engineering squads.</p>
+        <div class="pc-metric" aria-label="Impact">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
+          20+ components · 25% less duplication · WCAG 2.1
+        </div>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">Storybook</span><span class="tag">TypeScript</span><span class="tag">React</span><span class="tag">Design Systems</span><span class="tag">Accessibility</span>
         </div>
       </article>
 
@@ -1325,7 +848,7 @@
             <svg class="icon-sm ext-icon" aria-hidden="true"><use href="#i-external"/></svg>
           </a>
         </h3>
-        <p class="article-excerpt">An in-depth look at JavaScript's most misunderstood keyword — implicit, explicit, and new binding rules demystified with real examples. 923 reads.</p>
+        <p class="article-excerpt">An in-depth look at JavaScript's most misunderstood keyword: implicit, explicit, and new binding rules demystified with real examples. 923 reads.</p>
       </article>
 
       <article class="article-item fade-up" role="listitem">
@@ -1377,7 +900,7 @@
             <svg class="icon-sm ext-icon" aria-hidden="true"><use href="#i-external"/></svg>
           </a>
         </h3>
-        <p class="article-excerpt">JavaScript's <code>this</code> is a runtime binding determined by call-site context. This piece works through all four binding rules — new, explicit, implicit, default — in order of precedence.</p>
+        <p class="article-excerpt">JavaScript's <code>this</code> is a runtime binding determined by call-site context. This piece works through all four binding rules (new, explicit, implicit, default) in order of precedence.</p>
       </article>
 
     </div>
@@ -1413,7 +936,7 @@
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Coming soon</p>
+          <p class="wi-date">Coming 2026</p>
           <h3 class="wi-title">Building Performance Budgets at Scale</h3>
           <p class="wi-excerpt">How we used Lighthouse CI, Core Web Vitals, and bundle analysis to keep 50k daily users happy.</p>
         </div>
@@ -1422,7 +945,7 @@
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Coming soon</p>
+          <p class="wi-date">Coming 2026</p>
           <h3 class="wi-title">Microfrontends: Lessons from Three Years in Production</h3>
           <p class="wi-excerpt">What nobody tells you about Module Federation, team autonomy, and debugging across deployment boundaries.</p>
         </div>
@@ -1431,7 +954,7 @@
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Coming soon</p>
+          <p class="wi-date">Coming 2026</p>
           <h3 class="wi-title">AI-Powered Engineering: From Hype to 30% Less Toil</h3>
           <p class="wi-excerpt">A practical account of integrating Agentic AI and LLM tooling into a real frontend engineering workflow.</p>
         </div>
@@ -1457,7 +980,7 @@
             <h3 class="edu-inst">Indian Institute of Information Technology,<br>Design and Management (IIITDM) Jabalpur</h3>
           </div>
         </div>
-        <p class="edu-deg">B.Tech — Computer Science and Engineering</p>
+        <p class="edu-deg">B.Tech in Computer Science and Engineering</p>
         <p class="edu-meta"><time datetime="2015">2015</time> – <time datetime="2019">2019</time></p>
       </div>
       <div>
@@ -1477,9 +1000,13 @@
 
     <!-- Quick actions -->
     <div class="contact-quick" role="list" aria-label="Quick contact options">
+      <button class="cq-btn" id="copyEmailBtn" role="listitem" aria-label="Copy email address">
+        <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+        animeshpandey1909@gmail.com
+      </button>
       <a href="mailto:animeshpandey1909@gmail.com" class="cq-btn" role="listitem" aria-label="Send email">
         <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
-        animeshpandey1909@gmail.com
+        Email me
       </a>
       <a href="https://linkedin.com/in/pandeyanimesh" class="cq-btn" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="LinkedIn profile">
         <svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg>
@@ -1495,16 +1022,19 @@
       <div class="form-row">
         <div class="field">
           <label for="fname">Name</label>
-          <input type="text" id="fname" name="name" placeholder="Your name" required autocomplete="name" />
+          <input type="text" id="fname" name="name" placeholder="Your name" required autocomplete="name" inputmode="text" />
+          <span class="field-error" id="fname-err" role="alert">Please enter your name.</span>
         </div>
         <div class="field">
           <label for="femail">Email</label>
-          <input type="email" id="femail" name="email" placeholder="you@company.com" required autocomplete="email" />
+          <input type="email" id="femail" name="email" placeholder="you@company.com" required autocomplete="email" inputmode="email" />
+          <span class="field-error" id="femail-err" role="alert">Please enter a valid email.</span>
         </div>
       </div>
       <div class="field">
         <label for="fmsg">Message</label>
         <textarea id="fmsg" name="message" placeholder="Tell me about the role or project..." required></textarea>
+        <span class="field-error" id="fmsg-err" role="alert">Please enter a message.</span>
       </div>
       <button type="submit" class="form-btn">
         Send message
@@ -1519,7 +1049,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="foot-inner">
-    <div class="foot-l">Animesh Pandey · Bangalore, India</div>
+    <div class="foot-l">Animesh Pandey · Bangalore, India · © <span id="yr">2026</span></div>
     <nav aria-label="Social links">
       <div class="foot-socials">
         <a href="mailto:animeshpandey1909@gmail.com" class="social-btn" aria-label="Send email to Animesh">
@@ -1547,64 +1077,85 @@
   </div>
 </footer>
 
+<script src="/assets/theme.js" defer></script>
+<script src="/assets/nav.js" defer></script>
 <script>
-  /* ── Custom cursor ── */
-  const cur = document.getElementById('cursor');
-  if (cur && window.matchMedia('(pointer: fine)').matches) {
-    document.addEventListener('mousemove', e => {
-      cur.style.left = e.clientX + 'px';
-      cur.style.top  = e.clientY + 'px';
-    });
-    document.querySelectorAll('a, button, .sk, .btn, .cq-btn').forEach(el => {
-      el.addEventListener('mouseenter', () => cur.classList.add('big'));
-      el.addEventListener('mouseleave', () => cur.classList.remove('big'));
-    });
-  }
-
-  /* ── Scroll reveal ── */
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
+/* ── Scroll reveal ── */
+(function () {
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry, i) {
       if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('in'), i * 80);
+        setTimeout(function () { entry.target.classList.add('in'); }, i * 80);
         io.unobserve(entry.target);
       }
     });
   }, { threshold: 0.07 });
-  document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+  document.querySelectorAll('.fade-up').forEach(function (el) { io.observe(el); });
+})();
 
-  /* ── Contact form → mailto ── */
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name    = document.getElementById('fname').value.trim();
-    const email   = document.getElementById('femail').value.trim();
-    const message = document.getElementById('fmsg').value.trim();
-    if (!name || !email || !message) return;
-    const subject = encodeURIComponent('Hello from ' + name);
-    const body    = encodeURIComponent(message + '\n\n— ' + name + '\n' + email);
-    document.getElementById('formSuccess').style.display = 'block';
-    const a = document.createElement('a');
-    a.href = 'mailto:animeshpandey1909@gmail.com?subject=' + subject + '&body=' + body;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+/* ── Contact form → mailto with inline validation ── */
+document.getElementById('contactForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var nameEl  = document.getElementById('fname');
+  var emailEl = document.getElementById('femail');
+  var msgEl   = document.getElementById('fmsg');
+  var valid = true;
+
+  function setErr(el, errId, show) {
+    el.setAttribute('aria-invalid', show ? 'true' : 'false');
+    var err = document.getElementById(errId);
+    if (err) err.classList.toggle('visible', show);
+  }
+
+  setErr(nameEl,  'fname-err',  !nameEl.value.trim());
+  setErr(emailEl, 'femail-err', !emailEl.validity.valid);
+  setErr(msgEl,   'fmsg-err',   !msgEl.value.trim());
+
+  if (!nameEl.value.trim() || !emailEl.validity.valid || !msgEl.value.trim()) return;
+
+  var subject = encodeURIComponent('Hello from ' + nameEl.value.trim());
+  var body    = encodeURIComponent(msgEl.value.trim() + '\n\n' + nameEl.value.trim() + '\n' + emailEl.value.trim());
+  document.getElementById('formSuccess').style.display = 'block';
+  var a = document.createElement('a');
+  a.href = 'mailto:animeshpandey1909@gmail.com?subject=' + subject + '&body=' + body;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+});
+
+/* ── Copy email ── */
+var copyBtn = document.getElementById('copyEmailBtn');
+var toast   = document.getElementById('copyToast');
+if (copyBtn && navigator.clipboard) {
+  copyBtn.addEventListener('click', function () {
+    navigator.clipboard.writeText('animeshpandey1909@gmail.com').then(function () {
+      toast.textContent = '✓ Email copied!';
+      toast.classList.add('show');
+      setTimeout(function () { toast.classList.remove('show'); }, 2200);
+    });
   });
+}
 
-  /* ── Active nav highlight on scroll ── */
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  const onScroll = () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 120) current = s.id;
-    });
-    navLinks.forEach(a => {
-      const active = a.getAttribute('href') === '#' + current;
-      a.style.color = active ? 'var(--accent)' : '';
-      a.setAttribute('aria-current', active ? 'true' : 'false');
-    });
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+/* ── Year ── */
+var yr = document.getElementById('yr');
+if (yr) yr.textContent = new Date().getFullYear();
+
+/* ── FAQ accordion styles ── */
+(function () {
+  var style = document.createElement('style');
+  style.textContent = [
+    '.faq-list { display: flex; flex-direction: column; gap: 8px; }',
+    '.faq-item { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }',
+    '.faq-item[open] { border-color: var(--border-2); }',
+    '.faq-q { padding: 14px 18px; cursor: pointer; font-weight: 500; font-size: 14.5px; color: var(--ink); list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; }',
+    '.faq-q::-webkit-details-marker { display: none; }',
+    '.faq-q::after { content: "+"; font-family: var(--mono); color: var(--accent); flex-shrink: 0; }',
+    '.faq-item[open] .faq-q::after { content: "−"; }',
+    '.faq-a { padding: 0 18px 16px; font-size: 14px; color: var(--ink-2); line-height: 1.7; }',
+    '.faq-a a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }'
+  ].join('');
+  document.head.appendChild(style);
+})();
 </script>
 </body>
 </html>
