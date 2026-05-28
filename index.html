@@ -408,12 +408,6 @@
 
   <!-- HERO -->
   <section id="hero" aria-label="Introduction">
-    <!-- Floating tech keywords — desktop only via CSS -->
-    <span class="hero-float" style="font-size:68px;top:14%;left:-1%" aria-hidden="true">React</span>
-    <span class="hero-float" style="font-size:44px;top:72%;left:2%" aria-hidden="true">TypeScript</span>
-    <span class="hero-float" style="font-size:30px;top:84%;left:28%" aria-hidden="true">Next.js</span>
-    <span class="hero-float" style="font-size:22px;top:22%;left:40%" aria-hidden="true">Microfrontends</span>
-    <span class="hero-float" style="font-size:18px;top:58%;left:35%" aria-hidden="true">SSR</span>
 
     <!-- Left column -->
     <div class="hero-left">
@@ -489,6 +483,14 @@
         resume.pdf
       </a>
     </aside>
+
+    <!-- Tech skill ticker strip — always visible, spans full hero width -->
+    <div class="hero-ticker" aria-hidden="true">
+      <div class="hero-ticker-track">
+        <span class="htk htk-feat">React</span><span class="htk htk-feat">TypeScript</span><span class="htk htk-feat">Next.js</span><span class="htk htk-feat">Microfrontends</span><span class="htk">Module Federation</span><span class="htk">D3.js</span><span class="htk">GraphQL</span><span class="htk">Playwright</span><span class="htk">Docker</span><span class="htk htk-feat">Agentic AI</span><span class="htk">LangChain</span><span class="htk">WCAG 2.1</span><span class="htk">Design Systems</span><span class="htk">AWS</span><span class="htk">Node.js</span><span class="htk">Storybook</span><span class="htk">Vite</span><span class="htk">Redux</span><span class="htk">Playwright</span><span class="htk">GitHub Actions</span><span class="htk">RAG</span><span class="htk">Turborepo</span><span class="htk">Highcharts</span><span class="htk">LLM Streaming</span>
+        <span class="htk htk-feat">React</span><span class="htk htk-feat">TypeScript</span><span class="htk htk-feat">Next.js</span><span class="htk htk-feat">Microfrontends</span><span class="htk">Module Federation</span><span class="htk">D3.js</span><span class="htk">GraphQL</span><span class="htk">Playwright</span><span class="htk">Docker</span><span class="htk htk-feat">Agentic AI</span><span class="htk">LangChain</span><span class="htk">WCAG 2.1</span><span class="htk">Design Systems</span><span class="htk">AWS</span><span class="htk">Node.js</span><span class="htk">Storybook</span><span class="htk">Vite</span><span class="htk">Redux</span><span class="htk">Playwright</span><span class="htk">GitHub Actions</span><span class="htk">RAG</span><span class="htk">Turborepo</span><span class="htk">Highcharts</span><span class="htk">LLM Streaming</span>
+      </div>
+    </div>
 
     <div class="scroll-cue" aria-hidden="true">
       <svg width="14" height="14"><use href="#i-chevron-down"/></svg>
@@ -643,12 +645,75 @@
 
   <!-- SKILLS -->
   <section id="skills" aria-labelledby="skills-heading">
-    <p class="section-label">// skills</p>
-    <h2 id="skills-heading">Built with</h2>
-    <!-- CLS placeholder — D3 graph fills this slot; height reserved to prevent layout shift -->
-    <div class="skills-graph-slot" aria-hidden="true"></div>
-    <p class="skills-graph-desc visually-hidden">Interactive force-directed graph showing skill categories: Frontend (React, TypeScript, Next.js), Architecture (Microfrontends, SSR), Testing (Jest, Playwright), Tooling (Webpack, Vite, Docker), Data &amp; Viz (D3.js, GraphQL), Backend &amp; Cloud (Node.js, AWS, Azure), AI &amp; Agents (Agentic AI, LangChain). Drag nodes to explore connections.</p>
-    <div class="skills-grid">
+    <div class="skills-header">
+      <div>
+        <p class="section-label">// skills</p>
+        <h2 id="skills-heading">Built with</h2>
+      </div>
+      <div class="skills-toggle-group" role="group" aria-label="Skills view">
+        <button class="stgl stgl-active" data-view="list" aria-pressed="true">List</button>
+        <button class="stgl" data-view="visual" aria-pressed="false">Visual</button>
+      </div>
+    </div>
+
+    <!-- Visual view: category cards (hidden by default, shown by toggle) -->
+    <div class="skills-visual" id="skills-visual" hidden aria-hidden="true">
+      <div class="sv-grid">
+
+        <div class="sv-card" style="--cat:#bf5a32">
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg><span>Frontend</span></div>
+          <div class="sv-chips">
+            <span class="sv-chip sv-feat">React</span><span class="sv-chip sv-feat">TypeScript</span><span class="sv-chip sv-feat">Next.js</span><span class="sv-chip">JavaScript</span><span class="sv-chip">React Native</span><span class="sv-chip">Redux</span><span class="sv-chip">Zustand</span><span class="sv-chip">React Query</span><span class="sv-chip">Tailwind</span><span class="sv-chip">CSS3</span><span class="sv-chip">Angular</span>
+          </div>
+        </div>
+
+        <div class="sv-card" style="--cat:#4e8fa4">
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span>Architecture</span></div>
+          <div class="sv-chips">
+            <span class="sv-chip sv-feat">Microfrontends</span><span class="sv-chip">Module Federation</span><span class="sv-chip">Design Systems</span><span class="sv-chip">Monorepo</span><span class="sv-chip">SSR / SSG</span><span class="sv-chip">WCAG 2.1</span><span class="sv-chip">Storybook</span><span class="sv-chip">Perf Budgets</span>
+          </div>
+        </div>
+
+        <div class="sv-card" style="--cat:#9060a8">
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-sparkle"/></svg><span>AI &amp; Agents</span></div>
+          <div class="sv-chips">
+            <span class="sv-chip sv-feat">Agentic AI</span><span class="sv-chip">LLM Streaming</span><span class="sv-chip">Tool Calling</span><span class="sv-chip">RAG</span><span class="sv-chip">OpenAI API</span><span class="sv-chip">LangChain</span><span class="sv-chip">Prompt Engineering</span>
+          </div>
+        </div>
+
+        <div class="sv-card" style="--cat:#4e7a68">
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-beaker"/></svg><span>Testing</span></div>
+          <div class="sv-chips">
+            <span class="sv-chip">Playwright</span><span class="sv-chip">Jest</span><span class="sv-chip">React Testing Library</span><span class="sv-chip">Cypress</span><span class="sv-chip">E2E / Unit / Integration</span>
+          </div>
+        </div>
+
+        <div class="sv-card" style="--cat:#8a6952">
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-tool"/></svg><span>Build &amp; Tooling</span></div>
+          <div class="sv-chips">
+            <span class="sv-chip">Webpack</span><span class="sv-chip">Vite</span><span class="sv-chip">Turborepo</span><span class="sv-chip">Nx</span><span class="sv-chip">GitHub Actions</span><span class="sv-chip">Docker</span><span class="sv-chip">CI/CD</span>
+          </div>
+        </div>
+
+        <div class="sv-card" style="--cat:#7072ba">
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg><span>Data &amp; Viz</span></div>
+          <div class="sv-chips">
+            <span class="sv-chip">D3.js</span><span class="sv-chip">Highcharts</span><span class="sv-chip">Recharts</span><span class="sv-chip">Leaflet</span><span class="sv-chip">GraphQL</span><span class="sv-chip">REST / OpenAPI</span><span class="sv-chip">A/B Testing</span>
+          </div>
+        </div>
+
+        <div class="sv-card" style="--cat:#4a7090">
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-cloud"/></svg><span>Backend &amp; Cloud</span></div>
+          <div class="sv-chips">
+            <span class="sv-chip">Node.js</span><span class="sv-chip">Express</span><span class="sv-chip">PostgreSQL</span><span class="sv-chip">AWS</span><span class="sv-chip">Azure</span><span class="sv-chip">Microservices</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- List view (default) -->
+    <div class="skills-grid" id="skills-list">
 
       <div class="sg-row fade-up">
         <div class="sg-cat">
@@ -657,15 +722,16 @@
         </div>
         <div class="sg-tags" role="list">
           <span class="sk featured" role="listitem">React / ReactJS</span>
-          <span class="sk featured" role="listitem">Next.js</span>
           <span class="sk featured" role="listitem">TypeScript</span>
+          <span class="sk featured" role="listitem">Next.js</span>
           <span class="sk" role="listitem">JavaScript</span>
-          <span class="sk" role="listitem">HTML5</span>
-          <span class="sk" role="listitem">CSS3</span>
-          <span class="sk" role="listitem">Redux</span>
-          <span class="sk" role="listitem">Angular</span>
           <span class="sk" role="listitem">React Native</span>
+          <span class="sk" role="listitem">Redux</span>
+          <span class="sk" role="listitem">Zustand</span>
+          <span class="sk" role="listitem">React Query</span>
           <span class="sk" role="listitem">Tailwind CSS</span>
+          <span class="sk" role="listitem">CSS3</span>
+          <span class="sk" role="listitem">Angular</span>
         </div>
       </div>
 
@@ -676,13 +742,29 @@
         </div>
         <div class="sg-tags" role="list">
           <span class="sk featured" role="listitem">Microfrontends</span>
-          <span class="sk" role="listitem">Design Systems</span>
-          <span class="sk" role="listitem">SSR</span>
-          <span class="sk" role="listitem">Storybook</span>
           <span class="sk" role="listitem">Module Federation</span>
+          <span class="sk" role="listitem">Design Systems</span>
+          <span class="sk" role="listitem">Monorepo</span>
+          <span class="sk" role="listitem">SSR / SSG</span>
+          <span class="sk" role="listitem">Storybook</span>
           <span class="sk" role="listitem">Performance Budgets</span>
           <span class="sk" role="listitem">Accessibility (WCAG 2.1)</span>
-          <span class="sk" role="listitem">Responsive Design</span>
+        </div>
+      </div>
+
+      <div class="sg-row fade-up">
+        <div class="sg-cat">
+          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-sparkle"/></svg></div>
+          <span class="sg-name">AI &amp; Agents</span>
+        </div>
+        <div class="sg-tags" role="list">
+          <span class="sk featured" role="listitem">Agentic AI</span>
+          <span class="sk" role="listitem">LLM Streaming</span>
+          <span class="sk" role="listitem">Tool Calling</span>
+          <span class="sk" role="listitem">RAG</span>
+          <span class="sk" role="listitem">OpenAI API</span>
+          <span class="sk" role="listitem">LangChain</span>
+          <span class="sk" role="listitem">Prompt Engineering</span>
         </div>
       </div>
 
@@ -692,11 +774,11 @@
           <span class="sg-name">Testing</span>
         </div>
         <div class="sg-tags" role="list">
+          <span class="sk" role="listitem">Playwright</span>
           <span class="sk" role="listitem">Jest</span>
           <span class="sk" role="listitem">React Testing Library</span>
-          <span class="sk" role="listitem">Playwright</span>
           <span class="sk" role="listitem">Cypress</span>
-          <span class="sk" role="listitem">Unit / Integration / E2E</span>
+          <span class="sk" role="listitem">E2E / Unit / Integration</span>
         </div>
       </div>
 
@@ -709,24 +791,25 @@
           <span class="sk" role="listitem">Webpack</span>
           <span class="sk" role="listitem">Vite</span>
           <span class="sk" role="listitem">Turborepo</span>
+          <span class="sk" role="listitem">Nx</span>
           <span class="sk" role="listitem">GitHub Actions</span>
-          <span class="sk" role="listitem">CI/CD</span>
-          <span class="sk" role="listitem">Git</span>
           <span class="sk" role="listitem">Docker</span>
+          <span class="sk" role="listitem">CI/CD</span>
         </div>
       </div>
 
       <div class="sg-row fade-up">
         <div class="sg-cat">
           <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-chart"/></svg></div>
-          <span class="sg-name">Analytics &amp; Data Viz</span>
+          <span class="sg-name">Data &amp; Viz</span>
         </div>
         <div class="sg-tags" role="list">
-          <span class="sk" role="listitem">GraphQL</span>
-          <span class="sk" role="listitem">REST APIs</span>
-          <span class="sk" role="listitem">Highcharts</span>
-          <span class="sk" role="listitem">Leaflet</span>
           <span class="sk" role="listitem">D3.js</span>
+          <span class="sk" role="listitem">Highcharts</span>
+          <span class="sk" role="listitem">Recharts</span>
+          <span class="sk" role="listitem">Leaflet</span>
+          <span class="sk" role="listitem">GraphQL</span>
+          <span class="sk" role="listitem">REST / OpenAPI</span>
           <span class="sk" role="listitem">A/B Testing</span>
         </div>
       </div>
@@ -739,23 +822,10 @@
         <div class="sg-tags" role="list">
           <span class="sk" role="listitem">Node.js</span>
           <span class="sk" role="listitem">Express</span>
+          <span class="sk" role="listitem">PostgreSQL</span>
           <span class="sk" role="listitem">Microservices</span>
           <span class="sk" role="listitem">AWS</span>
           <span class="sk" role="listitem">Azure</span>
-        </div>
-      </div>
-
-      <div class="sg-row fade-up">
-        <div class="sg-cat">
-          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-sparkle"/></svg></div>
-          <span class="sg-name">AI &amp; Automation</span>
-        </div>
-        <div class="sg-tags" role="list">
-          <span class="sk featured" role="listitem">Agentic AI</span>
-          <span class="sk" role="listitem">OpenAI API</span>
-          <span class="sk" role="listitem">LangChain</span>
-          <span class="sk" role="listitem">GitHub Copilot</span>
-          <span class="sk" role="listitem">LLM Tooling</span>
         </div>
       </div>
 
