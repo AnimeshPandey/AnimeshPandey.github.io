@@ -496,36 +496,15 @@
   <section id="about" aria-labelledby="about-heading">
     <p class="section-label">// about</p>
     <h2 id="about-heading">Thoughtful engineer,<br><em>product thinker</em></h2>
-    <div class="about-body fade-up">
-      <p>I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
-      <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform, building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
-      <p>I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage, not just the code that ships.</p>
-    </div>
-    <div class="stats fade-up" role="list" aria-label="Key stats">
-      <div class="stat" role="listitem">
-        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-clock"/></svg></div>
-        <div class="stat-n">7+</div>
-        <div class="stat-l">Years experience</div>
+    <div class="about-cols">
+      <div class="about-body fade-up">
+        <p>I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
+        <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform, building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
+        <p>I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage, not just the code that ships.</p>
       </div>
-      <div class="stat" role="listitem">
-        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-users"/></svg></div>
-        <div class="stat-n">50k+</div>
-        <div class="stat-l">Daily users served</div>
-      </div>
-      <div class="stat" role="listitem">
-        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-bolt"/></svg></div>
-        <div class="stat-n">30%</div>
-        <div class="stat-l">Load time reduction</div>
-      </div>
-      <div class="stat" role="listitem">
-        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-heart"/></svg></div>
-        <div class="stat-n">8+</div>
-        <div class="stat-l">Engineers mentored</div>
-      </div>
-    </div>
 
-    <!-- FAQ accordion — supports FAQPage schema -->
-    <div class="faq-section fade-up" style="margin-top:52px">
+      <!-- FAQ accordion — supports FAQPage schema; moves beside text on desktop -->
+      <div class="faq-section fade-up">
       <p class="section-label" style="margin-bottom:20px">// common questions</p>
       <div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
 
@@ -550,6 +529,30 @@
           </div>
         </details>
 
+      </div>
+    </div><!-- /faq-section -->
+    </div><!-- /about-cols -->
+
+    <div class="stats fade-up" role="list" aria-label="Key stats">
+      <div class="stat" role="listitem">
+        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-clock"/></svg></div>
+        <div class="stat-n">7+</div>
+        <div class="stat-l">Years experience</div>
+      </div>
+      <div class="stat" role="listitem">
+        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-users"/></svg></div>
+        <div class="stat-n">50k+</div>
+        <div class="stat-l">Daily users served</div>
+      </div>
+      <div class="stat" role="listitem">
+        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-bolt"/></svg></div>
+        <div class="stat-n">30%</div>
+        <div class="stat-l">Load time reduction</div>
+      </div>
+      <div class="stat" role="listitem">
+        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-heart"/></svg></div>
+        <div class="stat-n">8+</div>
+        <div class="stat-l">Engineers mentored</div>
       </div>
     </div>
   </section>
@@ -1055,6 +1058,7 @@
   <section id="contact" aria-labelledby="contact-heading">
     <p class="section-label">// contact</p>
     <h2 id="contact-heading">Let's build something</h2>
+    <div class="contact-info">
     <p class="contact-intro">Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.</p>
 
     <!-- Quick actions -->
@@ -1076,6 +1080,7 @@
         Resume PDF
       </a>
     </div>
+    </div><!-- /contact-info -->
 
     <form class="form" id="contactForm" novalidate aria-label="Contact form">
       <div class="form-row">
