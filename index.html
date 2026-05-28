@@ -37,7 +37,7 @@
   <meta property="og:description" content="7+ years building fast, accessible SaaS interfaces: MMM dashboards, microfrontends for 50k+ users, agentic AI products. Based in Bangalore." />
   <meta property="og:locale" content="en_IN" />
   <meta property="og:site_name" content="Animesh Pandey" />
-  <meta property="og:image" content="https://anmshpndy.com/assets/og-image.svg" />
+  <meta property="og:image" content="https://anmshpndy.com/assets/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Animesh Pandey · Senior Frontend Engineer, Bangalore" />
@@ -50,7 +50,7 @@
   <meta name="twitter:creator" content="@anmshpndy" />
   <meta name="twitter:title" content="Animesh Pandey · Senior Frontend Engineer" />
   <meta name="twitter:description" content="7+ years building fast, accessible SaaS interfaces: dashboards, microfrontends, agentic AI. Bangalore." />
-  <meta name="twitter:image" content="https://anmshpndy.com/assets/og-image.svg" />
+  <meta name="twitter:image" content="https://anmshpndy.com/assets/og-image.png" />
 
   <!-- Favicon & manifest -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -84,12 +84,18 @@
         "name": "Animesh Pandey",
         "givenName": "Animesh",
         "familyName": "Pandey",
+        "alternateName": ["anmshpndy", "Animesh Pandey"],
+        "identifier": [
+          {"@type": "PropertyValue", "propertyID": "GitHub", "value": "AnimeshPandey"},
+          {"@type": "PropertyValue", "propertyID": "X", "value": "anmshpndy"},
+          {"@type": "PropertyValue", "propertyID": "LinkedIn", "value": "pandeyanimesh"}
+        ],
         "jobTitle": "Senior Frontend Engineer",
         "description": "Senior Frontend Engineer with 7+ years of experience building scalable, high-performance SaaS platforms across analytics, automotive retail, and geospatial domains.",
         "email": "animeshpandey1909@gmail.com",
         "telephone": "+91-8318717926",
         "url": "https://anmshpndy.com/",
-        "image": "https://anmshpndy.com/assets/og-image.svg",
+        "image": "https://anmshpndy.com/assets/og-image.png",
         "sameAs": [
           "https://linkedin.com/in/pandeyanimesh",
           "https://github.com/AnimeshPandey",
@@ -792,6 +798,19 @@
       </article>
 
       <article class="pc fade-up">
+        <p class="pc-type">AI Feature · Lifesight</p>
+        <h3 class="pc-name">Attribution Anomaly Intelligence</h3>
+        <p class="pc-desc">Embedded AI layer within the Lifesight attribution dashboard that continuously monitors media spend signals and proactively surfaces anomalies without requiring the user to go looking. Statistical changepoint detection (z-score + PELT algorithm) runs on the data pipeline; results are handed to an LLM that generates plain-English explanations of what shifted, why it likely happened, and what action to consider. Surfaces budget pacing issues, channel-level attribution drift, and incrementality test failures as inline insight cards — not alerts that get ignored.</p>
+        <div class="pc-metric" aria-label="Category">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-sparkle"/></svg>
+          AI anomaly detection · LLM narration · Proactive insights
+        </div>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">LLM</span><span class="tag">Anomaly Detection</span><span class="tag">Data Visualisation</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
         <p class="pc-type">Analytics Platform · Lifesight</p>
         <h3 class="pc-name">Marketing Intelligence Dashboard</h3>
         <p class="pc-desc">Delivered enterprise-grade analytics dashboards powering Lifesight's Unified Measurement OS: MMM (Media Mix Modelling) curves, incrementality test results, and causal attribution breakdowns for enterprise brands managing multi-million-dollar ad budgets. Built with Next.js SSR for fast first-paint on dense data-heavy views, enforced Core Web Vitals budgets in CI, and established platform-wide Playwright testing standards that became the team baseline.</p>
@@ -814,6 +833,45 @@
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">Storybook</span><span class="tag">TypeScript</span><span class="tag">React</span><span class="tag">Design Systems</span><span class="tag">Accessibility</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
+        <p class="pc-type">AI Tooling · Tekion</p>
+        <h3 class="pc-name">AI Dev Tooling Suite</h3>
+        <p class="pc-desc">Internal CLI and VS Code extension that automated the highest-toil parts of Tekion's frontend development cycle, cutting team overhead by 30%. The scaffolder generates a fully wired microfrontend module in under 10 seconds — Webpack Module Federation config, Storybook stories, Jest setup, and GitHub Actions job — from a single command. An AI-assisted PR review workflow uses GPT-4 to flag accessibility regressions, performance anti-patterns, and missing test coverage before human review. Also shipped automated migration scripts for the React 16 to 18 upgrade across all 10+ modules, completing the migration in days rather than weeks.</p>
+        <div class="pc-metric" aria-label="Impact">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
+          30% toil reduction · React 18 migration automated
+        </div>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">TypeScript</span><span class="tag">Node.js</span><span class="tag">VS Code API</span><span class="tag">OpenAI API</span><span class="tag">GitHub Actions</span><span class="tag">AST Codemods</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
+        <p class="pc-type">Mobile · Tekion</p>
+        <h3 class="pc-name">Dealer Operations Mobile App</h3>
+        <p class="pc-desc">React Native companion to Tekion's web-based dealer management platform, designed for dealership staff who work on the shop floor and can't stay at a desk. Covers real-time inventory lookup with VIN scanning, live service queue visibility, and customer CRM access. Built offline-first with SQLite-backed local state that syncs over a conflict-free delta protocol when connectivity restores — critical in underground service bays with patchy signal. Deep-linked from the web platform and shares Redux slices with the web app via a shared library, keeping business logic in one place.</p>
+        <div class="pc-metric" aria-label="Category">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-users"/></svg>
+          Offline-first · VIN scanning · Shared Redux state
+        </div>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">React Native</span><span class="tag">Redux</span><span class="tag">TypeScript</span><span class="tag">SQLite</span><span class="tag">Offline-first</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
+        <p class="pc-type">Developer Tooling · Tekion</p>
+        <h3 class="pc-name">Performance CI Guard</h3>
+        <p class="pc-desc">GitHub Actions pipeline that runs Lighthouse CI against a Playwright-rendered preview deployment on every pull request, automatically blocking merges when Core Web Vitals or bundle size regresses beyond configured thresholds. Posts a generated PR comment with before/after metric tables, a bundle diff, and a 30-day trend sparkline so reviewers have full context without leaving GitHub. Historical performance data is persisted to a Postgres store and surfaced on an internal dashboard used by engineering leadership to track platform health across all 10+ microfrontend modules. Went from no performance visibility to catching 12 regressions in the first month.</p>
+        <div class="pc-metric" aria-label="Impact">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
+          12 regressions caught in month 1 · full CI coverage
+        </div>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">GitHub Actions</span><span class="tag">Lighthouse CI</span><span class="tag">Playwright</span><span class="tag">Node.js</span><span class="tag">Postgres</span>
         </div>
       </article>
 
