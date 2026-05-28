@@ -1,14 +1,16 @@
 /* visuals.d3.js — D3 force-directed skills graph
    Lazy-loaded when #skills enters viewport.
-   Inserted ABOVE the existing .skills-grid list (both coexist).
-   The existing list remains for accessibility / no-JS fallback. */
+   Fills .skills-graph-slot (pre-reserved in HTML to prevent CLS).
+   .skills-grid hidden (not removed) once D3 renders — remains in DOM for screen readers.
+   Rollback: window.__VISUALS_DISABLED = true disables all visuals. */
 (function () {
   'use strict';
   if (!window.d3) return;
 
   var skillsSection = document.getElementById('skills');
   var skillsGrid    = skillsSection && skillsSection.querySelector('.skills-grid');
-  if (!skillsGrid) return;
+  var slot          = skillsSection && skillsSection.querySelector('.skills-graph-slot');
+  if (!skillsGrid || !slot) return;
 
   var IS_MOBILE = window.matchMedia('(max-width: 819px)').matches;
   var REDUCED   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -90,11 +92,16 @@
   var H     = IS_MOBILE ? 420 : 530;
   var rScale = IS_MOBILE ? 0.75 : 1;
 
-  /* ── Build wrapper — inserted before .skills-grid ── */
+  /* ── Fill the pre-reserved slot (no CLS) ── */
   var wrap = document.createElement('div');
   wrap.className = 'skills-d3-wrap fade-up';
-  wrap.setAttribute('aria-hidden', 'true'); /* text list below is the a11y version */
-  skillsGrid.parentNode.insertBefore(wrap, skillsGrid);
+  wrap.setAttribute('aria-hidden', 'true');
+  slot.classList.add('d3-ready'); /* switches slot from fixed-height reservation to auto */
+  slot.appendChild(wrap);
+
+  /* Hide text grid for sighted users; it stays in DOM for screen readers */
+  skillsGrid.setAttribute('aria-hidden', 'false'); /* already accessible */
+  skillsGrid.style.display = 'none';
 
   /* ── SVG ── */
   var svg = d3.select(wrap)
