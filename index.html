@@ -328,11 +328,15 @@
     /* ── Hero ── */
     #hero {
       min-height: 100vh; position: relative;
-      display: flex; flex-direction: column; justify-content: center;
-      padding-top: calc(var(--nav-h) + 60px); padding-bottom: 80px;
+      display: grid;
+      grid-template-columns: 1fr 270px;
+      gap: 48px;
+      align-items: center;
+      padding-top: calc(var(--nav-h) + 28px); padding-bottom: 64px;
       max-width: var(--max); margin: 0 auto; padding-left: 28px; padding-right: 28px;
       overflow: hidden;
     }
+    .hero-left { position: relative; z-index: 1; }
     /* Dot-grid background */
     #hero::before {
       content: '';
@@ -351,7 +355,9 @@
         radial-gradient(ellipse 80% 60% at 50% 100%, rgba(250,248,244,.9) 0%, transparent 60%);
       pointer-events: none;
     }
-    #hero > * { position: relative; z-index: 1; }
+    #hero > .hero-left,
+    #hero > .hero-card,
+    #hero > .scroll-cue { position: relative; z-index: 1; }
 
     /* Floating tech keywords */
     .hero-float {
@@ -376,7 +382,7 @@
       50%      { opacity:.45; transform:scale(.75); }
     }
     .hero-name {
-      font-family: var(--serif); font-size: clamp(68px, 13vw, 104px);
+      font-family: var(--serif); font-size: clamp(56px, 9vw, 86px);
       font-weight: 400; line-height: .97; letter-spacing: -.03em;
       color: var(--ink); margin-bottom: 10px;
     }
@@ -413,6 +419,45 @@
     .scroll-cue svg { animation: cue-bounce .9s ease-in-out infinite; }
     @keyframes cue-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
     @keyframes cue-fade   { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+
+    /* ── Hero info card ── */
+    .hero-card {
+      background: var(--ink); border-radius: 16px;
+      padding: 26px 24px; position: relative; z-index: 1;
+      box-shadow: 0 24px 60px rgba(28,23,20,.2), 0 4px 16px rgba(28,23,20,.14);
+      border: 1px solid rgba(255,255,255,.04);
+      align-self: center;
+    }
+    .hc-comment {
+      display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em;
+      text-transform: uppercase; color: rgba(155,140,132,.6); margin-bottom: 6px;
+    }
+    .hc-val { font-family: var(--mono); font-size: 13px; color: rgba(250,248,244,.82); line-height: 1.5; }
+    .hc-link { color: var(--accent); text-decoration: none; }
+    .hc-link:hover { text-decoration: underline; }
+    .hc-divider { border: none; border-top: 1px solid rgba(255,255,255,.07); margin: 16px 0; }
+    .hc-stack { display: flex; flex-wrap: wrap; gap: 5px; }
+    .hc-stack span {
+      font-family: var(--mono); font-size: 10.5px;
+      background: rgba(255,255,255,.07); color: rgba(250,248,244,.72);
+      padding: 3px 9px; border-radius: 4px;
+    }
+    .hc-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 12.5px; color: #6db899;
+    }
+    .hc-pulse {
+      width: 7px; height: 7px; background: #6db899; border-radius: 50%;
+      flex-shrink: 0; animation: pulse 2.2s ease-in-out infinite;
+    }
+    .hc-dl {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      margin-top: 18px; font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
+      color: rgba(250,248,244,.45); text-decoration: none;
+      border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 9px;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .hc-dl:hover { color: var(--bg); border-color: rgba(191,90,50,.5); background: rgba(191,90,50,.15); }
 
     /* ── About ── */
     .about-body { font-size: 16.5px; color: var(--ink-2); line-height: 1.8; max-width: 640px; }
@@ -743,6 +788,8 @@
     /* ── Mobile ── */
     @media (max-width: 640px) {
       .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; gap: 32px; }
+      .hero-card { display: none; }
       .projects-grid { grid-template-columns: 1fr; }
       .pc.wide { grid-column: 1; }
       .form-row { grid-template-columns: 1fr; }
@@ -880,27 +927,62 @@
 
   <!-- HERO -->
   <section id="hero" aria-label="Introduction">
-    <!-- Floating tech keywords -->
-    <span class="hero-float" style="font-size:72px;top:12%;right:-2%">React</span>
-    <span class="hero-float" style="font-size:48px;top:68%;right:5%">TypeScript</span>
-    <span class="hero-float" style="font-size:36px;top:82%;left:52%">Next.js</span>
-    <span class="hero-float" style="font-size:28px;top:20%;right:22%">Microfrontends</span>
-    <span class="hero-float" style="font-size:22px;top:55%;right:28%">SSR</span>
+    <!-- Floating tech keywords — left side only -->
+    <span class="hero-float" style="font-size:68px;top:14%;left:-1%">React</span>
+    <span class="hero-float" style="font-size:44px;top:72%;left:2%">TypeScript</span>
+    <span class="hero-float" style="font-size:30px;top:84%;left:28%">Next.js</span>
+    <span class="hero-float" style="font-size:22px;top:22%;left:40%">Microfrontends</span>
+    <span class="hero-float" style="font-size:18px;top:58%;left:35%">SSR</span>
 
-    <div class="badge"><span class="badge-dot" aria-hidden="true"></span>Open to opportunities</div>
-    <h1 class="hero-name">Animesh<br>Pandey<span class="dot" aria-hidden="true">.</span></h1>
-    <p class="hero-sub">Senior Frontend Engineer</p>
-    <p class="hero-tag">7+ years crafting high-performance platforms for enterprise users — from analytics dashboards to AI-powered products. I care deeply about speed, scale, and the humans on the other side of the screen.</p>
-    <div class="ctas">
-      <a href="resume.pdf" download class="btn btn-dark">
-        <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
-        Download Resume
-      </a>
-      <a href="#contact" class="btn btn-outline">
-        Let's talk
-        <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
-      </a>
+    <!-- Left column: main content -->
+    <div class="hero-left">
+      <div class="badge"><span class="badge-dot" aria-hidden="true"></span>Open to opportunities</div>
+      <h1 class="hero-name">Animesh<br>Pandey<span class="dot" aria-hidden="true">.</span></h1>
+      <p class="hero-sub">Senior Frontend Engineer</p>
+      <p class="hero-tag">7+ years crafting high-performance platforms for enterprise users — from analytics dashboards to AI-powered products. I care deeply about speed, scale, and the humans on the other side of the screen.</p>
+      <div class="ctas">
+        <a href="resume.pdf" download class="btn btn-dark">
+          <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
+          Download Resume
+        </a>
+        <a href="#contact" class="btn btn-outline">
+          Let's talk
+          <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+        </a>
+      </div>
     </div>
+
+    <!-- Right column: info card -->
+    <aside class="hero-card" aria-label="Quick facts">
+      <span class="hc-comment">// currently</span>
+      <p class="hc-val">Senior Software Engineer at <a href="https://lifesight.io" class="hc-link" target="_blank" rel="noopener noreferrer">Lifesight</a></p>
+      <hr class="hc-divider" />
+
+      <span class="hc-comment">// location</span>
+      <p class="hc-val">Bangalore, India</p>
+      <hr class="hc-divider" />
+
+      <span class="hc-comment">// experience</span>
+      <p class="hc-val">7+ years · SaaS &amp; GovTech</p>
+      <hr class="hc-divider" />
+
+      <span class="hc-comment">// core stack</span>
+      <div class="hc-stack">
+        <span>React</span><span>TypeScript</span><span>Next.js</span>
+        <span>Microfrontends</span><span>Node.js</span>
+      </div>
+      <hr class="hc-divider" />
+
+      <span class="hc-status">
+        <span class="hc-pulse" aria-hidden="true"></span>
+        Open to new roles
+      </span>
+
+      <a href="resume.pdf" download class="hc-dl" aria-label="Download resume PDF">
+        <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+        resume.pdf
+      </a>
+    </aside>
 
     <div class="scroll-cue" aria-hidden="true">
       <svg width="14" height="14"><use href="#i-chevron-down"/></svg>
@@ -1183,6 +1265,32 @@
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">Webpack</span><span class="tag">Module Federation</span><span class="tag">ReactJS</span><span class="tag">Performance</span><span class="tag">CI/CD</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
+        <p class="pc-type">Government Platform</p>
+        <h3 class="pc-name">Kerala-WRIS Water Intelligence Platform</h3>
+        <p class="pc-desc">Real-time water resource monitoring dashboards deployed statewide for the Government of Kerala. Geospatial visualisations over Leaflet maps, time-series charts with Highcharts, and D3.js-powered data layers — serving millions of residents and field teams with live hydrology data.</p>
+        <div class="pc-metric" aria-label="Impact">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
+          30% API overhead reduction · millions of users
+        </div>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">Angular 8</span><span class="tag">Highcharts</span><span class="tag">Leaflet</span><span class="tag">D3.js</span><span class="tag">GovTech</span>
+        </div>
+      </article>
+
+      <article class="pc fade-up">
+        <p class="pc-type">AI Product</p>
+        <h3 class="pc-name">Mia — Agentic AI Analytics Interface</h3>
+        <p class="pc-desc">Frontend for Lifesight's agentic AI assistant that interprets marketing data and surfaces actionable insights through a streaming conversational UI. Built with Next.js and TypeScript, with real-time streamed LLM responses, tool-call visualisation, and tight integration with the Unified Measurement OS data layer.</p>
+        <div class="pc-metric" aria-label="Category">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-sparkle"/></svg>
+          Agentic AI · Streaming UI · LLM tooling
+        </div>
+        <div class="tags" aria-label="Technologies used">
+          <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">Agentic AI</span><span class="tag">Streaming</span>
         </div>
       </article>
 
