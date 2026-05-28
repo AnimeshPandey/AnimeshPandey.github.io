@@ -414,22 +414,6 @@
     <span class="hero-float" style="font-size:30px;top:84%;left:28%" aria-hidden="true">Next.js</span>
     <span class="hero-float" style="font-size:22px;top:22%;left:40%" aria-hidden="true">Microfrontends</span>
     <span class="hero-float" style="font-size:18px;top:58%;left:35%" aria-hidden="true">SSR</span>
-    <div id="hero-ambient" class="viz-layer viz-ambient" aria-hidden="true">
-      <svg viewBox="0 0 960 520" focusable="false" preserveAspectRatio="none">
-        <defs>
-          <radialGradient id="vizHeroGradientA" cx="18%" cy="56%" r="64%">
-            <stop offset="0%" stop-color="var(--viz-accent)" stop-opacity="0.6"></stop>
-            <stop offset="100%" stop-color="var(--viz-accent)" stop-opacity="0"></stop>
-          </radialGradient>
-          <radialGradient id="vizHeroGradientB" cx="86%" cy="18%" r="45%">
-            <stop offset="0%" stop-color="var(--viz-soft)" stop-opacity="0.52"></stop>
-            <stop offset="100%" stop-color="var(--viz-soft)" stop-opacity="0"></stop>
-          </radialGradient>
-        </defs>
-        <circle class="viz-orb viz-orb-a" cx="180" cy="320" r="260" fill="url(#vizHeroGradientA)"></circle>
-        <circle class="viz-orb viz-orb-b" cx="790" cy="120" r="190" fill="url(#vizHeroGradientB)"></circle>
-      </svg>
-    </div>
 
     <!-- Left column -->
     <div class="hero-left">
@@ -585,16 +569,6 @@
   <section id="experience" aria-labelledby="experience-heading">
     <p class="section-label">// experience</p>
     <h2 id="experience-heading">Where I've built</h2>
-    <figure class="viz-inline fade-up" aria-labelledby="experience-sparkline-label">
-      <svg id="experience-sparkline" class="viz-sparkline" viewBox="0 0 100 22" role="img" focusable="false">
-        <polyline points="2,18 18,16 35,13 54,11 74,7 98,4"></polyline>
-        <circle cx="2" cy="18" r="1.4"></circle>
-        <circle cx="35" cy="13" r="1.4"></circle>
-        <circle cx="74" cy="7" r="1.4"></circle>
-        <circle cx="98" cy="4" r="1.8"></circle>
-      </svg>
-      <figcaption id="experience-sparkline-label">Career trajectory from GovTech to enterprise SaaS and AI platforms.</figcaption>
-    </figure>
     <div class="timeline">
 
       <article class="t-item fade-up">
@@ -671,18 +645,6 @@
   <section id="skills" aria-labelledby="skills-heading">
     <p class="section-label">// skills</p>
     <h2 id="skills-heading">Built with</h2>
-    <figure class="viz-inline fade-up" aria-labelledby="skills-constellation-label">
-      <svg id="skills-constellation" class="viz-constellation" viewBox="0 0 100 28" role="img" focusable="false">
-        <path d="M5 21 L18 11 L34 16 L52 8 L70 13 L86 7 L96 10"></path>
-        <circle cx="5" cy="21" r="1.5"></circle>
-        <circle cx="18" cy="11" r="1.4"></circle>
-        <circle cx="34" cy="16" r="1.4"></circle>
-        <circle cx="52" cy="8" r="1.4"></circle>
-        <circle cx="70" cy="13" r="1.4"></circle>
-        <circle cx="86" cy="7" r="1.7"></circle>
-      </svg>
-      <figcaption id="skills-constellation-label">Core skills connected across frontend architecture, performance, and AI interfaces.</figcaption>
-    </figure>
     <div class="skills-grid">
 
       <div class="sg-row fade-up">
@@ -804,17 +766,6 @@
     <p class="section-label">// projects</p>
     <h2 id="projects-heading">Things I've shipped</h2>
     <p class="projects-intro">Selected work across SaaS analytics, automotive retail, and GovTech.</p>
-    <figure class="viz-inline viz-impact fade-up" aria-labelledby="projects-impact-label">
-      <svg id="projects-impact-chart" class="viz-impact-chart" viewBox="0 0 100 32" role="img" focusable="false" aria-describedby="projects-impact-fallback">
-        <g class="impact-bars">
-          <rect x="8" y="15" width="16" height="13" rx="1.6"></rect>
-          <rect x="42" y="9" width="16" height="19" rx="1.6"></rect>
-          <rect x="76" y="4" width="16" height="24" rx="1.6"></rect>
-        </g>
-      </svg>
-      <figcaption id="projects-impact-label">Selected impact metrics across scale, performance, and mentorship.</figcaption>
-      <p id="projects-impact-fallback" class="viz-fallback">Impact highlights: 8+ engineers mentored, 30% performance gain, 50k+ daily users.</p>
-    </figure>
     <div class="projects-grid">
 
       <article class="pc wide fade-up">
@@ -1204,7 +1155,6 @@
 
 <script src="/assets/theme.js" defer></script>
 <script src="/assets/nav.js" defer></script>
-<script src="/assets/visuals.js" defer></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
