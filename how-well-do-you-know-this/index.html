@@ -2,287 +2,244 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <title>How Well Do You Know "this"? — Animesh Pandey</title>
-  <meta name="description" content="A deep dive into JavaScript's this keyword — the four binding rules, call-site context, and how to predict what this refers to at runtime. By Animesh Pandey, Senior Frontend Engineer." />
+  <script>
+  (function(){var t=localStorage.getItem('theme');if(t!=='light')document.documentElement.dataset.theme='dark'})();
+  </script>
+
+  <title>How Well Do You Know "this"? · Animesh Pandey</title>
+  <meta name="description" content="A deep dive into JavaScript's this keyword: the four binding rules, call-site context, and how to predict what this refers to at runtime. By Animesh Pandey." />
   <meta name="author" content="Animesh Pandey" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://anmshpndy.com/how-well-do-you-know-this" />
+  <meta name="theme-color" content="#FAF8F4" />
+  <link rel="canonical" href="https://anmshpndy.com/how-well-do-you-know-this/" />
 
-  <!-- Open Graph / Article -->
+  <!-- Open Graph -->
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://anmshpndy.com/how-well-do-you-know-this" />
-  <meta property="og:title" content="How Well Do You Know &quot;this&quot;? — Animesh Pandey" />
-  <meta property="og:description" content="A deep dive into JavaScript's this keyword — the four binding rules, call-site context, and how to predict what this refers to at runtime." />
+  <meta property="og:url" content="https://anmshpndy.com/how-well-do-you-know-this/" />
+  <meta property="og:title" content="How Well Do You Know &quot;this&quot;? · Animesh Pandey" />
+  <meta property="og:description" content="A deep dive into JavaScript's this keyword: the four binding rules, call-site context, and how to predict what this refers to at runtime." />
   <meta property="og:site_name" content="Animesh Pandey" />
+  <meta property="og:image" content="https://anmshpndy.com/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Animesh Pandey · Senior Frontend Engineer, Bangalore" />
   <meta property="article:published_time" content="2021-02-28T00:00:00Z" />
   <meta property="article:author" content="https://anmshpndy.com" />
   <meta property="article:tag" content="JavaScript" />
-  <meta property="article:tag" content="this keyword" />
-  <meta property="article:tag" content="Web Development" />
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:creator" content="@anmshpndy" />
-  <meta name="twitter:title" content="How Well Do You Know &quot;this&quot;? — Animesh Pandey" />
-  <meta name="twitter:description" content="A deep dive into JavaScript's this keyword — the four binding rules and how call-site context determines this at runtime." />
+  <meta name="twitter:title" content="How Well Do You Know &quot;this&quot;?" />
+  <meta name="twitter:description" content="The four binding rules for JavaScript's this (new, explicit, implicit, default) explained with call-site context. By Animesh Pandey." />
+  <meta name="twitter:image" content="https://anmshpndy.com/assets/og-image.png" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "How Well Do You Know \"this\"?",
-    "description": "A deep dive into JavaScript's this keyword — the four binding rules, call-site context, and how to predict what this refers to at runtime.",
-    "url": "https://anmshpndy.com/how-well-do-you-know-this",
-    "datePublished": "2021-02-28",
-    "dateModified": "2021-02-28",
-    "inLanguage": "en",
-    "keywords": ["JavaScript", "this keyword", "binding rules", "call-site", "JavaScript context", "Web Development", "frontend"],
-    "author": {
-      "@type": "Person",
-      "name": "Animesh Pandey",
-      "url": "https://anmshpndy.com/",
-      "jobTitle": "Senior Frontend Engineer",
-      "sameAs": ["https://linkedin.com/in/pandeyanimesh", "https://github.com/AnimeshPandey", "https://x.com/anmshpndy"]
-    },
-    "publisher": {
-      "@type": "Person",
-      "name": "Animesh Pandey",
-      "url": "https://anmshpndy.com/"
-    },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "https://anmshpndy.com/how-well-do-you-know-this"
-    },
-    "isPartOf": {
-      "@type": "WebSite",
-      "url": "https://anmshpndy.com/",
-      "name": "Animesh Pandey — Senior Frontend Engineer"
-    },
-    "about": [
-      {"@type": "Thing", "name": "JavaScript this keyword"},
-      {"@type": "Thing", "name": "JavaScript"},
-      {"@type": "Thing", "name": "Binding Rules"}
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": "https://anmshpndy.com/how-well-do-you-know-this/",
+        "headline": "How Well Do You Know \"this\"?",
+        "description": "A deep dive into JavaScript's this keyword: the four binding rules, call-site context, and how to predict what this refers to at runtime.",
+        "url": "https://anmshpndy.com/how-well-do-you-know-this/",
+        "datePublished": "2021-02-28",
+        "dateModified": "2021-02-28",
+        "inLanguage": "en",
+        "keywords": ["JavaScript","this keyword","binding rules","call-site","JavaScript context"],
+        "author": {"@type": "Person", "name": "Animesh Pandey", "url": "https://anmshpndy.com/"},
+        "publisher": {"@type": "Person", "name": "Animesh Pandey", "url": "https://anmshpndy.com/"},
+        "isPartOf": {"@type": "WebSite", "url": "https://anmshpndy.com/", "name": "Animesh Pandey · Senior Frontend Engineer"}
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://anmshpndy.com/"},
+          {"@type": "ListItem", "position": 2, "name": "Writing", "item": "https://anmshpndy.com/#writing"},
+          {"@type": "ListItem", "position": 3, "name": "How Well Do You Know \"this\"?", "item": "https://anmshpndy.com/how-well-do-you-know-this/"}
+        ]
+      }
     ]
   }
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #FAF8F4; --surface: #F2EDE4; --surface-2: #E9E2D5;
-      --ink: #1C1714; --ink-2: #5C4F47; --ink-3: #9B8C84;
-      --accent: #BF5A32; --accent-bg: #F8E5DA;
-      --border: #DDD6C9; --border-2: #CAC2B4;
-      --serif: 'DM Serif Display', Georgia, serif;
-      --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --mono: 'JetBrains Mono', 'Courier New', monospace;
-      --max: 720px;
-    }
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.7; -webkit-font-smoothing: antialiased; }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-
-    .top-nav { padding: 0 28px; height: 56px; border-bottom: 1px solid var(--border); background: rgba(250,248,244,.92); backdrop-filter: blur(14px); position: sticky; top: 0; z-index: 10; display: flex; align-items: center; }
-    .top-nav-inner { max-width: var(--max); margin: 0 auto; width: 100%; display: flex; align-items: center; justify-content: space-between; }
-    .nav-back { font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color .2s; }
-    .nav-back:hover { color: var(--accent); }
-    .nav-logo { font-family: var(--serif); font-size: 18px; color: var(--ink); text-decoration: none; }
-    .nav-logo span { color: var(--accent); }
-
-    .article-wrap { max-width: var(--max); margin: 0 auto; padding: 56px 28px 96px; }
-
-    .art-platform {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--accent); background: var(--accent-bg);
-      padding: 4px 14px; border-radius: 100px; border: 1px solid rgba(191,90,50,.25);
-      margin-bottom: 28px;
-    }
-
-    h1.art-title { font-family: var(--serif); font-size: clamp(28px, 5.5vw, 46px); font-weight: 400; line-height: 1.15; color: var(--ink); margin-bottom: 22px; }
-    h1.art-title code { font-size: .75em; font-family: var(--mono); background: var(--surface-2); padding: 2px 8px; border-radius: 5px; }
-
-    .art-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
-    .art-date { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
-    .art-read { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
-    .art-tag { font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); background: var(--surface-2); padding: 2px 10px; border-radius: 100px; border: 1px solid var(--border); }
-
-    .art-body { font-size: 16px; color: var(--ink-2); line-height: 1.85; }
-    .art-body p + p { margin-top: 20px; }
-    .art-body strong { color: var(--ink); font-weight: 600; }
-    .art-body code { font-family: var(--mono); font-size: 13.5px; background: var(--surface-2); padding: 2px 6px; border-radius: 4px; color: var(--accent); }
-
-    /* Binding rules grid */
-    .rules-grid { margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .rule-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
-    .rule-num { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
-    .rule-name { font-family: var(--serif); font-size: 17px; color: var(--ink); margin-bottom: 6px; }
-    .rule-desc { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
-
-    .topics { margin-top: 36px; padding: 24px 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
-    .topics-label { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px; }
-    .topics-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .topics-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; color: var(--ink-2); }
-    .topics-list li::before { content: '→'; color: var(--accent); font-family: var(--mono); flex-shrink: 0; }
-
-    .art-cta { margin-top: 48px; padding: 32px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
-    .cta-label { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px; }
-    .cta-btn { display: inline-flex; align-items: center; gap: 10px; font-family: var(--sans); font-size: 15px; font-weight: 500; background: var(--ink); color: var(--bg); text-decoration: none; padding: 13px 26px; border-radius: 9px; transition: background .2s, transform .15s; margin-bottom: 20px; }
-    .cta-btn:hover { background: var(--accent); transform: translateY(-2px); }
-    .crosspost { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .crosspost-label { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
-    .crosspost-link { font-family: var(--mono); font-size: 11px; color: var(--ink-2); text-decoration: none; padding: 4px 12px; border: 1px solid var(--border-2); border-radius: 100px; transition: color .15s, border-color .15s; }
-    .crosspost-link:hover { color: var(--accent); border-color: var(--accent); }
-
-    .also-read { margin-top: 40px; padding-top: 36px; border-top: 1px solid var(--border); }
-    .also-label { font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px; }
-    .also-link { display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; transition: border-color .2s, background .2s; }
-    .also-link:hover { border-color: var(--border-2); background: var(--accent-bg); }
-    .also-link-label { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
-    .also-link-title { font-family: var(--serif); font-size: 17px; color: var(--ink); }
-
-    .author-card { margin-top: 52px; padding-top: 36px; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 18px; }
-    .author-av { width: 50px; height: 50px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 18px; color: var(--bg); flex-shrink: 0; }
-    .author-name-el { font-family: var(--serif); font-size: 18px; color: var(--ink); margin-bottom: 3px; }
-    .author-role { font-family: var(--mono); font-size: 11px; color: var(--ink-3); letter-spacing: .05em; margin-bottom: 10px; }
-    .author-links { display: flex; gap: 16px; flex-wrap: wrap; }
-    .author-link { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); text-decoration: none; transition: color .2s; }
-    .author-link:hover { color: var(--accent); }
-
-    footer { border-top: 1px solid var(--border); padding: 24px 28px; }
-    .foot-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-    .foot-copy { font-family: var(--serif); font-size: 13px; color: var(--ink-3); }
-    .foot-home { font-family: var(--mono); font-size: 11px; color: var(--ink-3); text-decoration: none; transition: color .2s; }
-    .foot-home:hover { color: var(--accent); }
-
-    @media (max-width: 600px) {
-      .article-wrap { padding: 36px 20px 64px; }
-      .rules-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+  <link rel="stylesheet" href="/assets/theme.css" />
+  <link rel="stylesheet" href="/assets/site.css" />
 </head>
 <body>
 
-  <nav class="top-nav" aria-label="Site navigation">
-    <div class="top-nav-inner">
-      <a href="/" class="nav-back">← Back to portfolio</a>
-      <a href="/" class="nav-logo" aria-label="Animesh Pandey home">AP<span>.</span></a>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <defs>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
+  </defs>
+</svg>
+
+<a class="skip-link" href="#article-content">Skip to article</a>
+
+<header>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Animesh Pandey, home">AP<span>.</span></a>
+    <div class="nav-right">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+        <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      </button>
+      <a href="/resume.pdf" download class="nav-resume" aria-label="Download resume PDF">
+        <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+        Resume
+      </a>
+      <button id="hamburger" class="hamburger" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+        <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
     </div>
-  </nav>
+  </div>
+</header>
 
-  <main>
-    <div class="article-wrap">
+<div id="nav-overlay" aria-hidden="true"></div>
+<nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="mobile-nav-header">
+    <a href="/" class="nav-logo">AP<span>.</span></a>
+    <button id="mobile-nav-close" class="mobile-nav-close" aria-label="Close menu">
+      <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li><a href="/#about">about</a></li>
+    <li><a href="/#experience">experience</a></li>
+    <li><a href="/#skills">skills</a></li>
+    <li><a href="/#projects">projects</a></li>
+    <li><a href="/#writing">writing</a></li>
+    <li><a href="/#contact">contact</a></li>
+  </ul>
+  <div class="mobile-nav-footer">
+    <a href="/resume.pdf" download class="nav-resume">
+      <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+      Download Resume
+    </a>
+  </div>
+</nav>
 
-      <div class="art-platform" aria-label="Category">JavaScript · Language Internals</div>
+<main id="article-content">
+  <div class="article-shell">
 
-      <h1 class="art-title">How Well Do You Know <code>this</code>?</h1>
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
+      <a href="/#writing">Writing</a>
+      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
+      <span aria-current="page">How Well Do You Know "this"?</span>
+    </nav>
 
-      <div class="art-meta">
-        <time class="art-date" datetime="2021-02-28">February 28, 2021</time>
-        <span class="art-read" aria-label="Reading time">9 min read</span>
-        <span class="art-tag">JavaScript</span>
-        <span class="art-tag">this keyword</span>
-        <span class="art-tag">Binding Rules</span>
+    <header class="article-header">
+      <p class="article-label">JavaScript · Binding Rules</p>
+      <h1 class="article-title-main">How Well Do You Know <code style="font-size:.75em;font-family:var(--mono);background:var(--surface-2);padding:2px 8px;border-radius:5px">this</code>?</h1>
+      <div class="article-byline">
+        <span>Animesh Pandey</span>
+        <span>·</span>
+        <time datetime="2021-02-28">February 28, 2021</time>
+        <span>·</span>
+        <span>5 min read</span>
       </div>
+    </header>
 
-      <div class="art-body">
-        <p>The <code>this</code> keyword in JavaScript is one of the language's most misunderstood and most frequently Googled concepts. Developers often treat it as magic or memorise fragile heuristics. This article builds a correct mental model from first principles.</p>
+    <div class="article-prose">
+      <p>JavaScript's <code>this</code> keyword is one of the most misunderstood features in the language. Unlike other languages where <code>this</code> refers to the enclosing class instance, in JavaScript <code>this</code> is a <strong>runtime binding</strong> determined entirely by how and where a function is called: its call site.</p>
 
-        <p>The most important thing to understand: <strong><code>this</code> is not author-time binding — it's runtime binding</strong>. It has nothing to do with where a function is defined and everything to do with how and where it is called. The call-site — the location in code where a function is invoked — determines what <code>this</code> refers to.</p>
+      <p>There are four binding rules, applied in order of precedence. Understanding them lets you predict exactly what <code>this</code> will refer to in any context, without guessing or reaching for <code>.bind()</code> by reflex.</p>
 
-        <p>JavaScript has exactly <strong>four binding rules</strong> for <code>this</code>, applied in a strict order of precedence. Understanding the rules — and their precedence — lets you look at any call-site and know with certainty what <code>this</code> will be, without guessing. This is the mental model the article builds.</p>
-      </div>
+      <h2>The four binding rules</h2>
 
-      <!-- Four binding rules -->
-      <div class="rules-grid" aria-label="The four this-binding rules">
-        <div class="rule-card">
-          <div class="rule-num">Rule 1 — Highest precedence</div>
-          <div class="rule-name">new Binding</div>
-          <div class="rule-desc">When a function is called with <code>new</code>, <code>this</code> is the newly created object.</div>
-        </div>
-        <div class="rule-card">
-          <div class="rule-num">Rule 2</div>
-          <div class="rule-name">Explicit Binding</div>
-          <div class="rule-desc"><code>call()</code>, <code>apply()</code>, or <code>bind()</code> explicitly set <code>this</code> to the passed object.</div>
-        </div>
-        <div class="rule-card">
-          <div class="rule-num">Rule 3</div>
-          <div class="rule-name">Implicit Binding</div>
-          <div class="rule-desc">When a function is called as a method on an object, <code>this</code> is that object.</div>
-        </div>
-        <div class="rule-card">
-          <div class="rule-num">Rule 4 — Lowest precedence</div>
-          <div class="rule-name">Default Binding</div>
-          <div class="rule-desc">When no other rule applies, <code>this</code> is the global object (or <code>undefined</code> in strict mode).</div>
-        </div>
-      </div>
+      <p><strong>1. new binding:</strong> When a function is called with <code>new</code>, a brand new object is created and <code>this</code> inside the function refers to that object.</p>
 
-      <div class="topics" aria-label="Topics covered">
-        <p class="topics-label">// What you'll learn</p>
-        <ul class="topics-list">
-          <li>Why <code>this</code> is a runtime binding, not an author-time binding</li>
-          <li>How to identify the call-site and apply the correct binding rule</li>
-          <li>All four binding rules with concrete code examples</li>
-          <li>Precedence order — which rule wins when multiple apply</li>
-          <li>Arrow functions and lexical <code>this</code> — why they're different</li>
-          <li>Common mistakes: losing implicit binding, accidental global binding</li>
-        </ul>
-      </div>
+      <p><strong>2. Explicit binding:</strong> Using <code>.call()</code>, <code>.apply()</code>, or <code>.bind()</code> explicitly sets <code>this</code> to the provided object, regardless of call site.</p>
 
-      <div class="art-cta">
-        <p class="cta-label">// Read the full article</p>
-        <a href="https://javascript.plainenglish.io/how-well-do-you-know-this-ce4355bc9b" target="_blank" rel="noopener noreferrer" class="cta-btn">
-          Read on Medium — JavaScript in Plain English ↗
-        </a>
-        <div class="crosspost">
-          <span class="crosspost-label">Also on:</span>
-          <a href="https://dev.to/anmshpndy/how-well-do-you-know-this-2cg1" target="_blank" rel="noopener noreferrer" class="crosspost-link">Dev.to</a>
-        </div>
-      </div>
+      <p><strong>3. Implicit binding:</strong> When a function is called as a method of an object (<code>obj.fn()</code>), <code>this</code> refers to that object. The binding can be lost if the function is extracted and called independently.</p>
 
-      <!-- Related article -->
-      <div class="also-read">
-        <p class="also-label">// Related article</p>
-        <a href="https://hackernoon.com/everything-you-need-to-know-about-this-vo2933yg" target="_blank" rel="noopener noreferrer" class="also-link">
-          <div>
-            <div class="also-link-label">HackerNoon · Mar 2021</div>
-            <div class="also-link-title">Everything You Need to Know About <code>this</code> in JavaScript ↗</div>
-          </div>
-        </a>
-      </div>
+      <p><strong>4. Default binding:</strong> The fallback when none of the above apply. In strict mode, <code>this</code> is <code>undefined</code>; in non-strict mode, it falls back to the global object.</p>
 
-      <div class="author-card">
-        <div class="author-av" aria-hidden="true">AP</div>
-        <div>
-          <div class="author-name-el">Animesh Pandey</div>
-          <div class="author-role">Senior Frontend Engineer · Bangalore, India</div>
-          <div class="author-links">
-            <a href="/" class="author-link">Portfolio</a>
-            <a href="/#writing" class="author-link">More writing</a>
-            <a href="https://linkedin.com/in/pandeyanimesh" class="author-link" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://x.com/anmshpndy" class="author-link" target="_blank" rel="noopener noreferrer">X / Twitter</a>
-          </div>
-        </div>
-      </div>
-
+      <blockquote>
+        The full article on Medium walks through each rule with annotated code examples, explains binding loss, and covers arrow functions, which don't have their own <code>this</code> at all.
+      </blockquote>
     </div>
-  </main>
 
-  <footer>
-    <div class="foot-inner">
-      <span class="foot-copy">Animesh Pandey · Bangalore, India</span>
-      <a href="/" class="foot-home">← anmshpndy.com</a>
+    <div style="margin-top:40px;padding:28px;background:var(--surface);border:1px solid var(--border);border-radius:14px;">
+      <p style="font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px">// Read the full article</p>
+      <a href="https://anmshpndy.medium.com/how-well-do-you-know-this-ff6c22e21f00" target="_blank" rel="noopener noreferrer"
+         style="display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:15px;font-weight:500;background:var(--ink);color:var(--bg);text-decoration:none;padding:13px 24px;border-radius:9px;margin-bottom:20px;min-height:44px;">
+        Read on Medium ↗
+      </a>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--ink-3)">Also on:</span>
+        <a href="https://dev.to/anmshpndy/how-well-do-you-know-this-2cg1" target="_blank" rel="noopener noreferrer"
+           style="font-family:var(--mono);font-size:11px;color:var(--ink-2);text-decoration:none;padding:4px 12px;border:1px solid var(--border-2);border-radius:100px;">Dev.to</a>
+        <a href="https://hackernoon.com/everything-you-need-to-know-about-this-vo2933yg" target="_blank" rel="noopener noreferrer"
+           style="font-family:var(--mono);font-size:11px;color:var(--ink-2);text-decoration:none;padding:4px 12px;border:1px solid var(--border-2);border-radius:100px;">HackerNoon</a>
+      </div>
     </div>
-  </footer>
 
+    <div style="margin-top:32px;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;">
+      <p style="font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px">// Also by Animesh</p>
+      <a href="/fundamentals-of-functional-javascript/"
+         style="display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;padding:14px 18px;background:var(--bg);border:1px solid var(--border);border-radius:10px;">
+        <span style="font-family:var(--serif);font-size:17px;color:var(--ink)">Fundamentals of Functional JavaScript</span>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--ink-3);white-space:nowrap">6 min read</span>
+      </a>
+    </div>
+
+    <div style="margin-top:48px;padding-top:36px;border-top:1px solid var(--border);display:flex;align-items:flex-start;gap:18px;">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:17px;color:var(--bg);flex-shrink:0" aria-hidden="true">AP</div>
+      <div>
+        <div style="font-family:var(--serif);font-size:18px;color:var(--ink);margin-bottom:3px">Animesh Pandey</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.05em;margin-bottom:12px">Senior Frontend Engineer · Bangalore, India</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <a href="/" style="font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-decoration:none;">Portfolio</a>
+          <a href="/#writing" style="font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-decoration:none;">More writing</a>
+          <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer" style="font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-decoration:none;">LinkedIn</a>
+          <a href="https://x.com/anmshpndy" target="_blank" rel="noopener noreferrer" style="font-family:var(--mono);font-size:11.5px;color:var(--ink-2);text-decoration:none;">X / Twitter</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-l">Animesh Pandey · Bangalore, India</div>
+    <a href="/" style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;">← anmshpndy.com</a>
+  </div>
+</footer>
+
+<script src="/assets/theme.js" defer></script>
+<script src="/assets/nav.js" defer></script>
 </body>
 </html>

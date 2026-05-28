@@ -1,0 +1,16 @@
+{
+  "name": "Animesh Pandey — Senior Frontend Engineer",
+  "short_name": "Animesh Pandey",
+  "description": "Portfolio of Animesh Pandey, Senior Frontend Engineer based in Bangalore.",
+  "start_url": "/",
+  "display": "browser",
+  "theme_color": "#FAF8F4",
+  "background_color": "#FAF8F4",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

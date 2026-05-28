@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <pattern id="dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="1.2" fill="#DDD6C9" opacity="0.6"/>
+    </pattern>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#FAF8F4"/>
+  <!-- Dot grid -->
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <!-- Warm glow -->
+  <radialGradient id="g1" cx="15%" cy="60%" r="50%">
+    <stop offset="0%" stop-color="#BF5A32" stop-opacity="0.08"/>
+    <stop offset="100%" stop-color="#FAF8F4" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="g2" cx="85%" cy="15%" r="40%">
+    <stop offset="0%" stop-color="#4E7A68" stop-opacity="0.06"/>
+    <stop offset="100%" stop-color="#FAF8F4" stop-opacity="0"/>
+  </radialGradient>
+  <rect width="1200" height="630" fill="url(#g1)"/>
+  <rect width="1200" height="630" fill="url(#g2)"/>
+
+  <!-- Left accent bar -->
+  <rect x="80" y="80" width="4" height="470" fill="#BF5A32" opacity="0.4" rx="2"/>
+
+  <!-- Name -->
+  <text x="116" y="220" font-family="Georgia, serif" font-size="88" font-weight="400" fill="#1C1714" letter-spacing="-2">Animesh Pandey</text>
+  <text x="116" y="220" font-family="Georgia, serif" font-size="88" font-weight="400" fill="#1C1714" letter-spacing="-2">
+    <tspan font-size="88" fill="#BF5A32">.</tspan>
+  </text>
+
+  <!-- Separator dot -->
+  <circle cx="1148" cy="218" r="8" fill="#BF5A32"/>
+
+  <!-- Title -->
+  <text x="116" y="295" font-family="Georgia, serif" font-size="34" font-style="italic" fill="#5C4F47">Senior Frontend Engineer</text>
+
+  <!-- Divider -->
+  <rect x="116" y="330" width="560" height="1" fill="#DDD6C9"/>
+
+  <!-- Stack chips row -->
+  <g transform="translate(116, 358)">
+    <!-- React chip -->
+    <rect x="0" y="0" width="88" height="32" rx="6" fill="#F2EDE4" stroke="#DDD6C9" stroke-width="1"/>
+    <text x="44" y="21" font-family="'Courier New', monospace" font-size="13" fill="#5C4F47" text-anchor="middle">React</text>
+
+    <rect x="98" y="0" width="108" height="32" rx="6" fill="#F2EDE4" stroke="#DDD6C9" stroke-width="1"/>
+    <text x="152" y="21" font-family="'Courier New', monospace" font-size="13" fill="#5C4F47" text-anchor="middle">TypeScript</text>
+
+    <rect x="216" y="0" width="84" height="32" rx="6" fill="#F2EDE4" stroke="#DDD6C9" stroke-width="1"/>
+    <text x="258" y="21" font-family="'Courier New', monospace" font-size="13" fill="#5C4F47" text-anchor="middle">Next.js</text>
+
+    <rect x="310" y="0" width="136" height="32" rx="6" fill="#F8E5DA" stroke="rgba(191,90,50,0.25)" stroke-width="1"/>
+    <text x="378" y="21" font-family="'Courier New', monospace" font-size="13" fill="#BF5A32" text-anchor="middle">Microfrontends</text>
+
+    <rect x="456" y="0" width="72" height="32" rx="6" fill="#F2EDE4" stroke="#DDD6C9" stroke-width="1"/>
+    <text x="492" y="21" font-family="'Courier New', monospace" font-size="13" fill="#5C4F47" text-anchor="middle">SSR</text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="116" y="450" font-family="system-ui, sans-serif" font-size="19" fill="#5C4F47">7+ years · SaaS dashboards · 50k+ daily users · agentic AI</text>
+
+  <!-- Location + status row -->
+  <g transform="translate(116, 495)">
+    <!-- Green status dot -->
+    <circle cx="6" cy="10" r="5" fill="#4E7A68"/>
+    <text x="20" y="15" font-family="'Courier New', monospace" font-size="14" fill="#4E7A68">Open to senior &amp; staff roles</text>
+    <text x="310" y="15" font-family="'Courier New', monospace" font-size="14" fill="#9B8C84">·  Bangalore, India</text>
+  </g>
+
+  <!-- URL -->
+  <text x="116" y="555" font-family="'Courier New', monospace" font-size="15" fill="#9B8C84">anmshpndy.com</text>
+
+  <!-- Right decorative element -->
+  <text x="900" y="380" font-family="Georgia, serif" font-size="160" fill="#1C1714" opacity="0.03">AP</text>
+</svg>
