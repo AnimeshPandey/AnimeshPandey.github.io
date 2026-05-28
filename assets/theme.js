@@ -3,7 +3,7 @@
   function getTheme() {
     var stored = localStorage.getItem('theme');
     if (stored === 'dark' || stored === 'light') return stored;
-    return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'dark'; /* dark by default */
   }
 
   function applyTheme(theme) {
