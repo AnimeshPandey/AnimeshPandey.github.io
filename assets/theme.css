@@ -26,6 +26,13 @@
   --bp-lg:      820px;
   --bp-xl:      1024px;
   --theme-color-val: #FAF8F4;
+  --viz-accent: rgba(191,90,50,.28);
+  --viz-muted: rgba(92,79,71,.2);
+  --viz-soft: rgba(78,122,104,.22);
+  --viz-alpha-1: .18;
+  --viz-alpha-2: .3;
+  --motion-fast: 180ms;
+  --motion-med: 360ms;
 }
 
 /* ── Dark theme ── */
@@ -45,6 +52,11 @@
   --border:     #2E2926;
   --border-2:   #3D3632;
   --theme-color-val: #141210;
+  --viz-accent: rgba(224,122,82,.38);
+  --viz-muted: rgba(196,184,174,.24);
+  --viz-soft: rgba(123,175,152,.28);
+  --viz-alpha-1: .24;
+  --viz-alpha-2: .38;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -64,5 +76,10 @@
     --border:     #2E2926;
     --border-2:   #3D3632;
     --theme-color-val: #141210;
+    --viz-accent: rgba(224,122,82,.38);
+    --viz-muted: rgba(196,184,174,.24);
+    --viz-soft: rgba(123,175,152,.28);
+    --viz-alpha-1: .24;
+    --viz-alpha-2: .38;
   }
 }
