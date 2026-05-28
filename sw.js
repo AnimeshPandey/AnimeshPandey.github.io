@@ -1,4 +1,4 @@
-const CACHE = 'ap-v4';
+const CACHE = 'ap-v5';
 const ASSETS = [
   '/',
   '/assets/theme.css',
@@ -6,8 +6,6 @@ const ASSETS = [
   '/assets/theme.js',
   '/assets/nav.js',
   '/assets/visuals.js',
-  '/assets/visuals.d3.js',
-  '/assets/visuals.three.js',
   '/favicon.svg',
   '/assets/og-image.png',
 ];
