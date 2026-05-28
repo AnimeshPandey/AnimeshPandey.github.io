@@ -30,6 +30,13 @@
     initSkillsToggle();
     initCardExpand();
     initMobileEgg();
+    if (caps.finePointer && caps.canvas2d && !caps.reducedMotion) initDesktopEgg();
+    if (caps.iob) initTimelineHighlight();
+    initImpactLens();
+    initRecruiterMode();
+    initResumeToast();
+    if (!caps.reducedMotion) initThemeCrossfade();
+    initHireShortcut();
   }
 
   /* ══════════════════════════════════════════════════
@@ -257,6 +264,331 @@
     card.querySelector('.egg-close').addEventListener('click', closeCard);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && open) closeCard();
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
+     DESKTOP EASTER EGG — Canvas 2D skill constellation
+     ?  key triggers; ESC / button closes; 12s auto-close
+     ══════════════════════════════════════════════════ */
+  function initDesktopEgg() {
+    /* Create overlay */
+    var overlay = document.createElement('div');
+    overlay.id = 'egg-desktop-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Skills constellation');
+    overlay.setAttribute('tabindex', '-1');
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.innerHTML =
+      '<div class="egg-desktop-ui">' +
+        '<p class="egg-desktop-title">// skills constellation</p>' +
+        '<p class="egg-desktop-hint">drag to rotate · esc to close</p>' +
+        '<button class="egg-desktop-close" aria-label="Close skills constellation">✕ close</button>' +
+      '</div>' +
+      '<canvas id="egg-desktop-canvas" aria-hidden="true"></canvas>';
+    document.body.appendChild(overlay);
+
+    var canvas = document.getElementById('egg-desktop-canvas');
+    var ctx = canvas.getContext('2d');
+    var closeBtn = overlay.querySelector('.egg-desktop-close');
+
+    var SKILLS = [
+      'React','TypeScript','Next.js','Microfrontends',
+      'Module Federation','Design Systems','Node.js','GraphQL',
+      'D3.js','Playwright','Storybook','Webpack',
+      'Vite','GitHub Actions','Agentic AI','LangChain',
+      'WCAG 2.1','Highcharts','Docker','AWS',
+      'Redux','Zustand','React Query','RAG',
+      'SSR / SSG','Recharts','Monorepo','LLM Streaming'
+    ];
+
+    var N = SKILLS.length;
+    /* Fibonacci sphere layout */
+    var pts = SKILLS.map(function(label, i) {
+      var phi   = Math.acos(1 - 2 * (i + 0.5) / N);
+      var theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      return { label: label, x: Math.sin(phi) * Math.cos(theta), y: Math.sin(phi) * Math.sin(theta), z: Math.cos(phi) };
+    });
+
+    var rotX = 0.3, rotY = 0, velX = 0.0008, velY = 0.003;
+    var dragging = false, lastDX = 0, lastDY = 0;
+    var open = false, raf, autoTimer;
+
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+
+    function rotate(p) {
+      var cx = Math.cos(rotX), sx = Math.sin(rotX);
+      var cy = Math.cos(rotY), sy = Math.sin(rotY);
+      var y1 = p.y * cx - p.z * sx, z1 = p.y * sx + p.z * cx;
+      return { x: p.x * cy + z1 * sy, y: y1, z: -p.x * sy + z1 * cy, label: p.label };
+    }
+
+    function project(p) {
+      var W = canvas.width, H = canvas.height;
+      var R = Math.min(W, H) * 0.34;
+      var fov = 2.8, s = fov / (fov + p.z);
+      return { px: W/2 + p.x * R * s, py: H/2 + p.y * R * s, s: s, z: p.z };
+    }
+
+    function draw() {
+      if (!open) return;
+      raf = requestAnimationFrame(draw);
+      if (!dragging) { rotY += velY; rotX += velX; }
+
+      var W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      /* Dark background */
+      ctx.fillStyle = '#0e0c0b';
+      ctx.fillRect(0, 0, W, H);
+
+      var rotated = pts.map(rotate);
+
+      /* Edges between nearby nodes */
+      for (var a = 0; a < N; a++) {
+        for (var b = a + 1; b < N; b++) {
+          var pa = rotated[a], pb = rotated[b];
+          var dd = (pa.x-pb.x)*(pa.x-pb.x) + (pa.y-pb.y)*(pa.y-pb.y) + (pa.z-pb.z)*(pa.z-pb.z);
+          if (dd < 0.72) {
+            var pa2 = project(pa), pb2 = project(pb);
+            var avgDepth = (pa2.z + pb2.z) / 2;
+            var alpha = (1 - Math.sqrt(dd) / 0.85) * 0.12 * ((avgDepth + 1) / 2);
+            ctx.beginPath();
+            ctx.moveTo(pa2.px, pa2.py); ctx.lineTo(pb2.px, pb2.py);
+            ctx.strokeStyle = 'rgba(191,90,50,' + alpha.toFixed(3) + ')';
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      /* Nodes + labels — sorted back to front */
+      var sorted = rotated.slice().sort(function(a, b) { return a.z - b.z; });
+      sorted.forEach(function(p) {
+        var q = project(p);
+        var norm = (q.z + 1) / 2;
+        var dotR = 1.5 + norm * 2.5;
+        var dotA = 0.2 + norm * 0.8;
+        ctx.beginPath();
+        ctx.arc(q.px, q.py, dotR, 0, 6.2832);
+        ctx.fillStyle = 'rgba(191,90,50,' + dotA.toFixed(2) + ')';
+        ctx.fill();
+
+        if (norm > 0.4) {
+          var fs = (9 + norm * 5).toFixed(0);
+          ctx.font = fs + 'px "JetBrains Mono",monospace';
+          ctx.fillStyle = 'rgba(240,230,218,' + (0.15 + norm * 0.7).toFixed(2) + ')';
+          ctx.textAlign = 'left';
+          ctx.fillText(p.label, q.px + dotR + 4, q.py + 4);
+        }
+      });
+    }
+
+    function openEgg() {
+      if (open) return;
+      open = true; resize();
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      closeBtn.focus();
+      raf = requestAnimationFrame(draw);
+      autoTimer = setTimeout(closeEgg, 12000);
+    }
+
+    function closeEgg() {
+      if (!open) return;
+      open = false;
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      cancelAnimationFrame(raf);
+      clearTimeout(autoTimer);
+      /* Return focus to hero */
+      var hero = document.getElementById('hero');
+      if (hero) { hero.setAttribute('tabindex', '-1'); hero.focus(); }
+    }
+
+    /* Drag to rotate */
+    canvas.addEventListener('mousedown', function(e) { dragging = true; lastDX = e.clientX; lastDY = e.clientY; canvas.style.cursor = 'grabbing'; });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      velY = (e.clientX - lastDX) * 0.012;
+      velX = (e.clientY - lastDY) * 0.010;
+      rotY += velY; rotX += velX;
+      lastDX = e.clientX; lastDY = e.clientY;
+    });
+    document.addEventListener('mouseup', function() { dragging = false; velX = 0.0008; velY = 0.003; canvas.style.cursor = ''; });
+
+    closeBtn.addEventListener('click', closeEgg);
+
+    document.addEventListener('keydown', function(e) {
+      var inInput = e.target && e.target.matches && e.target.matches('input,textarea,select,[contenteditable]');
+      if (inInput) return;
+      if (e.key === '?' && !open) { e.preventDefault(); openEgg(); }
+      if (e.key === 'Escape' && open) closeEgg();
+    });
+
+    window.addEventListener('resize', function() { if (open) resize(); });
+  }
+
+  /* ══════════════════════════════════════════════════
+     TIMELINE SCROLL-SYNC — highlight active employer
+     ══════════════════════════════════════════════════ */
+  function initTimelineHighlight() {
+    var items = document.querySelectorAll('.t-item');
+    if (!items.length) return;
+
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          items.forEach(function(el) { el.classList.remove('tl-active'); });
+          entry.target.classList.add('tl-active');
+        }
+      });
+    }, { threshold: 0.35, rootMargin: '0px 0px -30% 0px' });
+
+    items.forEach(function(item) { io.observe(item); });
+  }
+
+  /* ══════════════════════════════════════════════════
+     PROJECT IMPACT LENS — bar chart reveal on hover/tap
+     ══════════════════════════════════════════════════ */
+  function initImpactLens() {
+    document.querySelectorAll('.pc[data-impact]').forEach(function(card) {
+      var raw = card.getAttribute('data-impact');
+      var metrics;
+      try { metrics = JSON.parse(raw); } catch(e) { return; }
+      if (!metrics || !metrics.length) return;
+
+      var lens = document.createElement('div');
+      lens.className = 'pc-lens';
+      lens.setAttribute('aria-hidden', 'true');
+      lens.innerHTML = metrics.map(function(m) {
+        return '<div class="pcl-row">' +
+          '<span class="pcl-label">' + m.l + '</span>' +
+          '<div class="pcl-bar-wrap"><div class="pcl-bar" data-v="' + m.v + '"></div></div>' +
+          '<span class="pcl-val">' + m.d + '</span>' +
+        '</div>';
+      }).join('');
+      card.appendChild(lens);
+
+      var hideTimer;
+      function show() {
+        clearTimeout(hideTimer);
+        if (!lens.classList.contains('open')) {
+          lens.classList.add('open');
+          /* Animate bars after a tick */
+          setTimeout(function() {
+            lens.querySelectorAll('.pcl-bar').forEach(function(bar) {
+              bar.style.width = (bar.getAttribute('data-v') || '0') + '%';
+            });
+          }, 30);
+        }
+      }
+      function hide() {
+        hideTimer = setTimeout(function() {
+          lens.classList.remove('open');
+          lens.querySelectorAll('.pcl-bar').forEach(function(bar) { bar.style.width = '0%'; });
+        }, 180);
+      }
+
+      if (caps.finePointer) {
+        card.addEventListener('mouseenter', show);
+        card.addEventListener('mouseleave', hide);
+      } else {
+        /* Mobile: tap the metric chip to toggle */
+        var metricEl = card.querySelector('.pc-metric');
+        if (metricEl) {
+          metricEl.style.cursor = 'pointer';
+          metricEl.setAttribute('title', 'Tap to see impact breakdown');
+          metricEl.addEventListener('click', function(e) {
+            e.stopPropagation();
+            lens.classList.contains('open') ? hide() : show();
+          });
+        }
+      }
+      card.addEventListener('focusin', show);
+      card.addEventListener('focusout', hide);
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
+     RECRUITER MODE — body class emphasising hire info
+     ══════════════════════════════════════════════════ */
+  function initRecruiterMode() {
+    var toggle = document.getElementById('recruiter-toggle');
+    if (!toggle) return;
+
+    var on = false;
+    try { on = localStorage.getItem('recruiter') === '1'; } catch(e) {}
+
+    function set(active) {
+      on = active;
+      document.body.classList.toggle('recruiter-mode', on);
+      toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+      try { localStorage.setItem('recruiter', on ? '1' : '0'); } catch(e) {}
+    }
+
+    if (on) set(true);
+    toggle.addEventListener('click', function() { set(!on); });
+  }
+
+  /* ══════════════════════════════════════════════════
+     RESUME TOAST — feedback on resume download click
+     ══════════════════════════════════════════════════ */
+  function initResumeToast() {
+    var toast = document.getElementById('copyToast');
+    if (!toast) return;
+
+    document.querySelectorAll('a[href="resume.pdf"]').forEach(function(link) {
+      link.addEventListener('click', function() {
+        toast.textContent = '⬇ Resume downloading…';
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2400);
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
+     THEME CROSS-FADE — smooth token transition
+     ══════════════════════════════════════════════════ */
+  function initThemeCrossfade() {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    /* Capture phase: fires before theme.js changes the theme */
+    btn.addEventListener('click', function() {
+      var html = document.documentElement;
+      html.classList.add('theme-transitioning');
+      setTimeout(function() { html.classList.remove('theme-transitioning'); }, 320);
+    }, true);
+  }
+
+  /* ══════════════════════════════════════════════════
+     HIRE SHORTCUT — typing "hire" scrolls to contact
+     ══════════════════════════════════════════════════ */
+  function initHireShortcut() {
+    var buf = '', timer;
+    var announce = document.getElementById('shortcut-announce');
+
+    document.addEventListener('keydown', function(e) {
+      if (e.target && e.target.matches && e.target.matches('input,textarea,select,[contenteditable]')) { buf = ''; return; }
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key.length !== 1) return;
+      clearTimeout(timer);
+      buf += e.key.toLowerCase();
+      if (buf.length > 4) buf = buf.slice(-4);
+      timer = setTimeout(function() { buf = ''; }, 2000);
+      if (buf.endsWith('hire')) {
+        buf = '';
+        var contact = document.getElementById('contact');
+        if (!contact) return;
+        contact.scrollIntoView({ behavior: 'smooth' });
+        var field = document.getElementById('fname');
+        setTimeout(function() { if (field) field.focus(); }, 700);
+        if (announce) {
+          announce.textContent = 'Jumped to contact section — type your name to get in touch';
+          setTimeout(function() { announce.textContent = ''; }, 3000);
+        }
+      }
     });
   }
 

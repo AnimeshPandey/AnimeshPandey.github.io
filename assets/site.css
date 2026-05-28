@@ -908,10 +908,153 @@ footer {
 }
 .egg-close:hover { color: var(--accent); border-color: var(--accent); }
 
+/* ── Desktop easter egg: [ press ? ] hint ── */
+.egg-key-hint {
+  display: none;
+  position: absolute; bottom: 28px; right: var(--page-pad); z-index: 2;
+  align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+  color: var(--ink-3); text-transform: uppercase; pointer-events: none; user-select: none;
+  animation: cue-fade 3s ease-in-out infinite;
+}
+.egg-key-hint kbd {
+  font-family: var(--mono); font-size: 9px;
+  background: var(--surface); border: 1px solid var(--border-2);
+  border-radius: 3px; padding: 2px 6px; color: var(--ink-2);
+}
+@media (min-width: 820px) { .egg-key-hint { display: flex; } }
+
+/* ── Desktop easter egg: fullscreen canvas overlay ── */
+#egg-desktop-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: none; flex-direction: column;
+}
+#egg-desktop-overlay.open { display: flex; }
+#egg-desktop-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.egg-desktop-ui {
+  position: relative; z-index: 1; padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  pointer-events: none;
+}
+.egg-desktop-title {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+  color: rgba(250,248,244,.45); text-transform: uppercase;
+}
+.egg-desktop-hint {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+  color: rgba(250,248,244,.28); text-transform: uppercase;
+}
+.egg-desktop-close {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: rgba(250,248,244,.5); background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
+  padding: 8px 14px; cursor: pointer; transition: color .2s, border-color .2s, background .2s;
+  pointer-events: auto; min-height: 44px;
+}
+.egg-desktop-close:hover { color: #fff; border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.12); }
+
+/* ── Timeline: active item highlight ── */
+.t-item .t-dot {
+  transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
+}
+.t-item .t-role { transition: color .35s ease; }
+.t-item.tl-active .t-dot {
+  transform: scale(1.4);
+  box-shadow: 0 0 0 4px var(--bg), 0 0 0 7px var(--accent);
+  background: var(--accent);
+}
+.t-item.tl-active > .t-role { color: var(--accent); }
+
+/* ── Project: impact lens ── */
+.pc-lens {
+  margin-top: 12px;
+  max-height: 0; overflow: hidden; opacity: 0;
+  transition: max-height .3s cubic-bezier(.16,1,.3,1), opacity .25s ease;
+  border-top: 0px solid var(--border);
+}
+.pc-lens.open {
+  max-height: 160px; opacity: 1;
+  border-top-width: 1px; padding-top: 10px;
+}
+.pcl-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.pcl-row:last-child { margin-bottom: 0; }
+.pcl-label {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .04em;
+  color: var(--ink-3); width: 100px; flex-shrink: 0; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.pcl-bar-wrap { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.pcl-bar {
+  height: 100%; width: 0%; background: var(--accent); border-radius: 2px;
+  transition: width .5s cubic-bezier(.16,1,.3,1);
+  will-change: width;
+}
+.pcl-val {
+  font-family: var(--mono); font-size: 9.5px; color: var(--accent);
+  flex-shrink: 0; text-align: right; min-width: 36px;
+}
+
+/* ── Recruiter mode toggle ── */
+.recruiter-toggle {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+  color: var(--ink-3); background: none; border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 12px; cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+  display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 12px; min-height: 36px;
+}
+.recruiter-toggle:hover { color: var(--sage); border-color: var(--sage); background: var(--sage-bg); }
+.recruiter-toggle[aria-pressed="true"] { color: var(--sage); border-color: var(--sage); background: var(--sage-bg); }
+.recruiter-toggle .rt-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--border-2);
+  transition: background .2s; flex-shrink: 0;
+}
+.recruiter-toggle[aria-pressed="true"] .rt-dot { background: var(--sage); animation: pulse 2.2s ease-in-out infinite; }
+
+/* ── Recruiter mode body class ── */
+.recruiter-mode #contact {
+  outline: 2px solid rgba(var(--sage-rgb, 78,122,104),.4);
+  outline-offset: -2px; border-radius: 4px;
+}
+.recruiter-mode .contact-intro { font-weight: 600; color: var(--ink); }
+.recruiter-mode a[href="resume.pdf"],
+.recruiter-mode a[href="resume.pdf"]:not(:hover) {
+  border-color: var(--sage); color: var(--sage);
+}
+.recruiter-mode .hc-dl { border-color: var(--sage); color: rgba(109,184,153,.9); }
+.recruiter-mode .sk.featured {
+  background: var(--accent); color: var(--bg);
+  border-color: var(--accent);
+}
+.recruiter-mode .t-desc { color: var(--ink-3); }
+
+/* ── Theme cross-fade ── */
+html.theme-transitioning body,
+html.theme-transitioning header,
+html.theme-transitioning section,
+html.theme-transitioning .hero-card,
+html.theme-transitioning .pc,
+html.theme-transitioning .sk,
+html.theme-transitioning .sv-card,
+html.theme-transitioning .stat,
+html.theme-transitioning .t-item,
+html.theme-transitioning .article-item,
+html.theme-transitioning .article-item::before,
+html.theme-transitioning .writing-profiles,
+html.theme-transitioning .edu-card,
+html.theme-transitioning footer {
+  transition: background-color 260ms ease, color 260ms ease, border-color 260ms ease !important;
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   .hero-ticker-track { animation: none; }
   .egg-card { transition: none; }
+  .egg-key-hint { animation: none; opacity: .5; }
+  #egg-desktop-overlay { display: none !important; }
+  .t-item .t-dot { transition: none; }
+  .t-item .t-role { transition: none; }
+  .pc-lens { transition: none; }
 }
 
 /* ── Reading progress bar ── */

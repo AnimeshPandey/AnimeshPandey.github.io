@@ -492,6 +492,11 @@
       </div>
     </div>
 
+    <div class="egg-key-hint" id="egg-key-hint" aria-hidden="true">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-sparkle"/></svg>
+      press <kbd>?</kbd>
+    </div>
+
     <div class="scroll-cue" aria-hidden="true">
       <svg width="14" height="14"><use href="#i-chevron-down"/></svg>
       scroll
@@ -841,7 +846,7 @@
     <p class="projects-intro">Selected work across SaaS analytics, automotive retail, and GovTech.</p>
     <div class="projects-grid">
 
-      <article class="pc wide fade-up">
+      <article class="pc wide fade-up" data-impact='[{"l":"50k+ daily users","v":95,"d":"50k+"},{"l":"Load time cut","v":30,"d":"−30%"},{"l":"Independent teams","v":60,"d":"10+"}]'>
         <p class="pc-type">Architecture · Tekion</p>
         <h3 class="pc-name">Microfrontend Architecture at Scale</h3>
         <p class="pc-desc">Architected and shipped a production microfrontend system using Webpack Module Federation across 10+ mission-critical enterprise automotive retail modules, each owned by an independent squad and deployed without cross-team coordination. Achieved a 30% reduction in load times through aggressive code splitting, route-level lazy loading, and bundle-level Lighthouse budgets enforced in CI. Introduced AI-driven development tooling that cut engineering toil by 30%. The platform serves 50,000+ daily active users across dealership and OEM workflows.</p>
@@ -854,7 +859,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up">
+      <article class="pc fade-up" data-impact='[{"l":"API overhead cut","v":30,"d":"−30%"},{"l":"Residents served","v":80,"d":"millions"}]'>
         <p class="pc-type">GovTech · Vassar Labs</p>
         <h3 class="pc-name">Kerala-WRIS Water Intelligence Platform</h3>
         <p class="pc-desc">Led frontend development for the Government of Kerala's statewide water resource information system. Built real-time geospatial dashboards over Leaflet with district-level overlays, time-series hydrology charts in Highcharts, and D3.js data-layer visualisations for field operations teams. Reduced API overhead by 30% through frontend caching and request batching strategies. Concurrently built a real-time SCADA monitoring system for Andhra Pradesh Water Resources used by field teams for operational visibility.</p>
@@ -867,7 +872,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up">
+      <article class="pc fade-up" data-impact='[{"l":"LLM streaming","v":100,"d":"real-time"},{"l":"Tool-call panels","v":75,"d":"inline"},{"l":"Progressive UX","v":85,"d":"done"}]'>
         <p class="pc-type">AI Product · Lifesight</p>
         <h3 class="pc-name">Mia: Agentic AI Analytics Interface</h3>
         <p class="pc-desc">Built the frontend for Lifesight's agentic AI assistant, which interprets complex marketing datasets and surfaces attribution insights through a streaming conversational interface. Implemented real-time LLM response streaming, tool-call visualisation panels that expose reasoning steps, and deep integration with the Unified Measurement OS data layer. Designed to handle ambiguous multi-step queries from non-technical marketing stakeholders with progressive disclosure of confidence and caveats.</p>
@@ -880,7 +885,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up">
+      <article class="pc fade-up" data-impact='[{"l":"Proactive alerts","v":100,"d":"inline"},{"l":"AI narration","v":80,"d":"LLM"}]'>
         <p class="pc-type">AI Feature · Lifesight</p>
         <h3 class="pc-name">Attribution Anomaly Intelligence</h3>
         <p class="pc-desc">Embedded AI layer within the Lifesight attribution dashboard that continuously monitors media spend signals and proactively surfaces anomalies without requiring the user to go looking. Statistical changepoint detection (z-score + PELT algorithm) runs on the data pipeline; results are handed to an LLM that generates plain-English explanations of what shifted, why it likely happened, and what action to consider. Surfaces budget pacing issues, channel-level attribution drift, and incrementality test failures as inline insight cards — not alerts that get ignored.</p>
@@ -893,7 +898,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up">
+      <article class="pc fade-up" data-impact='[{"l":"SSR first-paint","v":100,"d":"fast"},{"l":"Core Web Vitals","v":90,"d":"✓ CI"},{"l":"Playwright cover","v":80,"d":"full"}]'>
         <p class="pc-type">Analytics Platform · Lifesight</p>
         <h3 class="pc-name">Marketing Intelligence Dashboard</h3>
         <p class="pc-desc">Delivered enterprise-grade analytics dashboards powering Lifesight's Unified Measurement OS: MMM (Media Mix Modelling) curves, incrementality test results, and causal attribution breakdowns for enterprise brands managing multi-million-dollar ad budgets. Built with Next.js SSR for fast first-paint on dense data-heavy views, enforced Core Web Vitals budgets in CI, and established platform-wide Playwright testing standards that became the team baseline.</p>
@@ -906,7 +911,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up">
+      <article class="pc fade-up" data-impact='[{"l":"Components built","v":65,"d":"20+"},{"l":"Code duplication","v":25,"d":"−25%"},{"l":"WCAG 2.1 pass","v":100,"d":"✓"}]'>
         <p class="pc-type">Design System · Tekion</p>
         <h3 class="pc-name">Enterprise Component Library</h3>
         <p class="pc-desc">Designed and maintained a Storybook-documented shared component library used across 10+ product modules at Tekion. Built 20+ reusable, accessible UI components (forms, data tables, modal flows, navigation patterns) with full TypeScript typing, WCAG 2.1 compliance, and interactive documentation. Reduced per-team duplicate code by 25% and measurably shortened time-to-feature across multiple engineering squads.</p>
@@ -919,7 +924,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up">
+      <article class="pc fade-up" data-impact='[{"l":"Engineering toil","v":30,"d":"−30%"},{"l":"React 18 migrated","v":100,"d":"done"},{"l":"Time saved","v":90,"d":"days"}]'>
         <p class="pc-type">AI Tooling · Tekion</p>
         <h3 class="pc-name">AI Dev Tooling Suite</h3>
         <p class="pc-desc">Internal CLI and VS Code extension that automated the highest-toil parts of Tekion's frontend development cycle, cutting team overhead by 30%. The scaffolder generates a fully wired microfrontend module in under 10 seconds — Webpack Module Federation config, Storybook stories, Jest setup, and GitHub Actions job — from a single command. An AI-assisted PR review workflow uses GPT-4 to flag accessibility regressions, performance anti-patterns, and missing test coverage before human review. Also shipped automated migration scripts for the React 16 to 18 upgrade across all 10+ modules, completing the migration in days rather than weeks.</p>
@@ -932,7 +937,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up">
+      <article class="pc fade-up" data-impact='[{"l":"Offline-first","v":100,"d":"SQLite"},{"l":"VIN scanning","v":70,"d":"native"},{"l":"Shared state","v":80,"d":"Redux"}]'>
         <p class="pc-type">Mobile · Tekion</p>
         <h3 class="pc-name">Dealer Operations Mobile App</h3>
         <p class="pc-desc">React Native companion to Tekion's web-based dealer management platform, designed for dealership staff who work on the shop floor and can't stay at a desk. Covers real-time inventory lookup with VIN scanning, live service queue visibility, and customer CRM access. Built offline-first with SQLite-backed local state that syncs over a conflict-free delta protocol when connectivity restores — critical in underground service bays with patchy signal. Deep-linked from the web platform and shares Redux slices with the web app via a shared library, keeping business logic in one place.</p>
@@ -945,7 +950,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up">
+      <article class="pc fade-up" data-impact='[{"l":"Regressions caught","v":60,"d":"12 / mo 1"},{"l":"CI coverage","v":100,"d":"all MFEs"}]'>
         <p class="pc-type">Developer Tooling · Tekion</p>
         <h3 class="pc-name">Performance CI Guard</h3>
         <p class="pc-desc">GitHub Actions pipeline that runs Lighthouse CI against a Playwright-rendered preview deployment on every pull request, automatically blocking merges when Core Web Vitals or bundle size regresses beyond configured thresholds. Posts a generated PR comment with before/after metric tables, a bundle diff, and a 30-day trend sparkline so reviewers have full context without leaving GitHub. Historical performance data is persisted to a Postgres store and surfaced on an internal dashboard used by engineering leadership to track platform health across all 10+ microfrontend modules. Went from no performance visibility to catching 12 regressions in the first month.</p>
@@ -1192,7 +1197,13 @@
 <!-- FOOTER -->
 <footer>
   <div class="foot-inner">
-    <div class="foot-l">Animesh Pandey · Bangalore, India · © <span id="yr">2026</span></div>
+    <div class="foot-l">
+      Animesh Pandey · Bangalore, India · © <span id="yr">2026</span>
+      <button class="recruiter-toggle" id="recruiter-toggle" aria-pressed="false" title="Toggle recruiter view: highlights contact info and resume">
+        <span class="rt-dot" aria-hidden="true"></span>
+        recruiter mode
+      </button>
+    </div>
     <nav aria-label="Social links">
       <div class="foot-socials">
         <a href="mailto:animeshpandey1909@gmail.com" class="social-btn" aria-label="Send email to Animesh">
@@ -1225,6 +1236,8 @@
     <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
   </svg>
 </button>
+
+<div id="shortcut-announce" role="status" aria-live="polite" class="visually-hidden"></div>
 
 <script src="/assets/theme.js" defer></script>
 <script src="/assets/nav.js" defer></script>
