@@ -110,6 +110,76 @@
       });
     }
 
+    /* ── Hero: rotating tagline ── */
+    var rotateEl = document.querySelector('.hero-rotate');
+    if (rotateEl) {
+      var rSpans = Array.from(rotateEl.querySelectorAll('span'));
+      var rIdx = 0;
+      setInterval(function() {
+        rSpans[rIdx].classList.remove('active');
+        rIdx = (rIdx + 1) % rSpans.length;
+        rSpans[rIdx].classList.add('active');
+      }, 2800);
+    }
+
+    /* ── Hero: spotlight glow + card 3D tilt + float parallax ── */
+    /* Only on fine-pointer (mouse) devices without reduced-motion preference */
+    (function() {
+      var heroEl = document.getElementById('hero');
+      var heroCard = document.querySelector('.hero-card');
+      var heroFloats = Array.from(document.querySelectorAll('.hero-float'));
+
+      if (!heroEl || !heroCard) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!window.matchMedia('(pointer: fine)').matches) return;
+
+      var rafPending = false;
+      var pendingMx = 5, pendingMy = 60;
+      var heroReady = false;
+
+      /* Delay card tilt until entrance animation completes */
+      setTimeout(function() { heroReady = true; }, 1200);
+
+      function applySpotlight() {
+        heroEl.style.setProperty('--mx', pendingMx.toFixed(1) + '%');
+        heroEl.style.setProperty('--my', pendingMy.toFixed(1) + '%');
+        rafPending = false;
+      }
+
+      heroEl.addEventListener('mousemove', function(e) {
+        var rect = heroEl.getBoundingClientRect();
+
+        /* Spotlight glow follows cursor */
+        pendingMx = (e.clientX - rect.left) / rect.width * 100;
+        pendingMy = (e.clientY - rect.top) / rect.height * 100;
+        if (!rafPending) { rafPending = true; requestAnimationFrame(applySpotlight); }
+
+        /* Card 3D tilt */
+        if (heroReady) {
+          var cr = heroCard.getBoundingClientRect();
+          var cx = ((e.clientX - cr.left) / cr.width - .5) * 14;
+          var cy = ((e.clientY - cr.top) / cr.height - .5) * 10;
+          heroCard.style.transform = 'perspective(900px) rotateY(' + cx.toFixed(2) + 'deg) rotateX(' + (-cy).toFixed(2) + 'deg) translateZ(8px)';
+        }
+
+        /* Float parallax — larger keywords move more (feel closer) */
+        var dx = (e.clientX - rect.left - rect.width / 2) / rect.width;
+        var dy = (e.clientY - rect.top - rect.height / 2) / rect.height;
+        heroFloats.forEach(function(f) {
+          var sz = parseInt(f.style.fontSize, 10) || 30;
+          var spd = sz / 2800;
+          f.style.transform = 'translate(' + (dx * spd * rect.width).toFixed(1) + 'px,' + (dy * spd * rect.height).toFixed(1) + 'px)';
+        });
+      });
+
+      heroEl.addEventListener('mouseleave', function() {
+        if (heroCard) heroCard.style.transform = '';
+        heroFloats.forEach(function(f) { f.style.transform = ''; });
+        pendingMx = 5; pendingMy = 60;
+        if (!rafPending) { rafPending = true; requestAnimationFrame(applySpotlight); }
+      });
+    }());
+
     /* Stats count-up — only when motion is allowed */
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches
         && 'IntersectionObserver' in window) {
