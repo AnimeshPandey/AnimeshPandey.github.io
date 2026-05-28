@@ -1,21 +1,12 @@
-/* visuals.js — orchestrator: canvas particle field + easter eggs
-   Lazy-loads visuals.d3.js and visuals.three.js on demand.
-   All effects degrade gracefully; none are required for content. */
+/* visuals.js — orchestrator: hero canvas particle field + skills toggle + card expand
+   Mobile easter egg (badge → career snapshot) also lives here.
+   All effects degrade gracefully; none are required for content.
+   Emergency kill-switch: set window.__VISUALS_DISABLED = true before this script loads. */
 (function () {
   'use strict';
 
-  /* ── Utilities ──────────────────────────────────── */
+  /* ── Capability detection ── */
   function mq(q) { return window.matchMedia(q).matches; }
-
-  function loadScript(src, cb, onErr) {
-    var s = document.createElement('script');
-    s.src = src;
-    s.onerror = function () { if (onErr) onErr(); };
-    if (cb) s.onload = cb;
-    document.head.appendChild(s);
-  }
-
-  /* ── Capability gate ─────────────────────────────── */
   var conn = navigator.connection || {};
   var caps = {
     reducedMotion: mq('(prefers-reduced-motion: reduce)'),
@@ -26,7 +17,7 @@
     iob:           'IntersectionObserver' in window
   };
 
-  /* ── Boot ────────────────────────────────────────── */
+  /* ── Boot ── */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {
@@ -34,17 +25,15 @@
   }
 
   function boot() {
-    if (window.__VISUALS_DISABLED) return; /* emergency gate */
+    if (window.__VISUALS_DISABLED) return;
     if (caps.canvas2d && !caps.reducedMotion && !caps.saveData) initHeroCanvas();
-    lazyLoadD3();
+    initSkillsToggle();
+    initCardExpand();
     initMobileEgg();
-    initDesktopEgg();
   }
 
   /* ══════════════════════════════════════════════════
      HERO CANVAS — 2D particle constellation
-     Canvas 2D achieves same visual as Three.js for a
-     flat particle network at zero CDN cost.
      ══════════════════════════════════════════════════ */
   function initHeroCanvas() {
     var hero = document.getElementById('hero');
@@ -63,9 +52,8 @@
     var ctx = canvas.getContext('2d');
     canvas.width = W; canvas.height = H;
 
-    /* Particle state */
     var px = new Float32Array(N), py = new Float32Array(N);
-    var pz = new Float32Array(N); /* depth 0.4–1 for size/opacity scaling */
+    var pz = new Float32Array(N);
     var vx = new Float32Array(N), vy = new Float32Array(N);
     for (var i = 0; i < N; i++) {
       px[i] = Math.random() * W;
@@ -75,7 +63,6 @@
       vy[i] = (Math.random() - 0.5) * 0.13;
     }
 
-    /* Mouse repulsion (fine pointer only) */
     var mx = -999, my = -999;
     if (caps.finePointer) {
       hero.addEventListener('mousemove', function (e) {
@@ -98,12 +85,9 @@
       var lineBase = dark ? '220,210,200,' : '100,75,50,';
 
       for (var j = 0; j < N; j++) {
-        /* Move */
         px[j] += vx[j]; py[j] += vy[j];
-        /* Soft bounce */
         if (px[j] < 0 || px[j] > W) vx[j] *= -1;
         if (py[j] < 0 || py[j] > H) vy[j] *= -1;
-        /* Mouse repulsion */
         if (mx > 0) {
           var ddx = px[j] - mx, ddy = py[j] - my;
           var d2 = ddx * ddx + ddy * ddy;
@@ -114,14 +98,12 @@
             if (sp > 0.9) { vx[j] = vx[j]/sp*0.9; vy[j] = vy[j]/sp*0.9; }
           }
         }
-        /* Draw dot */
         ctx.beginPath();
         ctx.arc(px[j], py[j], pz[j] * (mobile ? 1.4 : 1.8), 0, 6.2832);
         ctx.fillStyle = 'rgba(' + dotBase + (pz[j] * 0.32).toFixed(2) + ')';
         ctx.fill();
       }
 
-      /* Connections */
       for (var a = 0; a < N; a++) {
         for (var b = a + 1; b < N; b++) {
           var dx = px[a] - px[b], dy = py[a] - py[b];
@@ -138,11 +120,9 @@
       }
     }
 
-    /* Fade in after first paint */
     requestAnimationFrame(function () { requestAnimationFrame(function () { canvas.style.opacity = '1'; }); });
     loop();
 
-    /* Pause when hero is off-screen */
     if (caps.iob) {
       new IntersectionObserver(function (entries) {
         running = entries[0].isIntersecting;
@@ -150,7 +130,6 @@
       }, { threshold: 0 }).observe(hero);
     }
 
-    /* Resize */
     var rt;
     window.addEventListener('resize', function () {
       clearTimeout(rt);
@@ -162,61 +141,81 @@
   }
 
   /* ══════════════════════════════════════════════════
-     D3 SKILLS GRAPH — lazy via IntersectionObserver
+     SKILLS TOGGLE — List / Visual switcher
      ══════════════════════════════════════════════════ */
-  function lazyLoadD3() {
-    var skillsEl = document.getElementById('skills');
-    if (!skillsEl) return;
+  function initSkillsToggle() {
+    var btns    = document.querySelectorAll('.stgl');
+    var listEl  = document.getElementById('skills-list');
+    var visualEl = document.getElementById('skills-visual');
+    if (!btns.length || !listEl || !visualEl) return;
 
-    function load() {
-      if (window.__d3Loaded) return;
-      window.__d3Loaded = true;
-      loadScript('https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js', function () {
-        loadScript('/assets/visuals.d3.js');
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var view = btn.dataset.view;
+        btns.forEach(function (b) {
+          b.classList.toggle('stgl-active', b === btn);
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+        if (view === 'visual') {
+          listEl.hidden = true;
+          visualEl.hidden = false;
+          visualEl.removeAttribute('aria-hidden');
+        } else {
+          visualEl.hidden = true;
+          visualEl.setAttribute('aria-hidden', 'true');
+          listEl.hidden = false;
+        }
       });
-    }
-
-    if (caps.iob) {
-      var obs = new IntersectionObserver(function (entries) {
-        if (!entries[0].isIntersecting) return;
-        obs.disconnect(); load();
-      }, { rootMargin: '300px' });
-      obs.observe(skillsEl);
-    } else {
-      load();
-    }
+    });
   }
 
   /* ══════════════════════════════════════════════════
-     MOBILE EASTER EGG — tap badge → insight card
-     Discoverable: badge shows "✦ Tap for insights"
-     hint that fades in 1.5s after load.
+     PROJECT CARD EXPAND — "Read more" for clamped descs
+     ══════════════════════════════════════════════════ */
+  function initCardExpand() {
+    document.querySelectorAll('.pc-desc').forEach(function (desc) {
+      /* Only add toggle if text is actually clamped */
+      if (desc.scrollHeight <= desc.clientHeight + 2) return;
+
+      var btn = document.createElement('button');
+      btn.className = 'pc-read-more';
+      btn.textContent = 'Read more ↓';
+      btn.setAttribute('aria-expanded', 'false');
+
+      desc.parentNode.insertBefore(btn, desc.nextSibling);
+
+      btn.addEventListener('click', function () {
+        var expanded = desc.classList.toggle('expanded');
+        btn.textContent = expanded ? 'Show less ↑' : 'Read more ↓';
+        btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
+     MOBILE EASTER EGG — tap badge → career snapshot
+     Hint text fades in 1.5s after load.
      ══════════════════════════════════════════════════ */
   function initMobileEgg() {
-    /* Show on touch devices; fine-pointer users get the desktop egg */
     if (caps.finePointer && !caps.coarsePointer) return;
 
     var badge = document.querySelector('#hero .badge');
     if (!badge) return;
 
-    /* Make badge interactive */
     badge.setAttribute('role', 'button');
     badge.setAttribute('tabindex', '0');
     badge.setAttribute('aria-label', 'Open to senior and staff roles — tap for career snapshot');
     badge.style.cursor = 'pointer';
 
-    /* Discoverable hint text */
     var hint = document.createElement('p');
     hint.className = 'egg-hint';
     hint.setAttribute('aria-hidden', 'true');
     hint.textContent = '✦  Tap badge for career snapshot';
     badge.parentNode.insertBefore(hint, badge.nextSibling);
 
-    /* Fade hint in after 1.5s, fade out after 7s */
     setTimeout(function () { hint.classList.add('visible'); }, 1500);
     setTimeout(function () { hint.classList.remove('visible'); }, 7000);
 
-    /* Build slide-up insight card */
     var card = document.createElement('div');
     card.className = 'egg-card';
     card.setAttribute('role', 'dialog');
@@ -258,71 +257,6 @@
     card.querySelector('.egg-close').addEventListener('click', closeCard);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && open) closeCard();
-    });
-  }
-
-  /* ══════════════════════════════════════════════════
-     DESKTOP EASTER EGG — ? key → Three.js constellation
-     Discoverable: a visible [ press ? ] button sits at
-     the bottom-right corner of the hero section.
-     ══════════════════════════════════════════════════ */
-  function initDesktopEgg() {
-    if (!caps.finePointer) return;
-
-    var hero = document.getElementById('hero');
-    if (!hero) return;
-
-    /* Visible hint button in hero */
-    var hint = document.createElement('button');
-    hint.className = 'egg-key-hint';
-    hint.setAttribute('aria-label', 'Press ? to launch interactive tech constellation');
-    hint.innerHTML = '<span aria-hidden="true">[ press ? ]</span>';
-    hero.appendChild(hint);
-
-    /* Show hint after 2s */
-    setTimeout(function () { hint.classList.add('visible'); }, 2000);
-
-    var eggActive = false;
-
-    function trigger() {
-      if (eggActive) return;
-      eggActive = true;
-      hint.classList.remove('visible');
-
-      function launch() {
-        if (typeof window.__launchThreeEgg === 'function') {
-          window.__launchThreeEgg(function () {
-            eggActive = false;
-            hint.classList.add('visible');
-          });
-        } else {
-          eggActive = false;
-        }
-      }
-
-      function onFail() { eggActive = false; hint.classList.add('visible'); }
-
-      if (window.THREE && window.__threeEggReady) {
-        launch();
-      } else if (window.THREE) {
-        loadScript('/assets/visuals.three.js', launch, onFail);
-      } else {
-        loadScript('https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.min.js', function () {
-          loadScript('/assets/visuals.three.js', launch, onFail);
-        }, onFail);
-      }
-    }
-
-    hint.addEventListener('click', trigger);
-    hint.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); trigger(); }
-    });
-
-    /* Also respond to ? key */
-    document.addEventListener('keydown', function (e) {
-      if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.target.closest('input, textarea, [contenteditable]')) {
-        trigger();
-      }
     });
   }
 
