@@ -775,6 +775,149 @@ footer {
 .fade-up { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
 .fade-up.in { opacity: 1; transform: none; }
 
+/* ══════════════════════════════════════════
+   VISUALS — canvas, D3 graph, easter eggs
+   ══════════════════════════════════════════ */
+
+/* ── D3 skills force graph wrapper ── */
+.skills-d3-wrap {
+  margin-bottom: 48px;
+  touch-action: none; /* allow drag gestures */
+}
+.skills-d3-wrap svg { display: block; border-radius: 12px; max-width: 100%; }
+.skills-d3-wrap .skn { outline: none; }
+.skills-d3-wrap .skn:focus-visible circle {
+  stroke-width: 2.5;
+  stroke-opacity: 1 !important;
+}
+
+/* ── Mobile easter egg: badge hint ── */
+.egg-hint {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
+  color: var(--accent); text-transform: uppercase;
+  margin-top: 10px; margin-bottom: 0;
+  opacity: 0; transition: opacity .4s ease;
+}
+.egg-hint.visible { opacity: 1; }
+
+/* ── Mobile easter egg: slide-up insight card ── */
+.egg-card {
+  position: fixed; bottom: -100%; left: 50%;
+  transform: translateX(-50%);
+  width: min(380px, 94vw);
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 20px 20px 0 0;
+  z-index: 500;
+  box-shadow: 0 -8px 48px rgba(0,0,0,.28);
+  transition: bottom .42s cubic-bezier(.16,1,.3,1);
+}
+.egg-card.open { bottom: 0; }
+.egg-card-inner { padding: 24px 22px 28px; }
+.egg-card-label {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em;
+  color: var(--accent); text-transform: uppercase; margin-bottom: 18px;
+}
+.egg-rows { display: flex; flex-direction: column; gap: 0; }
+.egg-row {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.egg-row:last-child { border-bottom: none; }
+.egg-n {
+  font-family: var(--serif); font-size: 30px; line-height: 1;
+  color: var(--accent); min-width: 60px;
+}
+.egg-l {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+  color: var(--ink-2); text-transform: uppercase;
+}
+.egg-note {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+  color: var(--ink-3); text-align: center; margin-top: 14px; margin-bottom: 0;
+}
+.egg-close {
+  display: block; width: 100%; margin-top: 16px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: var(--ink-3); text-transform: uppercase;
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px; cursor: pointer; transition: color .2s, border-color .2s;
+}
+.egg-close:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ── Desktop easter egg: ? hint button in hero ── */
+.egg-key-hint {
+  position: absolute; bottom: 28px; right: var(--page-pad); z-index: 2;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+  color: var(--ink-3); text-transform: uppercase;
+  background: none; border: none; cursor: pointer; padding: 4px 0;
+  opacity: 0; transition: opacity .5s ease, color .2s;
+  pointer-events: none;
+}
+.egg-key-hint.visible { opacity: 1; pointer-events: auto; }
+.egg-key-hint:hover { color: var(--accent); }
+.egg-key-hint:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px;
+}
+
+/* ── Three.js overlay (desktop easter egg) ── */
+#egg-three-overlay {
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(10,8,6,.88);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .4s ease;
+  cursor: pointer;
+}
+#egg-three-overlay.open { opacity: 1; }
+.egg-three-inner {
+  position: relative; width: 100%; height: 100%;
+  pointer-events: none;
+}
+#egg-three-canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+}
+#egg-three-labels {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.egg-three-lbl {
+  position: absolute; top: 0; left: 0;
+  font-family: var(--mono); font-size: 9px; letter-spacing: .07em;
+  white-space: nowrap;
+  transform-origin: 0 0;
+  pointer-events: none;
+  transition: opacity .15s;
+}
+.egg-three-ui {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 28px max(var(--page-pad),24px);
+  display: flex; align-items: center; justify-content: space-between;
+  pointer-events: auto;
+}
+.egg-three-title {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: rgba(250,248,244,.45); text-transform: uppercase; margin: 0;
+}
+.egg-three-close {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: rgba(250,248,244,.5); text-transform: uppercase;
+  background: none; border: 1px solid rgba(250,248,244,.15); border-radius: 8px;
+  padding: 8px 14px; cursor: pointer;
+  transition: color .2s, border-color .2s;
+}
+.egg-three-close:hover { color: rgba(250,248,244,.9); border-color: rgba(250,248,244,.4); }
+.egg-three-close:focus-visible {
+  outline: 2px solid rgba(191,90,50,.8); outline-offset: 3px;
+}
+
+/* ── Reduced motion overrides for visuals ── */
+@media (prefers-reduced-motion: reduce) {
+  .egg-card { transition: none; }
+  #egg-three-overlay { transition: none; }
+  .egg-key-hint { transition: opacity .01ms; }
+}
+
 /* ── Reading progress bar ── */
 .progress-bar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 300;
