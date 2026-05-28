@@ -34,6 +34,7 @@
   }
 
   function boot() {
+    if (window.__VISUALS_DISABLED) return; /* emergency gate */
     if (caps.canvas2d && !caps.reducedMotion && !caps.saveData) initHeroCanvas();
     lazyLoadD3();
     initMobileEgg();
