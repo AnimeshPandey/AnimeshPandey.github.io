@@ -28,6 +28,8 @@
     if (window.__VISUALS_DISABLED) return;
     if (caps.canvas2d && !caps.reducedMotion && !caps.saveData) initHeroCanvas();
     initCardExpand();
+    initCardTilt();
+    initTagStagger();
     initMobileEgg();
     if (caps.finePointer && caps.canvas2d && !caps.reducedMotion) initDesktopEgg();
     if (caps.iob) initTimelineHighlight();
@@ -166,6 +168,41 @@
         var expanded = desc.classList.toggle('expanded');
         btn.textContent = expanded ? 'Show less ↑' : 'Read more ↓';
         btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
+     CARD TILT — cursor-tracked 3-D perspective tilt
+     Fine pointer + motion-OK only.
+     ══════════════════════════════════════════════════ */
+  function initCardTilt() {
+    if (!caps.finePointer || caps.reducedMotion) return;
+    document.querySelectorAll('.pc').forEach(function(card) {
+      card.addEventListener('mouseenter', function() {
+        card.style.transitionProperty = 'border-color, box-shadow';
+      });
+      card.addEventListener('mousemove', function(e) {
+        var r  = card.getBoundingClientRect();
+        var nx = (e.clientX - r.left) / r.width  - 0.5;
+        var ny = (e.clientY - r.top)  / r.height - 0.5;
+        card.style.transform =
+          'translateY(-4px) perspective(700px) rotateX(' + (-ny * 6).toFixed(2) + 'deg) rotateY(' + (nx * 6).toFixed(2) + 'deg)';
+      });
+      card.addEventListener('mouseleave', function() {
+        card.style.transitionProperty = '';
+        card.style.transform = '';
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
+     TAG STAGGER — set --tag-i index for CSS animation
+     ══════════════════════════════════════════════════ */
+  function initTagStagger() {
+    document.querySelectorAll('.pc').forEach(function(card) {
+      card.querySelectorAll('.tag').forEach(function(tag, i) {
+        tag.style.setProperty('--tag-i', i);
       });
     });
   }
@@ -447,7 +484,6 @@
         clearTimeout(hideTimer);
         if (!lens.classList.contains('open')) {
           lens.classList.add('open');
-          /* Animate bars after a tick */
           setTimeout(function() {
             lens.querySelectorAll('.pcl-bar').forEach(function(bar) {
               bar.style.width = (bar.getAttribute('data-v') || '0') + '%';
@@ -455,30 +491,31 @@
           }, 30);
         }
       }
-      function hide() {
-        hideTimer = setTimeout(function() {
+      function hide(immediate) {
+        if (immediate) {
+          clearTimeout(hideTimer);
           lens.classList.remove('open');
           lens.querySelectorAll('.pcl-bar').forEach(function(bar) { bar.style.width = '0%'; });
-        }, 180);
+        } else {
+          hideTimer = setTimeout(function() {
+            lens.classList.remove('open');
+            lens.querySelectorAll('.pcl-bar').forEach(function(bar) { bar.style.width = '0%'; });
+          }, 180);
+        }
       }
 
       if (caps.finePointer) {
         card.addEventListener('mouseenter', show);
-        card.addEventListener('mouseleave', hide);
+        card.addEventListener('mouseleave', function() { hide(false); });
       } else {
-        /* Mobile: tap the metric chip to toggle */
-        var metricEl = card.querySelector('.pc-metric');
-        if (metricEl) {
-          metricEl.style.cursor = 'pointer';
-          metricEl.setAttribute('title', 'Tap to see impact breakdown');
-          metricEl.addEventListener('click', function(e) {
-            e.stopPropagation();
-            lens.classList.contains('open') ? hide() : show();
-          });
-        }
+        /* Mobile: tap anywhere on the card (not read-more) to toggle */
+        card.addEventListener('click', function(e) {
+          if (e.target && e.target.closest && e.target.closest('.pc-read-more')) return;
+          lens.classList.contains('open') ? hide(true) : show();
+        });
       }
       card.addEventListener('focusin', show);
-      card.addEventListener('focusout', hide);
+      card.addEventListener('focusout', function() { hide(false); });
     });
   }
 
