@@ -299,6 +299,14 @@
       <path d="M12 3v2m0 14v2M5.22 5.22l1.42 1.42m10.72 10.72 1.42 1.42M3 12h2m14 0h2M5.22 18.78l1.42-1.42M17.36 6.64l1.42-1.42"/>
       <circle cx="12" cy="12" r="4"/>
     </symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="2"/>
+      <rect x="9" y="9" width="6" height="6"/>
+      <line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/>
+      <line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>
+      <line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/>
+      <line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/>
+    </symbol>
     <symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
       <path d="M6 12v5c3 3 9 3 12 0v-5"/>
@@ -404,6 +412,32 @@
   </div>
 </nav>
 
+<!-- RECRUITER STRIP — AI summary bar, visible when recruiter mode is active -->
+<div id="rm-strip" class="rm-strip" aria-hidden="true" role="region" aria-label="Recruiter summary">
+  <div class="rm-strip-inner">
+    <div class="rm-strip-id" aria-hidden="true">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+      <span class="rm-strip-label">profile.scan</span>
+    </div>
+    <div class="rm-fields">
+      <span class="rm-field"><span class="rm-fkey">candidate</span><span class="rm-fval" data-rm="Animesh Pandey"></span></span>
+      <span class="rm-sep" aria-hidden="true">/</span>
+      <span class="rm-field"><span class="rm-fkey">role</span><span class="rm-fval" data-rm="Senior Frontend Engineer"></span></span>
+      <span class="rm-sep rm-hide-sm" aria-hidden="true">/</span>
+      <span class="rm-field rm-hide-sm"><span class="rm-fkey">stack</span><span class="rm-fval" data-rm="React · TS · Next.js"></span></span>
+      <span class="rm-sep" aria-hidden="true">/</span>
+      <span class="rm-field"><span class="rm-fkey">status</span><span class="rm-fval rm-avail" data-rm="● open to roles"></span></span>
+    </div>
+    <div class="rm-strip-actions">
+      <a href="mailto:animeshpandey1909@gmail.com" class="rm-cta">contact</a>
+      <a href="resume.pdf" download class="rm-cta rm-cta-prime">resume ↓</a>
+      <button class="rm-close" id="rm-close" aria-label="Exit recruiter mode">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <main id="main-content">
 
   <!-- HERO -->
@@ -435,6 +469,12 @@
           <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
         </a>
       </div>
+
+      <button class="rm-hero-btn" id="rm-hero-toggle" aria-pressed="false" aria-label="Toggle recruiter view">
+        <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
+        <span>recruiter view</span>
+        <span class="rm-btn-dot" aria-hidden="true"></span>
+      </button>
 
       <!-- Fact strip — mobile only, card hidden -->
       <div class="hero-facts" aria-label="Quick facts" role="list">
@@ -1070,8 +1110,9 @@
     <div class="foot-l">
       Animesh Pandey · Bangalore, India · © <span id="yr">2026</span>
       <button class="recruiter-toggle" id="recruiter-toggle" aria-pressed="false" title="Toggle recruiter view: highlights contact info and resume">
-        <span class="rt-dot" aria-hidden="true"></span>
+        <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
         recruiter mode
+        <span class="rt-dot" aria-hidden="true"></span>
       </button>
     </div>
     <nav aria-label="Social links">
