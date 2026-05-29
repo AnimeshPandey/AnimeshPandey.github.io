@@ -1126,13 +1126,8 @@ footer {
   border-color: transparent; font-weight: 600;
 }
 
-/* Timeline: restore descriptions (was wrongly dimmed), dim tag clouds */
+/* Timeline: restore descriptions — all other sections fully interactive in recruiter mode */
 .recruiter-mode .t-desc { color: var(--ink-2); }
-.recruiter-mode .tags { opacity: .35; transition: opacity .3s; }
-
-/* Dim writing section and FAQ — low value for recruiters */
-.recruiter-mode #writing { opacity: .28; pointer-events: none; transition: opacity .4s ease; }
-.recruiter-mode .faq-section { opacity: .28; pointer-events: none; transition: opacity .4s ease; }
 
 /* ── Theme cross-fade ── */
 html.theme-transitioning body,
