@@ -1112,6 +1112,12 @@
     </div><!-- /contact-info -->
 
     <form class="form" id="contactForm" novalidate aria-label="Contact form">
+      <!-- Honeypot — hidden from real users; bots fill it and get silently rejected -->
+      <input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <!-- Web3Forms metadata -->
+      <input type="hidden" name="subject" value="Portfolio contact — anmshpndy.com" />
+      <input type="hidden" name="from_name" value="Portfolio Contact Form" />
+
       <div class="form-row">
         <div class="field">
           <label for="fname">Name</label>
@@ -1133,7 +1139,8 @@
         Send message
         <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
       </button>
-      <div class="form-success" id="formSuccess" role="status" aria-live="polite">✓ Opening your email client…</div>
+      <p class="form-privacy">Your message is sent securely to my inbox via <a href="https://web3forms.com/privacy" target="_blank" rel="noopener noreferrer">Web3Forms</a>. I don't sell your data.</p>
+      <div class="form-success" id="formSuccess" role="status" aria-live="polite" tabindex="-1"></div>
     </form>
   </section>
 
@@ -1188,6 +1195,7 @@
 <script src="/assets/theme.js" defer></script>
 <script src="/assets/nav.js" defer></script>
 <script src="/assets/visuals.js" defer></script>
+<script src="/assets/contact.js" defer></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
@@ -1208,49 +1216,6 @@ if ('serviceWorker' in navigator) {
   }, { threshold: 0.07 });
   document.querySelectorAll('.fade-up').forEach(function (el) { io.observe(el); });
 })();
-
-/* ── Contact form → mailto with inline validation ── */
-document.getElementById('contactForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  var nameEl  = document.getElementById('fname');
-  var emailEl = document.getElementById('femail');
-  var msgEl   = document.getElementById('fmsg');
-  var valid = true;
-
-  function setErr(el, errId, show) {
-    el.setAttribute('aria-invalid', show ? 'true' : 'false');
-    var err = document.getElementById(errId);
-    if (err) err.classList.toggle('visible', show);
-  }
-
-  setErr(nameEl,  'fname-err',  !nameEl.value.trim());
-  setErr(emailEl, 'femail-err', !emailEl.validity.valid);
-  setErr(msgEl,   'fmsg-err',   !msgEl.value.trim());
-
-  if (!nameEl.value.trim() || !emailEl.validity.valid || !msgEl.value.trim()) return;
-
-  var subject = encodeURIComponent('Hello from ' + nameEl.value.trim());
-  var body    = encodeURIComponent(msgEl.value.trim() + '\n\n' + nameEl.value.trim() + '\n' + emailEl.value.trim());
-  document.getElementById('formSuccess').style.display = 'block';
-  var a = document.createElement('a');
-  a.href = 'mailto:animeshpandey1909@gmail.com?subject=' + subject + '&body=' + body;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-});
-
-/* ── Copy email ── */
-var copyBtn = document.getElementById('copyEmailBtn');
-var toast   = document.getElementById('copyToast');
-if (copyBtn && navigator.clipboard) {
-  copyBtn.addEventListener('click', function () {
-    navigator.clipboard.writeText('animeshpandey1909@gmail.com').then(function () {
-      toast.textContent = '✓ Email copied!';
-      toast.classList.add('show');
-      setTimeout(function () { toast.classList.remove('show'); }, 2200);
-    });
-  });
-}
 
 /* ── Year ── */
 var yr = document.getElementById('yr');
@@ -1273,5 +1238,12 @@ if (yr) yr.textContent = new Date().getFullYear();
   document.head.appendChild(style);
 })();
 </script>
+<!-- ── Cloudflare Web Analytics ──────────────────────────────────
+     SETUP: Create a site at https://dash.cloudflare.com → Web Analytics
+     Replace YOUR_CF_BEACON_TOKEN with your site's beacon token.
+     Cookieless · no banner required · free.
+─────────────────────────────────────────────────────────────── -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "YOUR_CF_BEACON_TOKEN"}'></script>
 </body>
 </html>
