@@ -65,6 +65,10 @@
       history.replaceState(null, '', url.toString());
     }
 
+    // Reset body scroll and content on each open
+    if (bodyEl) { bodyEl.scrollTop = 0; bodyEl.innerHTML = ''; }
+    if (scanEl) { scanEl.innerHTML = ''; scanEl.classList.remove('rm-scan-done'); }
+
     // Trap focus and run phases
     trapFocus();
     if (reducedMotion) {
