@@ -555,33 +555,44 @@
     var on = false;
     try { on = localStorage.getItem('recruiter') === '1'; } catch(e) {}
 
+    /* Cancel-able typewriter — tracks all pending timers */
+    var twTimers = [];
+    function cancelTypewriters() {
+      twTimers.forEach(clearTimeout);
+      twTimers = [];
+    }
+
     function typewrite(el, text, delayMs) {
+      if (!el || !text) return;
       el.textContent = '';
       el.classList.remove('rm-typed');
       var i = 0;
-      setTimeout(function tick() {
+      function tick() {
         if (i < text.length) {
           el.textContent += text[i++];
-          setTimeout(tick, 22);
+          twTimers.push(setTimeout(tick, 20));
         } else {
           el.classList.add('rm-typed');
         }
-      }, delayMs);
+      }
+      twTimers.push(setTimeout(tick, delayMs));
     }
 
     function openStrip() {
       if (!strip) return;
+      cancelTypewriters();
       strip.classList.add('rm-open');
       strip.setAttribute('aria-hidden', 'false');
       document.documentElement.style.setProperty('--strip-h', '44px');
       var fields = strip.querySelectorAll('.rm-fval[data-rm]');
       fields.forEach(function(el, i) {
-        typewrite(el, el.getAttribute('data-rm'), 180 + i * 220);
+        typewrite(el, el.getAttribute('data-rm'), 60 + i * 140);
       });
     }
 
     function closeStrip() {
       if (!strip) return;
+      cancelTypewriters();
       strip.classList.remove('rm-open');
       strip.setAttribute('aria-hidden', 'true');
       document.documentElement.style.setProperty('--strip-h', '0px');
