@@ -27,7 +27,6 @@
   function boot() {
     if (window.__VISUALS_DISABLED) return;
     if (caps.canvas2d && !caps.reducedMotion && !caps.saveData) initHeroCanvas();
-    initSkillsToggle();
     initCardExpand();
     initMobileEgg();
     if (caps.finePointer && caps.canvas2d && !caps.reducedMotion) initDesktopEgg();
@@ -147,34 +146,6 @@
     });
   }
 
-  /* ══════════════════════════════════════════════════
-     SKILLS TOGGLE — List / Visual switcher
-     ══════════════════════════════════════════════════ */
-  function initSkillsToggle() {
-    var btns    = document.querySelectorAll('.stgl');
-    var listEl  = document.getElementById('skills-list');
-    var visualEl = document.getElementById('skills-visual');
-    if (!btns.length || !listEl || !visualEl) return;
-
-    btns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var view = btn.dataset.view;
-        btns.forEach(function (b) {
-          b.classList.toggle('stgl-active', b === btn);
-          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-        });
-        if (view === 'visual') {
-          listEl.hidden = true;
-          visualEl.hidden = false;
-          visualEl.removeAttribute('aria-hidden');
-        } else {
-          visualEl.hidden = true;
-          visualEl.setAttribute('aria-hidden', 'true');
-          listEl.hidden = false;
-        }
-      });
-    });
-  }
 
   /* ══════════════════════════════════════════════════
      PROJECT CARD EXPAND — "Read more" for clamped descs
