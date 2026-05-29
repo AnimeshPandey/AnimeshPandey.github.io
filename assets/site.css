@@ -533,7 +533,7 @@ h3.pc-name { font-family: var(--serif); font-size: 19px; font-weight: 400; color
 .article-item {
   background: var(--surface); padding: 20px var(--page-pad);
   border-bottom: 1px solid var(--border);
-  position: relative; transition: background .15s;
+  position: relative; transition: transform .15s ease, background .15s;
 }
 .article-item::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0;
@@ -628,6 +628,10 @@ h3.wi-title { font-family: var(--serif); font-size: 17px; font-weight: 400; colo
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 14px; padding: 24px;
   display: flex; flex-direction: column; gap: 20px;
+  transition: transform .2s ease, border-color .2s, box-shadow .2s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .edu-card:hover { transform: translateY(-3px); border-color: var(--border-2); box-shadow: 0 6px 24px rgba(28,23,20,.07); }
 }
 .edu-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 8px; }
 .edu-icon {
@@ -773,6 +777,10 @@ footer {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 12px; padding: 18px 18px 14px;
   border-top: 3px solid var(--cat, var(--border-2));
+  transition: transform .2s ease, box-shadow .2s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sv-card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(28,23,20,.07); }
 }
 .sv-head {
   display: flex; align-items: center; gap: 8px;
@@ -1053,9 +1061,12 @@ html.theme-transitioning footer {
 
 /* ── Touch press feedback ── */
 @media (pointer: coarse) {
-  .pc:active { transform: scale(.985); transition: transform .1s ease; }
-  .btn:active { transform: scale(.96); transition: transform .1s ease; }
-  .qn-link:active { transform: scale(.98); transition: transform .1s ease; }
+  .pc:active          { transform: scale(.985); transition: transform .1s ease; }
+  .btn:active         { transform: scale(.96);  transition: transform .1s ease; }
+  .qn-link:active     { transform: scale(.98);  transition: transform .1s ease; }
+  .article-item:active { transform: scale(.99); transition: transform .1s ease; }
+  .cq-btn:active      { transform: scale(.97);  transition: transform .1s ease; }
+  .social-btn:active  { transform: scale(.97);  transition: transform .1s ease; }
 }
 
 /* ── Stat counter: reserve space to prevent reflow ── */
