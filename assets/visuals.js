@@ -556,75 +556,60 @@
   }
 
   function initRecruiterMode() {
-    var heroToggle  = document.getElementById('rm-hero-toggle');
-    var footToggle  = document.getElementById('recruiter-toggle');
-    var strip       = document.getElementById('rm-strip');
-    var closeBtn    = document.getElementById('rm-close');
-    var openPanelBtn = document.getElementById('rm-open-panel');
-    var toggles     = [heroToggle, footToggle].filter(Boolean);
-    if (!toggles.length) return;
+    /* ── DOM refs ── */
+    var heroToggle    = document.getElementById('rm-hero-toggle');
+    var footToggle    = document.getElementById('recruiter-toggle');
+    var headerToggle  = document.getElementById('header-rm-toggle');
+    var headerOpenBtn = document.getElementById('header-rm-open');
+    var headerExitBtn = document.getElementById('header-rm-exit');
+    var mobileRmBtn   = document.getElementById('mobile-rm-btn');
+    var header        = document.querySelector('header');
 
+    /* Two-way toggles (hero + footer): turn mode on OR off */
+    var twoWayToggles = [heroToggle, footToggle].filter(Boolean);
+    /* All toggles for aria-pressed sync */
+    var allToggles = [heroToggle, footToggle, headerToggle, mobileRmBtn].filter(Boolean);
+
+    /* At least the header entry must exist */
+    if (!headerToggle && !twoWayToggles.length) return;
+
+    /* ── State ── */
     var on = false;
     try { on = localStorage.getItem('recruiter') === '1'; } catch(e) {}
 
-    /* ── Cancel-able typewriter — tracks all pending timers ── */
-    var twTimers = [];
-    function cancelTypewriters() {
-      twTimers.forEach(clearTimeout);
-      twTimers = [];
-    }
-
-    function typewrite(el, text, delayMs) {
-      if (!el || !text) return;
-      el.textContent = '';
-      el.classList.remove('rm-typed');
-      var i = 0;
-      function tick() {
-        if (i < text.length) {
-          el.textContent += text[i++];
-          twTimers.push(setTimeout(tick, 20));
-        } else {
-          el.classList.add('rm-typed');
-        }
-      }
-      twTimers.push(setTimeout(tick, delayMs));
-    }
-
-    function openStrip() {
-      if (!strip) return;
-      cancelTypewriters();
-      strip.classList.add('rm-open');
-      strip.setAttribute('aria-hidden', 'false');
-      document.documentElement.style.setProperty('--strip-h', '44px');
-      var fields = strip.querySelectorAll('.rm-fval[data-rm]');
-      fields.forEach(function(el, i) {
-        typewrite(el, el.getAttribute('data-rm'), 60 + i * 140);
+    /* ── Sync all toggle aria-pressed to current mode ── */
+    function syncToggles(active) {
+      allToggles.forEach(function (t) {
+        t.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
     }
 
-    function closeStrip() {
-      if (!strip) return;
-      cancelTypewriters();
-      strip.classList.remove('rm-open');
-      strip.setAttribute('aria-hidden', 'true');
-      document.documentElement.style.setProperty('--strip-h', '0px');
-      strip.querySelectorAll('.rm-fval').forEach(function(el) {
-        el.textContent = '';
-        el.classList.remove('rm-typed');
-      });
+    /* ── Header recruiter-active class (replaces strip) ── */
+    function activateHeader() {
+      if (header) header.classList.add('recruiter-active');
+    }
+    function deactivateHeader() {
+      if (header) header.classList.remove('recruiter-active');
     }
 
+    /* ── Core state setter ── */
     function set(active) {
       on = active;
       document.body.classList.toggle('recruiter-mode', on);
-      toggles.forEach(function(t) {
-        t.setAttribute('aria-pressed', on ? 'true' : 'false');
-      });
+      syncToggles(on);
       try { localStorage.setItem('recruiter', on ? '1' : '0'); } catch(e) {}
-      if (on) { openStrip(); } else { closeStrip(); }
+      if (on) {
+        activateHeader();
+      } else {
+        deactivateHeader();
+        /* Close panel when exiting mode */
+        if (window.RecruiterBriefing && window.RecruiterBriefing.isOpen()) {
+          window.RecruiterBriefing.close();
+        }
+      }
     }
 
-    /* ── Lazy-load the full briefing panel module ── */
+    /* ── Lazy-load recruiter panel module ── */
     var _loadPromise = null;
     function loadRecruiterModule() {
       if (window.RecruiterBriefing) return Promise.resolve(window.RecruiterBriefing);
@@ -635,7 +620,7 @@
         link.rel    = 'stylesheet';
         link.href   = '/assets/recruiter.css';
         link.onload = resolve;
-        link.onerror = resolve; // non-fatal
+        link.onerror = resolve;
         document.head.appendChild(link);
       });
 
@@ -650,42 +635,67 @@
       return _loadPromise;
     }
 
-    /* ── Toggles: turn mode on + open panel ── */
+    function enterAndOpen(trigger) {
+      if (!on) set(true);
+      loadRecruiterModule().then(function (m) {
+        if (m && m.open) m.open(trigger);
+      });
+    }
+
+    /* ── Restore from localStorage: mode on but do NOT auto-open panel ── */
     if (on) set(true);
-    toggles.forEach(function(t) {
-      t.addEventListener('click', function() {
-        var wasOn = on;
-        set(!wasOn);
-        if (!wasOn) {
-          /* Turning on — lazy-load and open panel */
-          loadRecruiterModule().then(function (m) {
-            if (m && m.open) m.open(t);
-          });
+
+    /* ── Two-way toggles (hero / footer): click toggles mode on/off ── */
+    twoWayToggles.forEach(function (t) {
+      t.addEventListener('click', function () {
+        if (on) {
+          /* Turning off: set(false) closes panel internally */
+          set(false);
         } else {
-          /* Turning off — close panel if open */
-          if (window.RecruiterBriefing && window.RecruiterBriefing.isOpen()) {
-            window.RecruiterBriefing.close();
-          }
+          /* Turning on: enter mode and open panel */
+          enterAndOpen(t);
         }
       });
     });
 
-    /* ── Strip close button ── */
-    if (closeBtn) closeBtn.addEventListener('click', function() {
-      set(false);
-      if (window.RecruiterBriefing && window.RecruiterBriefing.isOpen()) {
-        window.RecruiterBriefing.close();
-      }
-    });
-
-    /* ── "briefing ↗" button in strip ── */
-    if (openPanelBtn) openPanelBtn.addEventListener('click', function() {
-      loadRecruiterModule().then(function (m) {
-        if (m && m.open) m.open(openPanelBtn);
+    /* ── Header toggle: always opens briefing (never exits mode alone) ── */
+    if (headerToggle) {
+      headerToggle.addEventListener('click', function () {
+        enterAndOpen(headerToggle);
       });
-    });
+    }
 
-    /* ── Deep link: ?recruiter=1 ── */
+    /* ── "Open briefing" button in header status ── */
+    if (headerOpenBtn) {
+      headerOpenBtn.addEventListener('click', function () {
+        enterAndOpen(headerOpenBtn);
+      });
+    }
+
+    /* ── "Exit mode" button in header ── */
+    if (headerExitBtn) {
+      headerExitBtn.addEventListener('click', function () {
+        set(false);
+      });
+    }
+
+    /* ── Mobile nav recruiter button ── */
+    if (mobileRmBtn) {
+      mobileRmBtn.addEventListener('click', function () {
+        /* Close mobile nav first, then open briefing */
+        var hamburger  = document.getElementById('hamburger');
+        var mobileNav  = document.getElementById('mobile-nav');
+        var navOverlay = document.getElementById('nav-overlay');
+        if (mobileNav)  mobileNav.classList.remove('open');
+        if (navOverlay) navOverlay.classList.remove('open');
+        if (hamburger)  hamburger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+
+        enterAndOpen(mobileRmBtn);
+      });
+    }
+
+    /* ── Deep link: ?recruiter=1 → mode on + panel open ── */
     if (new URLSearchParams(location.search).get('recruiter') === '1') {
       set(true);
       loadRecruiterModule().then(function (m) {

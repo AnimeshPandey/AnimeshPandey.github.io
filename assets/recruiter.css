@@ -2,35 +2,14 @@
    recruiter.css — Recruiter Briefing Panel
    Lazy-loaded on first recruiter mode toggle.
    Uses design tokens from theme.css (--bg, --surface, etc.)
-   Z-index stack: header 100 · strip 220 · backdrop 230 · sheet 231
+   Z-index stack: header 100 · mobile-nav 210 · backdrop 200 · sheet 201 · toast 9999
    ═══════════════════════════════════════════════════════════════ */
-
-/* ── Strip: "briefing ↗" button ── */
-.rm-cta-panel {
-  background: none;
-  border: 1px solid rgba(123, 175, 152, .45);
-  border-radius: 4px;
-  color: var(--sage, #7BAF98);
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: .04em;
-  padding: 2px 7px;
-  transition: background .15s, border-color .15s;
-  white-space: nowrap;
-}
-.rm-cta-panel:hover,
-.rm-cta-panel:focus-visible {
-  background: rgba(123, 175, 152, .12);
-  border-color: rgba(123, 175, 152, .8);
-  outline: none;
-}
 
 /* ── Panel wrapper (full-screen inset, pointer-events none by default) ── */
 .rm-panel {
   position: fixed;
   inset: 0;
-  z-index: 230;
+  z-index: 200;
   pointer-events: none;
   display: flex;
   align-items: stretch;
@@ -68,7 +47,7 @@
 /* ── Sheet — desktop right drawer ── */
 .rm-panel-sheet {
   position: relative;
-  z-index: 231;
+  z-index: 201;
   width: min(460px, 100%);
   height: 100%;
   background: var(--bg, #FAF8F4);
@@ -90,14 +69,16 @@
 
 /* ── Sheet — mobile bottom sheet (<820px) ── */
 @media (max-width: 819px) {
+  /* Panel starts below header so header stays interactive */
   .rm-panel {
+    top: var(--nav-h, 56px);
     align-items: flex-end;
     justify-content: stretch;
   }
   .rm-panel-sheet {
     width: 100%;
     height: auto;
-    max-height: 88vh;
+    max-height: calc(88vh - var(--nav-h, 56px));
     border-left: none;
     border-top: 1px solid var(--border, #DDD6C9);
     border-radius: 16px 16px 0 0;
@@ -627,7 +608,7 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity .2s, transform .2s;
-  z-index: 300;
+  z-index: 9999;
   white-space: nowrap;
 }
 .rm-toast.rm-toast-in {

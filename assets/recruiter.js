@@ -612,8 +612,13 @@
   }
 
   function syncToggles(on) {
-    var toggles = d.querySelectorAll('#rm-hero-toggle, #recruiter-toggle');
+    var toggles = d.querySelectorAll(
+      '#rm-hero-toggle, #recruiter-toggle, #header-rm-toggle, #mobile-rm-btn'
+    );
     toggles.forEach(function (t) { t.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    /* Sync header recruiter-active class */
+    var hdr = d.querySelector('header');
+    if (hdr) hdr.classList.toggle('recruiter-active', on);
   }
 
   /* ════════════════════════════════════════════════
