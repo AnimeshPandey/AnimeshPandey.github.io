@@ -1004,7 +1004,9 @@ footer {
   color: var(--sage); border-color: var(--sage);
   background: rgba(78,122,104,.1);
 }
-/* Hide text label on mobile — icon + dot only */
+/* Collapse label to icon+dot when active */
+header.recruiter-active .header-rm-label { display: none; }
+/* Hide label on mobile — icon+dot only */
 @media (max-width: 819px) { .header-rm-label { display: none; } }
 
 .header-rm-dot {
@@ -1016,36 +1018,28 @@ footer {
   opacity: 1; animation: pulse 2s ease-in-out infinite;
 }
 
-/* "Open briefing" and "Exit mode" — shown when header.recruiter-active */
-.header-rm-open,
+/* "Exit" button — shown only when header.recruiter-active */
 .header-rm-exit {
-  display: none; /* shown via recruiter-active class */
+  display: none;
   align-items: center;
   font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
-  border-radius: 7px; padding: 5px 10px; cursor: pointer; min-height: 32px;
+  color: var(--ink-3); border: 1px solid var(--border);
+  background: none; border-radius: 7px;
+  padding: 5px 10px; cursor: pointer; min-height: 32px;
   transition: background .15s, color .15s, border-color .15s;
   white-space: nowrap;
 }
-header.recruiter-active .header-rm-open {
-  display: inline-flex;
-  color: var(--sage); border: 1px solid rgba(78,122,104,.35);
-  background: none;
-}
-header.recruiter-active .header-rm-open:hover {
-  background: rgba(78,122,104,.1); border-color: var(--sage);
-}
 header.recruiter-active .header-rm-exit {
   display: inline-flex;
-  color: var(--ink-3); border: 1px solid var(--border);
-  background: none;
 }
-header.recruiter-active .header-rm-exit:hover {
+header.recruiter-active .header-rm-exit:hover,
+header.recruiter-active .header-rm-exit:focus-visible {
   color: var(--accent); border-color: var(--accent);
-  background: var(--accent-bg);
+  background: var(--accent-bg); outline: none;
 }
-/* Hide "Open briefing" + "Exit" on mobile — mobile nav item handles entry/exit */
+/* Hide Exit on mobile — footer toggle handles exit */
 @media (max-width: 819px) {
-  .header-rm-open, .header-rm-exit { display: none !important; }
+  .header-rm-exit { display: none !important; }
 }
 
 /* ── Hero recruiter toggle button ── */
