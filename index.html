@@ -650,20 +650,10 @@
 
   <!-- SKILLS -->
   <section id="skills" aria-labelledby="skills-heading">
-    <div class="skills-header">
-      <div>
-        <p class="section-label">// skills</p>
-        <h2 id="skills-heading">Built with</h2>
-      </div>
-      <div class="skills-toggle-group" role="group" aria-label="Skills view">
-        <button class="stgl stgl-active" data-view="list" aria-pressed="true">List</button>
-        <button class="stgl" data-view="visual" aria-pressed="false">Visual</button>
-      </div>
-    </div>
+    <p class="section-label">// skills</p>
+    <h2 id="skills-heading">Built with</h2>
 
-    <!-- Visual view: category cards (hidden by default, shown by toggle) -->
-    <div class="skills-visual" id="skills-visual" hidden aria-hidden="true">
-      <div class="sv-grid">
+    <div class="sv-grid">
 
         <div class="sv-card" style="--cat:#bf5a32">
           <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg><span>Frontend</span></div>
@@ -715,126 +705,6 @@
         </div>
 
       </div>
-    </div>
-
-    <!-- List view (default) -->
-    <div class="skills-grid" id="skills-list">
-
-      <div class="sg-row fade-up">
-        <div class="sg-cat">
-          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-code"/></svg></div>
-          <span class="sg-name">Frontend</span>
-        </div>
-        <div class="sg-tags" role="list">
-          <span class="sk featured" role="listitem">React / ReactJS</span>
-          <span class="sk featured" role="listitem">TypeScript</span>
-          <span class="sk featured" role="listitem">Next.js</span>
-          <span class="sk" role="listitem">JavaScript</span>
-          <span class="sk" role="listitem">React Native</span>
-          <span class="sk" role="listitem">Redux</span>
-          <span class="sk" role="listitem">Zustand</span>
-          <span class="sk" role="listitem">React Query</span>
-          <span class="sk" role="listitem">Tailwind CSS</span>
-          <span class="sk" role="listitem">CSS3</span>
-          <span class="sk" role="listitem">Angular</span>
-        </div>
-      </div>
-
-      <div class="sg-row fade-up">
-        <div class="sg-cat">
-          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-layers"/></svg></div>
-          <span class="sg-name">Architecture &amp; Platform</span>
-        </div>
-        <div class="sg-tags" role="list">
-          <span class="sk featured" role="listitem">Microfrontends</span>
-          <span class="sk" role="listitem">Module Federation</span>
-          <span class="sk" role="listitem">Design Systems</span>
-          <span class="sk" role="listitem">Monorepo</span>
-          <span class="sk" role="listitem">SSR / SSG</span>
-          <span class="sk" role="listitem">Storybook</span>
-          <span class="sk" role="listitem">Performance Budgets</span>
-          <span class="sk" role="listitem">Accessibility (WCAG 2.1)</span>
-        </div>
-      </div>
-
-      <div class="sg-row fade-up">
-        <div class="sg-cat">
-          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-sparkle"/></svg></div>
-          <span class="sg-name">AI &amp; Agents</span>
-        </div>
-        <div class="sg-tags" role="list">
-          <span class="sk featured" role="listitem">Agentic AI</span>
-          <span class="sk" role="listitem">LLM Streaming</span>
-          <span class="sk" role="listitem">Tool Calling</span>
-          <span class="sk" role="listitem">RAG</span>
-          <span class="sk" role="listitem">OpenAI API</span>
-          <span class="sk" role="listitem">LangChain</span>
-          <span class="sk" role="listitem">Prompt Engineering</span>
-        </div>
-      </div>
-
-      <div class="sg-row fade-up">
-        <div class="sg-cat">
-          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-beaker"/></svg></div>
-          <span class="sg-name">Testing</span>
-        </div>
-        <div class="sg-tags" role="list">
-          <span class="sk" role="listitem">Playwright</span>
-          <span class="sk" role="listitem">Jest</span>
-          <span class="sk" role="listitem">React Testing Library</span>
-          <span class="sk" role="listitem">Cypress</span>
-          <span class="sk" role="listitem">E2E / Unit / Integration</span>
-        </div>
-      </div>
-
-      <div class="sg-row fade-up">
-        <div class="sg-cat">
-          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-tool"/></svg></div>
-          <span class="sg-name">Build &amp; Tooling</span>
-        </div>
-        <div class="sg-tags" role="list">
-          <span class="sk" role="listitem">Webpack</span>
-          <span class="sk" role="listitem">Vite</span>
-          <span class="sk" role="listitem">Turborepo</span>
-          <span class="sk" role="listitem">Nx</span>
-          <span class="sk" role="listitem">GitHub Actions</span>
-          <span class="sk" role="listitem">Docker</span>
-          <span class="sk" role="listitem">CI/CD</span>
-        </div>
-      </div>
-
-      <div class="sg-row fade-up">
-        <div class="sg-cat">
-          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-chart"/></svg></div>
-          <span class="sg-name">Data &amp; Viz</span>
-        </div>
-        <div class="sg-tags" role="list">
-          <span class="sk" role="listitem">D3.js</span>
-          <span class="sk" role="listitem">Highcharts</span>
-          <span class="sk" role="listitem">Recharts</span>
-          <span class="sk" role="listitem">Leaflet</span>
-          <span class="sk" role="listitem">GraphQL</span>
-          <span class="sk" role="listitem">REST / OpenAPI</span>
-          <span class="sk" role="listitem">A/B Testing</span>
-        </div>
-      </div>
-
-      <div class="sg-row fade-up">
-        <div class="sg-cat">
-          <div class="sg-cat-icon" aria-hidden="true"><svg class="icon"><use href="#i-cloud"/></svg></div>
-          <span class="sg-name">Backend &amp; Cloud</span>
-        </div>
-        <div class="sg-tags" role="list">
-          <span class="sk" role="listitem">Node.js</span>
-          <span class="sk" role="listitem">Express</span>
-          <span class="sk" role="listitem">PostgreSQL</span>
-          <span class="sk" role="listitem">Microservices</span>
-          <span class="sk" role="listitem">AWS</span>
-          <span class="sk" role="listitem">Azure</span>
-        </div>
-      </div>
-
-    </div>
   </section>
 
   <div class="divider" aria-hidden="true"><hr /></div>
