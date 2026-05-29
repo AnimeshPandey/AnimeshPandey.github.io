@@ -544,18 +544,30 @@
   /* ══════════════════════════════════════════════════
      RECRUITER MODE — AI summary strip + body effects
      ══════════════════════════════════════════════════ */
+  /* ── Dynamic script loader ── */
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src     = src;
+      s.onload  = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
   function initRecruiterMode() {
-    var heroToggle = document.getElementById('rm-hero-toggle');
-    var footToggle = document.getElementById('recruiter-toggle');
-    var strip      = document.getElementById('rm-strip');
-    var closeBtn   = document.getElementById('rm-close');
-    var toggles    = [heroToggle, footToggle].filter(Boolean);
+    var heroToggle  = document.getElementById('rm-hero-toggle');
+    var footToggle  = document.getElementById('recruiter-toggle');
+    var strip       = document.getElementById('rm-strip');
+    var closeBtn    = document.getElementById('rm-close');
+    var openPanelBtn = document.getElementById('rm-open-panel');
+    var toggles     = [heroToggle, footToggle].filter(Boolean);
     if (!toggles.length) return;
 
     var on = false;
     try { on = localStorage.getItem('recruiter') === '1'; } catch(e) {}
 
-    /* Cancel-able typewriter — tracks all pending timers */
+    /* ── Cancel-able typewriter — tracks all pending timers ── */
     var twTimers = [];
     function cancelTypewriters() {
       twTimers.forEach(clearTimeout);
@@ -612,11 +624,74 @@
       if (on) { openStrip(); } else { closeStrip(); }
     }
 
+    /* ── Lazy-load the full briefing panel module ── */
+    var _loadPromise = null;
+    function loadRecruiterModule() {
+      if (window.RecruiterBriefing) return Promise.resolve(window.RecruiterBriefing);
+      if (_loadPromise) return _loadPromise;
+
+      var cssLoaded = new Promise(function (resolve) {
+        var link    = document.createElement('link');
+        link.rel    = 'stylesheet';
+        link.href   = '/assets/recruiter.css';
+        link.onload = resolve;
+        link.onerror = resolve; // non-fatal
+        document.head.appendChild(link);
+      });
+
+      _loadPromise = cssLoaded
+        .then(function () { return loadScript('/assets/recruiter-data.js'); })
+        .then(function () { return loadScript('/assets/recruiter.js'); })
+        .then(function () { return window.RecruiterBriefing || {}; })
+        .catch(function (err) {
+          console.warn('[recruiter] module load failed', err);
+          return {};
+        });
+      return _loadPromise;
+    }
+
+    /* ── Toggles: turn mode on + open panel ── */
     if (on) set(true);
     toggles.forEach(function(t) {
-      t.addEventListener('click', function() { set(!on); });
+      t.addEventListener('click', function() {
+        var wasOn = on;
+        set(!wasOn);
+        if (!wasOn) {
+          /* Turning on — lazy-load and open panel */
+          loadRecruiterModule().then(function (m) {
+            if (m && m.open) m.open(t);
+          });
+        } else {
+          /* Turning off — close panel if open */
+          if (window.RecruiterBriefing && window.RecruiterBriefing.isOpen()) {
+            window.RecruiterBriefing.close();
+          }
+        }
+      });
     });
-    if (closeBtn) closeBtn.addEventListener('click', function() { set(false); });
+
+    /* ── Strip close button ── */
+    if (closeBtn) closeBtn.addEventListener('click', function() {
+      set(false);
+      if (window.RecruiterBriefing && window.RecruiterBriefing.isOpen()) {
+        window.RecruiterBriefing.close();
+      }
+    });
+
+    /* ── "briefing ↗" button in strip ── */
+    if (openPanelBtn) openPanelBtn.addEventListener('click', function() {
+      loadRecruiterModule().then(function (m) {
+        if (m && m.open) m.open(openPanelBtn);
+      });
+    });
+
+    /* ── Deep link: ?recruiter=1 ── */
+    if (new URLSearchParams(location.search).get('recruiter') === '1') {
+      set(true);
+      loadRecruiterModule().then(function (m) {
+        if (m && m.open) m.open();
+      });
+    }
   }
 
   /* ══════════════════════════════════════════════════
