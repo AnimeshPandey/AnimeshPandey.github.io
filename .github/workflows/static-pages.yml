@@ -24,6 +24,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Inject secrets into static files
+        env:
+          W3F_KEY: ${{ secrets.W3F_ACCESS_KEY }}
+          CF_TOKEN: ${{ secrets.CF_BEACON_TOKEN }}
+        run: |
+          # Web3Forms access key → assets/contact.js
+          if [ -n "$W3F_KEY" ]; then
+            sed -i "s/YOUR_WEB3FORMS_ACCESS_KEY/${W3F_KEY}/g" assets/contact.js
+            echo "✓ Web3Forms key injected"
+          else
+            echo "⚠ W3F_ACCESS_KEY secret not set — contact form will fall back to mailto"
+          fi
+
+          # Cloudflare beacon token → all HTML files
+          if [ -n "$CF_TOKEN" ]; then
+            find . -name "*.html" -not -path "./.git/*" \
+              -exec sed -i "s/YOUR_CF_BEACON_TOKEN/${CF_TOKEN}/g" {} +
+            echo "✓ Cloudflare beacon token injected"
+          else
+            echo "⚠ CF_BEACON_TOKEN secret not set — analytics beacon will not fire"
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
