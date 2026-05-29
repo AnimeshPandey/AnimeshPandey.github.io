@@ -703,11 +703,34 @@ h3.edu-inst { font-family: var(--serif); font-size: 18px; font-weight: 400; colo
   width: 100%; min-height: 44px;
 }
 .form-btn:hover { background: var(--accent); }
+.form-btn[aria-busy="true"] {
+  opacity: .65; cursor: not-allowed; pointer-events: none;
+}
 .form-success {
   display: none; font-family: var(--mono); font-size: 13px;
-  color: var(--sage); background: var(--sage-bg);
   padding: 12px 18px; border-radius: 9px; margin-top: 8px;
+  outline: none;
 }
+.form-success.is-success {
+  color: var(--sage); background: var(--sage-bg);
+}
+.form-success.is-error {
+  color: #b54040; background: rgba(181,64,64,.1);
+  border: 1px solid rgba(181,64,64,.2);
+}
+.form-success.is-mailto {
+  color: var(--ink-2); background: var(--surface);
+  border: 1px solid var(--border);
+}
+.form-fallback-link {
+  color: var(--accent); text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.form-privacy {
+  font-size: 11px; color: var(--ink-3); margin-top: 10px;
+  line-height: 1.5;
+}
+.form-privacy a { color: var(--ink-3); text-decoration: underline; text-underline-offset: 2px; }
 
 /* Copy-email toast */
 .copy-toast {
