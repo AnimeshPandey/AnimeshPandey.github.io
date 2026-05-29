@@ -542,24 +542,70 @@
   }
 
   /* ══════════════════════════════════════════════════
-     RECRUITER MODE — body class emphasising hire info
+     RECRUITER MODE — AI summary strip + body effects
      ══════════════════════════════════════════════════ */
   function initRecruiterMode() {
-    var toggle = document.getElementById('recruiter-toggle');
-    if (!toggle) return;
+    var heroToggle = document.getElementById('rm-hero-toggle');
+    var footToggle = document.getElementById('recruiter-toggle');
+    var strip      = document.getElementById('rm-strip');
+    var closeBtn   = document.getElementById('rm-close');
+    var toggles    = [heroToggle, footToggle].filter(Boolean);
+    if (!toggles.length) return;
 
     var on = false;
     try { on = localStorage.getItem('recruiter') === '1'; } catch(e) {}
 
+    function typewrite(el, text, delayMs) {
+      el.textContent = '';
+      el.classList.remove('rm-typed');
+      var i = 0;
+      setTimeout(function tick() {
+        if (i < text.length) {
+          el.textContent += text[i++];
+          setTimeout(tick, 22);
+        } else {
+          el.classList.add('rm-typed');
+        }
+      }, delayMs);
+    }
+
+    function openStrip() {
+      if (!strip) return;
+      strip.classList.add('rm-open');
+      strip.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.setProperty('--strip-h', '44px');
+      var fields = strip.querySelectorAll('.rm-fval[data-rm]');
+      fields.forEach(function(el, i) {
+        typewrite(el, el.getAttribute('data-rm'), 180 + i * 220);
+      });
+    }
+
+    function closeStrip() {
+      if (!strip) return;
+      strip.classList.remove('rm-open');
+      strip.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.setProperty('--strip-h', '0px');
+      strip.querySelectorAll('.rm-fval').forEach(function(el) {
+        el.textContent = '';
+        el.classList.remove('rm-typed');
+      });
+    }
+
     function set(active) {
       on = active;
       document.body.classList.toggle('recruiter-mode', on);
-      toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+      toggles.forEach(function(t) {
+        t.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
       try { localStorage.setItem('recruiter', on ? '1' : '0'); } catch(e) {}
+      if (on) { openStrip(); } else { closeStrip(); }
     }
 
     if (on) set(true);
-    toggle.addEventListener('click', function() { set(!on); });
+    toggles.forEach(function(t) {
+      t.addEventListener('click', function() { set(!on); });
+    });
+    if (closeBtn) closeBtn.addEventListener('click', function() { set(false); });
   }
 
   /* ══════════════════════════════════════════════════

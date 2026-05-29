@@ -19,6 +19,7 @@
   --mono:       'JetBrains Mono', 'Courier New', monospace;
   --max:        820px;
   --nav-h:      56px;
+  --strip-h:    0px;
   --radius:     12px;
   --page-pad:   clamp(16px, 4vw, 28px);
   --bp-sm:      480px;
