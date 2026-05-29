@@ -981,22 +981,27 @@ footer {
    RECRUITER STRIP — AI summary bar
    ══════════════════════════════════════════════════ */
 .rm-strip {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 220;
   height: 0; overflow: hidden;
   background: #0d1117;
   border-bottom: 1px solid rgba(123,175,152,.22);
   transition: height .35s cubic-bezier(.16,1,.3,1);
+  /* isolation prevents stacking-context leaks from children */
+  isolation: isolate;
 }
 .rm-strip.rm-open { height: 44px; }
 .rm-strip::before {
-  content: ''; position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0; z-index: 0;
   background-image: radial-gradient(circle, rgba(123,175,152,.13) 1px, transparent 1px);
   background-size: 18px 18px; pointer-events: none;
 }
 .rm-strip-inner {
+  position: relative; z-index: 1;
   max-width: var(--max); margin: 0 auto;
-  padding: 0 var(--page-pad); height: 44px;
-  display: flex; align-items: center; gap: 12px;
+  padding: 0 var(--page-pad);
+  /* height follows outer (100%) — no separate hardcoded value */
+  height: 100%;
+  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; gap: 12px;
   font-family: var(--mono); font-size: 10.5px;
   white-space: nowrap; overflow: hidden;
 }
