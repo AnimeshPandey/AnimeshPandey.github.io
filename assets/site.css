@@ -487,7 +487,7 @@ h3.t-role { font-family: var(--serif); font-style: italic; font-size: 18px; font
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 14px; padding: 22px;
   position: relative; overflow: hidden;
-  transition: border-color .2s;
+  transition: transform .2s ease, border-color .2s, box-shadow .2s;
   display: flex; flex-direction: column;
 }
 .pc::after {
@@ -932,6 +932,28 @@ footer {
 .pcl-val {
   font-family: var(--mono); font-size: 9.5px; color: var(--accent);
   flex-shrink: 0; text-align: right; min-width: 36px;
+}
+
+/* ── Impact metric chip: pulse hint on touch devices ── */
+@keyframes chip-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(90,160,130,.55); }
+  60%  { box-shadow: 0 0 0 7px rgba(90,160,130,0); }
+  100% { box-shadow: 0 0 0 0 rgba(90,160,130,0); }
+}
+@media (pointer: coarse) {
+  .pc-metric { animation: chip-pulse 2.2s ease-out 1.2s 2; }
+}
+
+/* ── Project tag stagger on hover ── */
+@keyframes tag-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .pc:hover .tag {
+    animation: tag-in .28s ease both;
+    animation-delay: calc(var(--tag-i, 0) * 35ms);
+  }
 }
 
 /* ── Recruiter mode toggle ── */
