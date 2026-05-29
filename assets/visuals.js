@@ -560,7 +560,6 @@
     var heroToggle    = document.getElementById('rm-hero-toggle');
     var footToggle    = document.getElementById('recruiter-toggle');
     var headerToggle  = document.getElementById('header-rm-toggle');
-    var headerOpenBtn = document.getElementById('header-rm-open');
     var headerExitBtn = document.getElementById('header-rm-exit');
     var mobileRmBtn   = document.getElementById('mobile-rm-btn');
     var header        = document.querySelector('header');
@@ -662,13 +661,6 @@
     if (headerToggle) {
       headerToggle.addEventListener('click', function () {
         enterAndOpen(headerToggle);
-      });
-    }
-
-    /* ── "Open briefing" button in header status ── */
-    if (headerOpenBtn) {
-      headerOpenBtn.addEventListener('click', function () {
-        enterAndOpen(headerOpenBtn);
       });
     }
 
