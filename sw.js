@@ -1,4 +1,4 @@
-const CACHE = 'ap-v8';
+const CACHE = 'ap-v9';
 const ASSETS = [
   '/',
   '/assets/theme.css',
