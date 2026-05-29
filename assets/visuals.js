@@ -30,6 +30,7 @@
     initCardExpand();
     initCardTilt();
     initTagStagger();
+    initArticleTap();
     initMobileEgg();
     if (caps.finePointer && caps.canvas2d && !caps.reducedMotion) initDesktopEgg();
     if (caps.iob) initTimelineHighlight();
@@ -178,7 +179,8 @@
      ══════════════════════════════════════════════════ */
   function initCardTilt() {
     if (!caps.finePointer || caps.reducedMotion) return;
-    document.querySelectorAll('.pc').forEach(function(card) {
+    document.querySelectorAll('.pc, .sv-card, .edu-card').forEach(function(card) {
+      var lift = card.classList.contains('pc') ? -4 : -3;
       card.addEventListener('mouseenter', function() {
         card.style.transitionProperty = 'border-color, box-shadow';
       });
@@ -187,11 +189,31 @@
         var nx = (e.clientX - r.left) / r.width  - 0.5;
         var ny = (e.clientY - r.top)  / r.height - 0.5;
         card.style.transform =
-          'translateY(-4px) perspective(700px) rotateX(' + (-ny * 6).toFixed(2) + 'deg) rotateY(' + (nx * 6).toFixed(2) + 'deg)';
+          'translateY(' + lift + 'px) perspective(700px) rotateX(' + (-ny * 6).toFixed(2) + 'deg) rotateY(' + (nx * 6).toFixed(2) + 'deg)';
       });
       card.addEventListener('mouseleave', function() {
         card.style.transitionProperty = '';
         card.style.transform = '';
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
+     ARTICLE FULL-CARD TAP — coarse pointer navigates
+     whole row to the article link
+     ══════════════════════════════════════════════════ */
+  function initArticleTap() {
+    if (caps.finePointer) return;
+    document.querySelectorAll('.article-item').forEach(function(item) {
+      var link = item.querySelector('h3.article-title a');
+      if (!link) return;
+      item.addEventListener('click', function(e) {
+        if (e.target && e.target.closest && e.target.closest('a')) return;
+        if (link.target === '_blank') {
+          window.open(link.href, '_blank', 'noopener');
+        } else {
+          window.location.href = link.href;
+        }
       });
     });
   }
