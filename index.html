@@ -429,12 +429,54 @@
       <span class="rm-field"><span class="rm-fkey">status</span><span class="rm-fval rm-avail" data-rm="● open to roles"></span></span>
     </div>
     <div class="rm-strip-actions">
-      <a href="mailto:animeshpandey1909@gmail.com" class="rm-cta">contact</a>
+      <button class="rm-cta rm-cta-panel" id="rm-open-panel" aria-label="Open recruiter briefing panel">briefing ↗</button>
+      <a href="mailto:animeshpandey1909@gmail.com" class="rm-cta rm-hide-sm">contact</a>
       <a href="resume.pdf" download class="rm-cta rm-cta-prime">resume ↓</a>
       <button class="rm-close" id="rm-close" aria-label="Exit recruiter mode">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
+  </div>
+</div>
+
+<!-- RECRUITER BRIEFING PANEL — lazy-loaded; JS fills content -->
+<div id="rm-panel" class="rm-panel" hidden aria-hidden="true"
+     role="dialog" aria-modal="true"
+     aria-labelledby="rm-panel-title" aria-describedby="rm-panel-desc">
+  <div class="rm-panel-backdrop" tabindex="-1" aria-hidden="true"></div>
+  <div class="rm-panel-sheet">
+    <header class="rm-panel-head">
+      <div class="rm-panel-head-left">
+        <span class="rm-panel-eyebrow" aria-hidden="true">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          briefing
+        </span>
+        <h2 class="rm-panel-title" id="rm-panel-title">Recruiter briefing</h2>
+      </div>
+      <div class="rm-panel-head-actions">
+        <button class="rm-panel-btn" id="rm-panel-minimize" aria-label="Minimize panel — keep recruiter mode on">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="rm-panel-btn rm-panel-close-btn" id="rm-panel-close" aria-label="Close briefing panel">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="rm-panel-scan" id="rm-scan" aria-live="polite" aria-atomic="false"></div>
+    <div class="rm-panel-body" id="rm-body" tabindex="0" role="region" aria-label="Briefing content">
+      <!-- JS-rendered content -->
+    </div>
+    <footer class="rm-panel-foot">
+      <div class="rm-foot-ctas">
+        <a href="/resume.pdf" download class="rm-foot-btn rm-foot-prime">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Resume
+        </a>
+        <a href="mailto:animeshpandey1909@gmail.com" class="rm-foot-btn">Email</a>
+        <button class="rm-foot-btn" id="rm-copy-brief" aria-label="Copy plain-text brief to clipboard">Copy brief</button>
+      </div>
+      <p class="rm-honesty" id="rm-panel-desc"><em>Synthesized from this portfolio's public content — not a live AI model.</em></p>
+    </footer>
   </div>
 </div>
 
@@ -470,9 +512,9 @@
         </a>
       </div>
 
-      <button class="rm-hero-btn" id="rm-hero-toggle" aria-pressed="false" aria-label="Toggle recruiter view">
+      <button class="rm-hero-btn" id="rm-hero-toggle" aria-pressed="false" aria-label="Toggle recruiter briefing: curated AI-style summary of this portfolio">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-        <span>recruiter view</span>
+        <span>Recruiter briefing</span>
         <span class="rm-btn-dot" aria-hidden="true"></span>
       </button>
 
@@ -1109,9 +1151,9 @@
   <div class="foot-inner">
     <div class="foot-l">
       Animesh Pandey · Bangalore, India · © <span id="yr">2026</span>
-      <button class="recruiter-toggle" id="recruiter-toggle" aria-pressed="false" title="Toggle recruiter view: highlights contact info and resume">
+      <button class="recruiter-toggle" id="recruiter-toggle" aria-pressed="false" title="Open recruiter briefing: curated AI-style summary of this portfolio">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-        recruiter mode
+        recruiter briefing
         <span class="rt-dot" aria-hidden="true"></span>
       </button>
     </div>
