@@ -12,5 +12,7 @@ Paste into Cursor or Claude when implementing changes on [AnimeshPandey.github.i
 | [portfolio-writing-polish-prompt.md](portfolio-writing-polish-prompt.md) | `#writing`, articles, sitemap, JSON-LD |
 | [portfolio-platform-inspired-writing-prompt.md](portfolio-platform-inspired-writing-prompt.md) | Technical posts from private UI research (redacted) |
 | [portfolio-recruiter-data-premium-prompt.md](portfolio-recruiter-data-premium-prompt.md) | Recruiter mode, contact, profile data |
+| [portfolio-core-web-vitals-seo-prompt.md](portfolio-core-web-vitals-seo-prompt.md) | LCP, INP, CLS, Lighthouse SEO, JSON-LD, sitemap, fonts, SW |
+| [casebook-core-platform-generation-prompt.md](casebook-core-platform-generation-prompt.md) | **The Frontend Casebook** Phase 1 — Eleventy platform + flagship case (`cases/`) |
 
 **Ideas backlog (private):** [ideas](https://github.com/AnimeshPandey/ideas) — projects, articles, monetization playbooks (not in this public repo). Local stub: [ideas/IDEAS.md](../../ideas/IDEAS.md).
