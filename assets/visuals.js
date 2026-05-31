@@ -1,7 +1,8 @@
-/* visuals.js — orchestrator: hero canvas particle field + skills toggle + card expand
-   Mobile easter egg (badge → career snapshot) also lives here.
-   All effects degrade gracefully; none are required for content.
-   Emergency kill-switch: set window.__VISUALS_DISABLED = true before this script loads. */
+/* visuals.js — Layer L4: homepage orchestration
+   Loads on: index.html only
+   Exports: lazy-loads RecruiterBriefing, Eggs (per tier)
+   Must not: mobile nav, theme persistence, contact POST, recruiter panel HTML
+   Kill-switch: window.__VISUALS_DISABLED = true before this script loads */
 (function () {
   'use strict';
 
@@ -26,7 +27,10 @@
 
   function boot() {
     if (window.__VISUALS_DISABLED) return;
+    initScrollReveal();
     if (caps.canvas2d && !caps.reducedMotion && !caps.saveData) initHeroCanvas();
+    initHeroChrome();
+    initStatCountUp();
     initCardExpand();
     initCardTilt();
     initTagStagger();
@@ -39,6 +43,133 @@
     initResumeToast();
     if (!caps.reducedMotion) initThemeCrossfade();
     initHireShortcut();
+    initServiceWorker();
+  }
+
+  /* ══════════════════════════════════════════════════
+     SCROLL REVEAL — .fade-up → .in
+     ══════════════════════════════════════════════════ */
+  function initScrollReveal() {
+    var els = document.querySelectorAll('.fade-up');
+    if (!els.length) return;
+    if (caps.reducedMotion || !caps.iob) {
+      els.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry, i) {
+        if (!entry.isIntersecting) return;
+        setTimeout(function () { entry.target.classList.add('in'); }, i * 80);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.07 });
+    els.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ══════════════════════════════════════════════════
+     HERO CHROME — rotate, spotlight, card tilt, float parallax
+     ══════════════════════════════════════════════════ */
+  function initHeroChrome() {
+    var rotateEl = document.querySelector('.hero-rotate');
+    if (rotateEl && !caps.reducedMotion) {
+      var rSpans = Array.from(rotateEl.querySelectorAll('span'));
+      if (rSpans.length > 1) {
+        var rIdx = 0;
+        rSpans[rIdx].classList.add('active');
+        setInterval(function () {
+          rSpans[rIdx].classList.remove('active');
+          rIdx = (rIdx + 1) % rSpans.length;
+          rSpans[rIdx].classList.add('active');
+        }, 2800);
+      }
+    }
+
+    if (!caps.finePointer || caps.reducedMotion) return;
+
+    var heroEl = document.getElementById('hero');
+    var heroCard = document.querySelector('.hero-card');
+    var heroFloats = Array.from(document.querySelectorAll('.hero-float'));
+    if (!heroEl || !heroCard) return;
+
+    var rafPending = false;
+    var pendingMx = 5, pendingMy = 60;
+    var heroReady = false;
+
+    setTimeout(function () { heroReady = true; }, 1200);
+
+    function applySpotlight() {
+      heroEl.style.setProperty('--mx', pendingMx.toFixed(1) + '%');
+      heroEl.style.setProperty('--my', pendingMy.toFixed(1) + '%');
+      rafPending = false;
+    }
+
+    heroEl.addEventListener('mousemove', function (e) {
+      var rect = heroEl.getBoundingClientRect();
+      pendingMx = (e.clientX - rect.left) / rect.width * 100;
+      pendingMy = (e.clientY - rect.top) / rect.height * 100;
+      if (!rafPending) { rafPending = true; requestAnimationFrame(applySpotlight); }
+
+      if (heroReady) {
+        var cr = heroCard.getBoundingClientRect();
+        var cx = ((e.clientX - cr.left) / cr.width - .5) * 14;
+        var cy = ((e.clientY - cr.top) / cr.height - .5) * 10;
+        heroCard.style.transform = 'perspective(900px) rotateY(' + cx.toFixed(2) + 'deg) rotateX(' + (-cy).toFixed(2) + 'deg) translateZ(8px)';
+      }
+
+      var dx = (e.clientX - rect.left - rect.width / 2) / rect.width;
+      var dy = (e.clientY - rect.top - rect.height / 2) / rect.height;
+      heroFloats.forEach(function (f) {
+        var sz = parseInt(f.style.fontSize, 10) || 30;
+        var spd = sz / 2800;
+        f.style.transform = 'translate(' + (dx * spd * rect.width).toFixed(1) + 'px,' + (dy * spd * rect.height).toFixed(1) + 'px)';
+      });
+    });
+
+    heroEl.addEventListener('mouseleave', function () {
+      heroCard.style.transform = '';
+      heroFloats.forEach(function (f) { f.style.transform = ''; });
+      pendingMx = 5; pendingMy = 60;
+      if (!rafPending) { rafPending = true; requestAnimationFrame(applySpotlight); }
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
+     STAT COUNT-UP — .stat-n on scroll into view
+     ══════════════════════════════════════════════════ */
+  function initStatCountUp() {
+    if (caps.reducedMotion || !caps.iob) return;
+    var statEls = document.querySelectorAll('.stat-n');
+    if (!statEls.length) return;
+    var statObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        statObs.unobserve(el);
+        var original = el.textContent.trim();
+        var match = original.match(/^(\d+)(.*)/);
+        if (!match) return;
+        var endNum = parseInt(match[1], 10);
+        var suffix = match[2];
+        var dur = 900, startTs = null;
+        function tick(ts) {
+          if (!startTs) startTs = ts;
+          var elapsed = Math.min(ts - startTs, dur);
+          var ease = 1 - Math.pow(1 - elapsed / dur, 3);
+          el.textContent = Math.round(ease * endNum) + suffix;
+          if (elapsed < dur) requestAnimationFrame(tick);
+          else el.textContent = original;
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.6, rootMargin: '0px 0px -40px 0px' });
+    statEls.forEach(function (el) { statObs.observe(el); });
+  }
+
+  function initServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js');
+    });
   }
 
   /* ══════════════════════════════════════════════════
@@ -403,7 +534,8 @@
   }
 
   /* ══════════════════════════════════════════════════
-     RECRUITER MODE — AI summary strip + body effects
+     RECRUITER MODE — orchestration only (panel render in recruiter.js)
+     Owns: localStorage, body.recruiter-mode, header listeners, lazy load chain
      ══════════════════════════════════════════════════ */
   /* ── Dynamic script loader ── */
   function loadScript(src) {

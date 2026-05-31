@@ -7,9 +7,14 @@ Personal portfolio of Animesh Pandey, Senior Frontend Engineer.
 
 ---
 
-## Architecture
+## Documentation
 
-**[ARCHITECTURE.md](ARCHITECTURE.md)** — exhaustive technical reference covering design principles, the 8-layer model, full file breakdown with LOC counts, load sequence, data layer, all feature subsystems, DOM reference, runtime state, deploy pipeline, SEO, service worker strategy, extension playbook, and maintainer workflows.
+| Path | Purpose |
+|------|---------|
+| **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Exhaustive technical reference (layers, files, subsystems, deploy, SW, maintainer workflows) |
+| **[docs/README.md](docs/README.md)** | Documentation index |
+| **[.claude/prompts/](.claude/prompts/)** | Claude/Cursor **implementation prompts** (not under `docs/`) |
+| **[.claude/prompts/portfolio-architecture-alignment-prompt.md](.claude/prompts/portfolio-architecture-alignment-prompt.md)** | Align code to documented layers (fix haphazard file placement) |
 
 ---
 
@@ -86,7 +91,9 @@ Personal portfolio of Animesh Pandey, Senior Frontend Engineer.
 ├── .github/
 │   └── workflows/static-pages.yml     # Deploy: checkout → inject secrets → upload artifact
 │
-├── ARCHITECTURE.md                     # Exhaustive technical reference
+├── docs/
+│   └── ARCHITECTURE.md                 # Human technical reference
+├── .claude/prompts/                    # Agent implementation prompts
 └── README.md
 ```
 
@@ -121,7 +128,7 @@ Missing secrets: deploy still succeeds; contact form shows a config-error messag
 - **Factual changes** — edit `index.html` and `assets/profile-facts.js` together; `recruiter-data.js` derives at runtime.
 - **Cached asset changes** — bump `CACHE` version in `sw.js`.
 - **New easter egg** — add data to `eggs-data.js`, logic to the relevant `eggs-{tier}.js`, styles to `eggs.css`, and the new file to `sw.js` ASSETS.
-- **Full design guide** — see [ARCHITECTURE.md](ARCHITECTURE.md).
+- **Full design guide** — see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Agent prompts: [.claude/prompts/](.claude/prompts/).
 
 ---
 
