@@ -562,6 +562,7 @@
     var headerToggle  = document.getElementById('header-rm-toggle');
     var headerExitBtn = document.getElementById('header-rm-exit');
     var mobileRmBtn   = document.getElementById('mobile-rm-btn');
+    var mobileRmExit  = document.getElementById('mobile-rm-exit');
     var header        = document.querySelector('header');
 
     /* Two-way toggles (hero + footer): turn mode on OR off */
@@ -596,6 +597,12 @@
       on = active;
       document.body.classList.toggle('recruiter-mode', on);
       syncToggles(on);
+      /* R1: update header toggle aria-label to signal mode state */
+      if (headerToggle) {
+        headerToggle.setAttribute('aria-label', active
+          ? 'Recruiter mode active — click to open briefing'
+          : 'Open recruiter briefing: curated AI-style summary of this portfolio');
+      }
       try { localStorage.setItem('recruiter', on ? '1' : '0'); } catch(e) {}
       if (on) {
         activateHeader();
@@ -684,6 +691,21 @@
         document.body.style.overflow = '';
 
         enterAndOpen(mobileRmBtn);
+      });
+    }
+
+    /* ── Mobile exit mode button (R2) ── */
+    if (mobileRmExit) {
+      mobileRmExit.addEventListener('click', function () {
+        /* Close mobile nav first */
+        var hamburger  = document.getElementById('hamburger');
+        var mobileNav  = document.getElementById('mobile-nav');
+        var navOverlay = document.getElementById('nav-overlay');
+        if (mobileNav)  mobileNav.classList.remove('open');
+        if (navOverlay) navOverlay.classList.remove('open');
+        if (hamburger)  hamburger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+        set(false);
       });
     }
 
