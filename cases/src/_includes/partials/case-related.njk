@@ -7,7 +7,7 @@
       {% set relEntry = manifest.cases | selectattr("slug", "equalto", r.slug) | first %}
       <li class="case-related__item">
         {% if relEntry and relEntry.status == 'live' %}
-          <a href="/cases/{{ r.slug }}/">{{ r.title | default(relEntry.title) }}</a>
+          <a href="{{ ('/' ~ r.slug ~ '/') | url }}">{{ r.title | default(relEntry.title) }}</a>
         {% else %}
           {{ r.title | default(r.slug) }}
           <span class="soon-badge">— Coming soon</span>

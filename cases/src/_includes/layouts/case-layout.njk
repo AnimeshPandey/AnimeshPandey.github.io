@@ -56,7 +56,7 @@ layout: layouts/casebook-layout.njk
 {# Inline casey data for JS #}
 <script type="application/json" id="casey-data">{{ caseyData | jsonLd | safe }}</script>
 
-<script src="/cases/assets/js/case-scroll.js" defer></script>
-<script src="/cases/assets/js/casey-coach.js" defer></script>
-<script type="module" src="/cases/assets/js/casey-voice.js"></script>
-<script type="module" src="/cases/assets/js/demo-loader.js"></script>
+<script src="{{ '/assets/js/case-scroll.js' | url }}" defer></script>
+<script src="{{ '/assets/js/casey-coach.js' | url }}" defer></script>
+<script type="module" src="{{ '/assets/js/casey-voice.js' | url }}"></script>
+<script type="module" src="{{ '/assets/js/demo-loader.js' | url }}"></script>

@@ -89,6 +89,32 @@
   "teaches": "{{ principle | default('') }}"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "{{ site.shortName }}",
+      "item": "{{ site.url }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{{ track | replace('-', ' ') | title if track else 'Case study' }}",
+      "item": "{{ site.url }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ title }}",
+      "item": "{{ pageCanonical }}"
+    }
+  ]
+}
+</script>
 {% elif schemaType == 'AboutPage' %}
 <script type="application/ld+json">
 {

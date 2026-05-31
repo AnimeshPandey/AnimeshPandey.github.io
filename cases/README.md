@@ -51,3 +51,38 @@ In CI, the build runs automatically on push to `main`. The `_site/` output is me
 3. Create `src/cases/<slug>/casey.json` with hints for each chapter
 4. Create `src/assets/js/demos/<slug>.js` if demo is required
 5. Push → CI builds and deploys automatically
+
+## Refreshing the manifest
+
+The manifest is generated from the planning repo track files. After adding cases in `ideas/projects/case-studies/`, regenerate it:
+
+```bash
+python3 ../ideas/projects/case-studies/scripts/merge-tracks-to-manifest.py \
+  > src/_data/manifest.json
+```
+
+Run from the repo root (`AnimeshPandey.github.io/`). Then set `status: "live"` and `publishedAt` on the flagship entry before committing.
+
+## Architecture reference
+
+Full architecture spec: `ideas/projects/case-studies/docs/platform/PLATFORM-ARCHITECTURE.md`
+
+Key contracts:
+- `site.json` is the only URL source — all paths use `{{ '/path/' | url }}` (Eleventy pathPrefix-aware)
+- `liveCases` collection drives permalinks, sitemap, and RSS — only `status: live` entries
+- JS modules communicate via custom events (`casebook-tone-change`, `casebook-color-change`), never direct imports
+- `data-asset-base` on `<html>` is the only runtime URL the JS needs
+
+## Phase 2 deferrals
+
+These are intentionally out of scope for Phase 1:
+
+- `confirm-publish.py` + scheduled publish CI workflow
+- Buttondown newsletter send on publish
+- `/whats-new/` changelog page
+- "New" badge on hub (< 14 days since `publishedAt`)
+- `case-share.njk` Web Share API
+- Full illustrated Casey poses (currently 12 geometric SVG placeholders)
+- Track hub pages (`/tracks/{id}/`)
+- Full high-contrast token set (stub tokens present, menu wired)
+- Pagefind static search

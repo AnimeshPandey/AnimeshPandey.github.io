@@ -2,12 +2,12 @@
 <html lang="{{ site.locale | default('en') }}"
       data-casebook-color="light"
       data-casebook-contrast="high"
-      data-asset-base="/cases/assets/casey/">
+      data-asset-base="{{ '/assets/casey/' | url }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  {# ── FOUC guard: apply stored casebook-color before CSS loads ── #}
+  {# ── FOUC guard: apply stored casebook-color + contrast before CSS loads ── #}
   <script>
   (function () {
     var COLOR_KEY = 'casebook-color-mode';
@@ -33,16 +33,16 @@
   {% include 'partials/head-seo.njk' %}
 
   {# ── Styles: portfolio foundation tokens → casebook ── #}
-  {# Note: foundation.css and theme.css live at the portfolio root (/assets/), not /cases/ #}
+  {# foundation.css, theme.css, chrome.css live at the portfolio root (/assets/) #}
   <link rel="stylesheet" href="/assets/styles/foundation.css" />
   <link rel="stylesheet" href="/assets/theme.css" />
   <link rel="stylesheet" href="/assets/platform/chrome.css" />
-  <link rel="stylesheet" href="/cases/assets/css/casebook.css" />
+  <link rel="stylesheet" href="{{ '/assets/css/casebook.css' | url }}" />
 
   {# ── RSS alternate ── #}
   <link rel="alternate" type="application/rss+xml"
         title="{{ site.name }} — RSS"
-        href="/cases/feed.xml" />
+        href="{{ '/feed.xml' | url }}" />
 
   {# ── meta theme-color (updated by casebook-preferences.js) ── #}
   <meta name="theme-color" content="#FAF8F4" id="casebook-theme-color" />
@@ -54,17 +54,17 @@
   {# ── Header ── #}
   <header class="casebook-header" role="banner">
     <div class="casebook-header__inner">
-      <a href="/cases/" class="casebook-header__logo"
+      <a href="{{ '/' | url }}" class="casebook-header__logo"
          aria-label="{{ site.name }}, home">
         <span>{ }</span> Casebook
       </a>
       <nav aria-label="Casebook navigation">
         <ul class="casebook-header__nav" role="list">
-          <li><a href="/cases/">Cases</a></li>
-          <li><a href="/cases/about/">About</a></li>
+          <li><a href="{{ '/' | url }}">Cases</a></li>
+          <li><a href="{{ '/about/' | url }}">About</a></li>
         </ul>
       </nav>
-      {# ── Preferences (appearance) ── #}
+      {# ── Preferences (appearance + contrast) ── #}
       {% include 'partials/casebook-preferences.njk' %}
     </div>
   </header>
@@ -77,11 +77,11 @@
   {# ── Footer ── #}
   <footer class="casebook-footer" role="contentinfo">
     <p>
-      <a href="/cases/">The Frontend Casebook</a>
+      <a href="{{ '/' | url }}">The Frontend Casebook</a>
       &nbsp;·&nbsp;
       <a href="/">Animesh Pandey</a>
       &nbsp;·&nbsp;
-      <a href="/cases/feed.xml" type="application/rss+xml">RSS</a>
+      <a href="{{ '/feed.xml' | url }}" type="application/rss+xml">RSS</a>
     </p>
     <p class="case-format-credit">
       Story format inspired by
@@ -90,6 +90,6 @@
   </footer>
 
   {# ── Deferred scripts ── #}
-  <script src="/cases/assets/js/casebook-preferences.js" defer></script>
+  <script src="{{ '/assets/js/casebook-preferences.js' | url }}" defer></script>
 </body>
 </html>

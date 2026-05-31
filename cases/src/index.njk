@@ -53,7 +53,7 @@ permalink: /index.html
       <li data-track="{{ case.track }}"
           data-status="{{ case.status }}">
         {% if isLive %}
-          <a href="/cases/{{ case.slug }}/"
+          <a href="{{ ('/' ~ case.slug ~ '/') | url }}"
              class="case-card__link">
             <article class="case-card" aria-label="{{ case.title }}">
         {% else %}
