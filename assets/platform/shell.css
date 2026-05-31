@@ -85,3 +85,101 @@ body.platform-body--casebook :focus-visible {
 body.platform-body--casebook main#main {
   min-height: 50vh;
 }
+
+/* ── Mobile nav drawer + overlay (shared: portfolio + Casebook) ───────────
+   Tokens: uses portfolio vars first, then casebook aliases (casebook-tokens.css
+   maps --bg → --casebook-bg etc. for each colour mode so these resolve correctly).
+──────────────────────────────────────────────────────────────────────────── */
+#nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay, 200);
+  background: rgba(28, 23, 20, 0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+#nav-overlay.open { display: block; }
+
+#mobile-nav {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  z-index: var(--z-drawer, 210);
+  width: min(320px, 92vw);
+  background: var(--bg, #FAF8F4);
+  border-left: 1px solid var(--border, #DDD6C9);
+  transform: translateX(100%);
+  transition: transform 0.28s ease;
+  display: flex;
+  flex-direction: column;
+  padding: var(--page-pad, 16px);
+  padding-left: max(var(--page-pad, 16px), env(safe-area-inset-left));
+  padding-right: max(var(--page-pad, 16px), env(safe-area-inset-right));
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: max(var(--page-pad, 16px), env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+#mobile-nav.open { transform: translateX(0); }
+
+.mobile-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 20px;
+  border-bottom: 1px solid var(--border, #DDD6C9);
+  margin-bottom: 24px;
+}
+
+.mobile-nav-close {
+  width: 44px; height: 44px;
+  border: none; background: transparent;
+  color: var(--ink, #1C1714);
+  cursor: pointer; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.2s, background 0.2s;
+}
+.mobile-nav-close:hover {
+  color: var(--accent, #4E7A68);
+  background: var(--accent-bg, #E9E2D5);
+}
+
+.mobile-nav-links {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 4px;
+  flex: 1; margin: 0; padding: 0;
+}
+.mobile-nav-links a {
+  display: flex; align-items: center;
+  min-height: 48px; padding: 0 12px;
+  font-family: var(--mono, monospace);
+  font-size: 13px; letter-spacing: 0.05em;
+  color: var(--ink-2, #5C4F47);
+  text-decoration: none; border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+.mobile-nav-links a:hover,
+.mobile-nav-links a[aria-current="true"],
+.mobile-nav-links a[aria-current="page"] {
+  color: var(--accent, #4E7A68);
+  background: var(--accent-bg, #E9E2D5);
+}
+
+/* ── hamburger (visible on mobile, hidden when product overrides) ── */
+.hamburger {
+  width: 44px; height: 44px;
+  border: none; background: transparent;
+  color: var(--ink, #1C1714);
+  cursor: pointer; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.2s, background 0.2s;
+}
+.hamburger:hover { color: var(--accent, #4E7A68); background: var(--accent-bg, #E9E2D5); }
+
+@media (min-width: 820px) {
+  .platform-header:not(.platform-header--casebook) .hamburger { display: none; }
+}
+@media (min-width: 640px) {
+  .platform-header--casebook .hamburger { display: none; }
+}
