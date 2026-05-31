@@ -111,6 +111,8 @@ body {
 .case-card__link:focus-visible { outline-offset: 4px; }
 .case-card--soon { opacity: 0.7; cursor: default; }
 .case-card--soon .case-card { border-style: dashed; }
+.case-card--scheduled { opacity: 0.85; cursor: default; }
+.case-card--scheduled .case-card { border-style: dashed; border-color: var(--casebook-accent); }
 .case-card__track {
   font-family: var(--mono, monospace);
   font-size: 10px; letter-spacing: .12em;
@@ -133,6 +135,7 @@ body {
 }
 .case-card__badge--flagship { color: var(--casebook-accent); }
 .case-card__badge--soon { color: var(--casebook-ink-faint); border-style: dashed; }
+.case-card__badge--scheduled { color: var(--casebook-accent); border-style: dashed; }
 .case-card__badge--new { color: var(--casebook-accent); background: var(--casebook-surface-2); }
 .case-card__read { font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); }
 
@@ -195,4 +198,48 @@ html.casebook--reduce-motion .casebook-progress { transition: none; }
 }
 @media (min-width: 1024px) {
   .casebook-case { grid-template-columns: minmax(0, 1fr) 300px; gap: 56px; }
+}
+
+/* ── What's New page ── */
+.casebook-whats-new { max-width: 720px; margin: 0 auto; padding: var(--casebook-page-pad); }
+.whats-new-section { margin-bottom: 48px; }
+.whats-new-section__heading {
+  font-family: var(--mono, monospace);
+  font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--casebook-ink-faint);
+  border-bottom: 1px solid var(--casebook-border);
+  padding-bottom: 8px; margin-bottom: 16px;
+}
+.whats-new-list { list-style: none; margin: 0; padding: 0; }
+.whats-new-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 2px 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--casebook-border);
+}
+.whats-new-item__link {
+  grid-column: 1; grid-row: 1;
+  text-decoration: none; color: inherit;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.whats-new-item__link:hover .whats-new-item__title { text-decoration: underline; }
+.whats-new-item--scheduled .whats-new-item__title,
+.whats-new-item--scheduled .whats-new-item__track { opacity: 0.7; }
+.whats-new-item__track {
+  font-family: var(--mono, monospace);
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--casebook-accent);
+}
+.whats-new-item__title { font-size: 0.95rem; color: var(--casebook-ink); }
+.whats-new-item__date {
+  grid-column: 2; grid-row: 1;
+  font-family: var(--mono, monospace); font-size: 10px;
+  color: var(--casebook-ink-faint); white-space: nowrap;
+  align-self: start;
+}
+.whats-new-item__badges {
+  grid-column: 1 / -1; grid-row: 2;
+  display: flex; gap: 6px; flex-wrap: wrap;
 }

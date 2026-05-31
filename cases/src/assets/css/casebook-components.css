@@ -476,3 +476,25 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   }
   .casey-coach__avatar { forced-color-adjust: none; }
 }
+
+/* ── Case share ── */
+.case-share {
+  margin-top: 48px;
+  padding: 24px;
+  border: 1px solid var(--casebook-border);
+  border-radius: 12px;
+  background: var(--casebook-surface);
+}
+.case-share__label {
+  font-family: var(--mono, monospace);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--casebook-ink-faint);
+  margin: 0 0 12px;
+}
+.case-share__actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.case-share__confirm {
+  font-family: var(--mono, monospace);
+  font-size: 11px; color: var(--casebook-accent);
+  margin: 10px 0 0;
+}

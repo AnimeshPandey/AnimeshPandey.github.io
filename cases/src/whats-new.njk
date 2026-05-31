@@ -1,0 +1,108 @@
+---
+layout: layouts/casebook-layout.njk
+navActive: cases
+title: What's New
+description: Recently published and upcoming Frontend Casebook case studies.
+schemaType: WebSite
+permalink: /whats-new/index.html
+noindex: false
+---
+
+<div class="casebook-whats-new">
+  <header class="casebook-hub__hero">
+    <h1 class="casebook-hub__title">What's New</h1>
+    <p class="casebook-hub__subtitle">
+      Recently published cases and what's coming next.
+    </p>
+    <p class="casebook-hub__stats">
+      <a href="{{ '/' | url }}">← All cases</a>
+      &nbsp;·&nbsp;
+      <a href="{{ '/feed.xml' | url }}" type="application/rss+xml">RSS feed</a>
+    </p>
+  </header>
+
+  {# ── Live cases (newest first) ── #}
+  {% set liveCases = [] %}
+  {% for c in manifest.cases %}
+    {% if c.status == 'live' %}
+      {% set liveCases = (liveCases.push(c), liveCases) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if liveCases.length > 0 %}
+  <section class="whats-new-section">
+    <h2 class="whats-new-section__heading">Published</h2>
+    <ol class="whats-new-list" reversed>
+      {% for case in liveCases %}
+      <li class="whats-new-item"
+          data-published-at="{{ case.publishedAt }}">
+        <a href="{{ ('/' ~ case.slug ~ '/') | url }}"
+           class="whats-new-item__link">
+          <span class="whats-new-item__track">{{ case.track | replace("-", " ") | title }}</span>
+          <span class="whats-new-item__title">{{ case.title }}</span>
+        </a>
+        <span class="whats-new-item__date" aria-label="Published">
+          {% if case.publishedAt %}{{ case.publishedAt | readableDate }}{% endif %}
+        </span>
+        <div class="whats-new-item__badges">
+          {% if case.flagship %}
+            <span class="case-card__badge case-card__badge--flagship">★ Flagship</span>
+          {% endif %}
+          {# "New" badge injected by JS — same client-side logic as hub #}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endif %}
+
+  {# ── Scheduled cases ── #}
+  {% set scheduledCases = [] %}
+  {% for c in manifest.cases %}
+    {% if c.status == 'scheduled' %}
+      {% set scheduledCases = (scheduledCases.push(c), scheduledCases) %}
+    {% endif %}
+  {% endfor %}
+
+  {% if scheduledCases.length > 0 %}
+  <section class="whats-new-section">
+    <h2 class="whats-new-section__heading">Coming up</h2>
+    <ul class="whats-new-list">
+      {% for case in scheduledCases %}
+      <li class="whats-new-item whats-new-item--scheduled">
+        <span class="whats-new-item__track">{{ case.track | replace("-", " ") | title }}</span>
+        <span class="whats-new-item__title">{{ case.title }}</span>
+        <span class="whats-new-item__date" aria-label="Scheduled">
+          {% if case.scheduledPublishAt %}{{ case.scheduledPublishAt | readableDate }}{% endif %}
+        </span>
+        <div class="whats-new-item__badges">
+          <span class="case-card__badge case-card__badge--scheduled">Scheduled</span>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {# ── Subscribe ── #}
+  {% include 'partials/subscribe-cta.njk' %}
+</div>
+
+<script>
+// Inject "New" badges on what's-new page using same logic as hub
+(function () {
+  var newDays = 14;
+  var cutoff = Date.now() - newDays * 24 * 60 * 60 * 1000;
+  document.querySelectorAll('.whats-new-item[data-published-at]').forEach(function (li) {
+    var pub = new Date(li.dataset.publishedAt).getTime();
+    if (!isNaN(pub) && pub >= cutoff) {
+      var badges = li.querySelector('.whats-new-item__badges');
+      if (!badges) return;
+      var badge = document.createElement('span');
+      badge.className = 'case-card__badge case-card__badge--new';
+      badge.textContent = 'New';
+      badges.prepend(badge);
+    }
+  });
+}());
+</script>

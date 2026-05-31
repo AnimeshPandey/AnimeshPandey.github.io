@@ -31,6 +31,9 @@ layout: layouts/casebook-layout.njk
     {# ── Case content (chapters from per-case index.njk) ── #}
     {{ content | safe }}
 
+    {# ── Share ── #}
+    {% include 'partials/case-share.njk' %}
+
     {# ── Related cases ── #}
     {% include 'partials/case-related.njk' %}
 

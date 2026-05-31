@@ -1,0 +1,62 @@
+{# ── case-share.njk ── Web Share API with clipboard fallback ── #}
+{# Include at end of case content. Requires: title, slug, site.url in scope. #}
+<div class="case-share" id="case-share">
+  <p class="case-share__label">Enjoyed this case?</p>
+  <div class="case-share__actions">
+    <button type="button"
+            class="btn btn--secondary case-share__btn"
+            id="case-share-btn"
+            data-title="{{ title }}"
+            data-url="{{ site.url }}{{ slug }}/"
+            aria-label="Share this case study">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" aria-hidden="true">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/>
+        <circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg>
+      Share
+    </button>
+    <a href="{{ '/whats-new/' | url }}"
+       class="btn btn--ghost case-share__more">
+      More cases →
+    </a>
+  </div>
+  <p class="case-share__confirm" id="case-share-confirm" aria-live="polite" hidden>
+    Link copied to clipboard.
+  </p>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('case-share-btn');
+  var confirm = document.getElementById('case-share-confirm');
+  if (!btn) return;
+
+  btn.addEventListener('click', async function () {
+    var title = btn.dataset.title;
+    var url = btn.dataset.url;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: title, url: url });
+        return;
+      } catch (e) {
+        if (e.name === 'AbortError') return;
+        // fall through to clipboard
+      }
+    }
+
+    // Clipboard fallback
+    try {
+      await navigator.clipboard.writeText(url);
+      confirm.hidden = false;
+      setTimeout(function () { confirm.hidden = true; }, 3000);
+    } catch (_) {
+      window.prompt('Copy the link:', url);
+    }
+  });
+}());
+</script>

@@ -45,18 +45,20 @@ permalink: /index.html
   <ul class="casebook-hub__grid" id="hub-grid" role="list">
     {% for case in manifest.cases %}
       {% set isLive = case.status == 'live' %}
-      {% set isNew = false %}
-      {% if case.publishedAt %}
-        {# Mark as new if published within 14 days — JS handles precise date math #}
-        {% set isNew = true %}
-      {% endif %}
+      {% set isScheduled = case.status == 'scheduled' %}
 
       <li data-track="{{ case.track }}"
-          data-status="{{ case.status }}">
+          data-status="{{ case.status }}"
+          {% if case.publishedAt %}data-published-at="{{ case.publishedAt }}"{% endif %}>
+
         {% if isLive %}
           <a href="{{ ('/' ~ case.slug ~ '/') | url }}"
              class="case-card__link">
             <article class="case-card" aria-label="{{ case.title }}">
+        {% elif isScheduled %}
+          <article class="case-card case-card--scheduled"
+                   aria-label="{{ case.title }} — Scheduled"
+                   aria-disabled="true">
         {% else %}
           <article class="case-card case-card--soon"
                    aria-label="{{ case.title }} — Coming soon"
@@ -69,9 +71,10 @@ permalink: /index.html
                 {% if case.flagship %}
                   <span class="case-card__badge case-card__badge--flagship">★ Flagship</span>
                 {% endif %}
-                {% if isLive and isNew %}
-                  <span class="case-card__badge case-card__badge--new">New</span>
-                {% elif not isLive %}
+                {# "New" badge is injected by JS from data-published-at — no server-side guess #}
+                {% if isScheduled %}
+                  <span class="case-card__badge case-card__badge--scheduled">Coming soon</span>
+                {% elif not isLive and not isScheduled %}
                   <span class="case-card__badge case-card__badge--soon">Coming soon</span>
                 {% endif %}
                 <span class="case-card__read">{{ case.readMin }}m</span>
@@ -90,30 +93,49 @@ permalink: /index.html
 </div>
 
 <script>
-// Hub track filter — client-side
 (function () {
+  // ── Track filter ──────────────────────────────────────────────
   var sel = document.getElementById('track-filter');
   var grid = document.getElementById('hub-grid');
   var count = document.getElementById('hub-filter-count');
-  if (!sel || !grid) return;
-
-  function filter() {
-    var track = sel.value;
-    var items = grid.querySelectorAll('[data-track]');
-    var visible = 0;
-    items.forEach(function (item) {
-      var show = !track || item.dataset.track === track;
-      item.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-    if (track) {
-      count.textContent = visible + ' case' + (visible !== 1 ? 's' : '');
-    } else {
-      count.textContent = '';
+  if (sel && grid) {
+    function filter() {
+      var track = sel.value;
+      var items = grid.querySelectorAll('[data-track]');
+      var visible = 0;
+      items.forEach(function (item) {
+        var show = !track || item.dataset.track === track;
+        item.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      count.textContent = track ? visible + ' case' + (visible !== 1 ? 's' : '') : '';
     }
+    sel.addEventListener('change', filter);
+    filter();
   }
 
-  sel.addEventListener('change', filter);
-  filter();
+  // ── "New" badge — client-side date math ──────────────────────
+  // NEW_BADGE_DAYS from site.json (baked at build time via data-new-days attr on grid,
+  // or fall back to 14). No server-side guessing of "is this new?" needed.
+  var newDays = parseInt(grid && grid.dataset.newDays, 10) || 14;
+  var cutoff = Date.now() - newDays * 24 * 60 * 60 * 1000;
+  var liveItems = document.querySelectorAll('#hub-grid [data-status="live"][data-published-at]');
+  liveItems.forEach(function (li) {
+    var pub = new Date(li.dataset.publishedAt).getTime();
+    if (!isNaN(pub) && pub >= cutoff) {
+      var meta = li.querySelector('.case-card__meta');
+      if (!meta) return;
+      var badge = document.createElement('span');
+      badge.className = 'case-card__badge case-card__badge--new';
+      badge.textContent = 'New';
+      // Insert after flagship badge if present, else prepend
+      var flagship = meta.querySelector('.case-card__badge--flagship');
+      if (flagship && flagship.nextSibling) {
+        meta.insertBefore(badge, flagship.nextSibling);
+      } else {
+        meta.insertBefore(badge, meta.firstChild);
+      }
+    }
+  });
 }());
 </script>
