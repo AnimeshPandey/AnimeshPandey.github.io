@@ -14,7 +14,6 @@ Personal portfolio of Animesh Pandey, Senior Frontend Engineer.
 | **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | Exhaustive technical reference (layers, files, subsystems, deploy, SW, maintainer workflows) |
 | **[docs/README.md](docs/README.md)** | Documentation index |
 | **[.claude/prompts/](.claude/prompts/)** | Claude/Cursor **implementation prompts** (not under `docs/`) |
-| **[.claude/prompts/portfolio-architecture-alignment-prompt.md](.claude/prompts/portfolio-architecture-alignment-prompt.md)** | Align code to documented layers (fix haphazard file placement) |
 
 ---
 
@@ -59,17 +58,17 @@ Personal portfolio of Animesh Pandey, Senior Frontend Engineer.
 
 ```
 .
-├── index.html                          # Homepage (1 228 LOC)
+├── index.html                          # Homepage (1 236 LOC)
 ├── 404.html                            # Custom 404 + client redirect map
 ├── fundamentals-of-functional-javascript/index.html
 ├── how-well-do-you-know-this/index.html
 │
 ├── assets/
 │   ├── theme.css                       # L1 — design tokens (69 LOC)
-│   ├── site.css                        # L2 — full site presentation (1 438 LOC)
+│   ├── site.css                        # L2 — full site presentation (1 600 LOC)
 │   ├── theme.js                        # L3 — theme toggle + FOUC guard (33 LOC)
-│   ├── nav.js                          # L3 — mobile nav, scroll-spy, back-to-top (213 LOC)
-│   ├── visuals.js                      # L4 — orchestrator, hero canvas, lazy loaders (637 LOC)
+│   ├── nav.js                          # L3 — mobile nav, scroll-spy, progress bar, #yr (113 LOC)
+│   ├── visuals.js                      # L4 — orchestrator, hero canvas, lazy loaders (769 LOC)
 │   ├── contact.js                      # L4 — Web3Forms handler, copy-email (184 LOC)
 │   ├── profile-facts.js                # L5 data — canonical facts (128 LOC)
 │   ├── recruiter-data.js               # L5 data — brief derived from facts (162 LOC)
@@ -83,7 +82,7 @@ Personal portfolio of Animesh Pandey, Senior Frontend Engineer.
 │   ├── og-image.png                    # Social preview raster
 │   └── og-image.svg                    # Social preview source art
 │
-├── sw.js                               # Service worker — CACHE = ap-v19 (75 LOC)
+├── sw.js                               # Service worker — CACHE = ap-v21 (75 LOC)
 ├── resume.pdf · animesh_pandey_resume.tex
 ├── favicon.svg · site.webmanifest
 ├── robots.txt · sitemap.xml · CNAME
@@ -92,7 +91,8 @@ Personal portfolio of Animesh Pandey, Senior Frontend Engineer.
 │   └── workflows/static-pages.yml     # Deploy: checkout → inject secrets → upload artifact
 │
 ├── docs/
-│   └── ARCHITECTURE.md                 # Human technical reference
+│   ├── ARCHITECTURE.md                 # Human technical reference
+│   └── README.md                       # Docs index
 ├── .claude/prompts/                    # Agent implementation prompts
 └── README.md
 ```
@@ -145,5 +145,5 @@ Missing secrets: deploy still succeeds; contact form shows a config-error messag
 - [ ] Contact form: in-page success only — no mail client opens on submit
 - [ ] Breadcrumbs render correctly on article pages
 - [ ] 404 redirect map works for URLs without trailing slash
-- [ ] Service worker `ap-v19` installed; offline loads cached assets
+- [ ] Service worker `ap-v21` installed; offline loads cached assets
 - [ ] iOS: form inputs do not trigger auto-zoom (`font-size: 16px`)
