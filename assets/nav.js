@@ -109,5 +109,61 @@
 
     var yr = document.getElementById('yr');
     if (yr) yr.textContent = String(new Date().getFullYear());
+
+    /* ── Resume preview modal ── */
+    (function () {
+      var modal    = document.getElementById('resume-preview');
+      var closeBtn = modal && modal.querySelector('.resume-modal-close');
+      if (!modal) return;
+
+      var lastFocus = null;
+      var FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+      function openModal() {
+        lastFocus = document.activeElement;
+        modal.showModal();
+        document.body.style.overflow = 'hidden';
+        /* Focus close button on open */
+        if (closeBtn) closeBtn.focus();
+      }
+
+      function closeModal() {
+        modal.close();
+        document.body.style.overflow = '';
+        if (lastFocus) lastFocus.focus();
+      }
+
+      /* Triggers: hero CTA + header nav button */
+      ['resume-preview-trigger', 'nav-resume-preview'].forEach(function (id) {
+        var btn = document.getElementById(id);
+        if (btn) btn.addEventListener('click', openModal);
+      });
+
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+      /* Click outside (on backdrop) closes */
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+      });
+
+      /* Escape is handled natively by <dialog>; sync body overflow */
+      modal.addEventListener('cancel', function () {
+        document.body.style.overflow = '';
+        if (lastFocus) lastFocus.focus();
+      });
+
+      /* Focus trap */
+      modal.addEventListener('keydown', function (e) {
+        if (e.key !== 'Tab') return;
+        var items = Array.prototype.slice.call(modal.querySelectorAll(FOCUSABLE));
+        if (!items.length) return;
+        var first = items[0], last = items[items.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      });
+    }());
   });
 })();
