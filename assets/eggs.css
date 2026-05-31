@@ -1,0 +1,241 @@
+/* ═══════════════════════════════════════════════════════════════
+   eggs.css — Easter egg styles (lazy-loaded alongside egg JS)
+   Z-index: overlays 1000 · sparkline 9997 · toast 9999
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Shared hint text ── */
+.egg-hint {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
+  color: var(--accent); text-transform: uppercase;
+  margin-top: 10px; margin-bottom: 0;
+  opacity: 0; transition: opacity .4s ease;
+}
+.egg-hint.visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .egg-hint { transition: none; } }
+
+/* ══════════════════════════════════════════════════
+   M1 — Career snapshot: slide-up card
+   ══════════════════════════════════════════════════ */
+.egg-card {
+  position: fixed; bottom: -100%; left: 50%;
+  transform: translateX(-50%);
+  width: min(380px, 94vw);
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 20px 20px 0 0;
+  z-index: 500;
+  box-shadow: 0 -8px 48px rgba(0,0,0,.28);
+  transition: bottom .42s cubic-bezier(.16,1,.3,1);
+}
+.egg-card.open { bottom: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .egg-card { transition: none !important; }
+}
+.egg-card-inner { padding: 24px 22px 28px; }
+.egg-card-label {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em;
+  color: var(--accent); text-transform: uppercase; margin-bottom: 18px;
+}
+.egg-rows { display: flex; flex-direction: column; gap: 0; }
+.egg-row {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.egg-row:last-child { border-bottom: none; }
+.egg-n {
+  font-family: var(--serif); font-size: 30px; line-height: 1;
+  color: var(--accent); min-width: 60px;
+}
+.egg-l {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+  color: var(--ink-2); text-transform: uppercase;
+}
+.egg-note {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+  color: var(--ink-3); text-align: center; margin-top: 14px; margin-bottom: 0;
+}
+.egg-close {
+  display: block; width: 100%; margin-top: 16px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: var(--ink-3); text-transform: uppercase;
+  background: none; border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px; cursor: pointer; transition: color .2s, border-color .2s;
+}
+.egg-close:hover { color: var(--accent); border-color: var(--accent); }
+.egg-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ══════════════════════════════════════════════════
+   M2 — Stat sparkline popup
+   ══════════════════════════════════════════════════ */
+.egg-sparkline-popup {
+  position: fixed;
+  z-index: 9997;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  padding: 10px 12px 8px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.2);
+  pointer-events: none;
+  text-align: center;
+  min-width: 130px;
+  opacity: 0;
+  transform: translateX(-50%) translateY(calc(-100% - 8px)) scale(.92);
+  transition: opacity .22s ease, transform .22s ease;
+}
+.egg-sparkline-popup.egg-sparkline-in {
+  opacity: 1;
+  transform: translateX(-50%) translateY(calc(-100% - 14px)) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .egg-sparkline-popup { transition: none !important; }
+  .egg-sparkline-popup.egg-sparkline-in {
+    opacity: 1;
+    transform: translateX(-50%) translateY(calc(-100% - 14px)) scale(1);
+  }
+}
+.egg-spark-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px;
+}
+.egg-spark-caption {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--ink-3); margin-top: 6px; letter-spacing: .04em;
+}
+.egg-spark-canvas { display: block; margin: 0 auto; }
+
+/* ══════════════════════════════════════════════════
+   D1 — Desktop skills constellation overlay
+   ══════════════════════════════════════════════════ */
+#egg-desktop-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: none; flex-direction: column;
+}
+#egg-desktop-overlay.open { display: flex; }
+@media (prefers-reduced-motion: reduce) { #egg-desktop-overlay { display: none !important; } }
+#egg-desktop-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.egg-desktop-ui {
+  position: relative; z-index: 1; padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  pointer-events: none;
+}
+.egg-desktop-title {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+  color: rgba(250,248,244,.45); text-transform: uppercase;
+}
+.egg-desktop-hint {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+  color: rgba(250,248,244,.28); text-transform: uppercase;
+}
+.egg-desktop-close {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: rgba(250,248,244,.5); background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
+  padding: 8px 14px; cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+  pointer-events: auto; min-height: 44px;
+}
+.egg-desktop-close:hover { color: #fff; border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.12); }
+.egg-desktop-close:focus-visible { outline: 2px solid rgba(255,255,255,.5); outline-offset: 2px; }
+
+/* ══════════════════════════════════════════════════
+   T2 — Tablet skill orbit overlay
+   ══════════════════════════════════════════════════ */
+#egg-orbit-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: none; flex-direction: column;
+  background: #0a0908;
+}
+#egg-orbit-overlay.open { display: flex; }
+@media (prefers-reduced-motion: reduce) { #egg-orbit-overlay { display: none !important; } }
+#egg-orbit-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  display: block; touch-action: none;
+}
+.egg-orbit-ui {
+  position: relative; z-index: 1; padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  pointer-events: none;
+}
+.egg-orbit-title {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
+  color: rgba(250,248,244,.4); text-transform: uppercase;
+}
+.egg-orbit-hint {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+  color: rgba(250,248,244,.25); text-transform: uppercase;
+}
+.egg-orbit-close {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: rgba(250,248,244,.5); background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
+  padding: 8px 14px; cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+  pointer-events: auto; min-height: 44px; touch-action: manipulation;
+}
+.egg-orbit-close:hover,
+.egg-orbit-close:focus-visible { color: #fff; border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.12); outline: none; }
+.egg-orbit-close:focus-visible { outline: 2px solid rgba(255,255,255,.5); outline-offset: 2px; }
+.egg-orbit-static {
+  position: absolute; inset: 0;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 12px; padding: 80px 32px;
+}
+/* Trigger hint injected by JS */
+.egg-orbit-cue {
+  display: block; font-family: var(--mono); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--sage, #4E7A68);
+  margin-top: 6px; opacity: 0; transition: opacity .4s ease;
+  pointer-events: none; user-select: none;
+}
+.egg-orbit-cue.visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .egg-orbit-cue { transition: none; } }
+
+/* ══════════════════════════════════════════════════
+   D2 — Desktop faux terminal
+   ══════════════════════════════════════════════════ */
+#egg-terminal {
+  position: fixed; bottom: -100%; right: 32px; z-index: 990;
+  width: min(520px, calc(100vw - 64px));
+  background: #0e0c0b;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -4px 40px rgba(0,0,0,.5);
+  overflow: hidden;
+  transition: bottom .36s cubic-bezier(.16,1,.3,1);
+}
+#egg-terminal.egg-tm-open { bottom: 0; }
+@media (prefers-reduced-motion: reduce) { #egg-terminal { transition: none !important; } }
+.egg-tm-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px 9px;
+  background: rgba(255,255,255,.05);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.egg-tm-dots { display: flex; gap: 6px; }
+.egg-tm-dot { width: 10px; height: 10px; border-radius: 50%; }
+.egg-tm-dot-r { background: #FF5F57; }
+.egg-tm-dot-y { background: #FFBD2E; }
+.egg-tm-dot-g { background: #28C840; }
+.egg-tm-title {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+  color: rgba(255,255,255,.3); text-transform: uppercase;
+}
+.egg-tm-close-btn {
+  font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,.35);
+  background: none; border: none; cursor: pointer;
+  padding: 2px 6px; border-radius: 4px; transition: color .15s; min-height: 28px;
+}
+.egg-tm-close-btn:hover { color: rgba(255,255,255,.75); }
+.egg-tm-close-btn:focus-visible { outline: 2px solid rgba(255,255,255,.4); outline-offset: 2px; }
+.egg-tm-body {
+  padding: 14px 16px 18px;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
+  overflow: hidden;
+}
+.egg-tm-line { display: block; }
+.tm-cmd  { color: rgba(250,248,244,.9); }
+.tm-pass { color: #57c97d; }
+.tm-stat { color: rgba(250,248,244,.55); }
+.tm-meta { color: rgba(250,248,244,.3); font-size: 11px; }
+.tm-gap  { display: block; height: .35em; }
+.tm-ok   { color: #57c97d; font-weight: 700; letter-spacing: .02em; }

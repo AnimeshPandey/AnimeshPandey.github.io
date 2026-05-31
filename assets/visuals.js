@@ -31,8 +31,8 @@
     initCardTilt();
     initTagStagger();
     initArticleTap();
-    initMobileEgg();
-    if (caps.finePointer && caps.canvas2d && !caps.reducedMotion) initDesktopEgg();
+    initEggs();
+    initThemeWink();
     if (caps.iob) initTimelineHighlight();
     initImpactLens();
     initRecruiterMode();
@@ -230,234 +230,95 @@
   }
 
   /* ══════════════════════════════════════════════════
-     MOBILE EASTER EGG — tap badge → career snapshot
-     Hint text fades in 1.5s after load.
+     DEVICE TIER — matchMedia-based (no UA sniffing)
      ══════════════════════════════════════════════════ */
-  function initMobileEgg() {
-    if (caps.finePointer && !caps.coarsePointer) return;
+  function getDeviceTier() {
+    var narrow = mq('(max-width: 639px)');
+    var tablet = mq('(min-width: 640px) and (max-width: 1023px)');
+    var wide   = mq('(min-width: 1024px)');
+    var coarse = mq('(pointer: coarse)');
+    var fine   = mq('(pointer: fine)');
+    var hover  = mq('(hover: hover)');
 
-    var badge = document.querySelector('#hero .badge');
-    if (!badge) return;
+    if (narrow || (coarse && !wide)) return 'mobile';
+    if (tablet || (coarse && fine))  return 'tablet';
+    if (wide && fine && hover)       return 'desktop';
+    return 'mobile';
+  }
 
-    badge.setAttribute('role', 'button');
-    badge.setAttribute('tabindex', '0');
-    badge.setAttribute('aria-label', 'Open to senior and staff roles — tap for career snapshot');
-    badge.style.cursor = 'pointer';
-
-    var hint = document.createElement('p');
-    hint.className = 'egg-hint';
-    hint.setAttribute('aria-hidden', 'true');
-    hint.textContent = '✦  Tap badge for career snapshot';
-    badge.parentNode.insertBefore(hint, badge.nextSibling);
-
-    setTimeout(function () { hint.classList.add('visible'); }, 1500);
-    setTimeout(function () { hint.classList.remove('visible'); }, 7000);
-
-    var card = document.createElement('div');
-    card.className = 'egg-card';
-    card.setAttribute('role', 'dialog');
-    card.setAttribute('aria-modal', 'false');
-    card.setAttribute('aria-label', 'Career snapshot');
-    card.innerHTML =
-      '<div class="egg-card-inner">' +
-        '<p class="egg-card-label">// career snapshot</p>' +
-        '<div class="egg-rows">' +
-          '<div class="egg-row"><span class="egg-n">7+</span><span class="egg-l">years shipping</span></div>' +
-          '<div class="egg-row"><span class="egg-n">5</span><span class="egg-l">products built</span></div>' +
-          '<div class="egg-row"><span class="egg-n">50k+</span><span class="egg-l">daily users</span></div>' +
-          '<div class="egg-row"><span class="egg-n">3</span><span class="egg-l">domains</span></div>' +
-        '</div>' +
-        '<p class="egg-note">SaaS · GovTech · Automotive Retail</p>' +
-        '<button class="egg-close" aria-label="Close career snapshot">✕ close</button>' +
-      '</div>';
-    document.body.appendChild(card);
-
-    var open = false, timer;
-    function openCard() {
-      if (open) return;
-      open = true;
-      card.classList.add('open');
-      card.querySelector('.egg-close').focus();
-      hint.classList.remove('visible');
-      timer = setTimeout(closeCard, 6000);
-    }
-    function closeCard() {
-      open = false; clearTimeout(timer);
-      card.classList.remove('open');
-      badge.focus();
-    }
-
-    badge.addEventListener('click', openCard);
-    badge.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open ? closeCard() : openCard(); }
-    });
-    card.querySelector('.egg-close').addEventListener('click', closeCard);
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && open) closeCard();
+  /* ── CSS lazy-loader ── */
+  function loadCss(href) {
+    return new Promise(function (resolve) {
+      /* Already loaded? */
+      if (document.querySelector('link[href="' + href + '"]')) { resolve(); return; }
+      var link    = document.createElement('link');
+      link.rel    = 'stylesheet';
+      link.href   = href;
+      link.onload  = resolve;
+      link.onerror = resolve; /* fail-safe: still boot eggs */
+      document.head.appendChild(link);
     });
   }
 
   /* ══════════════════════════════════════════════════
-     DESKTOP EASTER EGG — Canvas 2D skill constellation
-     ?  key triggers; ESC / button closes; 12s auto-close
+     EGG LOADER — lazy per-tier chunk
      ══════════════════════════════════════════════════ */
-  function initDesktopEgg() {
-    /* Create overlay */
-    var overlay = document.createElement('div');
-    overlay.id = 'egg-desktop-overlay';
-    overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-label', 'Skills constellation');
-    overlay.setAttribute('tabindex', '-1');
-    overlay.setAttribute('aria-hidden', 'true');
-    overlay.innerHTML =
-      '<div class="egg-desktop-ui">' +
-        '<p class="egg-desktop-title">// skills constellation</p>' +
-        '<p class="egg-desktop-hint">drag to rotate · esc to close</p>' +
-        '<button class="egg-desktop-close" aria-label="Close skills constellation">✕ close</button>' +
-      '</div>' +
-      '<canvas id="egg-desktop-canvas" aria-hidden="true"></canvas>';
-    document.body.appendChild(overlay);
+  function initEggs() {
+    if (window.__VISUALS_DISABLED) return;
+    var tier   = getDeviceTier();
+    var files  = { mobile: '/assets/eggs-mobile.js', tablet: '/assets/eggs-tablet.js', desktop: '/assets/eggs-desktop.js' };
+    var jsFile = files[tier];
+    if (!jsFile) return;
 
-    var canvas = document.getElementById('egg-desktop-canvas');
-    var ctx = canvas.getContext('2d');
-    var closeBtn = overlay.querySelector('.egg-desktop-close');
+    loadCss('/assets/eggs.css')
+      .then(function () { return loadScript('/assets/eggs-data.js'); })
+      .then(function () { return loadScript(jsFile); })
+      .then(function () {
+        if (window.Eggs && window.Eggs.boot) window.Eggs.boot(tier, caps);
+      })
+      .catch(function (err) { console.warn('[eggs] load failed', err); });
+  }
 
-    var SKILLS = [
-      'React','TypeScript','Next.js','Microfrontends',
-      'Module Federation','Design Systems','Node.js','GraphQL',
-      'D3.js','Playwright','Storybook','Webpack',
-      'Vite','GitHub Actions','Agentic AI','LangChain',
-      'WCAG 2.1','Highcharts','Docker','AWS',
-      'Redux','Zustand','React Query','RAG',
-      'SSR / SSG','Recharts','Monorepo','LLM Streaming'
+  /* ══════════════════════════════════════════════════
+     THEME WINK (X2) — 5 rapid toggles → one-line toast
+     Cross-tier; once per session.
+     ══════════════════════════════════════════════════ */
+  function initThemeWink() {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+
+    var winks   = (window.__EGG_DATA && window.__EGG_DATA.themeWinks) || [
+      'System: please pick a lane.',
+      'Dark · Light · Dark · Light · …ok.',
+      'Both look great — commit to one?',
+      'Achievement unlocked: indecisive.'
     ];
+    var winkIdx = 0;
+    var winkFired = false;
+    try { winkFired = sessionStorage.getItem('egg_theme_wink') === '1'; } catch (e) {}
+    if (winkFired) return;
 
-    var N = SKILLS.length;
-    /* Fibonacci sphere layout */
-    var pts = SKILLS.map(function(label, i) {
-      var phi   = Math.acos(1 - 2 * (i + 0.5) / N);
-      var theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      return { label: label, x: Math.sin(phi) * Math.cos(theta), y: Math.sin(phi) * Math.sin(theta), z: Math.cos(phi) };
-    });
+    var clicks = 0, resetTimer;
 
-    var rotX = 0.3, rotY = 0, velX = 0.0008, velY = 0.003;
-    var dragging = false, lastDX = 0, lastDY = 0;
-    var open = false, raf, autoTimer;
+    btn.addEventListener('click', function () {
+      clicks++;
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(function () { clicks = 0; }, 3000);
 
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+      if (clicks >= 5) {
+        clicks = 0;
+        clearTimeout(resetTimer);
+        try { sessionStorage.setItem('egg_theme_wink', '1'); } catch (e) {}
 
-    function rotate(p) {
-      var cx = Math.cos(rotX), sx = Math.sin(rotX);
-      var cy = Math.cos(rotY), sy = Math.sin(rotY);
-      var y1 = p.y * cx - p.z * sx, z1 = p.y * sx + p.z * cx;
-      return { x: p.x * cy + z1 * sy, y: y1, z: -p.x * sy + z1 * cy, label: p.label };
-    }
-
-    function project(p) {
-      var W = canvas.width, H = canvas.height;
-      var R = Math.min(W, H) * 0.34;
-      var fov = 2.8, s = fov / (fov + p.z);
-      return { px: W/2 + p.x * R * s, py: H/2 + p.y * R * s, s: s, z: p.z };
-    }
-
-    function draw() {
-      if (!open) return;
-      raf = requestAnimationFrame(draw);
-      if (!dragging) { rotY += velY; rotX += velX; }
-
-      var W = canvas.width, H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
-
-      /* Dark background */
-      ctx.fillStyle = '#0e0c0b';
-      ctx.fillRect(0, 0, W, H);
-
-      var rotated = pts.map(rotate);
-
-      /* Edges between nearby nodes */
-      for (var a = 0; a < N; a++) {
-        for (var b = a + 1; b < N; b++) {
-          var pa = rotated[a], pb = rotated[b];
-          var dd = (pa.x-pb.x)*(pa.x-pb.x) + (pa.y-pb.y)*(pa.y-pb.y) + (pa.z-pb.z)*(pa.z-pb.z);
-          if (dd < 0.72) {
-            var pa2 = project(pa), pb2 = project(pb);
-            var avgDepth = (pa2.z + pb2.z) / 2;
-            var alpha = (1 - Math.sqrt(dd) / 0.85) * 0.12 * ((avgDepth + 1) / 2);
-            ctx.beginPath();
-            ctx.moveTo(pa2.px, pa2.py); ctx.lineTo(pb2.px, pb2.py);
-            ctx.strokeStyle = 'rgba(191,90,50,' + alpha.toFixed(3) + ')';
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
+        var toast = document.getElementById('copyToast');
+        if (toast) {
+          toast.textContent = winks[winkIdx % winks.length];
+          winkIdx++;
+          toast.classList.add('show');
+          setTimeout(function () { toast.classList.remove('show'); }, 2800);
         }
       }
-
-      /* Nodes + labels — sorted back to front */
-      var sorted = rotated.slice().sort(function(a, b) { return a.z - b.z; });
-      sorted.forEach(function(p) {
-        var q = project(p);
-        var norm = (q.z + 1) / 2;
-        var dotR = 1.5 + norm * 2.5;
-        var dotA = 0.2 + norm * 0.8;
-        ctx.beginPath();
-        ctx.arc(q.px, q.py, dotR, 0, 6.2832);
-        ctx.fillStyle = 'rgba(191,90,50,' + dotA.toFixed(2) + ')';
-        ctx.fill();
-
-        if (norm > 0.4) {
-          var fs = (9 + norm * 5).toFixed(0);
-          ctx.font = fs + 'px "JetBrains Mono",monospace';
-          ctx.fillStyle = 'rgba(240,230,218,' + (0.15 + norm * 0.7).toFixed(2) + ')';
-          ctx.textAlign = 'left';
-          ctx.fillText(p.label, q.px + dotR + 4, q.py + 4);
-        }
-      });
-    }
-
-    function openEgg() {
-      if (open) return;
-      open = true; resize();
-      overlay.classList.add('open');
-      overlay.setAttribute('aria-hidden', 'false');
-      closeBtn.focus();
-      raf = requestAnimationFrame(draw);
-      autoTimer = setTimeout(closeEgg, 12000);
-    }
-
-    function closeEgg() {
-      if (!open) return;
-      open = false;
-      overlay.classList.remove('open');
-      overlay.setAttribute('aria-hidden', 'true');
-      cancelAnimationFrame(raf);
-      clearTimeout(autoTimer);
-      /* Return focus to hero */
-      var hero = document.getElementById('hero');
-      if (hero) { hero.setAttribute('tabindex', '-1'); hero.focus(); }
-    }
-
-    /* Drag to rotate */
-    canvas.addEventListener('mousedown', function(e) { dragging = true; lastDX = e.clientX; lastDY = e.clientY; canvas.style.cursor = 'grabbing'; });
-    document.addEventListener('mousemove', function(e) {
-      if (!dragging) return;
-      velY = (e.clientX - lastDX) * 0.012;
-      velX = (e.clientY - lastDY) * 0.010;
-      rotY += velY; rotX += velX;
-      lastDX = e.clientX; lastDY = e.clientY;
     });
-    document.addEventListener('mouseup', function() { dragging = false; velX = 0.0008; velY = 0.003; canvas.style.cursor = ''; });
-
-    closeBtn.addEventListener('click', closeEgg);
-
-    document.addEventListener('keydown', function(e) {
-      var inInput = e.target && e.target.matches && e.target.matches('input,textarea,select,[contenteditable]');
-      if (inInput) return;
-      if (e.key === '?' && !open) { e.preventDefault(); openEgg(); }
-      if (e.key === 'Escape' && open) closeEgg();
-    });
-
-    window.addEventListener('resize', function() { if (open) resize(); });
   }
 
   /* ══════════════════════════════════════════════════

@@ -837,61 +837,7 @@ footer {
   font-weight: 500;
 }
 
-/* ── Mobile easter egg: badge hint ── */
-.egg-hint {
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
-  color: var(--accent); text-transform: uppercase;
-  margin-top: 10px; margin-bottom: 0;
-  opacity: 0; transition: opacity .4s ease;
-}
-.egg-hint.visible { opacity: 1; }
-
-/* ── Mobile easter egg: slide-up insight card ── */
-.egg-card {
-  position: fixed; bottom: -100%; left: 50%;
-  transform: translateX(-50%);
-  width: min(380px, 94vw);
-  background: var(--surface);
-  border: 1px solid var(--border-2);
-  border-radius: 20px 20px 0 0;
-  z-index: 500;
-  box-shadow: 0 -8px 48px rgba(0,0,0,.28);
-  transition: bottom .42s cubic-bezier(.16,1,.3,1);
-}
-.egg-card.open { bottom: 0; }
-.egg-card-inner { padding: 24px 22px 28px; }
-.egg-card-label {
-  font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em;
-  color: var(--accent); text-transform: uppercase; margin-bottom: 18px;
-}
-.egg-rows { display: flex; flex-direction: column; gap: 0; }
-.egg-row {
-  display: flex; align-items: baseline; gap: 12px;
-  padding: 10px 0; border-bottom: 1px solid var(--border);
-}
-.egg-row:last-child { border-bottom: none; }
-.egg-n {
-  font-family: var(--serif); font-size: 30px; line-height: 1;
-  color: var(--accent); min-width: 60px;
-}
-.egg-l {
-  font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
-  color: var(--ink-2); text-transform: uppercase;
-}
-.egg-note {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
-  color: var(--ink-3); text-align: center; margin-top: 14px; margin-bottom: 0;
-}
-.egg-close {
-  display: block; width: 100%; margin-top: 16px;
-  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
-  color: var(--ink-3); text-transform: uppercase;
-  background: none; border: 1px solid var(--border); border-radius: 8px;
-  padding: 10px; cursor: pointer; transition: color .2s, border-color .2s;
-}
-.egg-close:hover { color: var(--accent); border-color: var(--accent); }
-
-/* ── Desktop easter egg: [ press ? ] hint ── */
+/* ── Desktop easter egg: [ press ? ] hint (static, always loaded) ── */
 .egg-key-hint {
   display: none;
   position: absolute; bottom: 28px; right: var(--page-pad); z-index: 2;
@@ -907,34 +853,7 @@ footer {
 }
 @media (min-width: 820px) { .egg-key-hint { display: flex; } }
 
-/* ── Desktop easter egg: fullscreen canvas overlay ── */
-#egg-desktop-overlay {
-  position: fixed; inset: 0; z-index: 1000;
-  display: none; flex-direction: column;
-}
-#egg-desktop-overlay.open { display: flex; }
-#egg-desktop-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.egg-desktop-ui {
-  position: relative; z-index: 1; padding: 20px 24px;
-  display: flex; align-items: center; justify-content: space-between; width: 100%;
-  pointer-events: none;
-}
-.egg-desktop-title {
-  font-family: var(--mono); font-size: 11px; letter-spacing: .14em;
-  color: rgba(250,248,244,.45); text-transform: uppercase;
-}
-.egg-desktop-hint {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
-  color: rgba(250,248,244,.28); text-transform: uppercase;
-}
-.egg-desktop-close {
-  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
-  color: rgba(250,248,244,.5); background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12); border-radius: 8px;
-  padding: 8px 14px; cursor: pointer; transition: color .2s, border-color .2s, background .2s;
-  pointer-events: auto; min-height: 44px;
-}
-.egg-desktop-close:hover { color: #fff; border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.12); }
+/* (Egg overlay CSS moved to lazy-loaded eggs.css) */
 
 /* ── Timeline: active item highlight ── */
 .t-item .t-dot {
@@ -1301,9 +1220,7 @@ html.theme-transitioning footer {
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   .hero-ticker-track { animation: none; }
-  .egg-card { transition: none; }
   .egg-key-hint { animation: none; opacity: .5; }
-  #egg-desktop-overlay { display: none !important; }
   .t-item .t-dot { transition: none; }
   .t-item .t-role { transition: none; }
   .pc-lens { transition: none; }
