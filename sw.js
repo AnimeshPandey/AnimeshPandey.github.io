@@ -1,4 +1,4 @@
-const CACHE = 'ap-v30';
+const CACHE = 'ap-v31';
 const ASSETS = [
   '/',
   /* Design system — load order: foundation → theme → shell → site */

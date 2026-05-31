@@ -650,6 +650,7 @@
 
       function dismiss() {
         promo.classList.add('rm-promo-out');
+        document.body.classList.remove('rm-promo-active');
         try { sessionStorage.setItem('rm-promo', '1'); } catch(e) {}
         window.__rmPromoDismiss = null;
         setTimeout(function () { if (promo.parentNode) promo.remove(); }, 350);
@@ -663,7 +664,10 @@
 
       window.__rmPromoDismiss = dismiss;
 
-      setTimeout(function () { promo.classList.add('rm-promo-in'); }, 700);
+      setTimeout(function () {
+        promo.classList.add('rm-promo-in');
+        document.body.classList.add('rm-promo-active');
+      }, 700);
     }());
 
     if (new URLSearchParams(location.search).get('recruiter') === '1') {

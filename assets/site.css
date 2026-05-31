@@ -152,44 +152,17 @@ header.scrolled {
 /* Lang menu scrollable if many locales */
 .lang-menu { max-height: 320px; overflow-y: auto; }
 
-/* ── More picker (Resume + Recruiter collapsed into ··· menu) ── */
-.more-picker { position: relative; }
-
-.more-pick-btn {
+/* ── Direct Resume icon button in desktop header ── */
+.nav-resume-icon {
   width: 44px; height: 44px; border-radius: 8px;
   border: 1px solid var(--border); background: transparent;
   color: var(--ink-2); cursor: pointer;
   display: inline-flex; align-items: center; justify-content: center;
   transition: color .2s, border-color .2s, background .2s;
 }
-.more-pick-btn:hover,
-.more-pick-btn[aria-expanded="true"] {
+.nav-resume-icon:hover {
   color: var(--accent); border-color: var(--accent); background: var(--accent-bg);
 }
-
-.more-menu {
-  position: absolute; top: calc(100% + 8px); right: 0;
-  min-width: 176px; list-style: none; margin: 0; padding: 6px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-menu);
-  z-index: var(--z-dropdown);
-}
-
-.more-menu-item {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%; padding: 9px 10px; border-radius: 7px;
-  font-family: var(--mono); font-size: 12px; letter-spacing: .04em;
-  color: var(--ink-2); background: transparent; border: none;
-  cursor: pointer; white-space: nowrap; text-align: left;
-  transition: background .15s, color .15s;
-}
-.more-menu-item:hover,
-.more-menu-item:focus-visible {
-  background: var(--surface-2); color: var(--ink);
-  outline: none;
-}
-.more-menu-item[aria-pressed="true"] { color: var(--accent); }
 
 /* Hamburger */
 .hamburger {
@@ -1250,7 +1223,7 @@ body.rm-panel-open .nav-resume { display: none; }
   position: fixed;
   top: var(--nav-h, 56px);
   left: 0; right: 0;
-  z-index: 95;                    /* below header (100), panel (200) */
+  z-index: 99;                    /* below header (100); above section-rail (98) */
   background: var(--surface, #F2EDE4);
   border-bottom: 1px solid rgba(78,122,104,.22);
   box-shadow: 0 2px 12px rgba(0,0,0,.06);
@@ -1339,6 +1312,15 @@ body.rm-panel-open .nav-resume { display: none; }
 @media (max-width: 540px) {
   .rm-promo-text { font-size: 11.5px; }
   .rm-promo-cta  { font-size: 10px; padding: 5px 10px; }
+}
+
+/* When promo is visible, shift section-rail down so it isn't occluded */
+body.rm-promo-active .section-rail {
+  top: calc(var(--nav-h, 56px) + var(--promo-h, 44px));
+}
+/* Also adjust scroll-margin for sections when promo is active */
+body.rm-promo-active section[id] {
+  scroll-margin-top: calc(var(--nav-h, 56px) + var(--promo-h, 44px) + 56px);
 }
 
 /* ── Theme cross-fade ── */
