@@ -1,0 +1,87 @@
+/* Shared platform shell — portfolio + Casebook (/assets/platform/shell.css) */
+
+/* ── Skip links ── */
+.platform-skip,
+.skip-link,
+.casebook-skip {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  background: var(--casebook-accent, var(--accent));
+  color: var(--casebook-bg, var(--bg));
+  padding: 10px 20px;
+  border-radius: 0 0 8px 8px;
+  z-index: var(--z-skip, 10000);
+  font-family: var(--mono, 'JetBrains Mono', monospace);
+  font-size: 13px;
+  text-decoration: none;
+  transition: top 0.1s;
+}
+
+.platform-skip:focus,
+.skip-link:focus,
+.casebook-skip:focus {
+  top: 0;
+}
+
+/* ── Focus (baseline; product layers may tune offset) ── */
+:focus-visible {
+  outline: 2px solid var(--casebook-accent, var(--accent));
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+body.platform-body--casebook :focus-visible {
+  outline-width: 3px;
+  outline-offset: 2px;
+}
+
+/* ── Theme / display picker (shared with site.css during migration) ── */
+.theme-picker {
+  position: relative;
+}
+
+.theme-pick-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--border, var(--casebook-border));
+  background: transparent;
+  color: var(--ink-2, var(--casebook-ink-muted));
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.theme-pick-btn:hover,
+.theme-pick-btn[aria-expanded="true"] {
+  color: var(--accent, var(--casebook-accent));
+  border-color: var(--accent, var(--casebook-accent));
+  background: var(--accent-bg, var(--casebook-surface-2));
+}
+
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 192px;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  background: var(--surface, var(--casebook-surface));
+  border: 1px solid var(--border, var(--casebook-border));
+  border-radius: var(--radius, 10px);
+  box-shadow: var(--shadow-menu, 0 8px 32px rgba(0, 0, 0, 0.16));
+  z-index: var(--z-dropdown, 200);
+}
+
+.theme-menu[hidden] {
+  display: none !important;
+}
+
+/* Casebook main: sticky header — no extra top pad on body */
+body.platform-body--casebook main#main {
+  min-height: 50vh;
+}
