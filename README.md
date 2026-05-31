@@ -56,7 +56,7 @@ flowchart TB
 | **Articles** | Eleventy [`site/`](site/) |
 | **Casebook** | Eleventy [`cases/`](cases/) — 223 cases (`cases/src/_data/manifest.json`) |
 | **Chrome** | `assets/platform/*`, i18n `en` / `hi` / `es`, 6 portfolio themes |
-| **PWA-ish** | `sw.js` (`CACHE = ap-v28`), network-first for `/assets/platform/*` |
+| **PWA-ish** | `sw.js` (`CACHE = ap-v30`), network-first for `/assets/platform/*` |
 | **CI** | [`.github/workflows/static-pages.yml`](.github/workflows/static-pages.yml) |
 
 ---
@@ -87,8 +87,14 @@ For file-level detail, LOC notes, and subsystem diagrams see **[docs/ARCHITECTUR
 cd site && npm i && npm run build
 cd ../cases && npm i && npm run build
 mkdir -p site/_site/cases && rsync -a ../cases/_site/ site/_site/cases/
-npx serve site/_site -l 8181
-# http://localhost:8181
+python3 -m http.server 8200
+# http://127.0.0.1:8200/ and http://127.0.0.1:8200/cases/
+```
+
+**Platform shell check** (header SSOT, stylesheet stack, Eleventy builds):
+
+```bash
+./scripts/verify-platform-shell.sh
 ```
 
 **Homepage-only quick edit** (passthrough root `index.html` + `assets/`):
@@ -118,7 +124,8 @@ Repo identity and commit author: **[`.github/REPO_IDENTITY.md`](.github/REPO_IDE
 |--------|--------|
 | Facts, hero copy, recruiter dates | `index.html` + `assets/profile-facts.js` |
 | Platform chrome / themes / i18n | `assets/platform/`, `prefs-chrome.js`, `theme.js`, `i18n.js` |
-| Cache bust | Bump `CACHE` in `sw.js` (currently `ap-v28`) |
+| Cache bust | Bump `CACHE` in `sw.js` (currently `ap-v30`) |
+| Platform shell (portfolio + Casebook) | [docs/PLATFORM-SHELL.md](docs/PLATFORM-SHELL.md) · `./scripts/verify-platform-shell.sh` |
 | New article | `site/src/<slug>/index.njk` — rebuild `site/` |
 | Casebook case | `cases/src/` — rebuild `cases/` |
 
@@ -129,6 +136,7 @@ Repo identity and commit author: **[`.github/REPO_IDENTITY.md`](.github/REPO_IDE
 | Path | Purpose |
 |------|---------|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Exhaustive technical reference |
+| [docs/PLATFORM-SHELL.md](docs/PLATFORM-SHELL.md) | Shared portfolio + Casebook chrome contract |
 | [docs/README.md](docs/README.md) | Documentation index |
 | [.github/REPO_IDENTITY.md](.github/REPO_IDENTITY.md) | Git author + deploy identity |
 
@@ -154,5 +162,5 @@ This is a personal site; external PRs are uncommon. If you fork for reference:
 - [ ] Resume modal loads PDF; no layout clip on mobile
 - [ ] Casebook `/cases/` builds and Display menu works
 - [ ] Contact form: in-page success only (no `mailto:` on submit)
-- [ ] Service worker `ap-v28`; platform assets network-first
+- [ ] Service worker `ap-v30`; platform assets network-first
 - [ ] CI deploy green on `main` after doc-only changes
