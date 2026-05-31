@@ -1,6 +1,6 @@
 /* ── casebook-print.css ─────────────────────────────────────────────────── */
 @media print {
-  .casebook-header,
+  .platform-header,
   .casebook-skip,
   .casebook-progress,
   .casey-coach,
