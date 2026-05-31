@@ -108,19 +108,15 @@
 
     setLoading(true);
 
-    /* If key is still placeholder, fall through to mailto */
+    /* If key is still placeholder (local dev / misconfigured deploy):
+       show an in-page message — never auto-open the email client. */
     if (!W3F_KEY || W3F_KEY === 'YOUR_WEB3FORMS_ACCESS_KEY') {
       setLoading(false);
-      var href = buildMailto(name, email, msg);
-      var a = document.createElement('a');
-      a.href = href;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      console.error('[contact] Web3Forms key not set. Configure W3F_KEY or check CI secret injection.');
       showResult(
-        '✓ Opening your email client… ' +
-        '(<a href="' + href + '" class="form-fallback-link">click if nothing opened</a>)',
-        'is-mailto'
+        'Form not configured. ' +
+        '<a href="' + buildMailto(name, email, msg) + '" class="form-fallback-link">Email me directly →</a>',
+        'is-error'
       );
       return;
     }

@@ -373,17 +373,18 @@
         <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
         <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
       </button>
-      <!-- Recruiter briefing entry — always visible (P1) -->
+      <!-- Recruiter briefing entry — header only, icon only -->
       <div class="header-rm-group" id="header-rm-group">
         <button class="header-rm-toggle" id="header-rm-toggle"
                 aria-pressed="false"
-                aria-label="Open recruiter briefing: curated AI-style summary of this portfolio">
+                aria-label="Open recruiter briefing">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-          <span class="header-rm-label">Recruiter briefing</span>
           <span class="header-rm-dot" aria-hidden="true"></span>
         </button>
         <button class="header-rm-exit" id="header-rm-exit"
-                aria-label="Exit recruiter mode">Exit</button>
+                aria-label="Exit recruiter mode">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
       </div>
       <a href="resume.pdf" download class="nav-resume" aria-label="Download resume PDF">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
@@ -417,18 +418,6 @@
     <li><a href="#contact">contact</a></li>
   </ul>
   <div class="mobile-nav-footer">
-    <!-- Recruiter briefing in mobile nav -->
-    <button class="mobile-rm-btn" id="mobile-rm-btn"
-            aria-pressed="false"
-            aria-label="Open recruiter briefing: curated AI-style summary">
-      <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-      Recruiter briefing
-      <span class="mobile-rm-dot" aria-hidden="true"></span>
-    </button>
-    <!-- Mobile exit mode — hidden by CSS until body.recruiter-mode -->
-    <button class="mobile-rm-exit" id="mobile-rm-exit" aria-label="Exit recruiter mode">
-      Exit recruiter mode
-    </button>
     <a href="resume.pdf" download class="nav-resume" aria-label="Download resume PDF">
       <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
       Download Resume
@@ -505,12 +494,6 @@
           <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
         </a>
       </div>
-
-      <button class="rm-hero-btn" id="rm-hero-toggle" aria-pressed="false" aria-label="Toggle recruiter briefing: curated AI-style summary of this portfolio">
-        <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-        <span>Recruiter briefing</span>
-        <span class="rm-btn-dot" aria-hidden="true"></span>
-      </button>
 
       <!-- Fact strip — mobile only, card hidden -->
       <div class="hero-facts" aria-label="Quick facts" role="list">
@@ -1152,11 +1135,6 @@
   <div class="foot-inner">
     <div class="foot-l">
       Animesh Pandey · Bangalore, India · © <span id="yr">2026</span>
-      <button class="recruiter-toggle" id="recruiter-toggle" aria-pressed="false" title="Open recruiter briefing: curated AI-style summary of this portfolio">
-        <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-        recruiter briefing
-        <span class="rt-dot" aria-hidden="true"></span>
-      </button>
     </div>
     <nav aria-label="Social links">
       <div class="foot-socials">
