@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Junior Casey — idle">
-  <title>Junior Casey, idle</title>
-  <!-- body: oversized sage hoodie -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Junior Casey — perk">
+  <title>Junior Casey, perk</title>
+  <!-- body -->
   <path d="M24,68 C20,72 20,90 30,95 L70,95 C80,90 80,72 76,68 C68,60 57,58 50,58 C43,58 32,60 24,68 Z" fill="#7DA888"/>
   <rect x="40" y="79" width="20" height="11" rx="2" fill="#6B9070" opacity="0.4"/>
-  <!-- paws: resting -->
+  <!-- paws: alert, slightly forward -->
   <ellipse cx="33" cy="91" rx="9" ry="5" fill="#F2EDE6"/>
   <circle cx="28" cy="90" r="2.5" fill="#E8E0D4"/>
   <circle cx="33" cy="88" r="2.5" fill="#E8E0D4"/>
@@ -19,21 +19,21 @@
   <!-- head -->
   <ellipse cx="50" cy="38" rx="23" ry="25" fill="#F2EDE6"/>
   <ellipse cx="50" cy="43" rx="15" ry="11" fill="#E8E0D4" opacity="0.35"/>
-  <!-- ears -->
-  <path d="M27,24 L18,6 L40,18 Z" fill="#F2EDE6"/>
-  <path d="M29,23 L22,11 L37,19 Z" fill="#EAB5B5" opacity="0.75"/>
-  <path d="M73,24 L82,6 L60,18 Z" fill="#F2EDE6"/>
-  <path d="M71,23 L78,11 L63,19 Z" fill="#EAB5B5" opacity="0.75"/>
-  <!-- eyes open -->
-  <ellipse cx="38" cy="36" rx="7.5" ry="8.5" fill="#5BA3D4"/>
-  <ellipse cx="38" cy="37" rx="5" ry="6" fill="#1A1410"/>
-  <circle cx="40" cy="33" r="2.2" fill="#fff"/>
-  <ellipse cx="62" cy="36" rx="7.5" ry="8.5" fill="#5BA3D4"/>
-  <ellipse cx="62" cy="37" rx="5" ry="6" fill="#1A1410"/>
-  <circle cx="64" cy="33" r="2.2" fill="#fff"/>
-  <!-- nose + mouth -->
+  <!-- ears: perked high -->
+  <path d="M28,22 L20,2 L40,15 Z" fill="#F2EDE6"/>
+  <path d="M30,21 L24,7 L38,16 Z" fill="#EAB5B5" opacity="0.75"/>
+  <path d="M72,22 L80,2 L60,15 Z" fill="#F2EDE6"/>
+  <path d="M70,21 L76,7 L62,16 Z" fill="#EAB5B5" opacity="0.75"/>
+  <!-- eyes: wide/alert -->
+  <ellipse cx="38" cy="35" rx="8" ry="9" fill="#5BA3D4"/>
+  <ellipse cx="38" cy="36" rx="5.5" ry="6.5" fill="#1A1410"/>
+  <circle cx="40" cy="31" r="2.5" fill="#fff"/>
+  <ellipse cx="62" cy="35" rx="8" ry="9" fill="#5BA3D4"/>
+  <ellipse cx="62" cy="36" rx="5.5" ry="6.5" fill="#1A1410"/>
+  <circle cx="64" cy="31" r="2.5" fill="#fff"/>
+  <!-- nose + mouth: slight smile -->
   <path d="M47,47 L50,51 L53,47 Q50,45 47,47 Z" fill="#D4909A"/>
-  <path d="M45,53 Q50,58 55,53" stroke="#B07878" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M45,53 Q50,57 55,53" stroke="#B07878" stroke-width="1.5" fill="none" stroke-linecap="round"/>
   <!-- whiskers -->
   <line x1="27" y1="48" x2="42" y2="49" stroke="#C8BFB5" stroke-width="0.8"/>
   <line x1="27" y1="51" x2="42" y2="52" stroke="#C8BFB5" stroke-width="0.8"/>
