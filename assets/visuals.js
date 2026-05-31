@@ -212,7 +212,8 @@
       hero.addEventListener('mouseleave', function () { mx = -999; my = -999; });
     }
 
-    function isDark() { return document.documentElement.dataset.theme === 'dark'; }
+    var DARK_THEMES = { dark: 1, slate: 1, dusk: 1, 'high-contrast': 1 };
+    function isDark() { return !!DARK_THEMES[document.documentElement.dataset.theme]; }
 
     var running = true;
     function loop() {
@@ -415,7 +416,7 @@
      Cross-tier; once per session.
      ══════════════════════════════════════════════════ */
   function initThemeWink() {
-    var btn = document.getElementById('theme-toggle');
+    var btn = document.getElementById('theme-pick-btn');
     if (!btn) return;
 
     var winks   = (window.__EGG_DATA && window.__EGG_DATA.themeWinks) || [
@@ -726,7 +727,7 @@
      THEME CROSS-FADE — smooth token transition
      ══════════════════════════════════════════════════ */
   function initThemeCrossfade() {
-    var btn = document.getElementById('theme-toggle');
+    var btn = document.getElementById('theme-pick-btn');
     if (!btn) return;
     /* Capture phase: fires before theme.js changes the theme */
     btn.addEventListener('click', function() {

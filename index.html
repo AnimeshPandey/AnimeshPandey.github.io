@@ -6,9 +6,9 @@
   <!-- Deploy injects Web3Forms key (public; restrict domains in Web3Forms dashboard) -->
   <meta name="web3forms-access-key" content="YOUR_WEB3FORMS_ACCESS_KEY" />
 
-  <!-- FOUC prevention: apply theme before CSS loads -->
+  <!-- FOUC prevention: apply stored theme before CSS loads -->
   <script>
-  (function(){var t=localStorage.getItem('theme');if(t!=='light')document.documentElement.dataset.theme='dark'})();
+  (function(){var v=['light','dark','sage','slate','dusk','high-contrast'];var t=localStorage.getItem('theme');document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'dark';})();
   </script>
 
   <!-- Primary SEO -->
@@ -327,6 +327,13 @@
     <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
     </symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1-.23-.27-.38-.61-.38-.98C12.73 17.69 13.5 17 14.5 17H16c3.31 0 6-2.69 6-6 0-4.96-4.48-9-10-9z"/>
+      <circle cx="6.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="9.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="14.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="17.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
+    </symbol>
     <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
     </symbol>
@@ -371,10 +378,22 @@
           <li><a href="#contact">contact</a></li>
         </ul>
       </nav>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
-        <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
-        <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
-      </button>
+      <div class="theme-picker">
+        <button class="theme-pick-btn" id="theme-pick-btn"
+                aria-label="Theme: Charcoal. Change"
+                aria-expanded="false"
+                aria-controls="theme-menu-header">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+        </button>
+        <ul id="theme-menu-header" class="theme-menu" role="listbox" aria-label="Choose theme" hidden>
+          <li class="theme-menu-item" role="option" data-t="light"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
+          <li class="theme-menu-item" role="option" data-t="dark"          aria-selected="true"  tabindex="-1"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
+          <li class="theme-menu-item" role="option" data-t="sage"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
+          <li class="theme-menu-item" role="option" data-t="slate"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
+          <li class="theme-menu-item" role="option" data-t="dusk"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
+          <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+        </ul>
+      </div>
       <!-- Recruiter briefing entry — header only, icon only -->
       <div class="header-rm-group" id="header-rm-group">
         <button class="header-rm-toggle" id="header-rm-toggle"
@@ -424,6 +443,22 @@
       <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
       Download Resume
     </a>
+    <div class="theme-picker">
+      <button class="theme-pick-btn" id="theme-pick-btn-mobile"
+              aria-label="Theme: Charcoal. Change"
+              aria-expanded="false"
+              aria-controls="theme-menu-mobile">
+        <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+      </button>
+      <ul id="theme-menu-mobile" class="theme-menu" role="listbox" aria-label="Choose theme" hidden>
+        <li class="theme-menu-item" role="option" data-t="light"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
+        <li class="theme-menu-item" role="option" data-t="dark"          aria-selected="true"  tabindex="-1"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
+        <li class="theme-menu-item" role="option" data-t="sage"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
+        <li class="theme-menu-item" role="option" data-t="slate"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
+        <li class="theme-menu-item" role="option" data-t="dusk"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
+        <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+      </ul>
+    </div>
   </div>
 </nav>
 

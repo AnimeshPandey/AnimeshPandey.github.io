@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <script>
+  (function(){var v=['light','dark','sage','slate','dusk','high-contrast'];var t=localStorage.getItem('theme');document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'dark';})();
+  </script>
+
+  <title>Streaming Agent UI Without the Chatbot Clipart · Animesh Pandey</title>
+  <meta name="description" content="How to build a streaming AI agent UI that feels native to your product instead of bolted on. SSE lifecycle, tool-call panels, AbortController, and UX states - by Animesh Pandey, Senior Frontend Engineer." />
+  <meta name="author" content="Animesh Pandey" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#FAF8F4" />
+  <link rel="canonical" href="https://anmshpndy.com/streaming-agent-ui-without-chatbot-clipart/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://anmshpndy.com/streaming-agent-ui-without-chatbot-clipart/" />
+  <meta property="og:title" content="Streaming Agent UI Without the Chatbot Clipart · Animesh Pandey" />
+  <meta property="og:description" content="How to build a streaming AI agent UI that feels native to your product instead of bolted on. SSE lifecycle, tool-call panels, AbortController, and UX states." />
+  <meta property="og:site_name" content="Animesh Pandey" />
+  <meta property="og:image" content="https://anmshpndy.com/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Animesh Pandey · Senior Frontend Engineer, Bangalore" />
+  <meta property="article:published_time" content="2026-05-31T00:00:00Z" />
+  <meta property="article:author" content="https://anmshpndy.com" />
+  <meta property="article:tag" content="JavaScript" />
+  <meta property="article:tag" content="AI" />
+  <meta property="article:tag" content="SSE" />
+  <meta property="article:tag" content="Frontend Architecture" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:creator" content="@anmshpndy" />
+  <meta name="twitter:title" content="Streaming Agent UI Without the Chatbot Clipart" />
+  <meta name="twitter:description" content="SSE lifecycle, tool-call panels, AbortController, and the UX states that make AI feel like a feature rather than a gimmick. By Animesh Pandey." />
+  <meta name="twitter:image" content="https://anmshpndy.com/assets/og-image.png" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": "https://anmshpndy.com/streaming-agent-ui-without-chatbot-clipart/",
+        "headline": "Streaming Agent UI Without the Chatbot Clipart",
+        "description": "How to build a streaming AI agent UI that feels native to your product instead of bolted on. SSE lifecycle, tool-call panels, AbortController, and UX states.",
+        "url": "https://anmshpndy.com/streaming-agent-ui-without-chatbot-clipart/",
+        "datePublished": "2026-05-31",
+        "dateModified": "2026-05-31",
+        "inLanguage": "en",
+        "keywords": ["JavaScript","AI","SSE","Server-Sent Events","Frontend Architecture","TypeScript","AbortController","Streaming UI"],
+        "author": {"@type": "Person", "name": "Animesh Pandey", "url": "https://anmshpndy.com/"},
+        "publisher": {"@type": "Person", "name": "Animesh Pandey", "url": "https://anmshpndy.com/"},
+        "isPartOf": {"@type": "WebSite", "url": "https://anmshpndy.com/", "name": "Animesh Pandey · Senior Frontend Engineer"}
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://anmshpndy.com/"},
+          {"@type": "ListItem", "position": 2, "name": "Writing", "item": "https://anmshpndy.com/#writing"},
+          {"@type": "ListItem", "position": 3, "name": "Streaming Agent UI Without the Chatbot Clipart", "item": "https://anmshpndy.com/streaming-agent-ui-without-chatbot-clipart/"}
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/assets/theme.css" />
+  <link rel="stylesheet" href="/assets/site.css" />
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <defs>
+    <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+    </symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1-.23-.27-.38-.61-.38-.98C12.73 17.69 13.5 17 14.5 17H16c3.31 0 6-2.69 6-6 0-4.96-4.48-9-10-9z"/>
+      <circle cx="6.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="9.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="14.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="17.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
+    </symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
+  </defs>
+</svg>
+
+<a class="skip-link" href="#article-content">Skip to article</a>
+
+<header>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Animesh Pandey, home">AP<span>.</span></a>
+    <div class="nav-right">
+      <div class="theme-picker">
+        <button class="theme-pick-btn" id="theme-pick-btn" aria-label="Choose theme" aria-expanded="false" aria-haspopup="listbox" aria-controls="theme-menu">
+          <svg class="icon" aria-hidden="true"><use href="#i-palette"/></svg>
+        </button>
+        <ul class="theme-menu" id="theme-menu" role="listbox" aria-label="Choose theme" hidden>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="light"         aria-selected="false"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="dark"          aria-selected="false"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="sage"          aria-selected="false"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="slate"         aria-selected="false"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="dusk"          aria-selected="false"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="high-contrast" aria-selected="false"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+        </ul>
+      </div>
+      <a href="/resume.pdf" download class="nav-resume" aria-label="Download resume PDF">
+        <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+        Resume
+      </a>
+      <button id="hamburger" class="hamburger" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+        <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="nav-overlay" aria-hidden="true"></div>
+<nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="mobile-nav-header">
+    <a href="/" class="nav-logo">AP<span>.</span></a>
+    <button id="mobile-nav-close" class="mobile-nav-close" aria-label="Close menu">
+      <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li><a href="/#about">about</a></li>
+    <li><a href="/#experience">experience</a></li>
+    <li><a href="/#skills">skills</a></li>
+    <li><a href="/#projects">projects</a></li>
+    <li><a href="/#writing">writing</a></li>
+    <li><a href="/#contact">contact</a></li>
+  </ul>
+  <div class="mobile-nav-footer">
+    <a href="/resume.pdf" download class="nav-resume">
+      <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+      Download Resume
+    </a>
+    <div class="theme-picker">
+      <button class="theme-pick-btn" id="theme-pick-btn-mobile" aria-label="Choose theme" aria-expanded="false" aria-haspopup="listbox" aria-controls="theme-menu-mobile">
+        <svg class="icon" aria-hidden="true"><use href="#i-palette"/></svg>
+      </button>
+      <ul class="theme-menu" id="theme-menu-mobile" role="listbox" aria-label="Choose theme" hidden>
+        <li class="theme-menu-item" role="option" tabindex="-1" data-t="light"         aria-selected="false"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
+        <li class="theme-menu-item" role="option" tabindex="-1" data-t="dark"          aria-selected="false"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
+        <li class="theme-menu-item" role="option" tabindex="-1" data-t="sage"          aria-selected="false"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
+        <li class="theme-menu-item" role="option" tabindex="-1" data-t="slate"         aria-selected="false"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
+        <li class="theme-menu-item" role="option" tabindex="-1" data-t="dusk"          aria-selected="false"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
+        <li class="theme-menu-item" role="option" tabindex="-1" data-t="high-contrast" aria-selected="false"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main id="article-content">
+  <div class="article-shell">
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
+      <a href="/#writing">Writing</a>
+      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Streaming Agent UI Without the Chatbot Clipart</span>
+    </nav>
+
+    <header class="article-header">
+      <p class="article-label">Frontend Architecture · AI · SSE</p>
+      <h1 class="article-title-main">Streaming Agent UI Without the Chatbot Clipart</h1>
+      <div class="article-byline">
+        <span>Animesh Pandey</span>
+        <span>·</span>
+        <time datetime="2026-05-31">May 31, 2026</time>
+        <span>·</span>
+        <span>18 min read</span>
+      </div>
+    </header>
+
+    <div class="article-prose">
+
+      <p>Teams add a chat bubble to their product and call it an AI feature. Users click it once, get a spinner for seven seconds, then go back to whatever they were doing. The problem isn't the model - it's the gap between what the model is doing and what the UI is showing. An opaque wait is indistinguishable from a broken request.</p>
+
+      <p>I spent the better part of the past year building streaming agent UI on a multi-tenant analytics platform - the kind where users have real work to do and real deadlines, and the AI is supposed to help them do it faster, not give them something new to babysit. What I learned is that the UI contract for a streaming agent is almost nothing like a standard request-response interaction, and reaching for a generic chat SDK without thinking about that contract produces exactly the spinner-and-wait experience that erodes trust.</p>
+
+      <p>This article covers what the contract actually looks like, why you almost certainly want a backend proxy between your frontend and the model, and how to implement the streaming hook and UX state machine that makes the AI feel like part of the product rather than a bolt-on.</p>
+
+      <h2>Why the browser shouldn't call the model directly</h2>
+
+      <p>The short answer: API keys, timeouts, and chunked responses. Browser-to-model calls require you to expose a credential in client-side code or to build a token-exchange flow - either of which is more overhead than just using a backend proxy. But the more interesting reason is timeouts. Most AI completions for complex planning tasks take 15–90 seconds. Browsers aggressively kill fetch connections beyond their timeout budgets, and long-running client-side streams can be severed by network transitions, tab backgrounding, or prefetch heuristics.</p>
+
+      <p>A thin backend proxy - a Node.js Express route is 40 lines - solves all of this. It holds the upstream connection to the model, buffers and forwards the SSE stream to the browser, handles retry on upstream error, and enforces a sane timeout on the model call without letting it propagate as a broken pipe to the browser. The proxy is also where you add request authentication, context injection, and model versioning without shipping those details to every client.</p>
+
+      <figure class="article-figure" aria-labelledby="fig1-cap">
+        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig1-cap">
+Browser (React)          Node BFF Proxy           Model API
+     │                        │                       │
+     │  POST /api/stream       │                       │
+     │ ──────────────────────► │                       │
+     │                        │  POST /completions     │
+     │                        │ ──────────────────────►│
+     │                        │                       │
+     │   event: status        │   chunk: token...      │
+     │ ◄────────────────────── │ ◄──────────────────── │
+     │   event: delta         │   chunk: token...      │
+     │ ◄────────────────────── │ ◄──────────────────── │
+     │   event: tool_call     │   chunk: [tool use]    │
+     │ ◄────────────────────── │ ◄──────────────────── │
+     │   event: delta         │   chunk: token...      │
+     │ ◄────────────────────── │ ◄──────────────────── │
+     │   event: done          │   [DONE]               │
+     │ ◄────────────────────── │ ◄──────────────────── │
+        </pre>
+        <figcaption id="fig1-cap">Figure 1: The BFF proxy holds the upstream model connection and forwards typed SSE events to the browser. The browser never holds a direct socket to the model API.</figcaption>
+      </figure>
+
+      <h2>Designing the SSE event contract</h2>
+
+      <p>Server-sent events are a plain-text streaming protocol. Each event is separated by two newlines; the <code>data:</code> field carries a JSON payload. The spec is simple enough that you don't need a library - <code>EventSource</code> handles reconnection automatically, but for POST-based streams (required for sending a prompt body) you need <code>fetch</code> with <code>ReadableStream</code> parsing. More on that in a moment.</p>
+
+      <p>The event schema I've converged on after multiple iterations looks like this:</p>
+
+      <pre><code>type StreamEvent =
+  | { type: 'status';    phase: 'thinking' | 'tool' | 'typing' }
+  | { type: 'delta';     text: string }
+  | { type: 'tool_call'; name: string; input?: Record&lt;string, unknown&gt; }
+  | { type: 'done' }
+  | { type: 'error';     message: string; retryable: boolean };</code></pre>
+
+      <p>The <code>status</code> event drives the thinking indicator. <code>delta</code> events append text to the response buffer. <code>tool_call</code> events render inline tool-call panels - the name and summarised input are safe to show users; the full payload stays server-side. <code>done</code> finalises the message and clears the in-progress state. <code>error</code> tells the UI whether to offer a retry or surface a terminal failure.</p>
+
+      <p>The key constraint: every event must be safe to render immediately and independently. You can't design an event schema that requires the UI to buffer and reorder - that defeats the purpose of streaming. If your model returns tool results interleaved with completion tokens, normalise them in the proxy before forwarding.</p>
+
+      <h2>The streaming hook</h2>
+
+      <p>The hook's job is to manage the fetch lifecycle, parse the SSE byte stream, dispatch typed events to React state, and expose an <code>AbortController</code> signal the UI can use to cancel mid-stream.</p>
+
+      <pre><code>async function consumeSSE(
+  response: Response,
+  onEvent: (e: StreamEvent) =&gt; void,
+  signal: AbortSignal
+): Promise&lt;void&gt; {
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done || signal.aborted) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const parts = buffer.split('\n\n');
+    buffer = parts.pop() ?? '';
+
+    for (const part of parts) {
+      const dataLine = part.split('\n').find(l =&gt; l.startsWith('data: '));
+      if (!dataLine) continue;
+      try {
+        const evt = JSON.parse(dataLine.slice(6)) as StreamEvent;
+        onEvent(evt);
+      } catch { /* malformed chunk - skip */ }
+    }
+  }
+}</code></pre>
+
+      <p>This is deliberately minimal. It doesn't retry (that's the proxy's job), it doesn't reconnect (the UI owns that decision), and it doesn't buffer partial tokens into larger chunks (the consumer does what it wants with each delta). The byte-accumulation pattern - accumulate into a buffer, split on <code>\n\n</code>, leave the trailing incomplete event in the buffer - is the right way to handle chunked TCP delivery where event boundaries don't align with chunk boundaries.</p>
+
+      <p>The hook in React wraps <code>consumeSSE</code> with state management:</p>
+
+      <pre><code>type Phase = 'idle' | 'thinking' | 'tool' | 'typing' | 'done' | 'error';
+
+function useAgentStream() {
+  const [phase, setPhase] = useState&lt;Phase&gt;('idle');
+  const [text, setText] = useState('');
+  const [toolCalls, setToolCalls] = useState&lt;ToolCall[]&gt;([]);
+  const abortRef = useRef&lt;AbortController | null&gt;(null);
+
+  async function send(prompt: string) {
+    abortRef.current?.abort();
+    abortRef.current = new AbortController();
+    const signal = abortRef.current.signal;
+
+    setPhase('thinking'); setText(''); setToolCalls([]);
+
+    const response = await fetch('/api/stream', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+      signal,
+    });
+
+    if (!response.ok) { setPhase('error'); return; }
+
+    await consumeSSE(response, (evt) =&gt; {
+      if (evt.type === 'status')    setPhase(evt.phase);
+      if (evt.type === 'delta')     setText(t =&gt; t + evt.text);
+      if (evt.type === 'tool_call') setToolCalls(tc =&gt; [...tc, evt]);
+      if (evt.type === 'done')      setPhase('done');
+      if (evt.type === 'error')     setPhase('error');
+    }, signal);
+  }
+
+  function cancel() { abortRef.current?.abort(); setPhase('idle'); }
+
+  return { phase, text, toolCalls, send, cancel };
+}</code></pre>
+
+      <p>Notice the <code>abortRef.current?.abort()</code> at the top of <code>send</code>. If the user sends a second message while the first is still streaming, we cancel the in-flight request before issuing the new one. This is the pattern that prevents ghost updates - half-rendered responses from stale requests arriving after a new one starts.</p>
+
+      <h2>UX states and why each matters</h2>
+
+      <p>The state machine has six states, and each one requires deliberate UI treatment. Collapsing them - showing one spinner for thinking, tool execution, and slow network alike - produces an interface that users can't read or trust.</p>
+
+      <figure class="article-figure" aria-labelledby="fig2-cap">
+        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig2-cap">
+  ┌─────────┐  send()   ┌──────────┐  status:tool   ┌──────────┐
+  │  idle   │ ─────────►│ thinking │ ──────────────► │   tool   │
+  └─────────┘           └──────────┘                 └──────────┘
+       ▲                     │                            │
+       │                     │ status:typing              │ delta / status:typing
+  cancel()                   ▼                            ▼
+       │                ┌──────────┐                 ┌──────────┐
+       └─── cancel() ── │  typing  │ ◄───────────────┤  typing  │
+                        └──────────┘                 └──────────┘
+                             │ done                       │ done
+                             ▼                            ▼
+                        ┌──────────┐                 ┌──────────┐
+                        │   done   │                 │   done   │
+                        └──────────┘                 └──────────┘
+                             │ error (any state)
+                             ▼
+                        ┌──────────┐
+                        │  error   │
+                        └──────────┘
+        </pre>
+        <figcaption id="fig2-cap">Figure 2: The phase state machine. Tool execution interrupts the typing phase; both paths converge at done or error. Cancel is valid from any non-idle state.</figcaption>
+      </figure>
+
+      <p><strong>thinking</strong>: The model has received the prompt and is deciding what to do. Show a pulsing indicator with copy that acknowledges the request. Don't show a spinner - a spinner implies the system is busy in a way the user can't influence. A pulsing dot with "Analysing your question…" is honest: the system is thinking, not broken.</p>
+
+      <p><strong>tool</strong>: The model is calling a tool (querying a database, running a calculation, fetching context). This is the most important state to make visible, because it explains a gap in the stream that would otherwise look like a hang. Render an inline tool-call panel showing the tool name and a summarised input. "Querying spend data for Q1 2026" is far more trustworthy than a frozen spinner. The panel is dismissible after the tool resolves.</p>
+
+      <p><strong>typing</strong>: Text is actively arriving. Append tokens to the response buffer. The cursor blink (a simple CSS animation on a <code>::after</code> pseudo-element) should appear only when new text is arriving - stop it on <code>done</code> or <code>error</code>.</p>
+
+      <p><strong>done</strong>: The model has finished. Stop the cursor. Optionally run a subtle fade-in on any figures or code blocks that were partially constructed. Do not reflow the page - reflows after a response lands train users to look away during streaming, which defeats the purpose.</p>
+
+      <p><strong>error</strong>: Distinguish between retryable errors (network interruption, upstream timeout) and terminal ones (bad prompt, quota exceeded). For retryable errors, show an inline retry button with the original prompt already populated. For terminal errors, show a plain message and a "start over" path. Never surface raw error messages from the model or proxy.</p>
+
+      <p><strong>idle</strong>: The default. The entry point has a text input and a send button. Nothing else. Adding "suggested prompts" or a conversation history header before the user has sent anything increases cognitive load for zero benefit.</p>
+
+      <figure class="article-figure" aria-labelledby="fig3-cap">
+        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig3-cap">
+┌─────────────────────────────────────────────────────────────┐
+│  Agent panel (fixed width drawer or inline card)            │
+│                                                             │
+│  ┌── Prompt input ─────────────────────────── [Send] ──┐   │
+│  │  What drove the CPM spike last Thursday?             │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌── Response area ─────────────────────────────────────┐   │
+│  │  [thinking]  ●  Analysing your question…            │   │
+│  │              ↓                                       │   │
+│  │  [tool]  ▶  querying: campaign performance (Q2)     │   │
+│  │              ↓                                       │   │
+│  │  [typing]  The CPM spike on Thursday correlates     │   │
+│  │            with a budget exhaustion event on your   │   │
+│  │            top-spend channel at 14:32 UTC. When     │   │
+│  │            the primary campaign paused, secondary▌  │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                    [✕ Stop] │
+└─────────────────────────────────────────────────────────────┘
+        </pre>
+        <figcaption id="fig3-cap">Figure 3: UI wireframe during the typing phase, following a tool call. The tool panel renders inline, above the streaming text. The stop button is only visible while streaming is active.</figcaption>
+      </figure>
+
+      <h2>Persistence tradeoffs</h2>
+
+      <p>Where do you store the conversation? The honest answer is: it depends on how much you trust the user's browser and how much the conversation is worth keeping.</p>
+
+      <p><code>sessionStorage</code> is the right default. It survives page refreshes within a tab, disappears on tab close, and doesn't bloat <code>localStorage</code> with conversation history the user will never revisit. It also sidesteps the multi-tab problem: two tabs with the same agent shouldn't share state.</p>
+
+      <p><code>localStorage</code> is appropriate when conversation continuity is part of the product promise - a user who returns the next day and expects context to be retained. The cost is eviction pressure: a long session with streaming text and tool responses can easily reach several hundred kilobytes. Implement a max-turns eviction (drop the oldest turn when the stored byte size exceeds your threshold) before you ship to production.</p>
+
+      <p>Server-side persistence is the right answer for anything that needs to be shared, audited, or restored across devices. Implement it as a hydration endpoint: on mount, the client fetches the last N turns (or the session ID from a URL param) and populates local state. The streaming hook then appends to that hydrated state. This avoids the complexity of real-time sync and keeps the hook's state model simple.</p>
+
+      <p>What I'd do differently: start with <code>sessionStorage</code>, define a serialisation schema with a version field on day one, and add server persistence only when users actually ask for it. Premature server persistence adds a write on every token - that's a lot of round-trips for something most users won't need.</p>
+
+      <h2>Testing streaming hooks</h2>
+
+      <p>The hardest part of testing streaming UI is producing deterministic SSE fixtures. The approach I use: mock <code>fetch</code> to return a <code>Response</code> with a <code>ReadableStream</code> whose underlying source emits pre-scripted events with controllable timing.</p>
+
+      <pre><code>function mockStream(events: StreamEvent[], delayMs = 0): Response {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      for (const evt of events) {
+        if (delayMs) await sleep(delayMs);
+        const chunk = `data: ${JSON.stringify(evt)}\n\n`;
+        controller.enqueue(encoder.encode(chunk));
+      }
+      controller.close();
+    }
+  });
+  return new Response(stream, { status: 200,
+    headers: { 'Content-Type': 'text/event-stream' } });
+}</code></pre>
+
+      <p>With this fixture factory you can write deterministic tests for every phase transition: assert that the phase moves from <code>thinking</code> to <code>tool</code> after the right event, assert that the text buffer accumulates correctly across multiple deltas, assert that abort clears state before the next send. You don't need Vitest fake timers for the happy path - the <code>delayMs</code> parameter lets you write timing-sensitive tests when you actually need them.</p>
+
+      <p>One thing worth testing explicitly: the ghost-update case. Send a first prompt, don't wait for it to complete, then send a second prompt. Assert that the text state contains only the second response's text, not an interleaving of both.</p>
+
+      <h2>Lessons from production</h2>
+
+      <ul>
+        <li><strong>Partial renders are less scary than you think.</strong> Users adapted quickly to seeing incomplete sentences stream in. What they don't adapt to is an interface that looks frozen. A visible cursor on an empty response area is better than a spinner.</li>
+        <li><strong>Tool-call panels are the highest-trust feature.</strong> Showing "I checked X before answering" consistently outperformed opaque responses in user feedback, even when the tool call was trivial. Transparency about how the answer was derived matters more than the answer itself.</li>
+        <li><strong>Fifteen-second timeouts feel like failures.</strong> Even with a visible thinking indicator, users start to doubt the system after about 10 seconds. Consider emitting a progress event from the proxy ("still thinking - this one takes a moment") at the 8-second mark if the upstream hasn't sent a token yet.</li>
+        <li><strong>Cancel is underused.</strong> Make the stop button prominent. Users who know they can cancel are more willing to try complex queries - they don't feel locked in.</li>
+        <li><strong>The mistake I'd undo:</strong> I initially made the tool-call panel collapsible by default, reasoning that users didn't need to see it after the response arrived. They did. Several users specifically told us the tool trace was the part they trusted most. Now it stays expanded.</li>
+      </ul>
+
+      <h2>Further reading</h2>
+
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events" target="_blank" rel="noopener noreferrer">MDN - Using server-sent events</a> - the canonical spec reference for SSE format and <code>EventSource</code> behaviour</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" target="_blank" rel="noopener noreferrer">MDN - AbortController</a> - the fetch cancellation primitive; also works with <code>setTimeout</code> and <code>setInterval</code></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream" target="_blank" rel="noopener noreferrer">MDN - ReadableStream</a> - the Streams API used to consume the SSE byte stream</li>
+      </ul>
+
+    </div>
+
+    <div class="article-cta">
+      <p class="article-cta-label">// Enjoyed this?</p>
+      <a href="/#writing" class="article-cta-btn">
+        More writing ↗
+      </a>
+      <div class="article-cta-also">
+        <span class="article-cta-also-label">Also on:</span>
+        <a href="https://x.com/anmshpndy" target="_blank" rel="noopener noreferrer" class="article-cta-chip">X / Twitter</a>
+        <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer" class="article-cta-chip">LinkedIn</a>
+      </div>
+    </div>
+
+    <div class="article-series">
+      <p class="article-series-label">// Also by Animesh</p>
+      <a href="/fundamentals-of-functional-javascript/" class="article-series-link">
+        <span class="article-series-title">Fundamentals of Functional JavaScript</span>
+        <span class="article-series-meta">21 min read</span>
+      </a>
+    </div>
+
+    <div class="article-author">
+      <div class="article-author-avatar" aria-hidden="true">AP</div>
+      <div>
+        <div class="article-author-name">Animesh Pandey</div>
+        <div class="article-author-role">Senior Frontend Engineer · Bangalore, India</div>
+        <div class="article-author-links">
+          <a href="/">Portfolio</a>
+          <a href="/#writing">More writing</a>
+          <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://x.com/anmshpndy" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <div class="foot-l">Animesh Pandey · Bangalore, India</div>
+    <a href="/" class="article-footer-link">← anmshpndy.com</a>
+  </div>
+</footer>
+
+<script src="/assets/theme.js" defer></script>
+<script src="/assets/nav.js" defer></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "YOUR_CF_BEACON_TOKEN"}'></script>
+</body>
+</html>
