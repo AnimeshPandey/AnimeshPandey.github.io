@@ -24,13 +24,14 @@ You are a **staff frontend engineer + technical architect + inclusive UX lead** 
 2. [GLOBAL-FOUNDATION.md](../docs/platform/GLOBAL-FOUNDATION.md) — class names, events, storage keys  
 3. [UI-UX-AND-PREFERENCES.md](../docs/platform/UI-UX-AND-PREFERENCES.md) — **themes, layout UX, a11y, motion**  
 4. [HOSTING-AND-GROWTH.md](../docs/platform/HOSTING-AND-GROWTH.md) — devices, SEO, `site.json`  
-5. [DECISIONS.md](../docs/product/DECISIONS.md) · [BRANDING.md](../docs/product/BRANDING.md)  
-6. [../phases/01-core-platform.md](../phases/01-core-platform.md) — scope & DoD  
-7. [ELEVENTY-SCAFFOLD.md](../docs/platform/ELEVENTY-SCAFFOLD.md)  
-8. [CASE-TEMPLATE.md](../docs/content/CASE-TEMPLATE.md) · [AUDIENCE-TONE.md](../docs/platform/AUDIENCE-TONE.md)  
-9. [MASCOT-CASEY.md](../docs/mascot/MASCOT-CASEY.md) · [../assets/casey/CASEY-GENERATION-PLAYBOOK.md](../assets/casey/CASEY-GENERATION-PLAYBOOK.md) · [../assets/casey/casey-interactions.json](../assets/casey/casey-interactions.json)  
-10. [growth-design-analysis.md](../docs/content/growth-design-analysis.md) — story beat rhythm  
-11. Flagship track row: [../tracks/01-psychology-perception.md](../tracks/01-psychology-perception.md)
+5. [AUDIENCE-GROWTH-AND-PUBLISHING.md](../docs/platform/AUDIENCE-GROWTH-AND-PUBLISHING.md) — RSS, subscribe CTA, manifest publish fields  
+6. [DECISIONS.md](../docs/product/DECISIONS.md) · [BRANDING.md](../docs/product/BRANDING.md)  
+7. [../phases/01-core-platform.md](../phases/01-core-platform.md) — scope & DoD  
+8. [ELEVENTY-SCAFFOLD.md](../docs/platform/ELEVENTY-SCAFFOLD.md)  
+9. [CASE-TEMPLATE.md](../docs/content/CASE-TEMPLATE.md) · [AUDIENCE-TONE.md](../docs/platform/AUDIENCE-TONE.md)  
+10. [MASCOT-CASEY.md](../docs/mascot/MASCOT-CASEY.md) · [../assets/casey/CASEY-GENERATION-PLAYBOOK.md](../assets/casey/CASEY-GENERATION-PLAYBOOK.md) · [../assets/casey/casey-interactions.json](../assets/casey/casey-interactions.json)  
+11. [growth-design-analysis.md](../docs/content/growth-design-analysis.md) — story beat rhythm  
+12. Flagship track row: [../tracks/01-psychology-perception.md](../tracks/01-psychology-perception.md)
 
 Copy `manifest.json` into `cases/src/_data/`:
 
@@ -68,15 +69,16 @@ FLAGSHIP (only live case):
 DELIVERABLES:
 1. Eleventy project under cases/ per PLATFORM-ARCHITECTURE.md tree
 2. Hub /cases/ — manifest grid; ONE live link; coming-soon cards WITHOUT href
-3. /cases/about/ — methodology, Casey, Growth.Design credit
+3. /cases/about/ — methodology, Casey, Growth.Design credit, #newsletter privacy blurb
 4. /cases/skeleton-screens-perceived-speed/ — full Growth.Design-style scroll case
 5. Shared: casebook.css (tokens/layout/components), casebook-preferences.js (light/dark/system),
    case-scroll.js, casey-coach.js, casey-voice.js (module), demo-loader.js + flagship demo
 6. FOUC inline script + preferences menu in header; about#accessibility section
-6. Casey: 12 SVG placeholders (3 tiers × 4 poses), casey.json for flagship
-7. Build outputs: sitemap.xml, feed.xml, robots.txt (live pages only)
-8. Portfolio homepage CTA → /cases/
-9. Verification report: Lighthouse mobile + device QA summary
+7. Casey: 12 SVG placeholders (3 tiers × 4 poses), casey.json for flagship
+8. subscribe-cta.njk on hub + about (RSS + Buttondown embed or placeholder)
+9. Build outputs: sitemap.xml, feed.xml (pubDate from publishedAt), robots.txt, RSS link in layout
+10. Portfolio homepage CTA → /cases/
+11. Verification report: Lighthouse mobile + device QA summary
 
 ARCHITECTURE RULES (non-negotiable):
 - One case-layout.njk for all cases; flagship content in cases/{slug}/index.njk
@@ -210,6 +212,7 @@ Add `casebookUrl` filter if needed — prefer built-in `url` filter with `pathPr
 ### Hub (`src/index.njk`)
 
 - Hero: brand, subtitle, link to about  
+- Include `subscribe-cta.njk` — RSS + email (see [AUDIENCE-GROWTH-AND-PUBLISHING.md](../docs/platform/AUDIENCE-GROWTH-AND-PUBLISHING.md))  
 - Filter: track `<select>` (client-side filter on `data-track`)  
 - Grid: `{% for case in manifest.cases %}`  
   - `live` → `<a href="{{ case.slug | url }}">`  
@@ -222,6 +225,7 @@ Add `casebookUrl` filter if needed — prefer built-in `url` filter with `pathPr
 - Methodology, tone switcher explanation, Casey intro  
 - Growth.Design credit ([BRANDING.md](../docs/product/BRANDING.md))  
 - Author E-E-A-T blurb + link to portfolio  
+- Section `#newsletter` — double opt-in, unsubscribe, provider name  
 
 ### Flagship case (`src/cases/skeleton-screens-perceived-speed/index.njk`)
 
@@ -393,7 +397,7 @@ Partial `head-seo.njk` accepts:
 | About | `AboutPage` |
 | Case | `Article` or `LearningResource` + `BreadcrumbList` |
 
-Generate `sitemap.njk`, `feed.njk`, `robots.njk` per [HOSTING-AND-GROWTH.md](../docs/platform/HOSTING-AND-GROWTH.md).
+Generate `sitemap.njk`, `feed.njk`, `robots.njk` per [HOSTING-AND-GROWTH.md](../docs/platform/HOSTING-AND-GROWTH.md) and [AUDIENCE-GROWTH-AND-PUBLISHING.md](../docs/platform/AUDIENCE-GROWTH-AND-PUBLISHING.md). Feed items use `publishedAt`; layout includes `<link rel="alternate" type="application/rss+xml">`.
 
 **Title pattern:** lead with specific problem, not brand alone.
 
