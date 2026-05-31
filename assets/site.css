@@ -919,37 +919,32 @@ footer {
 }
 
 /* ══════════════════════════════════════════════════
-   RECRUITER HEADER CHROME — header entry + mobile button
+   RECRUITER HEADER CHROME — icon-only header controls
    ══════════════════════════════════════════════════ */
-/* ── Header: recruiter briefing group ── */
 .header-rm-group {
-  display: flex; align-items: center; gap: 5px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 4px; flex-shrink: 0;
 }
 
-/* Primary toggle — always visible */
+/* Icon-only toggle — 44×44 touch target, sage accent */
 .header-rm-toggle {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
   color: var(--sage); border: 1px solid rgba(78,122,104,.3);
   background: rgba(78,122,104,.06); border-radius: 8px;
-  padding: 6px 11px; cursor: pointer; min-height: 36px;
+  min-width: 36px; min-height: 36px; padding: 0 8px;
+  cursor: pointer;
   transition: color .2s, border-color .2s, background .2s;
-  white-space: nowrap;
+}
+@media (max-width: 819px) {
+  .header-rm-toggle { min-width: 44px; min-height: 44px; padding: 0 10px; }
 }
 .header-rm-toggle:hover,
 .header-rm-toggle:focus-visible {
-  background: rgba(78,122,104,.14); border-color: var(--sage);
-  outline: none;
+  background: rgba(78,122,104,.14); border-color: var(--sage); outline: none;
 }
 .header-rm-toggle:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
 .header-rm-toggle[aria-pressed="true"] {
-  color: var(--sage); border-color: var(--sage);
-  background: rgba(78,122,104,.1);
+  color: var(--sage); border-color: var(--sage); background: rgba(78,122,104,.1);
 }
-/* Collapse label to icon+dot when active */
-header.recruiter-active .header-rm-label { display: none; }
-/* Hide label on mobile — icon+dot only */
-@media (max-width: 819px) { .header-rm-label { display: none; } }
 
 .header-rm-dot {
   width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
@@ -960,111 +955,26 @@ header.recruiter-active .header-rm-label { display: none; }
   opacity: 1; animation: pulse 2s ease-in-out infinite;
 }
 
-/* "Exit" button — shown only when header.recruiter-active */
+/* Icon-only exit — shown on all breakpoints when recruiter-active */
 .header-rm-exit {
-  display: none;
-  align-items: center;
-  font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+  display: none; align-items: center; justify-content: center;
   color: var(--ink-3); border: 1px solid var(--border);
   background: none; border-radius: 7px;
-  padding: 5px 10px; cursor: pointer; min-height: 32px;
+  min-width: 36px; min-height: 36px; padding: 0 8px;
+  cursor: pointer;
   transition: background .15s, color .15s, border-color .15s;
-  white-space: nowrap;
 }
-header.recruiter-active .header-rm-exit {
-  display: inline-flex;
+@media (max-width: 819px) {
+  .header-rm-exit { min-width: 44px; min-height: 44px; padding: 0 10px; }
 }
+header.recruiter-active .header-rm-exit { display: inline-flex; }
 header.recruiter-active .header-rm-exit:hover,
 header.recruiter-active .header-rm-exit:focus-visible {
-  color: var(--accent); border-color: var(--accent);
-  background: var(--accent-bg); outline: none;
-}
-/* Hide Exit on mobile — footer toggle handles exit */
-@media (max-width: 819px) {
-  .header-rm-exit { display: none !important; }
-}
-
-/* ── Hero recruiter toggle button ── */
-.rm-hero-btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--sage); border: 1px solid rgba(78,122,104,.3);
-  background: rgba(78,122,104,.06); border-radius: 8px;
-  padding: 7px 14px; cursor: pointer; margin-top: 12px; min-height: 36px;
-  transition: color .2s, border-color .2s, background .2s;
-}
-.rm-hero-btn:hover { background: rgba(78,122,104,.14); border-color: var(--sage); }
-.rm-hero-btn[aria-pressed="true"] {
-  color: #4eb87a; border-color: rgba(78,184,122,.45); background: rgba(78,184,122,.1);
-}
-.rm-btn-dot {
-  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-  background: var(--sage); opacity: .5; transition: opacity .2s, background .2s;
-}
-.rm-hero-btn[aria-pressed="true"] .rm-btn-dot {
-  opacity: 1; background: #4eb87a; animation: pulse 2s ease-in-out infinite;
-}
-
-/* ── Mobile nav: recruiter briefing button ── */
-.mobile-rm-btn {
-  display: flex; align-items: center; gap: 8px; width: 100%;
-  min-height: 48px; padding: 0 12px;
-  font-family: var(--mono); font-size: 12px; letter-spacing: .05em;
-  color: var(--sage); border: 1px solid rgba(78,122,104,.25);
-  background: rgba(78,122,104,.05); border-radius: 8px; cursor: pointer;
-  transition: background .15s, border-color .15s;
-  margin-bottom: 8px;
-}
-.mobile-rm-btn:hover,
-.mobile-rm-btn:focus-visible {
-  background: rgba(78,122,104,.12); border-color: var(--sage); outline: none;
-}
-.mobile-rm-btn:focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
-.mobile-rm-btn[aria-pressed="true"] {
-  background: rgba(78,122,104,.1); border-color: var(--sage);
-}
-.mobile-rm-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--sage); opacity: .4; margin-left: auto; flex-shrink: 0;
-  transition: opacity .2s;
-}
-.mobile-rm-btn[aria-pressed="true"] .mobile-rm-dot {
-  opacity: 1; animation: pulse 2s ease-in-out infinite;
-}
-
-/* Mobile exit mode button — hidden until body.recruiter-mode */
-.mobile-rm-exit {
-  display: none; align-items: center; justify-content: center;
-  width: 100%; min-height: 40px; padding: 0 12px; margin-bottom: 8px;
-  font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
-  color: var(--ink-3); border: 1px solid var(--border);
-  background: none; border-radius: 8px; cursor: pointer;
-  transition: background .15s, color .15s, border-color .15s;
-}
-body.recruiter-mode .mobile-rm-exit { display: flex; }
-.mobile-rm-exit:hover,
-.mobile-rm-exit:focus-visible {
   color: var(--accent); border-color: var(--accent); background: var(--accent-bg); outline: none;
 }
-.mobile-rm-exit:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-/* ── Footer recruiter toggle ── */
-.recruiter-toggle {
-  font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
-  color: var(--ink-3); background: none; border: 1px solid var(--border);
-  border-radius: 8px; padding: 6px 12px; cursor: pointer;
-  transition: color .2s, border-color .2s, background .2s;
-  display: inline-flex; align-items: center; gap: 7px;
-  margin-top: 12px; min-height: 36px;
+header.recruiter-active .header-rm-exit:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
 }
-.recruiter-toggle:hover { color: var(--sage); border-color: var(--sage); background: var(--sage-bg); }
-.recruiter-toggle[aria-pressed="true"] { color: var(--sage); border-color: var(--sage); background: var(--sage-bg); }
-.recruiter-toggle .rt-dot {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--border-2);
-  transition: background .2s; flex-shrink: 0;
-}
-.recruiter-toggle[aria-pressed="true"] .rt-dot { background: var(--sage); animation: pulse 2.2s ease-in-out infinite; }
 
 /* ══════════════════════════════════════════════════
    RECRUITER MODE — body.recruiter-mode effects

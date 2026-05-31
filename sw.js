@@ -1,4 +1,4 @@
-const CACHE = 'ap-v18';
+const CACHE = 'ap-v19';
 const ASSETS = [
   '/',
   '/assets/theme.css',
@@ -8,6 +8,7 @@ const ASSETS = [
   '/assets/visuals.js',
   '/assets/contact.js',
   /* recruiter panel — lazy-loaded, cache for offline */
+  '/assets/profile-facts.js',
   '/assets/recruiter-data.js',
   '/assets/recruiter.js',
   '/assets/recruiter.css',

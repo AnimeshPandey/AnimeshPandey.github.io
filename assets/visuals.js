@@ -418,21 +418,14 @@
 
   function initRecruiterMode() {
     /* ── DOM refs ── */
-    var heroToggle    = document.getElementById('rm-hero-toggle');
-    var footToggle    = document.getElementById('recruiter-toggle');
     var headerToggle  = document.getElementById('header-rm-toggle');
     var headerExitBtn = document.getElementById('header-rm-exit');
-    var mobileRmBtn   = document.getElementById('mobile-rm-btn');
-    var mobileRmExit  = document.getElementById('mobile-rm-exit');
     var header        = document.querySelector('header');
 
-    /* Two-way toggles (hero + footer): turn mode on OR off */
-    var twoWayToggles = [heroToggle, footToggle].filter(Boolean);
-    /* All toggles for aria-pressed sync */
-    var allToggles = [heroToggle, footToggle, headerToggle, mobileRmBtn].filter(Boolean);
+    /* Only the header icon toggle syncs aria-pressed */
+    var allToggles = [headerToggle].filter(Boolean);
 
-    /* At least the header entry must exist */
-    if (!headerToggle && !twoWayToggles.length) return;
+    if (!headerToggle) return;
 
     /* ── State ── */
     var on = false;
@@ -461,8 +454,8 @@
       /* R1: update header toggle aria-label to signal mode state */
       if (headerToggle) {
         headerToggle.setAttribute('aria-label', active
-          ? 'Recruiter mode active — click to open briefing'
-          : 'Open recruiter briefing: curated AI-style summary of this portfolio');
+          ? 'Open recruiter briefing (mode active)'
+          : 'Open recruiter briefing');
       }
       try { localStorage.setItem('recruiter', on ? '1' : '0'); } catch(e) {}
       if (on) {
@@ -497,6 +490,7 @@
       });
 
       _loadPromise = cssLoaded
+        .then(function () { return loadScript('/assets/profile-facts.js'); })
         .then(function () { return loadScript('/assets/recruiter-data.js'); })
         .then(function () { return loadScript('/assets/recruiter.js'); })
         .then(function () { return window.RecruiterBriefing || {}; })
@@ -517,46 +511,17 @@
     /* ── Restore from localStorage: mode on but do NOT auto-open panel ── */
     if (on) set(true);
 
-    /* ── Two-way toggles (hero / footer): click toggles mode on/off ── */
-    twoWayToggles.forEach(function (t) {
-      t.addEventListener('click', function () {
-        if (on) {
-          /* Turning off: set(false) closes panel internally */
-          set(false);
-        } else {
-          /* Turning on: enter mode and open panel */
-          enterAndOpen(t);
-        }
-      });
-    });
-
-    /* ── Header toggle: always opens briefing (never exits mode alone) ── */
+    /* ── Header toggle: click always enters mode + opens briefing ── */
     if (headerToggle) {
       headerToggle.addEventListener('click', function () {
         enterAndOpen(headerToggle);
       });
     }
 
-    /* ── "Exit mode" button in header ── */
+    /* ── Header exit: exits mode (closes panel too via set(false)) ── */
     if (headerExitBtn) {
       headerExitBtn.addEventListener('click', function () {
         set(false);
-      });
-    }
-
-    /* ── Mobile nav recruiter button ── */
-    if (mobileRmBtn) {
-      mobileRmBtn.addEventListener('click', function () {
-        /* Close mobile nav first, then open briefing */
-        var hamburger  = document.getElementById('hamburger');
-        var mobileNav  = document.getElementById('mobile-nav');
-        var navOverlay = document.getElementById('nav-overlay');
-        if (mobileNav)  mobileNav.classList.remove('open');
-        if (navOverlay) navOverlay.classList.remove('open');
-        if (hamburger)  hamburger.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-
-        enterAndOpen(mobileRmBtn);
       });
     }
 
@@ -599,21 +564,6 @@
       /* Slide in after a short delay so the page settles first */
       setTimeout(function () { promo.classList.add('rm-promo-in'); }, 700);
     }());
-
-    /* ── Mobile exit mode button (R2) ── */
-    if (mobileRmExit) {
-      mobileRmExit.addEventListener('click', function () {
-        /* Close mobile nav first */
-        var hamburger  = document.getElementById('hamburger');
-        var mobileNav  = document.getElementById('mobile-nav');
-        var navOverlay = document.getElementById('nav-overlay');
-        if (mobileNav)  mobileNav.classList.remove('open');
-        if (navOverlay) navOverlay.classList.remove('open');
-        if (hamburger)  hamburger.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-        set(false);
-      });
-    }
 
     /* ── Deep link: ?recruiter=1 → mode on + panel open ── */
     if (new URLSearchParams(location.search).get('recruiter') === '1') {
