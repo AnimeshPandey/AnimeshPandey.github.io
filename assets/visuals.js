@@ -606,6 +606,11 @@
       try { localStorage.setItem('recruiter', on ? '1' : '0'); } catch(e) {}
       if (on) {
         activateHeader();
+        /* R8: dismiss promo when entering mode */
+        if (typeof window.__rmPromoDismiss === 'function') {
+          window.__rmPromoDismiss();
+          window.__rmPromoDismiss = null;
+        }
       } else {
         deactivateHeader();
         /* Close panel when exiting mode */
@@ -693,6 +698,46 @@
         enterAndOpen(mobileRmBtn);
       });
     }
+
+    /* ── R8: Recruiter promo card — shown once per session when mode off ── */
+    (function initPromoCard() {
+      try { if (sessionStorage.getItem('rm-promo') === '1') return; } catch(e) {}
+      if (on) return; /* mode already active — no need to promote */
+
+      var promo = document.createElement('div');
+      promo.id        = 'rm-promo';
+      promo.className = 'rm-promo';
+      promo.setAttribute('role', 'complementary');
+      promo.setAttribute('aria-label', 'Recruiter shortcut');
+      promo.innerHTML =
+        '<div class="rm-promo-inner">' +
+          '<span class="rm-promo-icon" aria-hidden="true">★</span>' +
+          '<span class="rm-promo-text">Recruiter? Get a 90-second briefing on this portfolio.</span>' +
+          '<button class="rm-promo-cta" type="button">Open briefing</button>' +
+          '<button class="rm-promo-dismiss" type="button" aria-label="Dismiss recruiter shortcut">✕</button>' +
+        '</div>';
+
+      document.body.appendChild(promo);
+
+      function dismiss() {
+        promo.classList.add('rm-promo-out');
+        try { sessionStorage.setItem('rm-promo', '1'); } catch(e) {}
+        window.__rmPromoDismiss = null;
+        setTimeout(function () { if (promo.parentNode) promo.remove(); }, 350);
+      }
+
+      promo.querySelector('.rm-promo-dismiss').addEventListener('click', dismiss);
+      promo.querySelector('.rm-promo-cta').addEventListener('click', function () {
+        dismiss();
+        enterAndOpen(promo.querySelector('.rm-promo-cta'));
+      });
+
+      /* Exposed so set(true) can dismiss it when mode activates via other entry points */
+      window.__rmPromoDismiss = dismiss;
+
+      /* Slide in after a short delay so the page settles first */
+      setTimeout(function () { promo.classList.add('rm-promo-in'); }, 700);
+    }());
 
     /* ── Mobile exit mode button (R2) ── */
     if (mobileRmExit) {

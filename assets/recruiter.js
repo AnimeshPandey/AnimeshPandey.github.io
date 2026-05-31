@@ -21,6 +21,7 @@
   var _isActive    = false;          // recruiter mode on
   var _lastToggle  = null;           // element to restore focus to
   var _sessionId   = 0;              // incremented on each open() to cancel stale animations
+  var _lastRenderMs = 0;             // R9: timestamp of last completed render (for cache TTL)
 
   /* ── DOM refs ── */
   var panel    = d.getElementById('rm-panel');
@@ -65,17 +66,29 @@
       history.replaceState(null, '', url.toString());
     }
 
-    // Reset body scroll and content on each open
-    if (bodyEl) { bodyEl.scrollTop = 0; bodyEl.innerHTML = ''; }
-    if (scanEl) { scanEl.innerHTML = ''; scanEl.classList.remove('rm-scan-done'); }
+    // R9: Reuse in-memory cached render if panel was closed within 2 minutes
+    var CACHE_TTL_MS = 120000; // 2 min
+    var canUseCached = _lastRenderMs > 0 &&
+                       (Date.now() - _lastRenderMs) < CACHE_TTL_MS &&
+                       bodyEl && bodyEl.children.length > 0;
 
-    // Trap focus and run phases
-    trapFocus();
-    if (reducedMotion) {
-      renderAllImmediate();
+    if (canUseCached) {
+      // Content still live in DOM — scroll to top and show instantly
+      if (bodyEl) bodyEl.scrollTop = 0;
     } else {
-      runPhases(_sessionId);
+      // Full clear + re-render
+      if (bodyEl) { bodyEl.scrollTop = 0; bodyEl.innerHTML = ''; }
+      if (scanEl) { scanEl.innerHTML = ''; scanEl.classList.remove('rm-scan-done'); }
+
+      if (reducedMotion) {
+        renderAllImmediate();
+      } else {
+        runPhases(_sessionId);
+      }
     }
+
+    // Trap focus
+    trapFocus();
   }
 
   function close() {
@@ -232,6 +245,7 @@
   /* Phase 3 — all remaining cards stagger in */
   function runPhase3(sid) {
     if (sid !== _sessionId) return;
+    _lastRenderMs = Date.now(); // R9: mark cache valid (body is now being built)
 
     var allItems = [];
     allItems = allItems.concat(buildAtAGlance());
@@ -446,6 +460,7 @@
      IMMEDIATE RENDER (prefers-reduced-motion)
   ════════════════════════════════════════════════ */
   function renderAllImmediate() {
+    _lastRenderMs = Date.now(); // R9: mark cache valid
     scanEl.innerHTML = '';
     bodyEl.innerHTML = '';
 
