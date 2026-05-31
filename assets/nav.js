@@ -217,7 +217,7 @@
       if (lastFocus) lastFocus.focus();
     }
 
-    ['resume-preview-trigger', 'nav-resume-preview', 'nav-resume-preview-mobile'].forEach(function (id) {
+    ['resume-preview-trigger', 'nav-resume-preview', 'nav-resume-preview-mobile', 'resume-preview-hc', 'resume-preview-footer'].forEach(function (id) {
       var btn = document.getElementById(id);
       if (btn) btn.addEventListener('click', openModal);
     });

@@ -432,6 +432,7 @@ h2 em { font-style: italic; color: var(--ink-2); }
   min-height: 44px;
 }
 .hc-dl:hover { color: rgba(250,248,244,.9); border-color: rgba(191,90,50,.5); background: rgba(191,90,50,.15); }
+button.hc-dl { background: transparent; cursor: pointer; }
 
 /* ── About ── */
 .about-body { font-size: 16px; color: var(--ink-2); line-height: 1.8; max-width: 640px; }
@@ -857,6 +858,7 @@ footer {
   min-height: 44px;
 }
 .social-btn:hover { color: var(--accent); background: var(--accent-bg); }
+button.social-btn { background: transparent; border: none; cursor: pointer; font-family: var(--mono); font-size: 11px; letter-spacing: .04em; }
 
 /* ── Scroll reveal ── */
 .fade-up { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
