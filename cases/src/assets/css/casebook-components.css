@@ -430,15 +430,11 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   border: 1px solid var(--casebook-border); border-radius: 8px;
   background: var(--casebook-bg); color: var(--casebook-ink);
 }
-.casebook-subscribe__form button {
-  font-family: var(--sans, system-ui); font-size: 14px; font-weight: 500;
-  padding: 10px 20px; min-height: 44px;
-  border: none; border-radius: 8px;
-  background: var(--casebook-accent); color: var(--casebook-bg);
-  cursor: pointer; white-space: nowrap;
-  transition: opacity 0.2s;
+.casebook-subscribe__form .btn--primary {
+  background: var(--casebook-accent);
+  color: var(--casebook-bg);
+  border-color: var(--casebook-accent);
 }
-.casebook-subscribe__form button:hover { opacity: 0.85; }
 .casebook-subscribe__rss {
   display: inline-flex; align-items: center; gap: 6px;
   margin-top: 12px;
