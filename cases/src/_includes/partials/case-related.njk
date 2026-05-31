@@ -1,0 +1,19 @@
+{# ── case-related.njk ── Related cases list ── #}
+{% if relatedCases and relatedCases.length %}
+<section class="case-related" aria-label="Related cases">
+  <h2>Related cases</h2>
+  <ul class="case-related__list">
+    {% for r in relatedCases %}
+      {% set relEntry = manifest.cases | selectattr("slug", "equalto", r.slug) | first %}
+      <li class="case-related__item">
+        {% if relEntry and relEntry.status == 'live' %}
+          <a href="/cases/{{ r.slug }}/">{{ r.title | default(relEntry.title) }}</a>
+        {% else %}
+          {{ r.title | default(r.slug) }}
+          <span class="soon-badge">— Coming soon</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}

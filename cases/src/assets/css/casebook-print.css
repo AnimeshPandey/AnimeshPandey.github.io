@@ -1,0 +1,31 @@
+/* ── casebook-print.css ─────────────────────────────────────────────────── */
+@media print {
+  .casebook-header,
+  .casebook-skip,
+  .casebook-progress,
+  .casey-coach,
+  .casey-coach--dock-bottom,
+  .casebook-prefs,
+  .case-tone,
+  .casebook-subscribe,
+  .case-demo__controls,
+  .case-share { display: none !important; }
+
+  body { background: #fff; color: #000; }
+  a { color: #000; }
+  a[href]::after { content: ' (' attr(href) ')'; font-size: 0.75em; }
+
+  .case-scroll { max-width: 100%; }
+
+  /* Print active tone blocks; hide others */
+  .tone-mid, .tone-staff { display: none !important; }
+  .tone-junior { display: block !important; }
+
+  .case-chapter {
+    opacity: 1 !important;
+    transform: none !important;
+    page-break-inside: avoid;
+  }
+
+  .casebook-footer { margin-top: 20px; }
+}

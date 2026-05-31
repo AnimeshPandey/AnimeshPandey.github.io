@@ -1,0 +1,10 @@
+{# ── case-header.njk ── breadcrumb + read time ── #}
+<nav class="case-breadcrumb" aria-label="Breadcrumb">
+  <a href="/cases/">Casebook</a>
+  <span class="case-breadcrumb__sep" aria-hidden="true">›</span>
+  {% if track %}
+    <span>{{ track | replace("-", " ") | title }}</span>
+    <span class="case-breadcrumb__sep" aria-hidden="true">›</span>
+  {% endif %}
+  <span aria-current="page">{{ title }}</span>
+</nav>

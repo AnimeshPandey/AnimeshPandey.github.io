@@ -24,7 +24,48 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Inject secrets into static files
+      # ── Build Casebook (Eleventy) ──────────────────────────────────────────
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install casebook dependencies
+        working-directory: cases
+        run: npm install
+
+      - name: Build casebook
+        working-directory: cases
+        run: npm run build
+
+      # ── Stage merged artifact ──────────────────────────────────────────────
+      # Portfolio lives at root; casebook _site output goes to /cases/
+      - name: Stage deployment artifact
+        run: |
+          set -euo pipefail
+          mkdir -p _deploy
+
+          # Copy portfolio (exclude casebook source, build output, dev files)
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='cases/src' \
+            --exclude='cases/node_modules' \
+            --exclude='cases/_site' \
+            --exclude='cases/.eleventy.js' \
+            --exclude='cases/package.json' \
+            --exclude='cases/.gitignore' \
+            --exclude='_deploy' \
+            . _deploy/
+
+          # Overlay Eleventy build output at /cases/
+          mkdir -p _deploy/cases
+          rsync -a cases/_site/ _deploy/cases/
+
+          echo "✓ Staged $(find _deploy -type f | wc -l) files"
+
+      # ── Inject secrets ─────────────────────────────────────────────────────
+      - name: Inject secrets into deployed files
         env:
           W3F_ACCESS_KEY: ${{ secrets.W3F_ACCESS_KEY }}
           WEB3FORMS_ACCESS_KEY: ${{ secrets.WEB3FORMS_ACCESS_KEY }}
@@ -37,46 +78,40 @@ jobs:
           CF_TOKEN="${CF_BEACON_TOKEN:-}"
           if [ -z "$CF_TOKEN" ]; then CF_TOKEN="${CLOUDFLARE_BEACON_TOKEN:-}"; fi
 
-          inject_w3f() {
-            # Replace only deploy placeholders — not UNCONFIGURED sentinel in contact.js
-            sed -i "s|YOUR_WEB3FORMS_ACCESS_KEY|${W3F_KEY}|g" assets/contact.js index.html
-            if grep -q "__WEB3FORMS_KEY_NOT_SET__" assets/contact.js && grep -q "${W3F_KEY}" assets/contact.js; then
-              echo "✓ contact.js has injected key and intact UNCONFIGURED sentinel"
-            fi
-          }
-
-          # Web3Forms access key → assets/contact.js + index.html meta (HTML is network-first in SW)
+          # Web3Forms key → portfolio contact.js + index.html only
           if [ -n "$W3F_KEY" ]; then
-            inject_w3f
-            echo "✓ Web3Forms key injected into contact.js and index.html"
-            if grep -q "YOUR_WEB3FORMS_ACCESS_KEY" assets/contact.js index.html; then
+            sed -i "s|YOUR_WEB3FORMS_ACCESS_KEY|${W3F_KEY}|g" \
+              _deploy/assets/contact.js _deploy/index.html
+            if grep -q "YOUR_WEB3FORMS_ACCESS_KEY" _deploy/assets/contact.js _deploy/index.html 2>/dev/null; then
               echo "::error::Web3Forms placeholder still present after inject"
               exit 1
             fi
+            echo "✓ Web3Forms key injected"
           else
-            echo "::warning::No Web3Forms secret — set W3F_ACCESS_KEY (or WEB3FORMS_ACCESS_KEY) in repo Settings → Secrets"
+            echo "::warning::No Web3Forms secret — set W3F_ACCESS_KEY in repo Settings → Secrets"
           fi
 
-          # Cloudflare beacon token → all HTML files
+          # Cloudflare beacon token → all HTML (portfolio + casebook)
           if [ -n "$CF_TOKEN" ]; then
-            find . -name "*.html" -not -path "./.git/*" \
+            find _deploy -name "*.html" \
               -exec sed -i "s|YOUR_CF_BEACON_TOKEN|${CF_TOKEN}|g" {} +
-            echo "✓ Cloudflare beacon token injected"
-            if find . -name "*.html" -not -path "./.git/*" -exec grep -l "YOUR_CF_BEACON_TOKEN" {} + | grep -q .; then
+            if find _deploy -name "*.html" -exec grep -l "YOUR_CF_BEACON_TOKEN" {} + 2>/dev/null | grep -q .; then
               echo "::error::Cloudflare placeholder still present in HTML"
               exit 1
             fi
+            echo "✓ Cloudflare beacon token injected into all HTML"
           else
-            echo "::warning::No CF beacon secret — set CF_BEACON_TOKEN (or CLOUDFLARE_BEACON_TOKEN)"
+            echo "::warning::No CF beacon secret — set CF_BEACON_TOKEN in repo Settings → Secrets"
           fi
 
+      # ── GitHub Pages ───────────────────────────────────────────────────────
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "."
+          path: "_deploy"
 
       - name: Deploy to GitHub Pages
         id: deployment

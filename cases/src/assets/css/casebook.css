@@ -1,0 +1,13 @@
+/* ── casebook.css ─ single entry point ─────────────────────────────────────
+   Load order in layout:
+     /assets/styles/foundation.css   (portfolio structural tokens)
+     /assets/theme.css               (portfolio color tokens)
+     /cases/assets/css/casebook.css  ← this file
+
+   Do NOT add a bundler. Use @import for browser-native cascade.
+──────────────────────────────────────────────────────────────────────────── */
+
+@import url('./casebook-tokens.css');
+@import url('./casebook-layout.css');
+@import url('./casebook-components.css');
+@import url('./casebook-print.css');

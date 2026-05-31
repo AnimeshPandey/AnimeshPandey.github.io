@@ -1,0 +1,43 @@
+{# ── subscribe-cta.njk ── RSS + newsletter (Buttondown embed placeholder) ── #}
+<section class="casebook-subscribe" aria-label="Subscribe">
+  <h2 class="casebook-subscribe__title">Inside the Casebook</h2>
+  <p class="casebook-subscribe__desc">
+    New cases every few weeks — patterns from production UI engineering.
+    Double opt-in, easy unsubscribe.
+  </p>
+
+  {# Buttondown embed placeholder — replace src with embed URL when Buttondown is configured #}
+  <form class="casebook-subscribe__form"
+        action="https://buttondown.com/api/emails/embed-subscribe/animeshpandey"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.com/animeshpandey', 'popupwindow')"
+        aria-label="Newsletter subscription">
+    <label for="subscribe-email" class="visually-hidden">Email address</label>
+    <input id="subscribe-email"
+           type="email"
+           name="email"
+           placeholder="you@example.com"
+           required
+           autocomplete="email"
+           aria-required="true" />
+    <button type="submit">Subscribe</button>
+  </form>
+
+  <p class="casebook-subscribe__privacy">
+    No spam. Unsubscribe anytime.
+    Emails sent via <a href="https://buttondown.com" rel="noopener noreferrer">Buttondown</a>.
+  </p>
+
+  <a href="/cases/feed.xml"
+     class="casebook-subscribe__rss"
+     type="application/rss+xml"
+     aria-label="Subscribe via RSS feed">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <circle cx="6.18" cy="17.82" r="2.18"/>
+      <path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56z"/>
+      <path d="M4 10.1v2.83c3.85 0 6.97 3.12 6.97 6.97h2.83c0-5.4-4.4-9.8-9.8-9.8z"/>
+    </svg>
+    RSS feed
+  </a>
+</section>

@@ -1,0 +1,118 @@
+---
+layout: layouts/casebook-layout.njk
+title: The Frontend Casebook
+description: Visual case studies for frontend and agent UI engineering. Scroll through the patterns production UIs teach you — with Casey as your guide.
+schemaType: WebSite
+permalink: /index.html
+---
+
+<div class="casebook-hub">
+
+  {# ── Hero ── #}
+  <header class="casebook-hub__hero">
+    <h1 class="casebook-hub__title">The Frontend Casebook</h1>
+    <p class="casebook-hub__subtitle">{{ site.tagline }}</p>
+    <p class="casebook-hub__stats">
+      {{ manifest.stats.total }} cases across 18 tracks ·
+      <a href="/cases/about/">About this project</a>
+    </p>
+  </header>
+
+  {# ── Subscribe CTA ── #}
+  {% include 'partials/subscribe-cta.njk' %}
+
+  {# ── Track filter ── #}
+  <div class="casebook-hub__filter">
+    <label for="track-filter">Filter by track</label>
+    <select id="track-filter" aria-controls="hub-grid">
+      <option value="">All tracks</option>
+      {% set tracks = [] %}
+      {% for c in manifest.cases %}
+        {% if c.track not in tracks %}
+          {% set tracks = (tracks.push(c.track), tracks) %}
+          <option value="{{ c.track }}">{{ c.track | replace("-", " ") | title }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+    <span class="casebook-hub__filter-count"
+          id="hub-filter-count"
+          aria-live="polite"
+          aria-atomic="true"></span>
+  </div>
+
+  {# ── Case grid ── #}
+  <ul class="casebook-hub__grid" id="hub-grid" role="list">
+    {% for case in manifest.cases %}
+      {% set isLive = case.status == 'live' %}
+      {% set isNew = false %}
+      {% if case.publishedAt %}
+        {# Mark as new if published within 14 days — JS handles precise date math #}
+        {% set isNew = true %}
+      {% endif %}
+
+      <li data-track="{{ case.track }}"
+          data-status="{{ case.status }}">
+        {% if isLive %}
+          <a href="/cases/{{ case.slug }}/"
+             class="case-card__link">
+            <article class="case-card" aria-label="{{ case.title }}">
+        {% else %}
+          <article class="case-card case-card--soon"
+                   aria-label="{{ case.title }} — Coming soon"
+                   aria-disabled="true">
+        {% endif %}
+
+              <p class="case-card__track">{{ case.track | replace("-", " ") | title }}</p>
+              <h2 class="case-card__title">{{ case.title }}</h2>
+              <div class="case-card__meta">
+                {% if case.flagship %}
+                  <span class="case-card__badge case-card__badge--flagship">★ Flagship</span>
+                {% endif %}
+                {% if isLive and isNew %}
+                  <span class="case-card__badge case-card__badge--new">New</span>
+                {% elif not isLive %}
+                  <span class="case-card__badge case-card__badge--soon">Coming soon</span>
+                {% endif %}
+                <span class="case-card__read">{{ case.readMin }}m</span>
+              </div>
+
+        {% if isLive %}
+            </article>
+          </a>
+        {% else %}
+          </article>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+</div>
+
+<script>
+// Hub track filter — client-side
+(function () {
+  var sel = document.getElementById('track-filter');
+  var grid = document.getElementById('hub-grid');
+  var count = document.getElementById('hub-filter-count');
+  if (!sel || !grid) return;
+
+  function filter() {
+    var track = sel.value;
+    var items = grid.querySelectorAll('[data-track]');
+    var visible = 0;
+    items.forEach(function (item) {
+      var show = !track || item.dataset.track === track;
+      item.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    if (track) {
+      count.textContent = visible + ' case' + (visible !== 1 ? 's' : '');
+    } else {
+      count.textContent = '';
+    }
+  }
+
+  sel.addEventListener('change', filter);
+  filter();
+}());
+</script>
