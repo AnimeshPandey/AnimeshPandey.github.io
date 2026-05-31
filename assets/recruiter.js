@@ -531,23 +531,15 @@
 
     var text = lines.join('\n');
 
+    /* R7: reuse sitewide #copyToast instead of a separate .rm-toast element */
     function showToast(msg) {
-      var existing = d.querySelector('.rm-toast');
-      if (existing) existing.remove();
-      var toast = d.createElement('div');
-      toast.className = 'rm-toast';
-      toast.textContent = msg;
-      toast.setAttribute('role', 'status');
-      toast.setAttribute('aria-live', 'polite');
-      d.body.appendChild(toast);
-      requestAnimationFrame(function () {
-        toast.classList.add('rm-toast-in');
-        setTimeout(function () {
-          toast.classList.remove('rm-toast-in');
-          setTimeout(function () { toast.remove(); }, 250);
-        }, 2400);
-      });
-      // Also announce via existing live region
+      var toast = d.getElementById('copyToast');
+      if (toast) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(function () { toast.classList.remove('show'); }, 2400);
+      }
+      /* Also announce via existing live region */
       var announce = d.getElementById('shortcut-announce');
       if (announce) { announce.textContent = ''; announce.textContent = msg; }
     }
