@@ -85,6 +85,24 @@
       { id: 'skills',     label: 'Skills'     },
       { id: 'metrics',    label: 'Metrics'    },
       { id: 'education',  label: 'Education'  }
+    ],
+
+    alsoExplore: [
+      {
+        label: 'Fundamentals of Functional JavaScript',
+        href:  '/fundamentals-of-functional-javascript/',
+        note:  'Article · JavaScript in Plain English'
+      },
+      {
+        label: 'How Well Do You Know "this"?',
+        href:  '/how-well-do-you-know-this/',
+        note:  'Article · HackerNoon · 1.2k reads'
+      },
+      {
+        label: 'About & values',
+        href:  '/#about',
+        note:  'Background, what I\'m looking for'
+      }
     ]
 
   };
