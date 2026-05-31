@@ -1,4 +1,4 @@
-const CACHE = 'ap-v25';
+const CACHE = 'ap-v26';
 const ASSETS = [
   '/',
   '/assets/theme.css',
@@ -7,6 +7,11 @@ const ASSETS = [
   '/assets/nav.js',
   '/assets/visuals.js',
   '/assets/contact.js',
+  /* i18n engine + priority locales */
+  '/assets/i18n/i18n.js',
+  '/assets/i18n/locales/en.json',
+  '/assets/i18n/locales/hi.json',
+  '/assets/i18n/locales/es.json',
   /* recruiter panel — lazy-loaded, cache for offline */
   '/assets/profile-facts.js',
   '/assets/recruiter-data.js',

@@ -6,9 +6,15 @@
   <!-- Deploy injects Web3Forms key (public; restrict domains in Web3Forms dashboard) -->
   <meta name="web3forms-access-key" content="YOUR_WEB3FORMS_ACCESS_KEY" />
 
-  <!-- FOUC prevention: apply stored theme before CSS loads -->
+  <!-- FOUC prevention: apply stored theme + locale (RTL) before CSS loads -->
   <script>
-  (function(){var v=['light','dark','sage','slate','dusk','high-contrast'];var t=localStorage.getItem('theme');document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'dark';})();
+  (function(){
+    var v=['light','dark','sage','slate','dusk','high-contrast'];
+    var t=localStorage.getItem('theme');
+    document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'dark';
+    var l=localStorage.getItem('locale');
+    if(l){document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl';}
+  })();
   </script>
 
   <!-- Primary SEO -->
@@ -25,6 +31,17 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
   <meta name="theme-color" content="#FAF8F4" />
   <link rel="canonical" href="https://anmshpndy.com/" />
+  <!-- hreflang — locale is client-side state; canonical URL stays https://anmshpndy.com/ -->
+  <link rel="alternate" hreflang="en"      href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="hi"      href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="es"      href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="fr"      href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="de"      href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="pt-BR"   href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="ja"      href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="zh-Hans" href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="ar"      href="https://anmshpndy.com/" />
+  <link rel="alternate" hreflang="x-default" href="https://anmshpndy.com/" />
   <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
   <!-- Identity verification -->
@@ -334,6 +351,11 @@
       <circle cx="14.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
       <circle cx="17.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
     </symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="2" y1="12" x2="22" y2="12"/>
+      <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+    </symbol>
     <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
     </symbol>
@@ -359,7 +381,7 @@
   </defs>
 </svg>
 
-<a class="skip-link" href="#main-content">Skip to main content</a>
+<a class="skip-link" href="#main-content" data-i18n="a11y.skipToMain">Skip to main content</a>
 <div class="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
 <div class="copy-toast" id="copyToast" role="status" aria-live="polite"></div>
 
@@ -370,12 +392,12 @@
     <div class="nav-right">
       <nav aria-label="Main navigation">
         <ul class="nav-links">
-          <li><a href="#about">about</a></li>
-          <li><a href="#experience">experience</a></li>
-          <li><a href="#skills">skills</a></li>
-          <li><a href="#projects">projects</a></li>
-          <li><a href="#writing">writing</a></li>
-          <li><a href="#contact">contact</a></li>
+          <li><a href="#about"      data-i18n="nav.about">about</a></li>
+          <li><a href="#experience" data-i18n="nav.experience">experience</a></li>
+          <li><a href="#skills"     data-i18n="nav.skills">skills</a></li>
+          <li><a href="#projects"   data-i18n="nav.projects">projects</a></li>
+          <li><a href="#writing"    data-i18n="nav.writing">writing</a></li>
+          <li><a href="#contact"    data-i18n="nav.contact">contact</a></li>
         </ul>
       </nav>
       <div class="theme-picker">
@@ -392,6 +414,27 @@
           <li class="theme-menu-item" role="option" data-t="slate"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
           <li class="theme-menu-item" role="option" data-t="dusk"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
           <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+        </ul>
+      </div>
+      <!-- Language picker -->
+      <div class="theme-picker lang-picker">
+        <button class="theme-pick-btn lang-pick-btn" id="lang-pick-btn-header"
+                aria-label="Language: EN. Change"
+                aria-expanded="false"
+                aria-controls="lang-menu-header">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
+          <span class="lang-pick-label" aria-hidden="true">EN</span>
+        </button>
+        <ul id="lang-menu-header" class="theme-menu lang-menu" role="listbox" aria-label="Choose language" hidden>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="en"     aria-selected="true"  tabindex="-1">English</li>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="hi"     aria-selected="false" tabindex="-1">हिन्दी</li>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="es"     aria-selected="false" tabindex="-1">Español</li>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="fr"     aria-selected="false" tabindex="-1">Français</li>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="de"     aria-selected="false" tabindex="-1">Deutsch</li>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="pt-BR"  aria-selected="false" tabindex="-1">Português</li>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="ja"     aria-selected="false" tabindex="-1">日本語</li>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="zh-Hans" aria-selected="false" tabindex="-1">中文</li>
+          <li class="theme-menu-item lang-menu-item" role="option" data-l="ar"     aria-selected="false" tabindex="-1">العربية</li>
         </ul>
       </div>
       <!-- Recruiter briefing entry — header only, icon only -->
@@ -516,18 +559,18 @@
         <span>open to staff &amp; senior roles</span>
         <span>5 products · 50k+ users daily</span>
       </p>
-      <p class="hero-tag">I ship interfaces that survive real data: marketing intelligence dashboards, microfrontend platforms for 50k+ daily users, and agentic AI products. Based in Bangalore · open to remote-friendly roles.</p>
+      <p class="hero-tag" data-i18n="hero.tagline">I ship interfaces that survive real data: marketing intelligence dashboards, microfrontend platforms for 50k+ daily users, and agentic AI products. Based in Bangalore · open to remote-friendly roles.</p>
       <div class="ctas">
         <a href="#experience" class="btn btn-dark">
-          View experience
+          <span data-i18n="hero.ctaExperience">View experience</span>
           <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg>
         </a>
         <button type="button" class="btn btn-outline" id="resume-preview-trigger" aria-haspopup="dialog">
           <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
-          Resume
+          <span data-i18n="hero.ctaResume">Resume</span>
         </button>
         <a href="#contact" class="btn btn-outline">
-          Let's talk
+          <span data-i18n="hero.ctaContact">Let's talk</span>
           <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
         </a>
       </div>
@@ -603,8 +646,8 @@
 
   <!-- ABOUT -->
   <section id="about" aria-labelledby="about-heading">
-    <p class="section-label">// about</p>
-    <h2 id="about-heading">Thoughtful engineer,<br><em>product thinker</em></h2>
+    <p class="section-label" data-i18n="sections.about.label">// about</p>
+    <h2 id="about-heading"><span data-i18n="sections.about.title">Thoughtful engineer,</span><br><em data-i18n="sections.about.titleEm">product thinker</em></h2>
     <div class="about-cols">
       <div class="about-body fade-up">
         <p>I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
@@ -670,8 +713,8 @@
 
   <!-- EXPERIENCE -->
   <section id="experience" aria-labelledby="experience-heading">
-    <p class="section-label">// experience</p>
-    <h2 id="experience-heading">Where I've built</h2>
+    <p class="section-label" data-i18n="sections.experience.label">// experience</p>
+    <h2 id="experience-heading" data-i18n="sections.experience.title">Where I've shipped</h2>
     <div class="timeline">
 
       <article class="t-item fade-up">
@@ -746,9 +789,9 @@
 
   <!-- SKILLS -->
   <section id="skills" aria-labelledby="skills-heading">
-    <p class="section-label">// skills</p>
-    <h2 id="skills-heading">Stack &amp; craft</h2>
-    <p class="section-intro">Production tools from recent platforms - not a buzzword dump.</p>
+    <p class="section-label" data-i18n="sections.skills.label">// skills</p>
+    <h2 id="skills-heading" data-i18n="sections.skills.title">Stack &amp; craft</h2>
+    <p class="section-intro" data-i18n="sections.skills.intro">Production tools from recent platforms - not a buzzword dump.</p>
 
     <div class="sv-grid">
 
@@ -808,8 +851,8 @@
 
   <!-- PROJECTS -->
   <section id="projects" aria-labelledby="projects-heading">
-    <p class="section-label">// projects</p>
-    <h2 id="projects-heading">Things I've shipped</h2>
+    <p class="section-label" data-i18n="sections.projects.label">// projects</p>
+    <h2 id="projects-heading" data-i18n="sections.projects.title">Things I've built</h2>
     <p class="projects-intro">Selected work across SaaS analytics, automotive retail, and GovTech.</p>
     <div class="projects-grid">
 
@@ -937,12 +980,12 @@
 
   <!-- WRITING -->
   <section id="writing" aria-labelledby="writing-heading">
-    <p class="section-label">// writing</p>
-    <h2 id="writing-heading">On the craft</h2>
-    <p class="writing-intro">I write about the JavaScript patterns, system design decisions, and frontend engineering trade-offs I encounter at work - the stuff that doesn't make it into the docs.</p>
+    <p class="section-label" data-i18n="sections.writing.label">// writing</p>
+    <h2 id="writing-heading" data-i18n="sections.writing.title">On the craft</h2>
+    <p class="writing-intro" data-i18n="sections.writing.intro">I write about the JavaScript patterns, system design decisions, and frontend engineering trade-offs I encounter at work - the stuff that doesn't make it into the docs.</p>
 
     <!-- On this site -->
-    <h3 class="writing-subhead">On this site</h3>
+    <h3 class="writing-subhead" data-i18n="sections.writing.onThisSite">On this site</h3>
     <div class="articles-list articles-list--on-site" role="list">
 
       <article class="article-item article-item--featured fade-up" role="listitem">
@@ -1011,7 +1054,7 @@
     </div>
 
     <!-- Published elsewhere -->
-    <h3 class="writing-subhead">Published elsewhere</h3>
+    <h3 class="writing-subhead" data-i18n="sections.writing.publishedElsewhere">Published elsewhere</h3>
     <div class="articles-list articles-list--external" role="list">
 
       <article class="article-item fade-up" role="listitem">
@@ -1139,7 +1182,7 @@
 
   <!-- EDUCATION -->
   <section id="education" aria-labelledby="education-heading">
-    <p class="section-label">// education</p>
+    <p class="section-label" data-i18n="sections.education.label">// education</p>
     <h2 id="education-heading">Where I <em>studied</em></h2>
     <div class="edu-card fade-up">
       <div>
@@ -1165,8 +1208,8 @@
 
   <!-- CONTACT -->
   <section id="contact" aria-labelledby="contact-heading">
-    <p class="section-label">// contact</p>
-    <h2 id="contact-heading">Let's build something</h2>
+    <p class="section-label" data-i18n="sections.contact.label">// contact</p>
+    <h2 id="contact-heading" data-i18n="sections.contact.title">Let's build something</h2>
     <div class="contact-info">
     <p class="contact-intro">Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.</p>
 
@@ -1298,6 +1341,7 @@
 </dialog>
 
 <script src="/assets/theme.js" defer></script>
+<script src="/assets/i18n/i18n.js" defer></script>
 <script src="/assets/nav.js" defer></script>
 <script src="/assets/visuals.js" defer></script>
 <script src="/assets/contact.js?v=ap24" defer></script>

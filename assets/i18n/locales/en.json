@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "title": "Animesh Pandey · Senior Frontend Engineer | React, TypeScript, Next.js",
+    "description": "Animesh Pandey is a Senior Frontend Engineer based in Bangalore with 7+ years building scalable SaaS platforms: MMM dashboards, microfrontends for 50k+ daily users, and agentic AI products. Open to senior & staff roles."
+  },
+  "nav": {
+    "about": "about",
+    "experience": "experience",
+    "skills": "skills",
+    "projects": "projects",
+    "writing": "writing",
+    "education": "education",
+    "contact": "contact",
+    "resume": "Resume",
+    "downloadResume": "Download Resume",
+    "chooseTheme": "Choose theme",
+    "chooseLanguage": "Choose language"
+  },
+  "a11y": {
+    "skipToMain": "Skip to main content",
+    "skipToArticle": "Skip to article",
+    "home": "Animesh Pandey, home",
+    "previewResume": "Preview or download resume",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "openRecruiterBriefing": "Open recruiter briefing",
+    "exitRecruiterMode": "Exit recruiter mode"
+  },
+  "hero": {
+    "badge": "open to staff & senior roles",
+    "badge2": "5 products · 50k+ users daily",
+    "tagline": "I ship interfaces that survive real data: marketing intelligence dashboards, microfrontend platforms for 50k+ daily users, and agentic AI products. Based in Bangalore · open to remote-friendly roles.",
+    "ctaExperience": "View experience",
+    "ctaResume": "Resume",
+    "ctaContact": "Let's talk",
+    "cardRole": "Senior Frontend Engineer",
+    "cardLocation": "Bangalore, India",
+    "cardOpen": "Open to opportunities",
+    "downloadResume": "Download Resume"
+  },
+  "sections": {
+    "about": {
+      "label": "// about",
+      "title": "Thoughtful engineer,",
+      "titleEm": "product thinker"
+    },
+    "experience": {
+      "label": "// experience",
+      "title": "Where I've shipped"
+    },
+    "skills": {
+      "label": "// skills",
+      "title": "Stack & craft",
+      "intro": "Production tools from recent platforms - not a buzzword dump."
+    },
+    "projects": {
+      "label": "// projects",
+      "title": "Things I've built"
+    },
+    "writing": {
+      "label": "// writing",
+      "title": "On the craft",
+      "intro": "I write about the JavaScript patterns, system design decisions, and frontend engineering trade-offs I encounter at work - the stuff that doesn't make it into the docs.",
+      "onThisSite": "On this site",
+      "publishedElsewhere": "Published elsewhere",
+      "pipeline": "// in the pipeline",
+      "pipelineNote": "Essays in progress - topics tied to production work at Tekion and Lifesight.",
+      "pipelineFooter": "Want early access? Say hi - happy to share drafts with engineers evaluating similar problems."
+    },
+    "contact": {
+      "label": "// contact",
+      "title": "Let's build something"
+    },
+    "education": {
+      "label": "// education"
+    }
+  },
+  "footer": {
+    "location": "Animesh Pandey · Bangalore, India",
+    "backHome": "← anmshpndy.com"
+  },
+  "resume": {
+    "modalTitle": "Animesh Pandey — Resume",
+    "downloadPdf": "Download PDF",
+    "closePreview": "Close resume preview",
+    "fallbackText": "PDF preview isn't available in this browser.",
+    "fallbackDownload": "Download PDF instead"
+  }
+}
