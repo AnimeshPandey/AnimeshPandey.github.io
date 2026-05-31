@@ -38,7 +38,11 @@ jobs:
           if [ -z "$CF_TOKEN" ]; then CF_TOKEN="${CLOUDFLARE_BEACON_TOKEN:-}"; fi
 
           inject_w3f() {
+            # Replace only deploy placeholders — not UNCONFIGURED sentinel in contact.js
             sed -i "s|YOUR_WEB3FORMS_ACCESS_KEY|${W3F_KEY}|g" assets/contact.js index.html
+            if grep -q "__WEB3FORMS_KEY_NOT_SET__" assets/contact.js && grep -q "${W3F_KEY}" assets/contact.js; then
+              echo "✓ contact.js has injected key and intact UNCONFIGURED sentinel"
+            fi
           }
 
           # Web3Forms access key → assets/contact.js + index.html meta (HTML is network-first in SW)
