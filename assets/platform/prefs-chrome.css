@@ -305,9 +305,33 @@
   align-items: center;
 }
 
-.platform-header--casebook .casebook-header__nav a:hover {
+.platform-header--casebook .casebook-header__nav a:hover,
+.platform-header--casebook .casebook-header__nav a[aria-current="page"] {
   color: var(--casebook-accent, var(--accent));
   background: var(--casebook-surface-2, var(--surface-2));
+}
+
+.mobile-nav--casebook .mobile-nav-links a[aria-current="page"] {
+  color: var(--casebook-accent, var(--accent));
+}
+
+.mobile-nav--casebook .mobile-nav-footer__hint {
+  margin: 16px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border, var(--casebook-border));
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  color: var(--ink-3, var(--casebook-ink-faint));
+}
+
+.platform-header--casebook .hamburger {
+  display: inline-flex;
+}
+
+@media (min-width: 640px) {
+  .platform-header--casebook .hamburger {
+    display: none;
+  }
 }
 
 .platform-header--casebook .nav-logo {
