@@ -4,7 +4,7 @@
 **Live:** https://anmshpndy.com  
 **Stack:** Static HTML · CSS custom properties · vanilla JS · GitHub Pages  
 **Build step:** none — `git push main` is the entire deploy pipeline  
-**Last verified:** May 2026 · `sw.js` cache `ap-v20`
+**Last verified:** May 2026 · `sw.js` cache `ap-v21`
 
 ---
 
@@ -18,7 +18,7 @@
 6. [Page × asset matrix](#page--asset-matrix)
 7. [Load sequence](#load-sequence)
 8. [Data layer](#data-layer)
-9. [Feature subsystems](#feature-subsystems)
+9. [Feature subsystems](#feature-subsystems) (A–H)
 10. [DOM reference](#dom-reference)
 11. [Runtime state](#runtime-state)
 12. [Deploy & secrets](#deploy--secrets)
@@ -38,7 +38,7 @@
 |------|-------------------|
 | **Zero tooling** | No bundler, no `node_modules`, no transpilation. Repo root = deployable artifact |
 | **Content-first** | Full copy lives in HTML; JS/CSS are progressive enhancements only |
-| **Fast first paint** | Tiny always-on scripts (`theme.js` 33 LOC, `nav.js` 213 LOC); everything heavy is lazy |
+| **Fast first paint** | Tiny always-on scripts (`theme.js` 33 LOC, `nav.js` 113 LOC); everything heavy is lazy |
 | **Offline-tolerant** | Service worker: HTML network-first, assets cache-first |
 | **Honest UX** | Recruiter panel discloses synthesized content; eggs are discoverable, never blocking |
 | **Accessible by default** | Semantic sections, skip link, focus traps, `aria-*`, 44 px touch targets, reduced-motion paths throughout |
@@ -144,18 +144,18 @@ index.html  ←→  profile-facts.js  →  recruiter-data.js  →  recruiter.js
 └──────────────────────────┬──────────────────────────────────┘
                            │
 ┌──────────────────────────▼──────────────────────────────────┐
-│  L2 · Presentation    site.css (1 438 LOC)                  │
+│  L2 · Presentation    site.css (1 600 LOC)                  │
 │  Layout, components, responsive, recruiter chrome            │
 └──────────────────────────┬──────────────────────────────────┘
                            │
 ┌──────────────────────────▼──────────────────────────────────┐
 │  L3 · Chrome (all pages)                                    │
-│  theme.js (33) · nav.js (213)                               │
+│  theme.js (33) · nav.js (113)                               │
 └──────────────────────────┬──────────────────────────────────┘
                            │  homepage only ↓
 ┌──────────────────────────▼──────────────────────────────────┐
 │  L4 · Orchestration (homepage)                              │
-│  visuals.js (637) · contact.js (184)                        │
+│  visuals.js (769) · contact.js (184)                        │
 └───────────────┬───────────────────────────┬─────────────────┘
                 │ lazy                      │ lazy
 ┌───────────────▼─────────┐   ┌────────────▼────────────────┐
@@ -179,8 +179,8 @@ index.html  ←→  profile-facts.js  →  recruiter-data.js  →  recruiter.js
 ```
 AnimeshPandey.github.io/
 │
-├── index.html                          # Homepage (1 228 LOC)
-├── 404.html                            # Custom 404 + client redirect map (237 LOC)
+├── index.html                          # Homepage (1 236 LOC)
+├── 404.html                            # Custom 404 + client redirect map
 ├── fundamentals-of-functional-javascript/
 │   └── index.html                      # Published article
 ├── how-well-do-you-know-this/
@@ -188,10 +188,10 @@ AnimeshPandey.github.io/
 │
 ├── assets/
 │   ├── theme.css                       # L1 — design tokens (69 LOC)
-│   ├── site.css                        # L2 — full site presentation (1 438 LOC)
+│   ├── site.css                        # L2 — full site presentation (1 600 LOC)
 │   ├── theme.js                        # L3 — theme toggle + FOUC guard (33 LOC)
-│   ├── nav.js                          # L3 — mobile nav, scroll-spy, back-to-top (213 LOC)
-│   ├── visuals.js                      # L4 — orchestrator, hero canvas, lazy loaders (637 LOC)
+│   ├── nav.js                          # L3 — mobile nav, scroll-spy, progress bar, #yr (113 LOC)
+│   ├── visuals.js                      # L4 — orchestrator, hero canvas, lazy loaders (769 LOC)
 │   ├── contact.js                      # L4 — Web3Forms handler, copy-email (184 LOC)
 │   ├── profile-facts.js                # L5 data — canonical facts (128 LOC)
 │   ├── recruiter-data.js               # L5 data — brief derived from facts (162 LOC)
@@ -205,7 +205,7 @@ AnimeshPandey.github.io/
 │   ├── og-image.png                    # Social preview raster (86 KB)
 │   └── og-image.svg                    # Social preview source art
 │
-├── sw.js                               # L6 — service worker, CACHE = ap-v20 (75 LOC)
+├── sw.js                               # L6 — service worker, CACHE = ap-v21 (75 LOC)
 ├── resume.pdf                          # Downloadable resume
 ├── animesh_pandey_resume.tex           # Resume source (LaTeX)
 ├── favicon.svg
@@ -235,29 +235,32 @@ AnimeshPandey.github.io/
 | File | LOC | Layer | Responsibility |
 |------|----:|-------|----------------|
 | `theme.css` | 69 | L1 | `:root` and `[data-theme="dark"]` tokens — `--bg`, `--ink`, `--accent`, `--sage`, `--nav-h`, `--strip-h: 0`, `--bp-*`; Google Fonts import |
-| `site.css` | 1 438 | L2 | Reset, a11y utilities, header/nav, hero (mobile-first), about/FAQ, timeline, skills, projects, writing, education, contact form, footer, scroll-reveal, impact lens, egg hint, header recruiter chrome, `.recruiter-mode` body effects, promo card |
+| `site.css` | 1 600 | L2 | Reset, a11y utilities, header/nav, hero (mobile-first), about/FAQ, timeline, skills, projects, writing (on-site/external lists, pipeline badges), article page components, education, contact form, footer, scroll-reveal, impact lens, egg hint, header recruiter chrome, `.recruiter-mode` body effects, promo card |
 | `recruiter.css` | 708 | L5 | Panel sheet (`rm-panel`), scan phase animation, section cards (snapshot/experience/projects/skills/education/explore), footer CTAs |
 | `eggs.css` | 241 | L5 | Shared `.egg-hint`, M1 slide-up card, M2 sparkline popup, D1 constellation overlay, T2 orbit overlay, D2 faux terminal |
 
-**`site.css` section map (line order):**
+**`site.css` section map (approximate line order):**
 
-| Lines | Content |
+| Range | Content |
 |------:|---------|
 | 1–50 | Reset, `.visually-hidden`, icon sizing, focus ring, skip link |
 | 51–176 | Header, desktop nav, theme toggle, hamburger, mobile nav panel |
 | 177–411 | Hero: mobile-first two-column layout, badge, CTAs, fact strip, hero card, ticker, scroll cue |
-| 412–660 | About, stats bar, timeline, skills visual grid, projects, writing, education |
-| 661–770 | Contact form, inline validation states, toast, footer, `.fade-up` scroll reveal |
-| 771–920 | Visual hooks: hero ticker, skill chips, egg hint, timeline highlight, impact lens, tag stagger |
-| 921+ | Header recruiter chrome (icon-only toggle + exit), `.recruiter-mode` effects, promo card, theme crossfade |
+| 412–560 | About/FAQ, stats bar, timeline, skills visual grid, projects |
+| 561–810 | Writing: `.writing-intro/subhead`, article lists (on-site / external), pipeline container, badge variants (draft/outline/research/idea), profile chips |
+| 811–950 | Education, contact form, inline validation states, toast, footer, `.fade-up` scroll reveal |
+| 951–1100 | Visual hooks: hero ticker, skill chips, egg hint, timeline highlight, impact lens, tag stagger |
+| 1101–1300 | Header recruiter chrome, `.recruiter-mode` effects, promo card, theme crossfade |
+| 1301–1450 | Article page shell: `.article-shell`, `.article-header`, `.article-prose`, blockquote |
+| 1451+ | Article components: `.article-cta`, `.article-series`, `.article-author`, `.article-footer-link`, `.article-title-code` |
 
 ### Scripts
 
 | File | LOC | Layer | Loads on | Entry / exports |
 |------|----:|-------|----------|-----------------|
 | `theme.js` | 33 | L3 | All pages | `#theme-toggle` click handler; reads/writes `localStorage.theme` |
-| `nav.js` | 213 | L3 | All pages | Mobile menu (focus trap, Escape, overlay); scroll-spy active link; `#back-top` |
-| `visuals.js` | 637 | L4 | Homepage | `boot()` → capability detection → hero canvas, card UX, egg lazy-loader, recruiter mode, hire shortcut, theme wink |
+| `nav.js` | 113 | L3 | All pages | Mobile menu (focus trap, Escape, overlay); scroll-spy active link; sticky header; reading progress bar; `#back-top`; `#yr` year update |
+| `visuals.js` | 769 | L4 | Homepage | `boot()` → `caps` detection → `initScrollReveal`, `initHeroCanvas`, `initHeroChrome`, `initStatCountUp`, card UX, `initEggs`, recruiter mode, resume toast, theme crossfade/wink, hire shortcut, `initServiceWorker` |
 | `contact.js` | 184 | L4 | Homepage | `#contactForm` submit → Web3Forms POST; success/error UI; `#copyEmailBtn` |
 | `profile-facts.js` | 128 | L5 data | Lazy | `window.__PROFILE_FACTS` — canonical identity, stats, employment, education, projects, skills |
 | `recruiter-data.js` | 162 | L5 data | Lazy | `window.__RECRUITER_BRIEF` — derived from `__PROFILE_FACTS` + editorial prose |
@@ -279,7 +282,7 @@ AnimeshPandey.github.io/
 | `CNAME` | Custom domain `anmshpndy.com` for GitHub Pages |
 | `robots.txt` | `Allow: *`, points to `sitemap.xml` |
 | `sitemap.xml` | Canonical URLs for all pages |
-| `sw.js` | Service worker — `CACHE = 'ap-v20'` |
+| `sw.js` | Service worker — `CACHE = 'ap-v21'` |
 
 ---
 
@@ -414,18 +417,18 @@ window.__EGG_DATA = {
 - **Desktop:** In-header `<nav>` with section hash links.
 - **Scroll-spy:** `IntersectionObserver` on `<section>` elements updates active nav link.
 - **Sticky header:** `.scrolled` on `header` after 8 px scroll.
-- **Reading progress:** `.progress-bar` width via `--pct` (homepage only; guarded if element missing).
+- **Reading progress:** `.progress-bar` width via `--pct` (guarded — homepage only; element absent on article pages).
 - **Back to top:** `#back-top` visible after 400 px scroll; smooth scroll + focus `#main-content`.
-
-**Alignment note:** As of May 2026, `nav.js` still contains homepage hero animations and stat count-up — **scheduled for move** to `visuals.js` (see [Alignment status](#alignment-status)). Do not add new homepage-only behaviour here.
+- **Year:** `#yr` span in footer set to current year via `new Date().getFullYear()` (all pages).
 
 ### C · Visual orchestration (`visuals.js`)
 
 | Function | Gate | Behaviour |
 |----------|------|-----------|
-| `initScrollReveal` | `!reducedMotion` (planned) | `.fade-up` → `.in` via IO; today inline in `index.html` (**A3**) |
-| `initHeroChrome` | `finePointer && !reducedMotion` (planned) | Rotate tagline, spotlight `--mx/--my`, `.hero-card` tilt, `.hero-float` parallax; today in `nav.js` (**A1**) |
-| `initStatCountUp` | `iob && !reducedMotion` (planned) | `.stat-n` count-up; today in `nav.js` (**A1**) |
+| `initScrollReveal` | `!reducedMotion` | `.fade-up` → `.in` via `IntersectionObserver`; lives in `visuals.js` |
+| `initHeroChrome` | `finePointer && !reducedMotion` | Rotate tagline, spotlight `--mx/--my`, `.hero-card` tilt, `.hero-float` parallax |
+| `initStatCountUp` | `iob && !reducedMotion` | `.stat-n` count-up via `IntersectionObserver` |
+| `initServiceWorker` | always | `navigator.serviceWorker.register('/sw.js')` on `window load` |
 | `initHeroCanvas` | `!reducedMotion && !saveData && canvas2d` | 2D particle field in `#hero`; mouse-repel on desktop; IO pauses when hero leaves viewport |
 | `initCardExpand` | always | `.pc-desc` overflow → "Read more" button |
 | `initCardTilt` | `finePointer && !reducedMotion` | Mouse-tracked 3D perspective tilt on `.pc`, `.sv-card`, `.edu-card` |
@@ -544,6 +547,67 @@ Manual `mailto:` links remain in quick actions, footer socials, and the recruite
 ### G · Service worker
 
 See [Service worker](#service-worker) section below.
+
+### H · Writing section
+
+**Structure (in `index.html` `#writing`):**
+
+```
+#writing
+  .writing-intro           — two-sentence section description
+  .writing-subhead          — "// on this site"
+  .articles-list.articles-list--on-site
+    .wi × 2                — Fundamentals + How Well Do You Know this?
+  .writing-subhead          — "// published elsewhere"
+  .articles-list.articles-list--external
+    .wi × N                — Medium, HackerNoon, etc.
+  .writing-subhead.writing-subhead--pipeline — "// in the pipeline"
+  .writing-pipeline-note
+  .writing-list.writing-list--pipeline
+    .wi × 8               — draft/outline/research/idea items
+  .writing-pipeline-footer
+```
+
+**Article cards (`.wi`):**
+
+| Element | Class / attribute | Purpose |
+|---------|------------------|---------|
+| Wrapper | `.wi` | Flex row; whole-row tap on touch via `initArticleTap()` |
+| Metadata column | `.wi-meta` | Stacks badge + read-time |
+| Badge | `.wi-badge` | Variant: `--on-site`, `--draft`, `--outline`, `--research`, `--idea` |
+| Read time | `.wi-time` | e.g. `21 min read` |
+| Content | `.wi-content` | Title + excerpt |
+| Title | `.wi-title` | `<a>` for published; `<span>` for pipeline items |
+| Excerpt | `.wi-excerpt` | One-line teaser |
+| Ext icon | `.ext-icon` | `↗` svg; hidden on `.articles-list--on-site` via CSS |
+
+**CSS rules (`site.css`):**
+
+- `.articles-list--on-site .ext-icon { display:none }` — structural; on-site links never show external icon
+- `.writing-list--pipeline` — dashed border + `--surface` background to visually distinguish from published list
+- Badge variant colours are CSS-only; no JS involvement
+
+**On-site articles (self-hosted at `/article-slug/index.html`):**
+
+| Article | Path | Read time |
+|---------|------|-----------|
+| Fundamentals of Functional JavaScript | `/fundamentals-of-functional-javascript/` | 21 min |
+| How Well Do You Know `this`? | `/how-well-do-you-know-this/` | 5 min |
+
+**Article page components (CSS classes in `site.css` 1451+):**
+
+| Class | Role |
+|-------|------|
+| `.article-shell` | Max-width wrapper with side padding |
+| `.article-header` | Label, h1, byline |
+| `.article-title-code` | `<code>` in h1 — monospace, token-coloured, border |
+| `.article-prose` | Body text rhythm and `<blockquote>` |
+| `.article-cta` | "Read the full article" box — border, rounded, links to Medium/Dev.to |
+| `.article-cta-btn` | Primary CTA button — ink background, 44 px min-height |
+| `.article-cta-chip` | Secondary platform chip (Dev.to, HackerNoon, Daily.dev) |
+| `.article-series` | "Also by Animesh" cross-link to the other article |
+| `.article-author` | Avatar + name/role/links footer block |
+| `.article-footer-link` | Monospace back-link in `<footer>` |
 
 ---
 
@@ -670,7 +734,7 @@ Missing secrets: deploy still succeeds; contact form shows a config-error messag
 
 ## Service worker
 
-**File:** `sw.js` · **Cache:** `ap-v20`
+**File:** `sw.js` · **Cache:** `ap-v21`
 
 ```js
 // Bump CACHE version in sw.js whenever a precached asset changes.
@@ -718,34 +782,34 @@ When sources conflict, this is the resolution order:
 
 ## Alignment status
 
-The **documented** layer model is the target; the repo may drift until alignment work lands. Use **[`.claude/prompts/portfolio-architecture-alignment-prompt.md`](../.claude/prompts/portfolio-architecture-alignment-prompt.md)** to implement fixes.
+The **documented** layer model is the target state. All known alignment gaps are resolved as of May 2026.
 
-| ID | Status | Issue | Target owner |
-|----|--------|-------|--------------|
-| A1 | **open** | Hero rotate, spotlight, hero-card tilt, float parallax, stat count-up live in `nav.js` | `visuals.js` (`initHeroChrome`, `initStatCountUp`) |
-| A2 | **open** | Duplicate `#hero` mouse handlers (`nav.js` + canvas in `visuals.js`) | Single hero subsystem in `visuals.js` |
-| A3 | **open** | Scroll-reveal `IntersectionObserver` inline in `index.html` | `visuals.js` `initScrollReveal()` |
-| A4 | **open** | FAQ accordion CSS injected via JS in `index.html` | `site.css` FAQ section |
-| A5 | **open** | `site.css` section blocks not strictly ordered | Enforced section map (see alignment prompt Phase 2) |
-| A6 | **partial** | Recruiter mode vs panel split across `visuals.js` and `recruiter.js` | Documented; minimize duplicate `syncToggles` |
+| ID | Status | Issue | Notes |
+|----|--------|-------|-------|
+| A1 | **fixed** | Hero rotate, spotlight, hero-card tilt, float parallax, stat count-up live in `nav.js` | Moved to `visuals.js` (`initHeroChrome`, `initStatCountUp`) — May 2026 |
+| A2 | **fixed** | Duplicate `#hero` mouse handlers (`nav.js` + canvas in `visuals.js`) | Single hero subsystem in `visuals.js`; `nav.js` no longer touches hero — May 2026 |
+| A3 | **fixed** | Scroll-reveal `IntersectionObserver` inline in `index.html` | Moved to `visuals.js` `initScrollReveal()` — May 2026 |
+| A4 | **fixed** | FAQ accordion CSS injected via JS in `index.html` | Now in `site.css` FAQ section — May 2026 |
+| A5 | **open** | `site.css` section blocks not strictly ordered | Low-priority; see section map for current approximate order |
+| A6 | **fixed** | Duplicate `syncToggles` between `visuals.js` and `recruiter.js` | `syncToggles` now single-source in `recruiter.js`; `visuals.js` delegates — May 2026 |
 | A7 | ok | Lazy loaders only in `visuals.js` | — |
-| A8 | **open** | Inconsistent `assets/*.js` file headers | Standard header block on every module |
-| A9 | **open** | `#yr` year script inline in `index.html` | Optional move to `nav.js` |
+| A8 | **fixed** | Inconsistent `assets/*.js` file headers | Standard `// === filename.js ===` header on every module — May 2026 |
+| A9 | **fixed** | `#yr` year script inline in `index.html` | Moved to `nav.js` (all pages) — May 2026 |
 | A10 | ok | Progress bar in `nav.js` with DOM guard | Homepage-only element |
 | A11 | ok | `initTagStagger()` in `visuals.js` sets `--tag-i` on project tags | — |
-| A12 | **open** | LOC table vs `wc -l` after refactors | Re-count after alignment |
+| A12 | **fixed** | LOC table vs `wc -l` after refactors | LOC counts recounted and updated in this doc — May 2026 |
 
-When an ID is fixed, set **Status** to `fixed` and add a one-line note with commit or date.
+When a new drift is found, add a row and set status to **open**. Close it with a one-line note and date when fixed.
 
-### Target `nav.js` contract (L3)
+### `nav.js` contract (L3)
 
-**Owns:** mobile menu, scroll-spy, sticky header shadow, reading progress bar (if present), back-to-top.
+**Owns:** mobile menu, scroll-spy, sticky header shadow, reading progress bar, back-to-top, `#yr` year update.
 
 **Must not own:** hero effects, project card tilt, eggs, recruiter panel render, contact POST, scroll-reveal.
 
-### Target `visuals.js` contract (L4)
+### `visuals.js` contract (L4)
 
-**Owns:** `caps` detection, `boot()`, hero canvas + hero chrome, scroll reveal, card UX, timeline highlight, impact lens, eggs/recruiter lazy load, hire shortcut, theme crossfade/wink, SW register (if moved from HTML).
+**Owns:** `caps` detection, `boot()`, hero canvas + hero chrome, stat count-up, scroll reveal, card UX, timeline highlight, impact lens, eggs/recruiter lazy load, hire shortcut, theme crossfade/wink, SW register.
 
 **Must not own:** panel HTML generation (delegates to `recruiter.js`).
 
@@ -816,7 +880,7 @@ No build step. Changes to HTML/CSS/JS are effective on browser reload.
 Edit `sw.js` first line:
 
 ```js
-const CACHE = 'ap-v20';   // increment every time a precached asset changes
+const CACHE = 'ap-v21';   // increment every time a precached asset changes
 ```
 
 Also add/remove any asset URLs in `ASSETS` before bumping.
@@ -846,7 +910,7 @@ Also add/remove any asset URLs in `ASSETS` before bumping.
 | Contact submit | `data.success` → in-page message only; **no mail client opens** |
 | Copy email | `#copyEmailBtn` → toast; clipboard has address |
 | Resume download | Header link downloads `resume.pdf` |
-| SW installed | Application tab → `ap-v20` (or current) in Storage |
+| SW installed | Application tab → `ap-v21` (or current) in Storage |
 | Offline | SW serves cached assets without network |
 
 ### Accessibility
