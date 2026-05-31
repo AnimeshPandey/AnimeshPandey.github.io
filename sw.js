@@ -1,4 +1,4 @@
-const CACHE = 'ap-v17';
+const CACHE = 'ap-v18';
 const ASSETS = [
   '/',
   '/assets/theme.css',
@@ -11,6 +11,12 @@ const ASSETS = [
   '/assets/recruiter-data.js',
   '/assets/recruiter.js',
   '/assets/recruiter.css',
+  /* easter eggs — lazy-loaded per device tier */
+  '/assets/eggs.css',
+  '/assets/eggs-data.js',
+  '/assets/eggs-mobile.js',
+  '/assets/eggs-tablet.js',
+  '/assets/eggs-desktop.js',
   '/favicon.svg',
   '/assets/og-image.png',
 ];

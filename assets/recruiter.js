@@ -87,6 +87,9 @@
       }
     }
 
+    // Close any open egg overlays before showing panel (avoid stacked modals)
+    if (window.Eggs && window.Eggs.closeAll) window.Eggs.closeAll();
+
     // Trap focus
     trapFocus();
   }
