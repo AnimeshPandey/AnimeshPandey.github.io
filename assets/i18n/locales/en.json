@@ -19,7 +19,8 @@
     "preferences": "Preferences",
     "language": "Language",
     "theme": "Theme",
-    "recruiter": "Recruiter briefing"
+    "recruiter": "Recruiter briefing",
+    "recruiterShort": "Recruiter"
   },
   "a11y": {
     "skipToMain": "Skip to main content",
@@ -100,6 +101,14 @@
     "tekion": {
       "role": "Software Engineer",
       "desc": "Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by 30% for 50k+ daily users."
+    },
+    "vassar": {
+      "role": "Software Development Engineer",
+      "desc": "Led frontend development of Kerala-WRIS dashboards. Built geospatial visualisation systems and reduced API overhead by 30%."
+    },
+    "tekionAssociate": {
+      "role": "Associate Software Engineer",
+      "desc": "Developed enterprise automotive retail applications. Built 20+ reusable UI components documented in Storybook."
     }
   },
   "contact": {
@@ -129,5 +138,43 @@
     "closePreview": "Close resume preview",
     "fallbackText": "PDF preview isn't available in this browser.",
     "fallbackDownload": "Download PDF instead"
+  },
+  "projects": {
+    "intro": "Selected work across SaaS analytics, automotive retail, and GovTech.",
+    "microfrontend": {
+      "type": "Architecture · Tekion",
+      "title": "Microfrontend Architecture at Scale",
+      "desc": "Architected and shipped a production microfrontend system using Webpack Module Federation across 10+ mission-critical enterprise automotive retail modules.",
+      "metric": "50k+ daily users · 30% faster loads · 10+ independent teams"
+    },
+    "wris": {
+      "type": "GovTech · Vassar Labs",
+      "title": "Kerala-WRIS Water Intelligence Platform",
+      "desc": "Led frontend development for the Government of Kerala's statewide water resource information system.",
+      "metric": "30% API reduction · millions of residents served"
+    },
+    "mia": {
+      "type": "AI Product · Lifesight",
+      "title": "Mia: Agentic AI Analytics Interface",
+      "desc": "Built the frontend for Lifesight's agentic AI assistant with streaming conversational UI and tool-call panels.",
+      "metric": "Agentic AI · Streaming UI · Tool-call visualisation"
+    }
+  },
+  "faq": {
+    "label": "// common questions",
+    "items": [
+      {
+        "q": "Is Animesh available for hire?",
+        "a": "Yes. Animesh is open to senior and staff frontend roles, contract work, and selective consulting. Reach out via the contact form or email."
+      },
+      {
+        "q": "What technologies does Animesh specialise in?",
+        "a": "React, TypeScript, Next.js, microfrontends, design systems, SSR analytics dashboards, and agentic AI product interfaces."
+      },
+      {
+        "q": "Where does Animesh currently work?",
+        "a": "Animesh is a Senior Software Engineer at Lifesight in Bangalore, leading frontend for their marketing intelligence platform."
+      }
+    ]
   }
 }

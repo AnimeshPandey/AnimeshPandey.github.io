@@ -1,57 +1,44 @@
-{# ── casebook-preferences.njk ── Display + portfolio theme sync ── #}
-<div class="casebook-prefs" id="casebook-prefs">
+<div class="casebook-prefs theme-picker" id="casebook-prefs">
   <button type="button"
-          class="casebook-prefs__trigger platform-icon-btn"
+          class="casebook-prefs__trigger theme-pick-btn platform-icon-btn"
           aria-haspopup="true"
           aria-expanded="false"
           aria-controls="casebook-prefs-menu"
           id="casebook-prefs-btn"
-          title="Display settings">
+          aria-label="Display settings">
+    <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
     <span class="visually-hidden">Display settings</span>
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3"/>
-      <line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/>
-      <line x1="21" y1="12" x2="23" y2="12"/>
-    </svg>
-    <span class="casebook-prefs__trigger-label" aria-hidden="true">Display</span>
   </button>
 
   <div id="casebook-prefs-menu"
-       class="casebook-prefs__menu prefs-menu"
+       class="casebook-prefs__menu theme-menu prefs-menu"
        role="menu"
        aria-labelledby="casebook-prefs-btn"
        hidden>
-    <p class="prefs-section-label" id="prefs-appearance-label">Appearance</p>
-    <div class="casebook-prefs__group" role="group" aria-labelledby="prefs-appearance-label">
-      <button type="button" role="menuitemradio" data-color-mode="light" aria-checked="false">Light</button>
-      <button type="button" role="menuitemradio" data-color-mode="dark" aria-checked="false">Dark</button>
-      <button type="button" role="menuitemradio" data-color-mode="system" aria-checked="false">Match system</button>
-    </div>
+    <p class="prefs-section-label">Appearance</p>
+    <ul class="prefs-menu-list" role="group">
+      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-color-mode="light" aria-checked="false">Light</button></li>
+      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-color-mode="dark" aria-checked="false">Dark</button></li>
+      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-color-mode="system" aria-checked="false">Match system</button></li>
+    </ul>
 
-    <p class="prefs-section-label" id="prefs-contrast-label">Contrast</p>
-    <div class="casebook-prefs__group" role="group" aria-labelledby="prefs-contrast-label">
-      <button type="button" role="menuitemradio" data-contrast-mode="high" aria-checked="true">High (default)</button>
-      <button type="button" role="menuitemradio" data-contrast-mode="normal" aria-checked="false">Standard</button>
-    </div>
+    <p class="prefs-section-label">Contrast</p>
+    <ul class="prefs-menu-list" role="group">
+      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-contrast-mode="high" aria-checked="true">High (default)</button></li>
+      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-contrast-mode="normal" aria-checked="false">Standard</button></li>
+    </ul>
 
-    <p class="prefs-section-label" id="prefs-portfolio-theme-label">Portfolio themes</p>
-    <div class="prefs-swatch-row" role="group" aria-labelledby="prefs-portfolio-theme-label" id="casebook-portfolio-themes">
-      <button type="button" data-portfolio-theme="high-contrast" aria-selected="false"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</button>
-      <button type="button" data-portfolio-theme="light" aria-selected="false"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</button>
-      <button type="button" data-portfolio-theme="dark" aria-selected="false"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</button>
-      <button type="button" data-portfolio-theme="sage" aria-selected="false"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage</button>
-      <button type="button" data-portfolio-theme="slate" aria-selected="false"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate</button>
-      <button type="button" data-portfolio-theme="dusk" aria-selected="false"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk</button>
-    </div>
+    <p class="prefs-section-label">Portfolio themes</p>
+    <ul class="prefs-menu-list" role="listbox" id="casebook-portfolio-themes">
+      <li class="theme-menu-item" role="option" data-t="high-contrast" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+      <li class="theme-menu-item" role="option" data-t="light" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+      <li class="theme-menu-item" role="option" data-t="dark" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
+      <li class="theme-menu-item" role="option" data-t="sage" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
+      <li class="theme-menu-item" role="option" data-t="slate" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
+      <li class="theme-menu-item" role="option" data-t="dusk" tabindex="-1"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial</li>
+    </ul>
 
-    <p class="casebook-prefs__hint">
-      Motion follows your system “reduce motion” setting.
-    </p>
-    <a href="{{ '/about/' | url }}#accessibility" class="casebook-prefs__link">Accessibility →</a>
+    <p class="casebook-prefs__hint">Motion follows your system “reduce motion” setting.</p>
+    <a href="{{ '/cases/about/' | url }}#accessibility" class="casebook-prefs__link">Accessibility →</a>
   </div>
 </div>

@@ -49,24 +49,36 @@
   <meta name="theme-color" content="#FAF8F4" id="casebook-theme-color" />
 </head>
 <body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1-.23-.27-.38-.61-.38-.98C12.73 17.69 13.5 17 14.5 17H16c3.31 0 6-2.69 6-6 0-4.96-4.48-9-10-9z"/>
+      <circle cx="6.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="9.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="14.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="17.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
+    </symbol>
+  </svg>
   {# ── Skip link ── #}
   <a href="#main" class="casebook-skip">Skip to story</a>
 
-  {# ── Header ── #}
-  <header class="casebook-header" role="banner">
-    <div class="casebook-header__inner">
-      <a href="{{ '/' | url }}" class="casebook-header__logo"
+  {# ── Header (shared platform chrome) ── #}
+  <header class="platform-header platform-header--casebook" role="banner">
+    <div class="nav-inner casebook-header__inner">
+      <a href="{{ '/cases/' | url }}" class="nav-logo casebook-header__logo"
          aria-label="{{ site.name }}, home">
         <span>{ }</span> Casebook
       </a>
-      <nav aria-label="Casebook navigation">
-        <ul class="casebook-header__nav" role="list">
-          <li><a href="{{ '/' | url }}">Cases</a></li>
-          <li><a href="{{ '/about/' | url }}">About</a></li>
-        </ul>
-      </nav>
-      {# ── Preferences (appearance + contrast) ── #}
-      {% include 'partials/casebook-preferences.njk' %}
+      <div class="nav-right">
+        <nav class="platform-header__nav" aria-label="Casebook navigation">
+          <ul class="casebook-header__nav" role="list">
+            <li><a href="{{ '/cases/' | url }}">Cases</a></li>
+            <li><a href="{{ '/cases/about/' | url }}">About</a></li>
+          </ul>
+        </nav>
+        <div class="nav-utilities">
+          {% include 'partials/casebook-preferences.njk' %}
+        </div>
+      </div>
     </div>
   </header>
 
@@ -94,6 +106,7 @@
   <script src="/assets/platform/chrome.js" defer></script>
   <script src="/assets/platform/prefs-chrome.js" defer></script>
   <script src="/assets/platform/theme-bridge.js" defer></script>
+  <script src="/assets/platform/display-menu.js" defer></script>
   <script src="{{ '/assets/js/casebook-preferences.js' | url }}" defer></script>
 </body>
 </html>

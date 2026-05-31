@@ -2,16 +2,14 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 
 module.exports = function (eleventyConfig) {
-  eleventyConfig.addPassthroughCopy({ [path.join(root, 'assets')]: 'assets' });
-  eleventyConfig.addPassthroughCopy(path.join(root, 'favicon.svg'));
-  eleventyConfig.addPassthroughCopy(path.join(root, 'resume.pdf'));
-  eleventyConfig.addPassthroughCopy(path.join(root, 'site.webmanifest'));
-  eleventyConfig.addPassthroughCopy(path.join(root, 'sitemap.xml'));
-  eleventyConfig.addPassthroughCopy(path.join(root, 'robots.txt'));
-
-  /* Homepage + 404 remain hand-maintained at repo root until full njk migration */
-  eleventyConfig.addPassthroughCopy({ [path.join(root, 'index.html')]: 'index.html' });
-  eleventyConfig.addPassthroughCopy({ [path.join(root, '404.html')]: '404.html' });
+  eleventyConfig.addPassthroughCopy({ '../assets': 'assets' });
+  eleventyConfig.addPassthroughCopy({ '../favicon.svg': 'favicon.svg' });
+  eleventyConfig.addPassthroughCopy({ '../resume.pdf': 'resume.pdf' });
+  eleventyConfig.addPassthroughCopy({ '../site.webmanifest': 'site.webmanifest' });
+  eleventyConfig.addPassthroughCopy({ '../sitemap.xml': 'sitemap.xml' });
+  eleventyConfig.addPassthroughCopy({ '../robots.txt': 'robots.txt' });
+  eleventyConfig.addPassthroughCopy({ '../index.html': 'index.html' });
+  eleventyConfig.addPassthroughCopy({ '../404.html': '404.html' });
 
   return {
     dir: {

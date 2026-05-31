@@ -60,6 +60,10 @@
   window.applyTheme = applyTheme;
 
   function initThemePicker(btn, menu) {
+    if (window.DisplayMenu) {
+      window.DisplayMenu.initThemeMenu(btn, menu, applyTheme);
+      return;
+    }
     if (!window.PrefsChrome) return;
     window.PrefsChrome.PopoverMenu(btn, menu, {
       onSelect: function (e, ctx) {
@@ -67,13 +71,6 @@
         if (!item) return;
         applyTheme(item.dataset.t);
         ctx.close();
-      },
-      onActivate: function (e, ctx) {
-        var active = document.activeElement;
-        if (active && active.dataset && active.dataset.t) {
-          applyTheme(active.dataset.t);
-          ctx.close();
-        }
       }
     });
   }

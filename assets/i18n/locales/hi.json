@@ -19,7 +19,8 @@
     "preferences": "प्राथमिकताएँ",
     "language": "भाषा",
     "theme": "थीम",
-    "recruiter": "रिक्रूटर ब्रीफिंग"
+    "recruiter": "रिक्रूटर ब्रीफिंग",
+    "recruiterShort": "रिक्रूटर"
   },
   "a11y": {
     "skipToMain": "मुख्य सामग्री पर जाएं",

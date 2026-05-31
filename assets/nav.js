@@ -1,32 +1,37 @@
-/* nav.js — Layer L3: site chrome (all pages)
-   Loads on: all HTML pages
-   Exports: none
-   Must not: hero effects, canvas, cards, eggs, recruiter panel, contact POST */
+/* nav.js — Layer L3: site chrome (all pages) */
 (function () {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', function () {
+  var FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function smoothScrollToHash(href) {
+    if (!href || href.charAt(0) !== '#') return false;
+    var id = href.slice(1);
+    var el = document.getElementById(id);
+    if (!el) return false;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return true;
+  }
+
+  function initMobileDrawer() {
     var hamburger = document.getElementById('hamburger');
     var mobileNav = document.getElementById('mobile-nav');
-    var overlay   = document.getElementById('nav-overlay');
-    var closeBtn  = document.getElementById('mobile-nav-close');
-
+    var overlay = document.getElementById('nav-overlay');
+    var closeBtn = document.getElementById('mobile-nav-close');
     if (!hamburger || !mobileNav) return;
-
-    var focusable = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
     function openMenu() {
       mobileNav.classList.add('open');
-      overlay && overlay.classList.add('open');
+      if (overlay) overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
       hamburger.setAttribute('aria-expanded', 'true');
-      var first = mobileNav.querySelector(focusable);
+      var first = mobileNav.querySelector(FOCUSABLE);
       if (first) first.focus();
     }
 
     function closeMenu() {
       mobileNav.classList.remove('open');
-      overlay && overlay.classList.remove('open');
+      if (overlay) overlay.classList.remove('open');
       document.body.style.overflow = '';
       hamburger.setAttribute('aria-expanded', 'false');
       hamburger.focus();
@@ -35,12 +40,18 @@
     hamburger.addEventListener('click', function () {
       mobileNav.classList.contains('open') ? closeMenu() : openMenu();
     });
-
-    closeBtn && closeBtn.addEventListener('click', closeMenu);
-    overlay  && overlay.addEventListener('click', closeMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    if (overlay) overlay.addEventListener('click', closeMenu);
 
     mobileNav.querySelectorAll('a[href]').forEach(function (a) {
-      a.addEventListener('click', closeMenu);
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href');
+        if (href && href.indexOf('#') !== -1) {
+          var hash = href.indexOf('#') === 0 ? href : href.substring(href.indexOf('#'));
+          if (hash.length > 1 && smoothScrollToHash(hash)) e.preventDefault();
+        }
+        closeMenu();
+      });
     });
 
     document.addEventListener('keydown', function (e) {
@@ -49,7 +60,7 @@
 
     mobileNav.addEventListener('keydown', function (e) {
       if (e.key !== 'Tab') return;
-      var els = Array.from(mobileNav.querySelectorAll(focusable)).filter(function (el) {
+      var els = Array.from(mobileNav.querySelectorAll(FOCUSABLE)).filter(function (el) {
         return !el.closest('[hidden]') && el.offsetParent !== null;
       });
       if (!els.length) return;
@@ -60,22 +71,125 @@
         if (document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
     });
+  }
 
+  function initScrollSpy() {
     var sections = document.querySelectorAll('section[id]');
-    var navLinks = document.querySelectorAll('.nav-sections__menu a, .mobile-nav-links a');
+    if (!sections.length) return;
+
+    var navLinks = document.querySelectorAll(
+      '.nav-sections__menu a, .mobile-nav-links a, .section-rail a'
+    );
+    var railOffset = document.querySelector('.section-rail') ? 48 : 0;
+    var topOffset = 80 + railOffset;
+
     function onScroll() {
       var current = '';
       sections.forEach(function (s) {
-        if (window.scrollY >= s.offsetTop - 80) current = s.id;
+        if (window.scrollY >= s.offsetTop - topOffset) current = s.id;
       });
       navLinks.forEach(function (a) {
-        var active = a.getAttribute('href') === '#' + current;
+        var href = a.getAttribute('href') || '';
+        var hash = href.indexOf('#') >= 0 ? href.substring(href.indexOf('#')) : href;
+        var active = hash === '#' + current;
         a.setAttribute('aria-current', active ? 'true' : 'false');
       });
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
+  }
 
+  function initSectionRail() {
+    var rail = document.querySelector('.section-rail');
+    if (!rail) return;
+
+    rail.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href');
+        if (smoothScrollToHash(href)) e.preventDefault();
+      });
+    });
+  }
+
+  function initSectionsDropdown() {
+    var sectionsBtn = document.getElementById('nav-sections-btn');
+    var sectionsMenu = document.getElementById('nav-sections-menu');
+    if (!sectionsBtn || !sectionsMenu || !window.PrefsChrome) return;
+
+    window.PrefsChrome.PopoverMenu(sectionsBtn, sectionsMenu, {
+      onSelect: function (e, ctx) {
+        var link = e.target.closest('a[href^="#"]');
+        if (!link) return;
+        var href = link.getAttribute('href');
+        var hash = href.indexOf('#') >= 0 ? href.substring(href.indexOf('#')) : href;
+        if (smoothScrollToHash(hash)) {
+          ctx.close();
+        }
+      }
+    });
+  }
+
+  function initResumeModal() {
+    var modal = document.getElementById('resume-preview');
+    if (!modal) return;
+
+    var closeBtn = modal.querySelector('.resume-modal-close');
+    var embed = modal.querySelector('.resume-embed');
+    var fallback = modal.querySelector('.resume-embed-fallback');
+    var lastFocus = null;
+
+    function showFallback() {
+      if (embed) embed.hidden = true;
+      if (fallback) fallback.hidden = false;
+    }
+
+    function openModal() {
+      lastFocus = document.activeElement;
+      if (embed && fallback) {
+        embed.hidden = false;
+        fallback.hidden = true;
+        fetch('/resume.pdf', { method: 'HEAD' })
+          .then(function (r) { if (!r.ok) showFallback(); })
+          .catch(showFallback);
+      }
+      if (typeof modal.showModal === 'function') modal.showModal();
+      else showFallback();
+      document.body.style.overflow = 'hidden';
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeModal() {
+      modal.close();
+      document.body.style.overflow = '';
+      if (lastFocus) lastFocus.focus();
+    }
+
+    ['resume-preview-trigger', 'nav-resume-preview', 'nav-resume-preview-mobile'].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (btn) btn.addEventListener('click', openModal);
+    });
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+    modal.addEventListener('cancel', function () {
+      document.body.style.overflow = '';
+      if (lastFocus) lastFocus.focus();
+    });
+    modal.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var items = Array.prototype.slice.call(modal.querySelectorAll(FOCUSABLE));
+      if (!items.length) return;
+      var first = items[0], last = items[items.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+  }
+
+  function initChromeMisc() {
     var header = document.querySelector('header');
     if (header) {
       window.addEventListener('scroll', function () {
@@ -109,68 +223,14 @@
 
     var yr = document.getElementById('yr');
     if (yr) yr.textContent = String(new Date().getFullYear());
+  }
 
-    /* ── Resume preview modal ── */
-    (function () {
-      var modal    = document.getElementById('resume-preview');
-      var closeBtn = modal && modal.querySelector('.resume-modal-close');
-      if (!modal) return;
-
-      var lastFocus = null;
-      var FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
-      function openModal() {
-        lastFocus = document.activeElement;
-        modal.showModal();
-        document.body.style.overflow = 'hidden';
-        /* Focus close button on open */
-        if (closeBtn) closeBtn.focus();
-      }
-
-      function closeModal() {
-        modal.close();
-        document.body.style.overflow = '';
-        if (lastFocus) lastFocus.focus();
-      }
-
-      /* Triggers: hero CTA + header nav button */
-      ['resume-preview-trigger', 'nav-resume-preview', 'nav-resume-preview-mobile'].forEach(function (id) {
-        var btn = document.getElementById(id);
-        if (btn) btn.addEventListener('click', openModal);
-      });
-
-      if (closeBtn) closeBtn.addEventListener('click', closeModal);
-
-      /* Click outside (on backdrop) closes */
-      modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeModal();
-      });
-
-      /* Escape is handled natively by <dialog>; sync body overflow */
-      modal.addEventListener('cancel', function () {
-        document.body.style.overflow = '';
-        if (lastFocus) lastFocus.focus();
-      });
-
-      /* Focus trap */
-      modal.addEventListener('keydown', function (e) {
-        if (e.key !== 'Tab') return;
-        var items = Array.prototype.slice.call(modal.querySelectorAll(FOCUSABLE));
-        if (!items.length) return;
-        var first = items[0], last = items[items.length - 1];
-        if (e.shiftKey) {
-          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
-        } else {
-          if (document.activeElement === last) { e.preventDefault(); first.focus(); }
-        }
-      });
-    }());
-
-    /* Desktop Sections dropdown */
-    var sectionsBtn = document.getElementById('nav-sections-btn');
-    var sectionsMenu = document.getElementById('nav-sections-menu');
-    if (sectionsBtn && sectionsMenu && window.PrefsChrome) {
-      window.PrefsChrome.PopoverMenu(sectionsBtn, sectionsMenu);
-    }
+  document.addEventListener('DOMContentLoaded', function () {
+    initMobileDrawer();
+    initScrollSpy();
+    initSectionRail();
+    initSectionsDropdown();
+    initResumeModal();
+    initChromeMisc();
   });
 })();
