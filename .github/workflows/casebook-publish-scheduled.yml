@@ -1,0 +1,126 @@
+# Casebook scheduled publish
+#
+# Runs hourly. Checks manifest.json for cases where:
+#   status === "scheduled" && scheduledPublishAt <= now
+# and flips them to `live`, rebuilds the site, deploys, and sends newsletter.
+#
+# Human gate: you must run `confirm-publish.py --slug <slug>` locally first;
+# this workflow only automates the timed flip — nothing goes live without your confirm.
+#
+# Secrets required (set in repo Settings → Secrets → Actions):
+#   BUTTONDOWN_API_KEY — only needed when newsletter.enabled = true in site.json
+
+name: Casebook scheduled publish
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # every hour
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (flip manifest but skip deploy and newsletter)'
+        type: boolean
+        default: false
+      slugs:
+        description: 'Comma-separated slugs to force-send newsletter (leave blank for auto)'
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: casebook-publish
+  cancel-in-progress: false
+
+jobs:
+  check-and-publish:
+    runs-on: ubuntu-latest
+    environment: casebook-publish   # optional: add required reviewers in repo settings
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: cases/package-lock.json
+
+      # ── 1. Flip scheduled → live ──────────────────────────────
+      - name: Flip due cases
+        id: flip
+        run: node cases/scripts/flip-scheduled-live.mjs
+
+      # ── 2. Bail early if nothing changed ─────────────────────
+      - name: Check if anything was flipped
+        id: check
+        run: |
+          count="${{ steps.flip.outputs.flipped_count }}"
+          if [ -z "$count" ] || [ "$count" = "0" ]; then
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skipped=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── 3. Commit updated manifest ───────────────────────────
+      - name: Commit manifest changes
+        if: steps.check.outputs.skipped == 'false' && inputs.dry_run != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cases/src/_data/manifest.json cases/src/_data/.newsletter-sent.json || true
+          git diff --cached --quiet || git commit -m "chore(casebook): publish ${{ steps.flip.outputs.flipped_slugs }}"
+          git push
+
+      # ── 4. Build site ─────────────────────────────────────────
+      - name: Install Eleventy deps
+        if: steps.check.outputs.skipped == 'false'
+        working-directory: cases
+        run: npm ci
+
+      - name: Build portfolio (site/)
+        if: steps.check.outputs.skipped == 'false'
+        working-directory: site
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build casebook (cases/)
+        if: steps.check.outputs.skipped == 'false'
+        working-directory: cases
+        run: npm run build
+
+      # ── 5. Merge deploy artifacts ─────────────────────────────
+      - name: Assemble _deploy/
+        if: steps.check.outputs.skipped == 'false'
+        run: |
+          mkdir -p _deploy
+          cp -r site/_site/. _deploy/
+          mkdir -p _deploy/cases
+          cp -r cases/_site/. _deploy/cases/
+
+      # ── 6. Deploy to GitHub Pages ─────────────────────────────
+      - name: Upload Pages artifact
+        if: steps.check.outputs.skipped == 'false' && inputs.dry_run != 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _deploy
+
+      - name: Deploy to GitHub Pages
+        if: steps.check.outputs.skipped == 'false' && inputs.dry_run != 'true'
+        uses: actions/deploy-pages@v4
+
+      # ── 7. Send newsletter ────────────────────────────────────
+      - name: Send newsletter (Buttondown)
+        if: steps.check.outputs.skipped == 'false' && inputs.dry_run != 'true'
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+          SLUGS: ${{ inputs.slugs || steps.flip.outputs.flipped_slugs }}
+        run: node cases/scripts/send-newsletter.mjs
