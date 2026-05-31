@@ -1,72 +1,34 @@
 /**
- * theme-bridge.js — sync portfolio localStorage.theme ↔ casebook appearance.
+ * theme-bridge.js — optional first-visit hint from portfolio theme (Casebook only).
+ * Does not load theme.js or sync ongoing portfolio theme changes.
  */
 (function (global) {
   'use strict';
 
-  var MAP = {
-    'high-contrast': { color: 'dark', contrast: 'high' },
-    dark: { color: 'dark', contrast: 'normal' },
-    slate: { color: 'dark', contrast: 'normal' },
-    dusk: { color: 'dark', contrast: 'normal' },
-    light: { color: 'light', contrast: 'normal' },
-    sage: { color: 'light', contrast: 'normal' }
-  };
+  var COLOR_KEY = 'casebook-color-mode';
 
-  function getPortfolioTheme() {
-    try {
-      var t = localStorage.getItem('theme');
-      return MAP[t] ? t : 'high-contrast';
-    } catch (e) {
-      return 'high-contrast';
-    }
-  }
+  var DARK_FAMILY = { dark: 1, slate: 1, dusk: 1, 'high-contrast': 1 };
 
-  function toCasebook(themeId) {
-    return MAP[themeId] || MAP['high-contrast'];
-  }
+  /** Seed casebook-color-mode once when unset (FOUC may already have set data-casebook-color). */
+  function seedCasebookColorFromPortfolioIfNeeded() {
+    var existing;
+    try { existing = localStorage.getItem(COLOR_KEY); } catch (e) {}
+    if (existing) return;
 
-  function applyCasebookFromPortfolio(themeId) {
-    var m = toCasebook(themeId);
-    var root = document.documentElement;
-    root.dataset.casebookColor = m.color;
-    root.dataset.casebookContrast = m.contrast;
-    try {
-      localStorage.setItem('casebook-color-mode', m.color === 'dark' ? 'dark' : 'light');
-      localStorage.setItem('casebook-contrast', m.contrast);
-    } catch (e) {}
-    document.dispatchEvent(new CustomEvent('casebook-color-change', {
-      detail: { mode: m.color, resolved: m.color, fromBridge: true },
-      bubbles: true
-    }));
-  }
+    var portfolioTheme = 'high-contrast';
+    try { portfolioTheme = localStorage.getItem('theme') || 'high-contrast'; } catch (e) {}
 
-  function applyPortfolioFromCasebook(color, contrast) {
-    var themeId = 'high-contrast';
-    if (contrast === 'high') themeId = 'high-contrast';
-    else if (color === 'dark') themeId = 'dark';
-    else themeId = 'light';
-    try { localStorage.setItem('theme', themeId); } catch (e) {}
-    document.documentElement.dataset.theme = themeId;
-    if (global.applyTheme) global.applyTheme(themeId);
-  }
+    if (!DARK_FAMILY[portfolioTheme]) return;
 
-  function onPortfolioThemeChange(themeId) {
-    applyCasebookFromPortfolio(themeId);
+    try { localStorage.setItem(COLOR_KEY, 'dark'); } catch (e) {}
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    if (document.documentElement.dataset.casebookColor !== undefined) {
-      applyCasebookFromPortfolio(getPortfolioTheme());
-    }
+    if (document.documentElement.dataset.casebookColor === undefined) return;
+    seedCasebookColorFromPortfolioIfNeeded();
   });
 
   global.ThemeBridge = {
-    getPortfolioTheme: getPortfolioTheme,
-    toCasebook: toCasebook,
-    applyCasebookFromPortfolio: applyCasebookFromPortfolio,
-    applyPortfolioFromCasebook: applyPortfolioFromCasebook,
-    onPortfolioThemeChange: onPortfolioThemeChange,
-    MAP: MAP
+    seedCasebookColorFromPortfolioIfNeeded: seedCasebookColorFromPortfolioIfNeeded
   };
 })(typeof window !== 'undefined' ? window : this);

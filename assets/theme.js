@@ -31,8 +31,6 @@
     document.documentElement.dataset.theme = id;
     try { localStorage.setItem('theme', id); } catch (e) {}
 
-    if (window.ThemeBridge) window.ThemeBridge.onPortfolioThemeChange(id);
-
     document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: id } }));
 
     requestAnimationFrame(function () {
