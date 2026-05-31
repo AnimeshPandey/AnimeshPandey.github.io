@@ -1,4 +1,4 @@
-const CACHE = 'ap-v28';
+const CACHE = 'ap-v29';
 const ASSETS = [
   '/',
   /* Design system — load order: foundation → theme → site */
@@ -86,6 +86,18 @@ self.addEventListener('fetch', function (e) {
 
   /* platform chrome: network-first so picker fixes deploy immediately */
   if (url.pathname.indexOf('/assets/platform/') === 0) {
+    e.respondWith(networkFirst(e.request));
+    return;
+  }
+
+  /* prefs + orchestration JS: network-first (avoid stale picker/recruiter wiring) */
+  if (
+    url.pathname === '/assets/theme.js' ||
+    url.pathname === '/assets/i18n/i18n.js' ||
+    url.pathname.indexOf('/assets/i18n/locales/') === 0 ||
+    url.pathname === '/assets/visuals.js' ||
+    url.pathname === '/assets/recruiter.js'
+  ) {
     e.respondWith(networkFirst(e.request));
     return;
   }

@@ -53,43 +53,52 @@
     for (var j = 0; j < THEMES.length; j++) {
       if (THEMES[j].id === id) { label = THEMES[j].label; break; }
     }
-    var btns = document.querySelectorAll('.theme-pick-btn:not(.lang-pick-btn)');
-    for (var k = 0; k < btns.length; k++) {
-      btns[k].setAttribute('aria-label', 'Theme: ' + label + '. Change');
-    }
+    document.querySelectorAll('.theme-pick-btn').forEach(function (btn) {
+      if (btn.classList.contains('lang-pick-btn')) return;
+      btn.setAttribute('aria-label', 'Theme: ' + label + '. Change');
+    });
   }
 
   window.applyTheme = applyTheme;
 
   function initThemePicker(btn, menu) {
-    if (window.DisplayMenu) {
-      window.DisplayMenu.initThemeMenu(btn, menu, applyTheme);
-      return;
-    }
-    if (!window.PrefsChrome) return;
+    if (!btn || !menu || !window.PrefsChrome) return;
+    menu.setAttribute('data-popover-fixed', btn.closest('#mobile-nav') ? 'true' : 'false');
     window.PrefsChrome.PopoverMenu(btn, menu, {
       onSelect: function (e, ctx) {
         var item = e.target.closest('.theme-menu-item[data-t]');
         if (!item) return;
         applyTheme(item.dataset.t);
         ctx.close();
+      },
+      onActivate: function (e, ctx) {
+        var active = document.activeElement;
+        if (active && active.classList && active.classList.contains('theme-menu-item') && active.dataset.t) {
+          applyTheme(active.dataset.t);
+          ctx.close();
+        }
       }
     });
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    if (!window.PrefsChrome && !window.DisplayMenu) {
+  function bootThemePickers() {
+    if (!window.PrefsChrome) {
       console.warn('[theme] PrefsChrome not loaded — theme picker disabled');
+      return;
     }
     applyTheme(getStoredTheme());
-    var btns = document.querySelectorAll('.theme-pick-btn:not(.lang-pick-btn)');
-    for (var i = 0; i < btns.length; i++) {
-      var menuId = btns[i].getAttribute('aria-controls');
+    document.querySelectorAll('.theme-pick-btn').forEach(function (btn) {
+      if (btn.classList.contains('lang-pick-btn')) return;
+      if (btn.id === 'casebook-prefs-btn') return;
+      var menuId = btn.getAttribute('aria-controls');
       var menu = menuId ? document.getElementById(menuId) : null;
-      if (menu) {
-        menu.setAttribute('data-popover-fixed', btn.closest('#mobile-nav') ? 'true' : 'false');
-      }
-      initThemePicker(btns[i], menu);
-    }
-  });
+      initThemePicker(btn, menu);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootThemePickers);
+  } else {
+    bootThemePickers();
+  }
 })();

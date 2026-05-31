@@ -450,7 +450,8 @@
      Cross-tier; once per session.
      ══════════════════════════════════════════════════ */
   function initThemeWink() {
-    var btn = document.getElementById('theme-pick-btn');
+    var btn = document.getElementById('theme-pick-btn-header') ||
+      document.getElementById('theme-pick-btn-mobile');
     if (!btn) return;
 
     var winks   = (window.__EGG_DATA && window.__EGG_DATA.themeWinks) || [
@@ -584,74 +585,21 @@
   }
 
   function initRecruiterMode() {
-    /* ── DOM refs ── */
-    var headerToggle  = document.getElementById('header-rm-toggle');
+    var headerToggle = document.getElementById('header-rm-toggle');
     var headerToggleMobile = document.getElementById('header-rm-toggle-mobile');
-    var headerExitBtn = document.getElementById('header-rm-exit');
-    var header        = document.querySelector('header');
-
-    /* Only the header icon toggle syncs aria-pressed */
     var allToggles = [headerToggle, headerToggleMobile].filter(Boolean);
 
     if (!allToggles.length) return;
 
-    /* ── State ── */
-    var on = false;
-    try { on = localStorage.getItem('recruiter') === '1'; } catch(e) {}
-
-    /* ── Sync all toggle aria-pressed to current mode ── */
-    function syncToggles(active) {
-      allToggles.forEach(function (t) {
-        t.setAttribute('aria-pressed', active ? 'true' : 'false');
-      });
-    }
-
-    /* ── Header recruiter-active class (replaces strip) ── */
-    function activateHeader() {
-      if (header) header.classList.add('recruiter-active');
-    }
-    function deactivateHeader() {
-      if (header) header.classList.remove('recruiter-active');
-    }
-
-    /* ── Core state setter ── */
-    function set(active) {
-      on = active;
-      document.body.classList.toggle('recruiter-mode', on);
-      syncToggles(on);
-      /* R1: update header toggle aria-label to signal mode state */
-      if (headerToggle) {
-        headerToggle.setAttribute('aria-label', active
-          ? 'Open recruiter briefing (mode active)'
-          : 'Open recruiter briefing');
-      }
-      try { localStorage.setItem('recruiter', on ? '1' : '0'); } catch(e) {}
-      if (on) {
-        activateHeader();
-        /* R8: dismiss promo when entering mode */
-        if (typeof window.__rmPromoDismiss === 'function') {
-          window.__rmPromoDismiss();
-          window.__rmPromoDismiss = null;
-        }
-      } else {
-        deactivateHeader();
-        /* Close panel when exiting mode */
-        if (window.RecruiterBriefing && window.RecruiterBriefing.isOpen()) {
-          window.RecruiterBriefing.close();
-        }
-      }
-    }
-
-    /* ── Lazy-load recruiter panel module ── */
     var _loadPromise = null;
     function loadRecruiterModule() {
       if (window.RecruiterBriefing) return Promise.resolve(window.RecruiterBriefing);
       if (_loadPromise) return _loadPromise;
 
       var cssLoaded = new Promise(function (resolve) {
-        var link    = document.createElement('link');
-        link.rel    = 'stylesheet';
-        link.href   = '/assets/recruiter.css';
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/assets/recruiter.css';
         link.onload = resolve;
         link.onerror = resolve;
         document.head.appendChild(link);
@@ -669,34 +617,21 @@
       return _loadPromise;
     }
 
-    function enterAndOpen(trigger) {
-      if (!on) set(true);
+    function toggleBriefing(trigger) {
       loadRecruiterModule().then(function (m) {
-        if (m && m.open) m.open(trigger);
+        if (m && m.toggle) m.toggle(trigger);
       });
     }
 
-    /* ── Restore from localStorage: mode on but do NOT auto-open panel ── */
-    if (on) set(true);
-
-    /* ── Header toggle: click always enters mode + opens briefing ── */
     allToggles.forEach(function (btn) {
       btn.addEventListener('click', function () {
-        enterAndOpen(btn);
+        toggleBriefing(btn);
       });
     });
 
-    /* ── Header exit: exits mode (closes panel too via set(false)) ── */
-    if (headerExitBtn) {
-      headerExitBtn.addEventListener('click', function () {
-        set(false);
-      });
-    }
-
-    /* ── R8: Recruiter promo card — shown once per session when mode off ── */
+    /* ── R8: Recruiter promo card — shown once per session when panel closed ── */
     (function initPromoCard() {
       try { if (sessionStorage.getItem('rm-promo') === '1') return; } catch(e) {}
-      if (on) return; /* mode already active — no need to promote */
 
       var promo = document.createElement('div');
       promo.id        = 'rm-promo';
@@ -723,21 +658,17 @@
       promo.querySelector('.rm-promo-dismiss').addEventListener('click', dismiss);
       promo.querySelector('.rm-promo-cta').addEventListener('click', function () {
         dismiss();
-        enterAndOpen(promo.querySelector('.rm-promo-cta'));
+        toggleBriefing(promo.querySelector('.rm-promo-cta'));
       });
 
-      /* Exposed so set(true) can dismiss it when mode activates via other entry points */
       window.__rmPromoDismiss = dismiss;
 
-      /* Slide in after a short delay so the page settles first */
       setTimeout(function () { promo.classList.add('rm-promo-in'); }, 700);
     }());
 
-    /* ── Deep link: ?recruiter=1 → mode on + panel open ── */
     if (new URLSearchParams(location.search).get('recruiter') === '1') {
-      set(true);
       loadRecruiterModule().then(function (m) {
-        if (m && m.open) m.open();
+        if (m && m.open) m.open(headerToggle || headerToggleMobile);
       });
     }
   }
@@ -762,14 +693,14 @@
      THEME CROSS-FADE — smooth token transition
      ══════════════════════════════════════════════════ */
   function initThemeCrossfade() {
-    var btn = document.getElementById('theme-pick-btn');
-    if (!btn) return;
-    /* Capture phase: fires before theme.js changes the theme */
-    btn.addEventListener('click', function() {
-      var html = document.documentElement;
-      html.classList.add('theme-transitioning');
-      setTimeout(function() { html.classList.remove('theme-transitioning'); }, 320);
-    }, true);
+    document.querySelectorAll('.theme-pick-btn').forEach(function (btn) {
+      if (btn.classList.contains('lang-pick-btn') || btn.id === 'casebook-prefs-btn') return;
+      btn.addEventListener('click', function () {
+        var html = document.documentElement;
+        html.classList.add('theme-transitioning');
+        setTimeout(function () { html.classList.remove('theme-transitioning'); }, 320);
+      }, true);
+    });
   }
 
   /* ══════════════════════════════════════════════════

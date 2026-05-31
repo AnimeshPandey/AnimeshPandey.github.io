@@ -6,8 +6,7 @@
  *
  * How to test:
  *   - Direct URL: https://anmshpndy.com/?recruiter=1
- *   - localStorage: localStorage.setItem('recruiter', '1') then reload
- *   - Click "Recruiter briefing" toggle in hero or footer
+ *   - Click header "Recruiter" — toggles briefing panel open/closed
  */
 (function () {
   'use strict';
@@ -18,7 +17,7 @@
 
   /* ── State ── */
   var _isOpen      = false;
-  var _isActive    = false;          // recruiter mode on
+  var _isActive    = false;          // mirrors panel open (_isOpen)
   var _lastToggle  = null;           // element to restore focus to
   var _sessionId   = 0;              // incremented on each open() to cancel stale animations
   var _lastRenderMs = 0;             // R9: timestamp of last completed render (for cache TTL)
@@ -94,13 +93,20 @@
     trapFocus();
   }
 
+  function deactivatePanelChrome() {
+    _isActive = false;
+    d.body.classList.remove('recruiter-mode', 'rm-panel-open');
+    try { localStorage.removeItem('recruiter'); } catch (e) {}
+    syncToggles(false);
+  }
+
   function close() {
     if (!_isOpen) return;
     _isOpen     = false;
     _sessionId += 1; // cancel in-flight animations
 
     panel.classList.remove('rm-panel-visible');
-    d.body.classList.remove('rm-panel-open');
+    deactivatePanelChrome();
 
     // Clean URL
     if (history.replaceState) {
@@ -660,10 +666,16 @@
   }
 
   function syncToggles(on) {
-    /* Single header icon toggle is the only entry point */
-    var toggle = d.getElementById('header-rm-toggle');
-    if (toggle) toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
-    /* Sync header recruiter-active class (shows exit button, collapses label) */
+    var toggles = [
+      d.getElementById('header-rm-toggle'),
+      d.getElementById('header-rm-toggle-mobile')
+    ].filter(Boolean);
+    toggles.forEach(function (toggle) {
+      toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+      toggle.setAttribute('aria-label', on
+        ? 'Close recruiter briefing'
+        : 'Open recruiter briefing');
+    });
     var hdr = d.querySelector('header');
     if (hdr) hdr.classList.toggle('recruiter-active', on);
   }
