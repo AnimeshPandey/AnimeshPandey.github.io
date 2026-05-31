@@ -85,11 +85,11 @@ header.scrolled {
 
 .nav-resume {
   font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
-  color: var(--accent); text-decoration: none;
+  color: var(--accent); text-decoration: none; background: transparent;
   border: 1px solid var(--accent); border-radius: 6px;
   padding: 8px 12px; display: inline-flex; align-items: center; gap: 5px;
   transition: background .2s, color .2s;
-  min-height: 44px;
+  min-height: 44px; cursor: pointer;
 }
 .nav-resume:hover { background: var(--accent); color: var(--bg); }
 
@@ -1088,6 +1088,65 @@ header.recruiter-active .header-rm-exit:focus-visible {
 
 /* Hide header Resume link when panel is open — panel footer is the primary CTA */
 body.rm-panel-open .nav-resume { display: none; }
+
+/* ── Resume preview modal ── */
+.resume-modal {
+  position: fixed; inset: 0; margin: auto;
+  width: min(960px, 96vw); height: min(92vh, 860px);
+  max-width: 100%; max-height: 100%;
+  padding: 0; border: 1px solid var(--border);
+  border-radius: var(--radius); background: var(--bg);
+  box-shadow: 0 24px 64px rgba(0,0,0,.24);
+  overflow: hidden; z-index: 500;
+}
+.resume-modal::backdrop {
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.resume-modal-inner { display: flex; flex-direction: column; height: 100%; }
+.resume-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+  gap: 12px; flex-shrink: 0;
+}
+.resume-modal-title {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .06em;
+  color: var(--ink-2); margin: 0; font-weight: 500;
+}
+.resume-modal-actions { display: flex; align-items: center; gap: 8px; }
+.resume-modal-dl {
+  font-size: 13px; padding: 6px 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.resume-modal-close {
+  width: 36px; height: 36px; border: none; background: transparent;
+  color: var(--ink-2); cursor: pointer; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  transition: color .2s, background .2s;
+}
+.resume-modal-close:hover { color: var(--ink); background: var(--surface-2); }
+.resume-modal-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.resume-modal-body { flex: 1; overflow: hidden; }
+.resume-embed {
+  display: block; width: 100%; height: 100%;
+  border: none; background: var(--surface);
+}
+.resume-embed-fallback {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 16px; height: 100%; color: var(--ink-2); font-size: 15px; text-align: center;
+  padding: 32px;
+}
+
+/* Mobile: full-screen sheet for resume modal */
+@media (max-width: 640px) {
+  .resume-modal {
+    width: 100%; height: 100%;
+    border-radius: 0; border: none;
+    top: 0; left: 0; transform: none;
+    margin: 0;
+  }
+}
 
 /* Contact section: sage pulse ring */
 .recruiter-mode #contact {

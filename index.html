@@ -407,10 +407,10 @@
           <svg class="icon-sm" aria-hidden="true"><use href="#i-close"/></svg>
         </button>
       </div>
-      <a href="resume.pdf" download class="nav-resume" aria-label="Download resume PDF">
+      <button type="button" class="nav-resume" id="nav-resume-preview" aria-haspopup="dialog" aria-label="Preview or download resume">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
         Resume
-      </a>
+      </button>
       <button id="hamburger" class="hamburger" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
         <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
       </button>
@@ -522,10 +522,10 @@
           View experience
           <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg>
         </a>
-        <a href="resume.pdf" download class="btn btn-outline">
+        <button type="button" class="btn btn-outline" id="resume-preview-trigger" aria-haspopup="dialog">
           <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
           Resume
-        </a>
+        </button>
         <a href="#contact" class="btn btn-outline">
           Let's talk
           <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
@@ -1266,6 +1266,36 @@
 </button>
 
 <div id="shortcut-announce" role="status" aria-live="polite" class="visually-hidden"></div>
+
+<!-- ── Resume preview modal ───────────────────────────────────── -->
+<dialog id="resume-preview" class="resume-modal" aria-labelledby="resume-modal-title">
+  <div class="resume-modal-inner">
+    <header class="resume-modal-head">
+      <h2 id="resume-modal-title" class="resume-modal-title">Animesh Pandey — Resume</h2>
+      <div class="resume-modal-actions">
+        <a href="/resume.pdf" download="Animesh_Pandey_Resume.pdf" class="btn btn-outline resume-modal-dl" aria-label="Download resume PDF">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+          Download PDF
+        </a>
+        <button type="button" class="resume-modal-close" aria-label="Close resume preview">
+          <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+    </header>
+    <div class="resume-modal-body">
+      <object data="/resume.pdf" type="application/pdf" class="resume-embed"
+              aria-label="Resume PDF preview">
+        <div class="resume-embed-fallback">
+          <p>PDF preview isn't available in this browser.</p>
+          <a href="/resume.pdf" download="Animesh_Pandey_Resume.pdf" class="btn btn-dark">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+            Download PDF instead
+          </a>
+        </div>
+      </object>
+    </div>
+  </div>
+</dialog>
 
 <script src="/assets/theme.js" defer></script>
 <script src="/assets/nav.js" defer></script>
