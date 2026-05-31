@@ -107,10 +107,21 @@
     var navLinks = document.querySelectorAll(
       '.nav-sections__menu a, .mobile-nav-links a, .section-rail a'
     );
-    var railOffset = document.querySelector('.section-rail') ? 48 : 0;
-    var topOffset = 80 + railOffset;
+    var rail = document.querySelector('.section-rail');
+
+    function getTopOffset() {
+      var navH = parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue('--nav-h') || '56', 10
+      );
+      var railH = (rail && rail.offsetHeight > 0) ? rail.offsetHeight : 0;
+      var promoH = document.body.classList.contains('rm-promo-active')
+        ? parseInt(getComputedStyle(document.documentElement).getPropertyValue('--promo-h') || '44', 10)
+        : 0;
+      return navH + railH + promoH + 16;
+    }
 
     function onScroll() {
+      var topOffset = getTopOffset();
       var current = '';
       sections.forEach(function (s) {
         if (window.scrollY >= s.offsetTop - topOffset) current = s.id;
@@ -158,20 +169,6 @@
         if (navigateToHash(hash, false)) {
           ctx.close();
         }
-      }
-    });
-  }
-
-  function initMoreMenu() {
-    var btn = document.getElementById('more-pick-btn-header');
-    var menu = document.getElementById('more-menu-header');
-    if (!btn || !menu || !window.PrefsChrome) return;
-
-    window.PrefsChrome.PopoverMenu(btn, menu, {
-      onSelect: function (e, ctx) {
-        var item = e.target.closest('.more-menu-item');
-        if (!item) return;
-        ctx.close();
       }
     });
   }
@@ -286,7 +283,6 @@
     initScrollSpy();
     initSectionRail();
     initSectionsDropdown();
-    initMoreMenu();
     initResumeModal();
     initChromeMisc();
     initHashOnLoad();
