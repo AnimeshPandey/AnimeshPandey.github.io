@@ -1,7 +1,22 @@
+const path = require('path');
+const nunjucks = require('nunjucks');
 const site = require('./src/_data/site.json');
 const manifest = require('./src/_data/manifest.json');
 
 module.exports = function (eleventyConfig) {
+  const nunjucksEnvironment = nunjucks.configure(
+    [
+      path.join(__dirname, 'src/_includes'),
+      path.join(__dirname, '../site/src/_includes'),
+    ],
+    {
+      autoescape: true,
+      throwOnUndefined: false,
+      trimBlocks: true,
+      lstripBlocks: true,
+    }
+  );
+  eleventyConfig.setLibrary('njk', nunjucksEnvironment);
   /* ── Passthrough ── */
   eleventyConfig.addPassthroughCopy('src/assets');
   eleventyConfig.addPassthroughCopy({ 'src/cases/**/images': 'cases' });

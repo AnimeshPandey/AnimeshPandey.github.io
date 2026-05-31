@@ -48,20 +48,13 @@
   {# ── meta theme-color (updated by casebook-preferences.js) ── #}
   <meta name="theme-color" content="#FAF8F4" id="casebook-theme-color" />
 </head>
-<body>
-  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
-    <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1-.23-.27-.38-.61-.38-.98C12.73 17.69 13.5 17 14.5 17H16c3.31 0 6-2.69 6-6 0-4.96-4.48-9-10-9z"/>
-      <circle cx="6.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
-      <circle cx="9.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
-      <circle cx="14.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
-      <circle cx="17.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
-    </symbol>
-  </svg>
-  {# ── Skip link ── #}
-  <a href="#main" class="casebook-skip">Skip to story</a>
+<body class="platform-body platform-body--casebook">
+  {% include 'partials/icon-sprite-nav.njk' %}
+  <a href="#main" class="platform-skip casebook-skip">Skip to story</a>
 
-  {# ── Header (shared platform chrome) ── #}
+  {% set product = 'casebook' %}
+  {% set showRecruiter = false %}
+  {% set navActive = navActive | default('') %}
   {% include 'partials/platform-header.njk' %}
 
   {# ── Main content slot ── #}
