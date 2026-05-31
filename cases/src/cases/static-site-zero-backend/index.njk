@@ -1,0 +1,124 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Static Site, Zero Backend (L0)"
+description: "Why a portfolio, blog, or docs site doesn't need a server — and how a CDN-delivered static site outperforms one on every metric that matters."
+slug: static-site-zero-backend
+track: build-tooling
+readMin: 9
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Architecture simplicity
+schemaType: Article
+relatedCases:
+  - slug: secrets-in-client-bundle
+    title: "Secrets in the Client Bundle (Never)"
+  - slug: lcp-not-hero-image
+    title: LCP Is Often Not the Hero Image
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The server you didn't need</h2>
+  <div class="tone-junior">
+    <p>A developer builds a personal portfolio with React and Express. They deploy to a VPS: $20/month, manual SSL renewal, security patches, uptime monitoring. The site has 5 pages and never changes. It has no user accounts, no database, no dynamic content. It just needs to show text and images.</p>
+    <p>Three months later they migrate to 11ty on Netlify. The same 5 pages, now as static HTML files on a CDN. Cost: $0. Load time: 3× faster. Downtime: zero. Server maintenance: zero. They got a better product with less engineering.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The question to ask before reaching for a server: <em>does this content depend on who is asking?</em> If not — if the same HTML would be served to every visitor — it's static content. Serve it from a CDN, not a server. A CDN edge node 20ms from the user will always beat an origin server 200ms away, with no code execution, no cold starts, and no runtime failures.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The architectural principle: "L0" — serve pre-rendered HTML from globally distributed CDN PoPs. No server, no database, no runtime. The only moving parts are the build (triggered by git push) and the CDN cache invalidation (triggered by the build). Operational complexity is zero. TTFB is CDN-to-user latency, typically 5–40ms. This architecture is correct for any content site until proven otherwise.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Static site generators and the deployment model</h2>
+  <div class="tone-junior">
+    <p><strong>How it works:</strong> you write Markdown/Nunjucks/MDX, run a build command, and get a folder of HTML/CSS/JS files. You deploy that folder to Netlify, Vercel, or GitHub Pages. CDN serves the files globally with no server needed.</p>
+    <p><strong>When you need dynamic features:</strong> almost always solvable without a full backend:</p>
+    <ul>
+      <li><strong>Contact form</strong> → Netlify Forms, Formspree (no backend needed)</li>
+      <li><strong>Comments</strong> → Utterances (GitHub issues), Giscus</li>
+      <li><strong>Newsletter signup</strong> → Buttondown, Mailchimp embed</li>
+      <li><strong>Analytics</strong> → Plausible, Fathom (script embed)</li>
+      <li><strong>Search</strong> → Pagefind (static search index), Algolia</li>
+    </ul>
+  </div>
+  <div class="tone-mid">
+    <p>The decision matrix:</p>
+    <ul>
+      <li><strong>Same content for all users</strong> → static (11ty, Astro, Hugo, Jekyll)</li>
+      <li><strong>Some pages need user data, most don't</strong> → hybrid (Next.js ISR, Astro islands)</li>
+      <li><strong>Almost every page needs auth or real-time state</strong> → full server (Next.js SSR, Remix, Express)</li>
+    </ul>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code># 11ty build: runs at deploy time, not per-request
+npx @11ty/eleventy --input=src --output=dist
+
+# Output: static HTML files
+dist/
+  index.html
+  about/index.html
+  blog/post-1/index.html
+  assets/style.css
+
+# Deploy: just upload the dist folder
+netlify deploy --dir=dist --prod</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>The operational cost argument:</p>
+    <ul>
+      <li><strong>No cold starts</strong> — CDN serves pre-built files; no function initialization latency</li>
+      <li><strong>No scaling events</strong> — CDN absorbs traffic spikes (HN front page, Product Hunt) without configuration</li>
+      <li><strong>No patching</strong> — no OS, no runtime (Node, Python), no web server (nginx, Apache) to maintain</li>
+      <li><strong>Rollback</strong> — is a CDN cache invalidation, triggered by redeploying a previous build artifact</li>
+      <li><strong>CI/CD</strong> — git push → build → deploy is the entire pipeline; no Kubernetes, no ECS, no load balancer</li>
+    </ul>
+    <p>When you genuinely need dynamism: add a serverless function (Vercel API routes, Netlify Functions, Cloudflare Workers). One function for a contact form or an auth callback doesn't justify a full server.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: server-rendered vs static delivery</h2>
+  <div class="tone-junior"><p>"With Backend" shows a blog page making a server round-trip to fetch posts on every visit. "Static" shows the same page pre-built — the HTML is already there, no fetch needed. Open the Network tab and compare the timing.</p></div>
+  <div class="tone-mid"><p>The TTFB difference is the server round-trip vs CDN edge latency. For content that never changes per-request, you're paying a 150–300ms server penalty on every page view, for every user, forever — when the CDN alternative is 5–30ms.</p></div>
+  <div class="tone-staff"><p>Check the Response Headers in each mode. The static version returns from a CDN PoP (X-Cache: HIT or CF-Cache-Status: HIT). The server version returns from the origin on every request (no cache header or Cache-Control: no-store). The architecture difference is visible in the headers.</p></div>
+
+  <section class="case-demo" aria-label="Try it: server vs static delivery" data-required="true" data-demo-type="toggle" data-demo-slug="static-site-zero-backend">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Server-rendered — round trip</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Static — CDN delivery</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Static — CDN delivery</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">If every visitor sees the same content, you don't need a server. Use a static site generator (11ty, Astro, Hugo) and deploy to a CDN — faster, cheaper, zero maintenance.</div>
+        <div class="tone-mid">Ask before every architecture decision: "does this content depend on who is asking?" If no, serve pre-built HTML from a CDN. If yes, only then consider a server or serverless function.</div>
+        <div class="tone-staff">L0 static architecture has zero cold starts, zero scaling events, zero runtime patches, and CDN-edge TTFB of 5–40ms. It's the correct default for content sites until dynamic requirements are proven.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Contact forms, comments, search, analytics — almost every "dynamic" feature a portfolio or blog needs has a static-compatible solution without a full backend.</div>
+        <div class="tone-mid">For sites with some dynamic pages: hybrid architectures (Next.js ISR, Astro SSR for specific routes) keep the static-delivery benefits for most pages while adding server capability only where needed.</div>
+        <div class="tone-staff">Rollback for static sites is a CDN cache invalidation triggered by redeploying a previous artifact — the safest deployment model that exists. No migration scripts, no state rollback, no downtime risk.</div>
+      </li>
+    </ul>
+  </div>
+</section>

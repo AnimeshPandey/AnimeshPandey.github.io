@@ -1,0 +1,114 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: One Listener, Thousand Rows
+description: "Why adding an event listener per table row destroys performance — and how event delegation handles thousands of rows with a single listener."
+slug: event-delegation-one-listener
+track: browser-dom
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Delegation
+schemaType: Article
+relatedCases:
+  - slug: event-loop-one-thread
+    title: "The Event Loop: One Thread, Many Queues"
+  - slug: abort-controller-ghost-updates
+    title: Ghost Updates and Race Conditions
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The table that slows down at 500 rows</h2>
+  <div class="tone-junior">
+    <p>You build a data table. 100 rows load fine. At 500 rows, adding new rows takes 300ms. At 1000 rows, clicking a row handler feels laggy. You check the code — you're attaching a click listener to every row as it mounts. That's 1000 DOM event listeners. The fix is one listener on the table instead.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Event delegation is the pattern of attaching one listener to a parent element and using <code>event.target</code> to determine which child was clicked. It works because of event bubbling — events propagate up from the target element to the root. One listener on <code>&lt;table&gt;</code> handles clicks on any <code>&lt;tr&gt;</code>, <code>&lt;td&gt;</code>, or <code>&lt;button&gt;</code> inside it.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Beyond performance: event delegation handles dynamically-added elements automatically. A listener attached to a parent catches events on children that didn't exist when the listener was added. This eliminates the need to re-bind listeners after table rows are added, filtered, sorted, or virtualized.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Event bubbling and closest()</h2>
+  <div class="tone-junior">
+    <p>When you click a <code>&lt;button&gt;</code> inside a <code>&lt;tr&gt;</code> inside a <code>&lt;table&gt;</code>, the click event fires on the button, then bubbles up to the tr, then the table, then body, then document. Every element in the chain can listen for it.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ One listener handles all rows — present and future
+table.addEventListener('click', (event) => {
+  const row = event.target.closest('tr[data-id]');
+  if (!row) return; // click wasn't on a row
+  const id = row.dataset.id;
+  handleRowClick(id);
+});</code></pre>
+    <p><code>closest()</code> walks up the DOM from the clicked element and returns the first ancestor matching the selector — or null if none found. It's the key to event delegation with nested elements.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Three delegation patterns for different use cases:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Pattern 1: closest() for nested elements
+container.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-action]');
+  if (btn) handleAction(btn.dataset.action, btn);
+});
+
+// Pattern 2: target matching with matches()
+container.addEventListener('click', (e) => {
+  if (e.target.matches('.delete-btn')) deleteRow(e.target);
+});
+
+// Pattern 3: stop propagation for specific children
+container.addEventListener('click', (e) => {
+  if (e.target.closest('.no-bubble')) return; // opt-out
+  handleClick(e);
+});</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>When NOT to use delegation: when you need to listen to non-bubbling events (focus, blur — use focusin/focusout instead), or when the parent element has <code>pointer-events: none</code>, or in virtual DOM frameworks where the framework already delegates (React's synthetic event system delegates to the root — adding native listeners per-item fights the framework).</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: per-row vs delegated listener</h2>
+  <div class="tone-junior"><p>Add 200 rows in "Broken" mode — notice the slowdown. Same action in "Fixed" mode is instant. The fixed version has exactly one listener regardless of row count.</p></div>
+  <div class="tone-mid"><p>Open DevTools Performance → record → add rows in both modes. The broken version shows layout + listener-attach cost growing linearly. Fixed mode is constant time.</p></div>
+  <div class="tone-staff"><p>Check DevTools Elements → Event Listeners panel on the table in both modes. Broken: n listeners on n rows. Fixed: 1 listener on the table element.</p></div>
+
+  <section class="case-demo" aria-label="Try it: event delegation" data-required="true" data-demo-type="toggle" data-demo-slug="event-delegation-one-listener">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — listener per row</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — delegated listener</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — delegated listener</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Attach one listener to the parent, not one listener per child — events bubble up, so the parent hears all clicks from its descendants.</div>
+        <div class="tone-mid">event.target.closest(selector) is the delegation primitive — it finds the nearest ancestor matching your selector from the clicked element up.</div>
+        <div class="tone-staff">React delegates all events to the root already — adding native addEventListener per item fights the framework. Use React event props and rely on its delegation.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Delegation handles dynamically-added elements automatically — no need to re-bind when adding, filtering, or sorting rows.</div>
+        <div class="tone-mid">For non-bubbling events (focus, blur): use focusin/focusout instead — they bubble and are delegation-compatible.</div>
+        <div class="tone-staff">Memory leak prevention: removing the parent container removes the single listener. Per-row listeners require explicit cleanup on each removed row to avoid leaks.</div>
+      </li>
+    </ul>
+  </div>
+</section>

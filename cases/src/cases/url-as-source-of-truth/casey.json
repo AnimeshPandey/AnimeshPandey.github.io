@@ -1,0 +1,36 @@
+{
+  "slug": "url-as-source-of-truth",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "If users can't bookmark or share a filtered view, the filter state is in the wrong place. Move it to the URL querystring.",
+      "mid": "URLSearchParams + history.pushState is all you need for URL state management — no router library required for the basic pattern.",
+      "staff": "URL filter state is SEO state. For e-commerce, category+sort URLs are indexable and can rank. Component-state filters are invisible to search engines."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Apply filters in broken mode, reload the page — they're gone. Fixed mode: apply filters, reload, they're back. The URL is the persistence layer.",
+      "mid": "Copy the URL from the fixed demo after applying filters and paste into a new tab. The filters are applied from the URL before any React state is set.",
+      "staff": "The popstate event is the back/forward hook. Without it, browser navigation doesn't sync the URL state back to your UI. Always handle it in URL state patterns."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "An e-commerce client's filters were in Redux. Users couldn't share filtered lists. Migrating to URL params took one sprint and immediately increased filter-page conversion.",
+      "mid": "The Redux-for-filters pattern is common but wrong. Redux is for server cache and cross-component state — URL querystring is for navigation state.",
+      "staff": "For complex filter schemas (multi-select, date ranges), consider a URL serialization layer (nuqs, use-query-params) to avoid manual URLSearchParams manipulation."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're fixing filters that disappear on page refresh. The solution is putting filter state in the URL — it's bookmarkable, shareable, and just works.",
+        "mid": "This case covers URL as state — URLSearchParams, history.pushState, popstate, and the React Router useSearchParams pattern.",
+        "staff": "We're covering the full state placement matrix, URL state for SEO implications, and when to use URL vs component vs global store for different state types."
+      }
+    ]
+  }
+}

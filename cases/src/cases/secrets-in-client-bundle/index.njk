@@ -1,0 +1,110 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Secrets in the Client Bundle (Never)"
+description: "Why API keys in your frontend JavaScript are public keys — and the three patterns that keep secrets on the server where they belong."
+slug: secrets-in-client-bundle
+track: security
+readMin: 9
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Secrets
+schemaType: Article
+relatedCases:
+  - slug: static-site-zero-backend
+    title: "Static Site, Zero Backend (L0)"
+  - slug: url-as-source-of-truth
+    title: URL as Source of Truth for Filters
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The API key anyone can read</h2>
+  <div class="tone-junior">
+    <p>You're building a weather widget. You get an API key from the weather service. You add it to your React app as <code>REACT_APP_WEATHER_KEY=abc123</code>. It works. You deploy. A month later, you get an email: your API key has been abused, you're being billed for 2 million requests from an IP in another country. Someone read your key from the JavaScript bundle and used it.</p>
+    <p>Any environment variable that starts with <code>REACT_APP_</code>, <code>VITE_</code>, or <code>NEXT_PUBLIC_</code> is baked into your frontend JavaScript. Anyone can read it. Always.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Frontend JavaScript is public. Your bundle is served to every browser that visits your site — and it's readable by anyone with DevTools, or by downloading the bundle directly. There is no obfuscation, minification, or encryption that makes a secret safe in client-side code. The only safe place for API keys is the server.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The class of vulnerability is OWASP A02:2021 — Cryptographic Failures, specifically "transmitting sensitive data in cleartext." The vector: client-side JavaScript is public code. Any "secret" in it is public by definition. Obfuscation is not security; it's security theater that adds minutes of difficulty, not meaningful protection.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Three patterns that keep secrets on the server</h2>
+  <div class="tone-junior">
+    <p><strong>Pattern 1: API proxy (simplest)</strong> — your frontend calls your own backend; your backend calls the third-party API with the key.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Frontend calls third-party directly with key
+fetch(`https://api.weather.com?key=${process.env.REACT_APP_KEY}`)
+
+// ✅ Frontend calls your proxy; key lives on server
+fetch('/api/weather') // → your server → weather API with key</code></pre>
+    <p><strong>Pattern 2: serverless function</strong> — a Vercel/Netlify/Cloudflare function holds the key and proxies the request. Frontend calls the function URL.</p>
+    <p><strong>Pattern 3: BFF (Backend for Frontend)</strong> — a thin Express/Fastify server routes all third-party API calls, adds auth, and exposes a safe API surface to the frontend.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Which pattern to use:</p>
+    <ul>
+      <li><strong>Static site (no server)</strong> → serverless function (Vercel API routes, Netlify Functions, Cloudflare Workers)</li>
+      <li><strong>Next.js / Remix</strong> → server-side data fetching (getServerSideProps, loader functions) — key never reaches the client</li>
+      <li><strong>SPA with existing backend</strong> → add a proxy endpoint to the backend</li>
+    </ul>
+    <p>Environment variables without a public prefix (<code>API_KEY</code> vs <code>NEXT_PUBLIC_API_KEY</code>) are server-only — they never enter the bundle. This is the first line of defense.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Additional server-side controls:</p>
+    <ul>
+      <li><strong>Key rotation</strong> — treat any leaked key as permanently compromised; rotate immediately</li>
+      <li><strong>Rate limiting on your proxy</strong> — even if someone discovers your proxy endpoint, rate limiting caps abuse</li>
+      <li><strong>Allowlist origins</strong> — configure the third-party API to only accept requests from your server IP (not client IPs)</li>
+      <li><strong>Secret scanning in CI</strong> — tools like Gitleaks or GitHub's secret scanning detect keys in code before they ship</li>
+    </ul>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: exposed vs proxied key</h2>
+  <div class="tone-junior"><p>Open DevTools → Sources → search for "KEY" in the "Broken" bundle. You'll find the fake key in plain text. The "Fixed" version makes the same API call through a proxy — no key in the bundle.</p></div>
+  <div class="tone-mid"><p>Open DevTools Network → compare the request URLs. Broken: the key is a query parameter visible in the URL (and in server logs). Fixed: request goes to /api/proxy — key is on the server.</p></div>
+  <div class="tone-staff"><p>Run strings on the minified bundle (cat bundle.js | grep -o 'KEY[^&]*'). Even in production builds with dead-code elimination, environment-variable substitution bakes the key into the output at build time.</p></div>
+
+  <section class="case-demo" aria-label="Try it: exposed vs proxied secret" data-required="true" data-demo-type="toggle" data-demo-slug="secrets-in-client-bundle">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — key in bundle</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — proxy pattern</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — proxy pattern</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">REACT_APP_*, VITE_*, and NEXT_PUBLIC_* variables are baked into your JavaScript. They're public. Never put real secrets in them.</div>
+        <div class="tone-mid">The proxy pattern is the fundamental fix: your frontend calls your backend, your backend calls the third-party API with the key — key never reaches the client.</div>
+        <div class="tone-staff">Add Gitleaks or GitHub secret scanning to CI — catch keys before they ship. Treat any key committed to git or shipped in a bundle as permanently compromised.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Serverless functions (Vercel API routes, Netlify Functions) are the easiest proxy for static sites — no full backend needed.</div>
+        <div class="tone-mid">In Next.js, use server-side data fetching (Server Components, getServerSideProps) — the API key is only used server-side and never serialized to the client.</div>
+        <div class="tone-staff">Defense in depth: rotate leaked keys immediately, rate-limit proxy endpoints, and configure third-party APIs to allowlist only your server IP.</div>
+      </li>
+    </ul>
+  </div>
+</section>

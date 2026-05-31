@@ -1,0 +1,138 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Context Window Budget for FE Tasks"
+description: "How to give AI coding assistants exactly the right context — and why pasting your whole file makes answers worse, not better."
+slug: context-window-budget
+track: agentic-ai
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Prompt hygiene
+schemaType: Article
+relatedCases:
+  - slug: paste-error-without-learning
+    title: Paste Error, Zero Learning (Anti-pattern)
+  - slug: mcp-host-client-server
+    title: "MCP: Host, Client, and Server Roles"
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The more you paste, the worse the answer</h2>
+  <div class="tone-junior">
+    <p>You have a bug on line 47 of a 400-line component. You select all, paste the entire file into the AI chat, and ask "what's wrong?" The model gives you a generic answer — or worse, starts suggesting a refactor. You try again with just the broken function and the error message. The model gives you an exact fix in one shot. Same model, same question, different context.</p>
+    <p>Context windows are not buckets you fill to the top for best results. The signal-to-noise ratio matters. The right context is surgical, not exhaustive.</p>
+  </div>
+  <div class="tone-mid">
+    <p>AI models have a finite context window (32k–200k tokens depending on model). Every token you use on irrelevant file content is a token not available for chain-of-thought reasoning, tool output, or conversation history. More critically: retrieval quality degrades as the window fills with low-relevance content.</p>
+    <p>The "lost in the middle" effect (Liu et al., 2023) showed GPT-4's recall for facts dropped significantly when those facts were placed in the middle of long contexts. Relevant information buried in a file dump is harder to retrieve than the same information presented alone.</p>
+  </div>
+  <div class="tone-staff">
+    <p>In agentic pipelines, context budget management is a first-class architectural concern. Multi-turn conversations, tool call histories, and retrieved documents all consume the window. Reserve headroom by design:</p>
+    <ul>
+      <li><strong>System prompt</strong>: 2–8k tokens (fixed)</li>
+      <li><strong>Retrieved context</strong>: 8–20k tokens (dynamic, RAG output)</li>
+      <li><strong>Conversation history</strong>: grows per turn — summarize or truncate old turns</li>
+      <li><strong>Chain-of-thought reasoning</strong>: 2–8k for complex tasks</li>
+      <li><strong>Tool outputs</strong>: variable — truncate long outputs</li>
+    </ul>
+    <p>For single-shot code tasks, the principle is simpler: send the minimum sufficient context. Error + stack trace + relevant function + interface types = correct answer 80% of the time.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>What to include — and what to leave out</h2>
+  <div class="tone-junior">
+    <p><strong>Always include:</strong></p>
+    <ul>
+      <li>The exact error message and stack trace</li>
+      <li>The function or component where the error occurs (not the whole file)</li>
+      <li>What you expected to happen</li>
+      <li>What you tried</li>
+    </ul>
+    <p><strong>Usually skip:</strong></p>
+    <ul>
+      <li>Full package.json or tsconfig.json (unless the question is about config)</li>
+      <li>Unrelated components, utilities, or styles</li>
+      <li>Comments and documentation inside the pasted code</li>
+      <li>Boilerplate and imports that aren't relevant to the error</li>
+    </ul>
+  </div>
+  <div class="tone-mid">
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Low-signal context: 400-line file dump
+// Model has to search for the bug in noise
+
+// ✅ High-signal context: targeted excerpt
+// Error: "Cannot read properties of undefined (reading 'map')"
+// Stack: ProductList.tsx:47
+
+function ProductList({ products }) {
+  return (
+    &lt;ul&gt;
+      {products.map(p =&gt; &lt;li key={p.id}&gt;{p.name}&lt;/li&gt;)} {/* line 47 */}
+    &lt;/ul&gt;
+  );
+}
+
+// Called from: Dashboard.tsx — products comes from useProducts() hook
+// useProducts returns: { data, isLoading, error } from React Query
+// Question: why is products undefined on first render?</code></pre>
+    <p>This context is 12 lines — enough for the model to diagnose that <code>products</code> is <code>undefined</code> before React Query resolves, and suggest <code>products ?? []</code> as a default.</p>
+  </div>
+  <div class="tone-staff">
+    <p>For agentic tasks (not single-shot debugging), context assembly should be programmatic:</p>
+    <ul>
+      <li><strong>Embedding search</strong> — retrieve the N most-relevant chunks by cosine similarity to the task description</li>
+      <li><strong>Re-ranking</strong> — a second pass (cross-encoder or LLM-based) to reorder retrieved chunks by actual relevance</li>
+      <li><strong>Summarization</strong> — compress long files to summaries before including them (file structure + exported API surface, not implementation)</li>
+      <li><strong>Instruction position</strong> — put the most important instructions at the start or end of the context, not in the middle, to exploit positional recall</li>
+    </ul>
+    <p>The cost of context is not just tokens: it's latency (more tokens = slower TTFT) and quality (signal dilution). Design for minimum sufficient context as a hard constraint.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: overloaded vs curated context</h2>
+  <div class="tone-junior"><p>The "Overloaded" mode pastes a full 300-line component to ask about a 5-line bug. Watch the model's answer quality. The "Curated" mode sends the same question with just the relevant excerpt. Compare the specificity of the answers.</p></div>
+  <div class="tone-mid"><p>Count the tokens in each mode. The overloaded context uses ~2,400 tokens; the curated context uses ~180 tokens — 13× less. The answer quality is equal or better because the model isn't distracted by irrelevant code.</p></div>
+  <div class="tone-staff"><p>This simulates the retrieval degradation effect: in the overloaded context, the bug is on line 47 of 300. In a real 128k window, burying the relevant code in the middle of a large context produces exactly this answer quality difference.</p></div>
+
+  <section class="case-demo" aria-label="Try it: overloaded vs curated context" data-required="true" data-demo-type="toggle" data-demo-slug="context-window-budget">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Overloaded — file dump</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Curated — targeted context</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Curated — targeted context</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Send the error, the relevant function, and what you expected — not the whole file. 20 lines beats 400 lines for debugging tasks.</div>
+        <div class="tone-mid">Context window quality degrades with noise. The signal-to-noise ratio of your context directly affects answer specificity — more is not better.</div>
+        <div class="tone-staff">In agentic pipelines, budget context by role: system prompt, retrieved docs, history, reasoning, tool output. Reserve headroom. Overfilling the window degrades recall on middle-positioned content.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Before pasting, ask: "does the model need this to answer my question?" If not, remove it.</div>
+        <div class="tone-mid">Use embedding search + re-ranking for programmatic context assembly in pipelines — don't stuff all relevant files, rank and trim to the top N chunks.</div>
+        <div class="tone-staff">Position matters: critical instructions and key facts belong at the start or end of the context window — not buried in the middle where recall degrades ("lost in the middle" effect).</div>
+      </li>
+    </ul>
+  </div>
+</section>

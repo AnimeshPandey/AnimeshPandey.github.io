@@ -1,0 +1,36 @@
+{
+  "slug": "reduced-motion-respect",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "About 25% of iPhone users have Reduce Motion enabled. If your animations ignore it, you're running uninvited motion for millions of users.",
+      "mid": "The safe-by-default pattern wraps animation in prefers-reduced-motion: no-preference. Motion is opt-in — users who haven't set the preference still get it.",
+      "staff": "WCAG 2.1 SC 2.3.3 is AAA, but SC 2.3.1 (Three Flashes) is AA — flashing animations above 3Hz can trigger seizures. prefers-reduced-motion alone doesn't protect against 2.3.1."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The broken version has full animation with no media query check. The fixed version uses the no-preference guard so animation only runs when reduce motion is not set.",
+      "mid": "Notice that the fixed version keeps the loading state visible — just without the shimmer animation. Functional information is preserved; decorative motion is removed.",
+      "staff": "In JavaScript-driven animation (GSAP, Framer Motion), check window.matchMedia('(prefers-reduced-motion: reduce)').matches before starting animations — not just CSS."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I added a CSS parallax hero to a project. A user with vestibular sensitivity reported it caused dizziness. One media query fixed it — I never skip this check now.",
+      "mid": "Skeleton shimmers are the most commonly-missed reduce-motion violation. They look subtle but they loop continuously — exactly what vestibular users set the preference to avoid.",
+      "staff": "Framer Motion's AnimatePresence and animation props accept a 'reduced-motion' mode. Libraries that don't have this require manual window.matchMedia checks."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're honouring the OS 'reduce motion' setting in CSS. It's one media query that prevents real physical harm for users with vestibular conditions.",
+        "mid": "This case covers prefers-reduced-motion — the two strategies for handling it, the safe-by-default animation pattern, and what to keep vs remove under reduce motion.",
+        "staff": "We're covering WCAG motion requirements, the no-preference guard pattern, and JavaScript animation library integration for prefers-reduced-motion."
+      }
+    ]
+  }
+}

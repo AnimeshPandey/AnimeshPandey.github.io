@@ -1,0 +1,36 @@
+{
+  "slug": "motion-safe-fallback",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Use @media (prefers-reduced-motion: no-preference) to wrap animations — they only run when the OS reports no motion preference. That's the safe default.",
+      "mid": "The two strategies: (1) wrap all motion in no-preference — conservative, motion is off by default; (2) write animations normally, override in reduce — motion is on by default, off when requested. Strategy 2 is more common but requires comprehensive reduce overrides.",
+      "staff": "WCAG 2.1 SC 2.3.3 (AAA): animations triggered by interaction can be disabled. SC 2.3.1 (AA): nothing flashes more than 3 times per second. prefers-reduced-motion is the CSS implementation path for 2.3.3."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle between 'No guard' (always animates) and 'Motion safe' (respects OS preference). If your OS has reduce-motion on, the safe version shows a clean crossfade instead of the slide animation.",
+      "mid": "In the fixed version, the animation is in a no-preference query — it literally doesn't run if the preference is set. No opacity hack, no JavaScript — just the media query guard.",
+      "staff": "The reduce override pattern: define animations unconditionally, then target @media (prefers-reduced-motion: reduce) to override with instant transitions. This works but requires discipline — every animation needs a reduce override. The no-preference pattern avoids the maintenance burden."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "A user with vestibular disorder reported that our app's page transition made them dizzy. They had reduced motion on in their OS. Our animations ignored it completely. A 4-line fix with no-preference media query resolved it.",
+      "mid": "The most common miss I see: hero section parallax that ignores prefers-reduced-motion. Parallax is one of the most nauseating effects for vestibular disorder users. It's also one of the easiest to disable with a no-preference guard.",
+      "staff": "An estimated 35% of users have vestibular disorders to some degree. The prevalence of macOS/iOS reduce-motion OS setting usage is ~30% among users with accessibility settings turned on. This is not a niche: motion sensitivity affects a significant portion of your audience."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're learning how to make animations respectful — by wrapping them in a media query that only runs them when users are OK with motion.",
+        "mid": "This case covers prefers-reduced-motion in depth: the no-preference vs reduce strategies, the WCAG requirements, and what to do with parallax and page transitions.",
+        "staff": "We're covering the two CSS strategies with their trade-offs, WCAG 2.1 SC 2.3.3, vestibular disorder prevalence, and the maintenance argument for the no-preference pattern."
+      }
+    ]
+  }
+}

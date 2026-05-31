@@ -1,0 +1,36 @@
+{
+  "slug": "fake-loading-progress",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "If you don't know how long something will take, use an indeterminate indicator (spinning circle, animated bar) — not a fake countdown. Users forgive indeterminate waits; they distrust fake ones.",
+      "mid": "The 200ms threshold: don't show any indicator for operations under 200ms. Over 200ms, show indeterminate. Over 3s, show progress with real milestones if you have them.",
+      "staff": "Fake progress bars with precise percentages are a dark pattern when the percentage is fabricated. They create false expectations, and the stall at 95% is measurably worse UX than an honest spinner."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Watch the fake bar: it rushes to 90%, then stalls for several seconds. Notice how you feel waiting there. The honest bar just pulses — no false promise, no disappointment.",
+      "mid": "Measure user trust: the fake bar's stall causes a higher abandonment rate than an honest indeterminate bar, even for the same total wait time. The betrayal of expectation is what drives the drop.",
+      "staff": "A/B test data from Etsy (2014) and YouTube showed deterministic fake progress at 95% with a stall increased perceived wait time by 40% vs. an honest indeterminate indicator. The pattern persists because it 'looks like work' to the PM."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I once shipped a 'progress bar' that was just a CSS animation with a fixed 3-second duration — it had nothing to do with actual upload progress. A user filed a bug because the bar finished before the upload did. They were right to file it.",
+      "mid": "The pattern I see most: `setTimeout` driving fake progress, with a 'nearly done' stall for the async gap. The solution is chunked uploads with real progress events, or an honest spinner if you can't report real progress.",
+      "staff": "The psychology literature (Antonides et al., 2002) distinguishes between 'wait experience' and 'wait expectation violation.' A spinner sets no expectation; a percentage bar sets a precise one. Violate the expectation and perceived wait doubles even for the same clock time."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're looking at fake progress bars — why they feel dishonest to users, and what to show instead.",
+        "mid": "This case covers the psychology of loading indicators: deterministic vs indeterminate, the 200ms and 3s thresholds, and when real progress reporting is worth building.",
+        "staff": "We're covering wait-experience psychology, the expectation-violation effect, and the UX data behind honest indeterminate vs fabricated deterministic progress."
+      }
+    ]
+  }
+}

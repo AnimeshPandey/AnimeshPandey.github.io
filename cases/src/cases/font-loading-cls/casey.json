@@ -1,0 +1,36 @@
+{
+  "slug": "font-loading-cls",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Font-induced CLS is invisible until you see the filmstrip. Run Lighthouse on Slow 4G — the filmstrip will show the FOUT moment clearly.",
+      "mid": "font-display: swap is in every Google Fonts embed by default. It prevents invisible text but creates CLS — the metric-matched fallback is the fix.",
+      "staff": "CrUX source attribution in Chrome 108+ labels layout-shift sources. 'text' source attribution with high CLS on above-fold content = font-induced shift."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The broken version is like most sites using Google Fonts — font-display: swap with no fallback match. The fixed version uses metric overrides to make the swap invisible.",
+      "mid": "The difference in Lighthouse score between the two versions is typically 0.25+ CLS points — the difference between 'poor' and 'good' in Core Web Vitals.",
+      "staff": "screenspan.net/fallback is the fastest way to get metric values for Google Fonts. For self-hosted, fontpie CLI does the same calculation."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "The first CLS bug I debugged was a hero headline that jumped 40px when the font loaded. Metric-matched fallback fixed it without changing the visual design at all.",
+      "mid": "font-display: optional is underused — for decorative fonts that aren't critical to the experience, not swapping at all is often the best UX outcome.",
+      "staff": "size-adjust, ascent-override, and descent-override are CSS spec additions specifically designed for this use case. They landed in all major browsers in 2021-2022."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're fixing the headline that jumps when the page loads. Fonts are a hidden source of layout shift — and there's a clean CSS fix.",
+        "mid": "This case covers font-induced CLS — why font-display: swap causes layout shift, and how metric-matched fallback fonts make the swap invisible.",
+        "staff": "We're covering font-display modes, the metric override properties, tooling for calculating values, and CrUX source attribution for measuring font CLS in production."
+      }
+    ]
+  }
+}

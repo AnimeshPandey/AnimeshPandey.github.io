@@ -1,0 +1,36 @@
+{
+  "slug": "static-site-zero-backend",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A portfolio site, a docs site, or a blog doesn't need a server. HTML + CSS + JS files on a CDN is an architecture — and it's faster, cheaper, and more reliable than spinning up a Node server.",
+      "mid": "The decision matrix: static (11ty, Astro, Hugo) if content doesn't depend on the request; hybrid (Next.js, Remix ISR) if some routes are dynamic; full server if auth or real-time state is required for most pages.",
+      "staff": "Jamstack CDN delivery has no cold start, no scaling event, no server maintenance. The operational complexity is zero. The failure mode is cache invalidation — which is a solved problem for most CDNs (instant purge via API)."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The 'With Backend' demo shows a simple blog using an Express server — one 200ms round trip to get posts that never change. The 'Static' demo serves the same posts as pre-built HTML. Zero round trips.",
+      "mid": "Open the Network tab. Backend version: 200ms+ to first byte (server round trip). Static version: 15–40ms to first byte (CDN edge). Same content, same data — architecture is the difference.",
+      "staff": "Measure TTFB. The static version hits a CDN PoP 5–30ms from the user. The server version hits an origin region, adds route processing, and database lookup (even cached). For public content, static always wins on TTFB."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I migrated a company blog from a WordPress server to 11ty on Netlify. Monthly cost went from $40/month to $0. Page load time dropped from 3.2s to 0.8s. The only trade: I had to rebuild on content changes — which Netlify does automatically on git push.",
+      "mid": "The pattern that catches teams: 'we need dynamic content' — but it's just a contact form and an email. Netlify Forms, Formspree, or a single serverless function handles it. No full server needed.",
+      "staff": "The staffing/ops argument: a static site has zero deployment risk (rollback is a CDN cache invalidation), zero scaling events (CDN absorbs HN front-page traffic), and zero OS/runtime patching. For content sites, this is the right architecture until proven otherwise."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're looking at when you don't need a backend at all — and how a static site on a CDN is faster, cheaper, and more reliable than a server for most content.",
+        "mid": "This case covers the static vs dynamic architecture decision, when Jamstack is the right call, and what serverless functions handle when you need just a little dynamism.",
+        "staff": "We're covering the TTFB math, the CDN delivery model, cache invalidation patterns, and the operational cost argument for defaulting to static until you genuinely need a server."
+      }
+    ]
+  }
+}

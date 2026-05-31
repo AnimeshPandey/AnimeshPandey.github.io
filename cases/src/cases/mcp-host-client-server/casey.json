@@ -1,0 +1,36 @@
+{
+  "slug": "mcp-host-client-server",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "MCP has three separate roles. You probably write the Server (it exposes tools). The model runs in the Host. The Client is the protocol adapter between them. Knowing which role you're building stops a lot of confusion.",
+      "mid": "The server is stateless and declarative: it lists tools/resources and handles JSON-RPC calls. It has no knowledge of the model or conversation. The host manages the model and decides which servers to connect.",
+      "staff": "MCP uses JSON-RPC 2.0 over stdio (local) or HTTP+SSE (remote). The transport is pluggable. The capability negotiation (initialize → initialized handshake) determines which protocol features both sides support. This is where version mismatches surface."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The animation shows a tool call flowing: Host sends the message to the model → model emits a tool_use block → Client routes to the right Server → Server returns the result → Client passes result back to Host → Host sends to model.",
+      "mid": "Focus on the Client layer in the animation. It's doing protocol translation: model's tool_use format → JSON-RPC request to server → JSON-RPC response → model's tool_result format. You rarely write Client code; frameworks provide it.",
+      "staff": "The sampling flow (host → client → server → client → host) is the bidirectional case. For resource subscriptions, servers can push updates to clients. This is where MCP diverges from a simple REST API: servers have agency to initiate communication."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "When I first read the MCP docs, I thought I needed to build all three. I only needed to build the Server. The Host was Claude Desktop; the Client was the MCP SDK. Server = your tools and data. That's the part you own.",
+      "mid": "Building an MCP server for an internal knowledge base: the server exposes two tools (search_docs and get_doc) and one resource (docs://index). The host (Claude Desktop) discovers them at startup via the initialize handshake. Users in Claude can ask questions that route through to real docs.",
+      "staff": "MCP's security model: servers are process-isolated from the host. A server cannot read the model's context, only respond to explicit tool calls. This is intentional — it limits the blast radius of a compromised or malicious server. The host controls which servers are connected and what permissions they have."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're mapping out MCP — the Model Context Protocol — and its three roles: Host, Client, and Server. Knowing which is which tells you what you need to build.",
+        "mid": "This case covers the MCP architecture: how the three roles separate concerns, the JSON-RPC transport, capability negotiation, and where you as a developer typically operate.",
+        "staff": "We're covering the full MCP role model, the initialize handshake, bidirectional communication via sampling and resource subscriptions, the security isolation model, and the tooling ecosystem."
+      }
+    ]
+  }
+}

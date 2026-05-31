@@ -1,0 +1,359 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: Closures and Stale State in Handlers
+description: "Why your event handler reads an old value even after state updates — and the three patterns that fix it for good."
+slug: closure-stale-state
+track: javascript
+readMin: 10
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Closure
+schemaType: Article
+relatedCases:
+  - slug: event-loop-one-thread
+    title: "The Event Loop: One Thread, Many Queues"
+  - slug: key-prop-identity
+    title: Keys Are Identity, Not Index
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The counter that always says 1</h2>
+
+  <div class="tone-junior">
+    <p>
+      You build a click counter. You click the button 5 times quickly. The count says 1.
+      You add a console.log — it prints the right number inside the handler. But the state
+      update only shows the last value you started with. What's happening?
+    </p>
+    <p>
+      You've hit a <strong>stale closure</strong>. Your event handler captured an old version
+      of <code>count</code> when it was created — and every click is updating from that
+      same old starting point instead of the latest value.
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      Stale closures appear in React hooks, setInterval callbacks, event listeners added once
+      but reading dynamic state, and async functions that run after state has already changed.
+      The root is always the same: the function captured a variable at definition time, not
+      at call time.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      The closure is working correctly — it's a design decision that closures capture bindings
+      at creation time, not lazily. The bug is in assuming that a closure over a <code>let</code>
+      binding in a React component's render scope stays fresh across renders. It doesn't.
+      Each render creates a new scope; old closures hold the old scope's values.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>What a closure actually captures</h2>
+
+  <div class="tone-junior">
+    <p>
+      A closure is a function that remembers the variables from where it was created.
+      Think of it as a function carrying a backpack of variables.
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>function makeGreeter(name) {
+  return function greet() {
+    console.log('Hello, ' + name); // captured 'name'
+  };
+}
+const greetAlice = makeGreeter('Alice');
+greetAlice(); // "Hello, Alice" — always, even if nothing called 'Alice' exists anymore</code></pre>
+    <p>
+      The backpack contains a snapshot of <code>name</code> at the moment <code>makeGreeter</code>
+      ran. That's fine for a greeter. The problem comes when the backpack should have today's
+      value, but it still holds yesterday's.
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      In React, each render is a function call. <code>useState</code> returns the current value
+      for this render. An event handler created in this render closes over this render's values.
+      If that handler is called in a future render (e.g., from a setTimeout, setInterval, or
+      an unremoved event listener), it reads the past render's values.
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCount(count + 1); // ❌ captures count from first render — always 0 + 1 = 1
+    }, 1000);
+    return () => clearInterval(id);
+  }, []); // empty deps — only runs once, captures count = 0 forever
+}</code></pre>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      The eslint-plugin-react-hooks exhaustive-deps rule exists specifically to surface this pattern.
+      When you suppress it with <code>// eslint-disable</code>, you are choosing to accept a stale
+      closure — sometimes intentionally (stable refs), sometimes by mistake.
+    </p>
+    <p>
+      The two canonical solutions operate at different layers:
+      <em>functional updates</em> break the closure dependency entirely;
+      <em>refs</em> provide a mutable container that closures can always read fresh.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story — bad pattern ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Three stale closure traps</h2>
+
+  <div class="tone-junior">
+    <p><strong>Trap 1: setInterval with empty deps</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ count is always 0 inside the interval
+useEffect(() => {
+  setInterval(() => setCount(count + 1), 1000);
+}, []); // captured count = 0, never updates</code></pre>
+
+    <p><strong>Trap 2: async handler reading stale state</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Clicks during the fetch read the count from when the handler was created
+async function handleClick() {
+  await fetch('/api/save');
+  console.log(count); // stale — not the count at save time
+}</code></pre>
+
+    <p><strong>Trap 3: addEventListener without cleanup</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Each render adds a new listener; old ones hold old closures
+useEffect(() => {
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') submit(formData); // stale formData
+  });
+}); // no cleanup, no deps</code></pre>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      Each trap shares the same root: a function created in one render scope is called in a
+      context where state has moved forward. The function's backpack still holds the old state.
+    </p>
+    <p>
+      The eslint exhaustive-deps warning on trap 1 is: <em>React Hook useEffect has a missing
+      dependency: 'count'. Either include it or remove the dependency array.</em> Adding count to
+      deps "fixes" the lint warning but creates a new interval on every count change — a different
+      bug.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      Trap 3 is common in legacy code migrated from class components, where <code>this.state</code>
+      was always read fresh. Function components don't have <code>this</code> — each render's
+      function scope is its own frame on the call stack, not a shared mutable object.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story — good pattern ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Three clean fixes</h2>
+
+  <div class="tone-junior">
+    <p><strong>Fix 1: functional state update (breaks the closure dependency)</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ The updater function receives the latest state as an argument
+useEffect(() => {
+  const id = setInterval(() => {
+    setCount(prev => prev + 1); // prev is always current — no closure on count
+  }, 1000);
+  return () => clearInterval(id);
+}, []); // safe with empty deps now</code></pre>
+
+    <p><strong>Fix 2: useRef for latest value access</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ Ref is mutable — closures always see the latest .current
+const countRef = useRef(count);
+useEffect(() => { countRef.current = count; });
+
+async function handleClick() {
+  await fetch('/api/save');
+  console.log(countRef.current); // fresh — always the latest count
+}</code></pre>
+
+    <p><strong>Fix 3: proper cleanup with correct deps</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ Add dep + cleanup — handler recreated when formData changes
+useEffect(() => {
+  const handler = (e) => {
+    if (e.key === 'Enter') submit(formData); // fresh formData
+  };
+  window.addEventListener('keydown', handler);
+  return () => window.removeEventListener('keydown', handler);
+}, [formData]); // re-run when formData changes</code></pre>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      Rule of thumb for choosing:
+    </p>
+    <ul>
+      <li>If you only need to <em>update</em> state based on previous state → <strong>functional update</strong></li>
+      <li>If you need to <em>read</em> state inside an async or long-lived callback → <strong>ref</strong></li>
+      <li>If the dependency is an input or callback prop → <strong>exhaustive deps + cleanup</strong></li>
+    </ul>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      A fourth pattern — <code>useEffectEvent</code> (React 19 / experimental) — creates
+      an event handler that always reads the latest state without being a dependency. It
+      formalises the "ref to latest callback" pattern into a first-class primitive. Watch
+      for it landing in stable React.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: stale vs fresh counter</h2>
+
+  <div class="tone-junior">
+    <p>Click "Broken" and rapidly click the +1 button many times — you'll see the stale closure effect. Switch to "Fixed" and the same fast clicking works correctly.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken version uses <code>setCount(count + 1)</code>; the fixed version uses <code>setCount(prev => prev + 1)</code>. That one word — "prev" — breaks the closure dependency.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Under the hood: React batches state updates in event handlers. The broken version reads the same <code>count</code> value for every batched call. The functional updater queues correctly regardless of batching.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Try it: stale vs fresh counter"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="closure-stale-state">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> Shows a click counter with stale closure (broken) vs functional update (fixed).</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Broken — stale closure
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Fixed — functional update
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — functional update</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>React's exhaustive-deps rule is your best friend</h2>
+
+  <div class="tone-junior">
+    <p>
+      Install <code>eslint-plugin-react-hooks</code> (it ships with Create React App and Vite
+      React templates). It warns you about missing dependencies. Don't suppress the warnings
+      — they're almost always pointing at a real bug.
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      The exhaustive-deps rule tells you when your closure captures a value it didn't declare
+      as a dependency. Three valid responses:
+    </p>
+    <ol>
+      <li>Add the dep (re-run effect when it changes)</li>
+      <li>Use a functional updater (remove the dep need entirely)</li>
+      <li>Use a ref (mutable escape hatch for stable callbacks)</li>
+    </ol>
+    <p>Suppressing with <code>// eslint-disable-next-line</code> is almost always wrong.</p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      <code>useEffectEvent</code> (RFC #220, available behind <code>experimental_useEffectEvent</code>
+      in React 18.3) resolves the long-standing tension between exhaustive deps and stable
+      callback identity. It wraps a function so it always reads fresh state while remaining
+      stable as a reference:
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// React 19 (experimental_useEffectEvent in 18.3)
+import { experimental_useEffectEvent as useEffectEvent } from 'react';
+
+function ChatRoom({ roomId, theme }) {
+  const onConnected = useEffectEvent(() => {
+    showNotification('Connected!', theme); // reads latest theme, stable identity
+  });
+
+  useEffect(() => {
+    const connection = createConnection(roomId);
+    connection.on('connected', onConnected); // safe — onConnected is stable
+    return () => connection.disconnect();
+  }, [roomId]); // theme NOT in deps, but always reads latest
+}</code></pre>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+<section class="case-chapter case-references" data-chapter="references">
+  <h3>References</h3>
+
+  <div class="tone-mid">
+    <ol>
+      <li>Dan Abramov, <a href="https://overreacted.io/making-setinterval-declarative-with-react-hooks/" rel="noopener noreferrer">Making setInterval Declarative with React Hooks</a>.</li>
+      <li>React docs — <a href="https://react.dev/learn/separating-events-from-effects" rel="noopener noreferrer">Separating Events from Effects</a>.</li>
+    </ol>
+  </div>
+
+  <div class="tone-staff">
+    <ol>
+      <li>Dan Abramov, <em>Making setInterval Declarative with React Hooks</em>, Overreacted.</li>
+      <li>React RFC #220 — <code>useEvent</code> (became <code>useEffectEvent</code>).</li>
+      <li>React docs — <a href="https://react.dev/reference/react/experimental_useEffectEvent" rel="noopener noreferrer">experimental_useEffectEvent</a>.</li>
+      <li>MDN — <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures" rel="noopener noreferrer">Closures</a>.</li>
+    </ol>
+  </div>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A closure captures the value of a variable when the function is created — not when it's called.</div>
+        <div class="tone-mid">Each React render creates a new scope; closures over state from one render don't auto-update when state changes in a later render.</div>
+        <div class="tone-staff">The stale closure pattern is specifically: function created in render N holds render N's state, called in render N+M — always reading N.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Use <code>setCount(prev =&gt; prev + 1)</code> instead of <code>setCount(count + 1)</code> when updating state in async or interval callbacks.</div>
+        <div class="tone-mid">Functional state updates break the closure dependency — the updater receives the latest state as its argument regardless of when it runs.</div>
+        <div class="tone-staff">useRef is the stable mutable container for closures that need to read (not update) latest state — it survives re-renders without triggering them.</div>
+      </li>
+      <li>
+        <div class="tone-junior">The exhaustive-deps ESLint rule is almost always right — don't suppress it without understanding why.</div>
+        <div class="tone-mid">Three valid responses to a missing-deps warning: add the dep, use functional update, or use a ref. Suppressing is rarely the right answer.</div>
+        <div class="tone-staff">useEffectEvent (React 19) formalises the "ref to latest callback" pattern — watch for it stabilising as the canonical solution to this class of bug.</div>
+      </li>
+    </ul>
+  </div>
+</section>

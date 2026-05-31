@@ -1,0 +1,129 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "@media (prefers-reduced-motion)"
+description: "Two strategies for respecting OS motion preferences in CSS — and why the no-preference guard pattern is easier to maintain than the reduce override pattern."
+slug: motion-safe-fallback
+track: animation-motion
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Progressive motion
+schemaType: Article
+relatedCases:
+  - slug: reduced-motion-respect
+    title: "Respecting prefers-reduced-motion"
+  - slug: focus-visible-not-outline-none
+    title: ":focus-visible, Not outline: none"
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The animation that makes users sick</h2>
+  <div class="tone-junior">
+    <p>A user with a vestibular disorder visits your site. Your hero section has a parallax scroll effect — layers moving at different speeds as the page scrolls. They've turned on "Reduce Motion" in their OS settings, but your CSS ignores it. Within seconds, they're dizzy. They close the tab.</p>
+    <p>The fix is four lines of CSS. The <code>prefers-reduced-motion</code> media query reads the OS setting and lets you serve different styles to users who've asked for less motion. Ignoring it isn't a UX choice — it's an accessibility failure.</p>
+  </div>
+  <div class="tone-mid">
+    <p>An estimated 35% of adults experience some degree of vestibular disorder. The macOS/iOS "Reduce Motion" accessibility setting is the user's opt-out signal. WCAG 2.1 SC 2.3.3 (Level AAA) requires that animations triggered by interaction can be disabled. The <code>prefers-reduced-motion</code> media query is the CSS mechanism for honoring both the user preference and the WCAG criterion.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The important nuance: <code>prefers-reduced-motion: reduce</code> means "the user has requested reduced motion," not "no motion at all." A subtle crossfade replacing a slide animation is typically acceptable; a full freeze of all animation is overly cautious. The spec intent is to reduce vestibular-triggering motion (parallax, rapid transforms, spinning) while allowing gentle transitions that aid comprehension.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Two strategies — pick one and be consistent</h2>
+  <div class="tone-junior">
+    <p><strong>Strategy 1: no-preference guard (conservative)</strong> — animations only run when the user has not set a motion preference. Motion is off by default; the OS preference to "no preference" enables it.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ✅ Strategy 1: only animate when no preference is set */
+@media (prefers-reduced-motion: no-preference) {
+  .hero {
+    animation: slideIn 0.6s ease-out;
+  }
+  .card {
+    transition: transform 0.2s ease;
+  }
+}</code></pre>
+    <p><strong>Strategy 2: reduce override (progressive)</strong> — animations are on by default; the <code>reduce</code> preference disables them. Requires a comprehensive override for every animation.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Strategy 2: animate normally, override in reduce */
+.hero {
+  animation: slideIn 0.6s ease-out;
+}
+.card {
+  transition: transform 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero { animation: none; }
+  .card { transition: none; }
+  /* must remember every animated element */
+}</code></pre>
+  </div>
+  <div class="tone-mid">
+    <p>Strategy 1 (no-preference guard) is easier to maintain: animations are inherently opt-in, so you never accidentally ship a new animation without the reduced-motion protection. Strategy 2 (reduce override) requires discipline — every new animation needs a corresponding override in the reduce block.</p>
+    <p>For large codebases, a single global override can cover most cases:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Nuclear option: disable all transitions + animations in reduce */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}</code></pre>
+    <p>This is safe as a starting point but too aggressive for production — it also disables helpful transitions like focus rings that are not motion-sensitive.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The WCAG requirement breakdown:</p>
+    <ul>
+      <li><strong>SC 2.3.1 (AA)</strong>: nothing flashes more than 3 times per second (photosensitive seizures)</li>
+      <li><strong>SC 2.3.3 (AAA)</strong>: animations triggered by interaction can be disabled unless essential</li>
+    </ul>
+    <p>Parallax effects are especially problematic for vestibular disorder users because they create a sense of depth that conflicts with physical stillness — the brain's spatial model is contradicted by the visual signal. Any CSS that creates depth parallax through <code>transform: translateZ</code>, layered background scroll rates, or multi-layer fixed positioning should be gated behind <code>prefers-reduced-motion: no-preference</code>.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: motion without guard vs motion safe</h2>
+  <div class="tone-junior"><p>"No guard" shows a slide animation that runs regardless of your OS motion setting. "Motion safe" wraps the animation in a no-preference query — if your OS has Reduce Motion on, no animation plays. Toggle your OS setting (System Preferences → Accessibility → Motion) to see the difference.</p></div>
+  <div class="tone-mid"><p>In the motion-safe version, the CSS media query is doing the work — no JavaScript, no class toggling, no matchMedia listener. The browser reads the OS preference at paint time and applies the right styles. This is the correct default approach.</p></div>
+  <div class="tone-staff"><p>For JavaScript-driven animations (Web Animations API, Framer Motion, GSAP), use <code>window.matchMedia('(prefers-reduced-motion: reduce)').matches</code> to read the preference and conditionally skip the animation. Add a change listener to respond to OS preference changes mid-session.</p></div>
+
+  <section class="case-demo" aria-label="Try it: motion without guard vs motion safe" data-required="true" data-demo-type="toggle" data-demo-slug="motion-safe-fallback">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">No guard — always animates</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Motion safe — respects OS</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Motion safe — respects OS</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Wrap CSS animations in @media (prefers-reduced-motion: no-preference) { } so they only run when the user hasn't set a motion preference. Four lines protects every user who needs it.</div>
+        <div class="tone-mid">Two strategies: no-preference guard (animations opt-in, easier to maintain) vs reduce override (animations on by default, requires comprehensive overrides). Pick one and apply it consistently.</div>
+        <div class="tone-staff">WCAG 2.1 SC 2.3.3 (AAA) requires interaction-triggered animations can be disabled. Parallax is the highest-risk animation type for vestibular disorders — always gate it behind no-preference.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Test with the OS "Reduce Motion" setting on — not just off. Your browser DevTools can emulate it (Rendering panel → Emulate CSS media feature).</div>
+        <div class="tone-mid">For JS animations (GSAP, Framer Motion, Web Animations API), check window.matchMedia('(prefers-reduced-motion: reduce)').matches and skip or simplify the animation accordingly.</div>
+        <div class="tone-staff">Reduced motion means "reduce vestibular-triggering motion" — not "no animation at all." Gentle crossfades and opacity transitions are appropriate in reduce mode; translates, scales, rotates, and parallax are not.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+{
+  "slug": "paste-error-without-learning",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Before you paste an error into AI, write one sentence: what you think is wrong. That single step forces understanding and makes the model's answer 10× more useful.",
+      "mid": "The anti-pattern: paste error → accept fix → paste next error. The professional pattern: read the error → hypothesize → ask targeted question → verify the fix makes sense.",
+      "staff": "Dependency on AI for error resolution without understanding creates brittle systems. When the model is wrong (hallucination, wrong context), developers who didn't understand the error can't detect the bad fix."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Broken mode: paste a raw stack trace — watch the model give a generic fix. Fixed mode: add a one-sentence hypothesis — watch the answer become specific and correct.",
+      "mid": "The model in fixed mode asks a follow-up question. That's the signal you gave enough context to enter a diagnostic conversation rather than a copy-paste loop.",
+      "staff": "Notice the broken fix introduces a subtle regression — the model patched the symptom, not the root cause. That's the core failure mode: AI optimizes for the visible error, not for system correctness."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I watched a junior dev fix the same 'Cannot read properties of undefined' error three times in one hour by pasting it into ChatGPT each time. Adding a null check was never their idea — they just accepted what came back.",
+      "mid": "The best AI-assisted debugging sessions I've seen follow the rubber-duck pattern: describe the problem to yourself, then ask AI to validate your hypothesis. It's faster than open-ended 'fix this.'",
+      "staff": "This is fundamentally a cognitive load problem, not an AI problem. Accepting patches without comprehension is the same failure mode as copying StackOverflow answers. AI makes it faster — and therefore worse for learning unless you add the deliberate comprehension step."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're looking at the most common bad habit with AI coding assistants — pasting errors without actually understanding them.",
+        "mid": "This case covers the diagnosis-first pattern for AI-assisted debugging: how to ask better questions, read error messages intentionally, and avoid the paste-fix-repeat loop.",
+        "staff": "We're covering the cognitive dependency risk, the hypothesis-validation loop, and how to use AI as an amplifier of understanding rather than a replacement for it."
+      }
+    ]
+  }
+}

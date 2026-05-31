@@ -1,0 +1,36 @@
+{
+  "slug": "event-delegation-one-listener",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "If your table feels slow as rows are added, check the listener count. One listener on the parent handles every row — present, future, and dynamically added.",
+      "mid": "event.target.closest() is the key — it walks up from the clicked element and finds the row or button you care about, even if the click landed on a nested span.",
+      "staff": "In vanilla JS: delegation + data attributes (data-action, data-id) on elements is the clean pattern. Avoid checking className or tagName — data attributes are more explicit."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Try adding 200 rows in broken mode — see the slowdown? Now try fixed mode. Same rows, one listener, instant.",
+      "mid": "Check the Event Listeners panel in DevTools Elements tab. Broken: dozens of entries on rows. Fixed: one entry on the container.",
+      "staff": "The memory footprint difference is significant at 1000+ rows. Each DOM listener is a retained reference — per-row listeners on removed rows that weren't cleaned up are classic memory leaks."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I once profiled a dashboard that took 2 seconds to render 500 rows — 80% of the time was attaching click listeners. Delegation cut it to 50ms.",
+      "mid": "React developers sometimes add addEventListener manually per list item, not knowing React already delegates at the root. It adds listeners on top of React's own system.",
+      "staff": "Event delegation is also the pattern behind 'virtual list' click handling — rows are recycled DOM nodes, and a single delegated listener handles all of them."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're making large tables fast by using one event listener instead of one per row. It's called event delegation, and it's one of the most useful DOM patterns.",
+        "mid": "This case covers event delegation — how event bubbling makes it work, why closest() is the key primitive, and when not to use it.",
+        "staff": "We're covering the full delegation toolkit: closest, matches, focusin/focusout for non-bubbling events, and the React synthetic event system interaction."
+      }
+    ]
+  }
+}

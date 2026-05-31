@@ -1,0 +1,132 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "When Skeletons Beat Spinners (Product)"
+description: "The known-shape rule for skeleton screens — when they improve perceived performance and when they make it worse."
+slug: skeleton-vs-spinner-choice
+track: patterns-ux
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Perceived performance
+schemaType: Article
+relatedCases:
+  - slug: fake-loading-progress
+    title: Fake Progress Bars and Trust
+  - slug: lcp-not-hero-image
+    title: LCP Is Often Not the Hero Image
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The skeleton that makes loading feel slower</h2>
+  <div class="tone-junior">
+    <p>A skeleton screen replaced a spinner on a search results page. It showed four card-shaped gray boxes — but sometimes the search returned 0 results. The skeleton flashed for 1.2 seconds showing four cards, then replaced with "No results found." Users rated that experience as slower and more confusing than the spinner it replaced, even though the load time was identical.</p>
+    <p>Skeleton screens improve perceived performance by giving the brain a prediction to confirm. When the prediction is wrong — wrong number of items, wrong layout — the correction is cognitively jarring. The spinner would have been better.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The rule: skeletons work for <em>known-shape content</em>. A user profile always has an avatar, a name, and a bio — three elements, same every time. A skeleton for that is an accurate prediction. A feed with variable item counts, search with variable results, or any list that might return empty are unknown-shape content. Use a spinner.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The mechanism: skeleton screens exploit predictive coding in visual perception. The brain "pre-renders" the expected layout, and when actual content arrives and confirms the prediction, the perception is "fast." When content violates the prediction (different count, different layout), there's a mismatch event — cognitively similar to a layout shift — that degrades the perceived experience below baseline. Mismatched skeletons are measurably worse UX than spinners for the same load time.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The decision matrix</h2>
+  <div class="tone-junior">
+    <p><strong>Use a skeleton when:</strong></p>
+    <ul>
+      <li>You know exactly what's loading (a profile, an article, a settings panel)</li>
+      <li>The number of items is fixed or predictable</li>
+      <li>The layout won't shift when content arrives</li>
+    </ul>
+    <p><strong>Use a spinner when:</strong></p>
+    <ul>
+      <li>The count of results is unknown (search, filtered lists)</li>
+      <li>The content might be empty</li>
+      <li>You're loading after a user action (button press, form submit)</li>
+      <li>The layout changes significantly based on what loads</li>
+    </ul>
+  </div>
+  <div class="tone-mid">
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Skeleton for unknown-count results
+function SearchResults({ query }) {
+  if (isLoading) return &lt;SkeletonCards count={4} /&gt;; // wrong if results ≠ 4
+  if (results.length === 0) return &lt;EmptyState /&gt;;
+  return results.map(r =&gt; &lt;ResultCard key={r.id} {...r} /&gt;);
+}
+
+// ✅ Spinner for unknown-count results
+function SearchResults({ query }) {
+  if (isLoading) return &lt;Spinner label="Searching…" /&gt;;
+  if (results.length === 0) return &lt;EmptyState /&gt;;
+  return results.map(r =&gt; &lt;ResultCard key={r.id} {...r} /&gt;);
+}
+
+// ✅ Skeleton for known-shape profile
+function UserProfile({ userId }) {
+  if (isLoading) return &lt;ProfileSkeleton /&gt;; // always: avatar + name + bio
+  return &lt;Profile user={user} /&gt;;
+}</code></pre>
+    <p>The 200ms delay rule applies to both: don't flash any indicator for loads under 200ms. A short flash is more distracting than no indicator at all.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Implementation detail that teams miss: the 200ms delay for skeletons. Without it, fast network loads produce a brief skeleton flash that looks like a bug.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>function useDelayedLoading(isLoading, delay = 200) {
+  const [showLoader, setShowLoader] = useState(false);
+  useEffect(() =&gt; {
+    if (!isLoading) { setShowLoader(false); return; }
+    const id = setTimeout(() =&gt; setShowLoader(true), delay);
+    return () =&gt; clearTimeout(id);
+  }, [isLoading, delay]);
+  return showLoader;
+}</code></pre>
+    <p>React 18's <code>useTransition</code> and <code>Suspense</code> with a <code>delay</code> prop handle this pattern natively — the fallback only renders if the transition takes longer than the configured timeout.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: skeleton vs spinner for the same content</h2>
+  <div class="tone-junior"><p>Both modes load the same three product cards with a 1.2s delay. The skeleton mode shows gray card shapes before the content loads. The spinner mode shows a spinning circle. Notice how the skeleton feels faster even though the time is identical.</p></div>
+  <div class="tone-mid"><p>Now click the "Empty results" variant. The skeleton mode shows four cards, then collapses to an empty state — the prediction is wrong. The spinner mode goes directly from spinning to empty state. Which feels more correct?</p></div>
+  <div class="tone-staff"><p>The mismatch case (skeleton predicts 4, gets 0) demonstrates the expectation-violation effect. Measure user ratings for the same load time across: correct skeleton, wrong skeleton, and spinner. Wrong skeleton reliably scores below spinner.</p></div>
+
+  <section class="case-demo" aria-label="Try it: skeleton vs spinner" data-required="true" data-demo-type="toggle" data-demo-slug="skeleton-vs-spinner-choice">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Spinner — unknown shape</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Skeleton — known shape</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Skeleton — known shape</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:140px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Skeleton screens only work when you know the shape of what's loading. If the content might be empty or a different count, use a spinner instead.</div>
+        <div class="tone-mid">The known-shape rule: profiles, articles, settings panels → skeleton. Search results, filtered lists, any variable-count content → spinner.</div>
+        <div class="tone-staff">Mismatched skeletons (predicted layout ≠ actual content) are measurably worse than spinners for the same load time. The expectation violation effect compounds the wait experience.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Add a 200ms delay before showing any loading indicator — fast loads shouldn't flash a skeleton or spinner at all.</div>
+        <div class="tone-mid">In React 18+, Suspense with a timeout handles the 200ms delay natively. useTransition prevents the UI from flashing back to a loading state for fast async updates.</div>
+        <div class="tone-staff">The cognitive mechanism: skeletons exploit predictive coding — the brain pre-renders the expected layout. Correct predictions feel fast; violated predictions feel slower than no prediction at all. Match the skeleton to the actual content shape exactly, or don't use one.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+{
+  "slug": "horizontal-scroll-one-pixel",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The console snippet is your fastest tool: paste it in DevTools and it logs every element whose right edge goes past the viewport.",
+      "mid": "Don't add overflow-x: hidden to html or body — it silently breaks position: sticky on every element inside. Fix the source element instead.",
+      "staff": "Horizontal overflow in production is often introduced by a new image or SVG without max-width: 100%. Add this to your CI visual regression checks."
+    },
+    {
+      "chapter": "demo",
+      "junior": "See how one wide element creates a horizontal scrollbar for the whole page? That's why finding the culprit is more important than hiding the overflow.",
+      "mid": "min-width: 0 is the fix for flex children that overflow. The default min-width: auto prevents flex items from shrinking below their content width.",
+      "staff": "The fixed demo uses both max-width: 100% and min-width: 0 — these two properties address the two most common overflow mechanisms."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I once spent 30 minutes hunting a horizontal scrollbar on mobile. It was a 600px-wide SVG in a marketing section that had no viewBox. The console snippet found it in 3 seconds.",
+      "mid": "overflow-x: hidden on body is the most copied StackOverflow 'fix' — and it breaks sticky headers on the same page. The console snippet is always the right first step.",
+      "staff": "Min-width: 0 on flex children is the most commonly missing CSS in component library audits. It's a spec quirk that surprises even experienced CSS authors."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're hunting down that annoying horizontal scrollbar that shows up on mobile. One JS snippet will find the culprit in seconds.",
+        "mid": "This case covers horizontal overflow — the console debugging snippet, why overflow-x: hidden on body breaks sticky, and the CSS defaults that prevent this.",
+        "staff": "We're covering the full overflow debugging toolkit: getBoundingClientRect audit, min-width: 0 for flex, and CI integration to catch this before it ships."
+      }
+    ]
+  }
+}
