@@ -134,7 +134,7 @@
       }
 
       /* Triggers: hero CTA + header nav button */
-      ['resume-preview-trigger', 'nav-resume-preview'].forEach(function (id) {
+      ['resume-preview-trigger', 'nav-resume-preview', 'nav-resume-preview-mobile'].forEach(function (id) {
         var btn = document.getElementById(id);
         if (btn) btn.addEventListener('click', openModal);
       });

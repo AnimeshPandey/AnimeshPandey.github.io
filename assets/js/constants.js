@@ -23,6 +23,7 @@
 
     /* ── Themes — must match [data-theme] values and theme.css blocks ── */
     THEMES: ['light', 'dark', 'sage', 'slate', 'dusk', 'high-contrast'],
+    DEFAULT_THEME: 'high-contrast',
 
     THEME_LABELS: {
       light:           'Warm paper',
@@ -34,8 +35,8 @@
     },
 
     /* ── i18n — must match LOCALES in i18n.js and available locale JSONs ── */
-    LOCALES: ['en', 'hi', 'es', 'fr', 'de', 'pt-BR', 'ja', 'zh-Hans', 'ar'],
-    RTL_LOCALES: ['ar'],
+    LOCALES: ['en', 'hi', 'es'],
+    RTL_LOCALES: [],
     DEFAULT_LOCALE: 'en',
 
     /* ── Navigation sections ── */

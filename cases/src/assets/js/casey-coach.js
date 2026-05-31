@@ -113,4 +113,36 @@
   /* Initial state */
   setAvatar(currentTone, 'idle');
 
+  /* ── casey-interactions.json: tier labels + optional blink ── */
+  var interactionsUrl = assetBase.replace(/\/?$/, '/') + 'casey-interactions.json';
+  fetch(interactionsUrl)
+    .then(function (res) { return res.ok ? res.json() : null; })
+    .then(function (cfg) {
+      if (!cfg) return;
+      if (cfg.tierLabels) {
+        var labelEls = document.querySelectorAll('.casey-coach__name, [data-casey-tier-label]');
+        labelEls.forEach(function (el) {
+          var tier = el.closest('[data-casey-tier]') && el.closest('[data-casey-tier]').dataset.caseyTier;
+          if (!tier) tier = currentTone;
+          if (cfg.tierLabels[tier]) el.textContent = cfg.tierLabels[tier];
+        });
+      }
+      var blinkRule = (cfg.interactions || []).filter(function (r) { return r.id === 'blink'; })[0];
+      if (!blinkRule || prm) return;
+      function scheduleBlink() {
+        var min = blinkRule.intervalMsMin || 4000;
+        var max = blinkRule.intervalMsMax || 8000;
+        var delay = min + Math.random() * (max - min);
+        setTimeout(function () {
+          setAvatar(currentTone, 'blink');
+          setTimeout(function () {
+            setAvatar(currentTone, 'idle');
+            scheduleBlink();
+          }, blinkRule.durationMs || 400);
+        }, delay);
+      }
+      scheduleBlink();
+    })
+    .catch(function () { /* optional file */ });
+
 }());
