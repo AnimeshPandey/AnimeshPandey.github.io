@@ -28,6 +28,8 @@
 {% include "partials/icon-sprite-nav.njk" %}
 <a class="skip-link" href="#article-content" data-i18n="a11y.skipToArticle">Skip to article</a>
 {% set homeHref = '/' %}
+{% set product = 'portfolio-article' %}
+{% set showRecruiter = false %}
 {% include "partials/site-header.njk" %}
 {{ content | safe }}
 <footer>
@@ -36,6 +38,7 @@
     <a href="/" class="article-footer-link" data-i18n="footer.backHome">← anmshpndy.com</a>
   </div>
 </footer>
+{% include "partials/resume-modal.njk" %}
 {% include "partials/site-scripts.njk" %}
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "YOUR_CF_BEACON_TOKEN"}'></script>

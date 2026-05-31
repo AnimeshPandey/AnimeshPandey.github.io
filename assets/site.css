@@ -175,13 +175,15 @@ header.scrolled {
   transform: translateX(100%); transition: transform .28s ease;
   display: flex; flex-direction: column;
   padding: var(--page-pad);
+  padding-left: max(var(--page-pad), env(safe-area-inset-left));
+  padding-right: max(var(--page-pad), env(safe-area-inset-right));
   padding-top: env(safe-area-inset-top, 0);
   padding-bottom: max(var(--page-pad), env(safe-area-inset-bottom));
+  overflow-x: hidden;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 .mobile-rm-toggle {
-  width: 100%; min-height: 48px; margin-top: 4px;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   font-family: var(--mono); font-size: 11px;
   border: 1px solid var(--border-2); border-radius: 8px;
   background: var(--surface); color: var(--ink-2); cursor: pointer;
@@ -219,18 +221,16 @@ header.scrolled {
 
 .mobile-nav-footer {
   padding-top: 24px; border-top: 1px solid var(--border);
-  margin-top: auto; display: flex; flex-direction: column; align-items: stretch; gap: 12px;
+  margin-top: auto; display: flex; flex-direction: column; align-items: stretch;
+  gap: 16px; width: 100%; min-width: 0; box-sizing: border-box;
 }
 .mobile-nav-footer__label {
+  display: block; width: 100%;
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--ink-3); margin: 0;
+  padding-inline: 0;
 }
-.mobile-nav-footer__pickers {
-  display: flex; flex-direction: row; align-items: center; gap: 10px;
-}
-.mobile-nav-footer .mobile-nav-resume,
-.mobile-nav-footer .nav-resume { width: 100%; justify-content: center; }
-.mobile-nav-footer .theme-picker { position: relative; flex-shrink: 0; }
+.mobile-nav-footer .theme-picker { position: relative; width: 100%; }
 /* Mobile nav picker opens upward */
 .mobile-nav-footer .theme-menu {
   top: auto; bottom: calc(100% + 8px); right: 0;
@@ -241,7 +241,8 @@ section {
   max-width: var(--max); margin: 0 auto;
   padding: var(--space-section-y) var(--page-pad); /* scale defined in foundation.css */
 }
-section[id] { scroll-margin-top: calc(var(--nav-h) + 16px); }
+section[id] { scroll-margin-top: calc(var(--nav-h) + 56px); }
+body:has(.section-rail) section[id] { scroll-margin-top: calc(var(--nav-h) + 52px); }
 .divider { max-width: var(--max); margin: 0 auto; padding: 0 var(--page-pad); }
 .divider hr { border: none; border-top: 1px solid var(--border); }
 .section-label {
@@ -1204,6 +1205,8 @@ body.rm-panel-open .nav-resume { display: none; }
   gap: 16px; height: 100%; color: var(--ink-2); font-size: 15px; text-align: center;
   padding: 32px;
 }
+.resume-embed-fallback[hidden] { display: none !important; }
+.resume-embed[hidden] { display: none !important; }
 
 /* Mobile: full-screen sheet for resume modal */
 @media (max-width: 640px) {

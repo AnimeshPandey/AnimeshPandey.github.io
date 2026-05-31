@@ -19,7 +19,8 @@
     "preferences": "Preferencias",
     "language": "Idioma",
     "theme": "Tema",
-    "recruiter": "Informe para reclutadores"
+    "recruiter": "Informe para reclutadores",
+    "recruiterShort": "Reclutador"
   },
   "a11y": {
     "skipToMain": "Saltar al contenido principal",

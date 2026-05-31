@@ -1,5 +1,5 @@
 /**
- * casebook-preferences.js — appearance + contrast + portfolio theme bridge
+ * casebook-preferences.js — display menu (aligned with portfolio theme picker)
  */
 (function initCasebookPreferences(root) {
   if (root.dataset.casebookInit) return;
@@ -41,14 +41,11 @@
       }, 250);
     }
     document.documentElement.dataset.casebookColor = resolved;
-
     var meta = document.getElementById('casebook-theme-color');
     if (meta) meta.content = THEME_COLORS[resolved] || THEME_COLORS.light;
-
     document.querySelectorAll('[data-color-mode]').forEach(function (btn) {
       btn.setAttribute('aria-checked', btn.dataset.colorMode === mode ? 'true' : 'false');
     });
-
     document.dispatchEvent(new CustomEvent('casebook-color-change', {
       detail: { mode: mode, resolved: resolved },
       bubbles: true
@@ -57,8 +54,8 @@
 
   function syncPortfolioThemeSwatches() {
     var themeId = window.ThemeBridge ? window.ThemeBridge.getPortfolioTheme() : 'high-contrast';
-    document.querySelectorAll('[data-portfolio-theme]').forEach(function (btn) {
-      btn.setAttribute('aria-selected', btn.dataset.portfolioTheme === themeId ? 'true' : 'false');
+    document.querySelectorAll('#casebook-portfolio-themes .theme-menu-item[data-t]').forEach(function (item) {
+      item.setAttribute('aria-selected', item.dataset.t === themeId ? 'true' : 'false');
     });
   }
 
@@ -75,57 +72,41 @@
   applyPRM();
   mqMotion.addEventListener('change', applyPRM);
   applyAll(true);
-
   mq.addEventListener('change', function () {
     if (getColorMode() === 'system') applyColor('system');
   });
 
   var btn = document.getElementById('casebook-prefs-btn');
   var menu = document.getElementById('casebook-prefs-menu');
-  if (!btn || !menu) return;
+  if (!btn || !menu || !window.PrefsChrome) return;
 
   function closeMenu() {
     menu.hidden = true;
     btn.setAttribute('aria-expanded', 'false');
-    btn.focus();
   }
 
-  if (window.PrefsChrome) {
-    window.PrefsChrome.PopoverMenu(btn, menu, {
-      onSelect: function (e) {
-        var colorBtn = e.target.closest('[data-color-mode]');
-        if (colorBtn) {
-          try { localStorage.setItem(COLOR_KEY, colorBtn.dataset.colorMode); } catch (err) {}
-          applyColor(colorBtn.dataset.colorMode);
-          closeMenu();
-          return;
-        }
-        var contrastBtn = e.target.closest('[data-contrast-mode]');
-        if (contrastBtn) {
-          try { localStorage.setItem(CONTRAST_KEY, contrastBtn.dataset.contrastMode); } catch (err) {}
-          applyContrast(contrastBtn.dataset.contrastMode);
-          return;
-        }
-        var themeBtn = e.target.closest('[data-portfolio-theme]');
-        if (themeBtn && window.ThemeBridge) {
-          var tid = themeBtn.dataset.portfolioTheme;
-          try { localStorage.setItem('theme', tid); } catch (err) {}
-          window.ThemeBridge.applyCasebookFromPortfolio(tid);
-          syncPortfolioThemeSwatches();
-          closeMenu();
-        }
+  window.PrefsChrome.PopoverMenu(btn, menu, {
+    onSelect: function (e, ctx) {
+      var colorBtn = e.target.closest('[data-color-mode]');
+      if (colorBtn) {
+        try { localStorage.setItem(COLOR_KEY, colorBtn.dataset.colorMode); } catch (err) {}
+        applyColor(colorBtn.dataset.colorMode);
+        return;
       }
-    });
-  }
-
-  document.querySelectorAll('[data-portfolio-theme]').forEach(function (themeBtn) {
-    themeBtn.addEventListener('click', function () {
-      var tid = themeBtn.dataset.portfolioTheme;
-      if (!window.ThemeBridge) return;
-      try { localStorage.setItem('theme', tid); } catch (e) {}
-      window.ThemeBridge.applyCasebookFromPortfolio(tid);
-      syncPortfolioThemeSwatches();
-      closeMenu();
-    });
+      var contrastBtn = e.target.closest('[data-contrast-mode]');
+      if (contrastBtn) {
+        try { localStorage.setItem(CONTRAST_KEY, contrastBtn.dataset.contrastMode); } catch (err) {}
+        applyContrast(contrastBtn.dataset.contrastMode);
+        return;
+      }
+      var themeItem = e.target.closest('#casebook-portfolio-themes .theme-menu-item[data-t]');
+      if (themeItem && window.ThemeBridge) {
+        var tid = themeItem.dataset.t;
+        try { localStorage.setItem('theme', tid); } catch (err) {}
+        window.ThemeBridge.applyCasebookFromPortfolio(tid);
+        syncPortfolioThemeSwatches();
+        ctx.close();
+      }
+    }
   });
 }(document.documentElement));
