@@ -43,7 +43,7 @@ body {
   position: absolute; top: -100%; left: 16px;
   background: var(--accent); color: var(--bg);
   padding: 10px 20px; border-radius: 0 0 8px 8px;
-  z-index: 10000; font-family: var(--mono); font-size: 13px;
+  z-index: var(--z-skip); font-family: var(--mono); font-size: 13px;
   text-decoration: none; transition: top 0.1s;
 }
 .skip-link:focus { top: 0; }
@@ -54,14 +54,14 @@ header {
   top: 0;
   background: var(--header-bg); backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border); z-index: 100;
+  border-bottom: 1px solid var(--border); z-index: var(--z-sticky);
   display: flex; align-items: center;
   padding-left: max(var(--page-pad), env(safe-area-inset-left));
   padding-right: max(var(--page-pad), env(safe-area-inset-right));
   transition: top .35s cubic-bezier(.16,1,.3,1), box-shadow .2s;
 }
 header.scrolled {
-  box-shadow: 0 2px 16px rgba(28,23,20,.08);
+  box-shadow: var(--shadow-sm);
 }
 .nav-inner {
   max-width: var(--max); margin: 0 auto;
@@ -113,8 +113,8 @@ header.scrolled {
   min-width: 192px; list-style: none; margin: 0; padding: 6px;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 8px 32px rgba(0,0,0,.16), 0 2px 8px rgba(0,0,0,.08);
-  z-index: 300;
+  box-shadow: var(--shadow-menu);
+  z-index: var(--z-dropdown);
 }
 .theme-menu-item {
   display: flex; align-items: center; gap: 10px;
@@ -161,14 +161,14 @@ header.scrolled {
 
 /* ── Mobile nav overlay ── */
 #nav-overlay {
-  display: none; position: fixed; inset: 0; z-index: 200;
+  display: none; position: fixed; inset: 0; z-index: var(--z-overlay);
   background: rgba(28,23,20,.5); backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
 }
 #nav-overlay.open { display: block; }
 
 #mobile-nav {
-  position: fixed; top: 0; right: 0; bottom: 0; z-index: 210;
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: var(--z-drawer);
   width: min(320px, 92vw);
   background: var(--bg); border-left: 1px solid var(--border);
   transform: translateX(100%); transition: transform .28s ease;
@@ -222,7 +222,7 @@ header.scrolled {
 /* ── Layout ── */
 section {
   max-width: var(--max); margin: 0 auto;
-  padding: 72px var(--page-pad);
+  padding: var(--space-section-y) var(--page-pad); /* scale defined in foundation.css */
 }
 section[id] { scroll-margin-top: calc(var(--nav-h) + 16px); }
 .divider { max-width: var(--max); margin: 0 auto; padding: 0 var(--page-pad); }
@@ -1409,7 +1409,6 @@ html.theme-transitioning footer {
    BREAKPOINT: ≥640px (phablet)
    ═══════════════════════════════════════ */
 @media (min-width: 640px) {
-  section { padding: 80px var(--page-pad); }
   .projects-grid { grid-template-columns: 1fr 1fr; align-items: start; }
   .pc.wide { grid-column: 1 / -1; }
   .stats { grid-template-columns: repeat(4, 1fr); }
@@ -1465,8 +1464,6 @@ html.theme-transitioning footer {
   /* ── Wider content column ── */
   :root { --max: 1100px; }
 
-  section { padding: 96px var(--page-pad); }
-
   h2 { font-size: clamp(36px, 3.6vw, 52px); margin-bottom: 52px; }
 
   /* ── Nav ── */
@@ -1519,8 +1516,6 @@ html.theme-transitioning footer {
    ═══════════════════════════════════════ */
 @media (min-width: 1280px) {
   :root { --max: 1200px; }
-
-  section { padding: 112px var(--page-pad); }
 
   /* ── Hero ── */
   #hero {
