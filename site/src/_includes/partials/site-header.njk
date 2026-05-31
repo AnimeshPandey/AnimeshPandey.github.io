@@ -1,0 +1,137 @@
+{# Shared portfolio header — Sections + utility toolbar #}
+<header>
+  <div class="nav-inner">
+    <a href="{{ homeHref | default('/#hero') }}" class="nav-logo" data-i18n-attr="aria-label" data-i18n="a11y.home">AP<span>.</span></a>
+    <div class="nav-right">
+      <div class="nav-sections nav-sections--desktop">
+        <button type="button" class="nav-sections__btn" id="nav-sections-btn"
+                aria-expanded="false" aria-controls="nav-sections-menu"
+                data-i18n-attr="aria-label" data-i18n="nav.sections">
+          Sections
+        </button>
+        <ul id="nav-sections-menu" class="nav-sections__menu prefs-menu" role="menu" hidden>
+          <li role="none"><a href="{{ homeHref | default('/') }}#about" role="menuitem" data-i18n="nav.about">about</a></li>
+          <li role="none"><a href="{{ homeHref | default('/') }}#experience" role="menuitem" data-i18n="nav.experience">experience</a></li>
+          <li role="none"><a href="{{ homeHref | default('/') }}#skills" role="menuitem" data-i18n="nav.skills">skills</a></li>
+          <li role="none"><a href="{{ homeHref | default('/') }}#projects" role="menuitem" data-i18n="nav.projects">projects</a></li>
+          <li role="none"><a href="{{ homeHref | default('/') }}#writing" role="menuitem" data-i18n="nav.writing">writing</a></li>
+          <li role="none"><a href="{{ homeHref | default('/') }}#contact" role="menuitem" data-i18n="nav.contact">contact</a></li>
+        </ul>
+      </div>
+      <div class="nav-utilities">
+        <div class="theme-picker">
+          <button type="button" class="theme-pick-btn platform-icon-btn" id="theme-pick-btn"
+                  aria-label="Theme: High contrast. Change"
+                  aria-expanded="false" aria-controls="theme-menu-header">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+          </button>
+          <ul id="theme-menu-header" class="theme-menu prefs-menu" role="listbox" aria-label="Choose theme" hidden>
+            <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+            <li class="theme-menu-item" role="option" data-t="light" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+            <li class="theme-menu-item" role="option" data-t="dark" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
+            <li class="theme-menu-item" role="option" data-t="sage" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
+            <li class="theme-menu-item" role="option" data-t="slate" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
+            <li class="theme-menu-item" role="option" data-t="dusk" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial</li>
+          </ul>
+        </div>
+        <div class="theme-picker lang-picker">
+          <button type="button" class="lang-pick-btn platform-icon-btn" id="lang-pick-btn-header"
+                  aria-label="Language: EN. Change"
+                  aria-expanded="false" aria-controls="lang-menu-header">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
+            <span class="lang-pick-label" aria-hidden="true">EN</span>
+          </button>
+          <ul id="lang-menu-header" class="theme-menu lang-menu prefs-menu" role="listbox" aria-label="Choose language" hidden>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true" tabindex="-1">English</li>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" aria-selected="false" tabindex="-1">हिन्दी</li>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="es" aria-selected="false" tabindex="-1">Español</li>
+          </ul>
+        </div>
+        <button type="button" class="nav-resume nav-resume-icon platform-icon-btn" id="nav-resume-preview" aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+          <span>Resume</span>
+        </button>
+        <div class="header-rm-group" id="header-rm-group">
+          <button type="button" class="header-rm-toggle platform-icon-btn" id="header-rm-toggle"
+                  aria-pressed="false" data-i18n-attr="aria-label" data-i18n="a11y.openRecruiterBriefing">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
+            <span>Recruiter</span>
+            <span class="header-rm-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="header-rm-exit platform-icon-btn" id="header-rm-exit"
+                  data-i18n-attr="aria-label" data-i18n="a11y.exitRecruiterMode">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-close"/></svg>
+          </button>
+        </div>
+      </div>
+      <button id="hamburger" class="hamburger platform-icon-btn" aria-expanded="false" aria-controls="mobile-nav" data-i18n-attr="aria-label" data-i18n="a11y.openMenu">
+        <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="nav-overlay" aria-hidden="true"></div>
+
+<nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="mobile-nav-header">
+    <a href="{{ homeHref | default('/#hero') }}" class="nav-logo" data-i18n-attr="aria-label" data-i18n="a11y.home">AP<span>.</span></a>
+    <button id="mobile-nav-close" class="mobile-nav-close" type="button" data-i18n-attr="aria-label" data-i18n="a11y.closeMenu">
+      <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li><a href="{{ homeHref | default('/') }}#about" data-i18n="nav.about">about</a></li>
+    <li><a href="{{ homeHref | default('/') }}#experience" data-i18n="nav.experience">experience</a></li>
+    <li><a href="{{ homeHref | default('/') }}#skills" data-i18n="nav.skills">skills</a></li>
+    <li><a href="{{ homeHref | default('/') }}#projects" data-i18n="nav.projects">projects</a></li>
+    <li><a href="{{ homeHref | default('/') }}#writing" data-i18n="nav.writing">writing</a></li>
+    <li><a href="{{ homeHref | default('/') }}#contact" data-i18n="nav.contact">contact</a></li>
+  </ul>
+  <div class="mobile-nav-footer">
+    <p class="mobile-nav-footer__label" data-i18n="nav.preferences">Preferences</p>
+    <div class="mobile-nav-prefs">
+      <div class="prefs-cell">
+        <span class="prefs-cell-label" data-i18n="nav.language">Language</span>
+        <div class="theme-picker lang-picker">
+          <button type="button" class="lang-pick-btn" id="lang-pick-btn-mobile"
+                  aria-label="Language: EN. Change" aria-expanded="false" aria-controls="lang-menu-mobile">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
+            <span class="lang-pick-label">EN</span>
+          </button>
+          <ul id="lang-menu-mobile" class="theme-menu lang-menu prefs-menu" role="listbox" hidden data-popover-fixed="true">
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true" tabindex="-1">English</li>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" tabindex="-1">हिन्दी</li>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="es" tabindex="-1">Español</li>
+          </ul>
+        </div>
+      </div>
+      <div class="prefs-cell">
+        <span class="prefs-cell-label" data-i18n="nav.theme">Theme</span>
+        <div class="theme-picker">
+          <button type="button" class="theme-pick-btn" id="theme-pick-btn-mobile"
+                  aria-label="Theme: High contrast. Change" aria-expanded="false" aria-controls="theme-menu-mobile">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+          </button>
+          <ul id="theme-menu-mobile" class="theme-menu prefs-menu" role="listbox" hidden data-popover-fixed="true">
+            <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+            <li class="theme-menu-item" role="option" data-t="light" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+            <li class="theme-menu-item" role="option" data-t="dark" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
+            <li class="theme-menu-item" role="option" data-t="sage" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
+            <li class="theme-menu-item" role="option" data-t="slate" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
+            <li class="theme-menu-item" role="option" data-t="dusk" tabindex="-1"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="nav-resume mobile-nav-resume" id="nav-resume-preview-mobile" aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
+      <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+      <span data-i18n="nav.resume">Resume</span>
+    </button>
+    <button type="button" class="header-rm-toggle mobile-rm-toggle" id="header-rm-toggle-mobile"
+            aria-pressed="false" data-i18n-attr="aria-label" data-i18n="a11y.openRecruiterBriefing">
+      <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
+      <span data-i18n="nav.recruiter">Recruiter briefing</span>
+    </button>
+  </div>
+</nav>
