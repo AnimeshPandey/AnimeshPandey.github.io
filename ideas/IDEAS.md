@@ -1,8 +1,10 @@
-# Ideas (moved)
+# Ideas backlog (private)
 
-The ideas backlog lives at **[`.claude/ideas/`](../.claude/ideas/)**.
+Planning docs (projects, articles, monetization playbooks) live in a **private** repository — not in this public portfolio repo.
 
-- [Index](../.claude/ideas/IDEAS.md)
-- [Projects](../.claude/ideas/projects.md)
-- [Articles](../.claude/ideas/articles.md)
-- [Extensions & connectors](../.claude/ideas/extensions-and-connectors.md)
+```bash
+git clone git@github.com:AnimeshPandey/ideas.git
+# or: https://github.com/AnimeshPandey/ideas.git
+```
+
+Public implementation prompts remain in [`.claude/prompts/`](../.claude/prompts/).
