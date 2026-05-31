@@ -1,0 +1,42 @@
+{
+  "slug": "event-loop-one-thread",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "setTimeout(0) doesn't mean 'now' — it means 'after the current task and all microtasks finish.' That ordering is what trips everyone up.",
+      "mid": "The execution order surprise is always: sync → microtasks → macrotask. Run the console snippet — seeing it once makes it permanent.",
+      "staff": "The surprise is usually microtask flood starving the renderer. Check LoAF entries in Chrome 123+ — they show the full frame cost including microtask drain."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Blocking first — count in your head. The counter freezes because JavaScript is busy. Then click Yielding and see the difference.",
+      "mid": "Watch the counter rate in yielding mode. Each chunk yield gives the renderer a chance to update — that's how smooth progress UIs stay smooth.",
+      "staff": "Open DevTools Performance → record while clicking Blocking. Look for a red Long Task bar. Click Yielding — many short green tasks instead."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "The fix is just two lines: wrap the chunk in an async function and add await setTimeout(0). That's it.",
+      "mid": "scheduler.yield() is the modern version — it's in Chrome 94+ and cooperates with the browser's built-in priority system.",
+      "staff": "Reach for Web Workers when work is consistently >1s or involves binary data (WASM, ImageData). Chunk-yielding is for sporadic bursts of JS computation."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I once spent a day debugging why a button click handler wasn't working — it was a microtask flood from a Promise chain locking up the input listener.",
+      "mid": "The first time I saw the microtask/macrotask distinction it felt arcane. Then I fixed a janky animation by moving one line before a await — instant insight.",
+      "staff": "Org-wide: when teams add React.startTransition for input responsiveness without understanding why it works, they eventually regress it. The event loop mental model makes the why obvious."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're solving that mystery where setTimeout zero doesn't actually run immediately. Once you see why, a whole category of bugs disappears.",
+        "mid": "This case is about the JavaScript event loop — specifically why microtasks run before macrotasks, and how that affects rendering and input responsiveness.",
+        "staff": "We're covering the event loop's three queues, the production observability toolchain, and when to reach for Web Workers versus yielding on the main thread."
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "slug": "z-index-stacking-context",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "If a bigger z-index doesn't fix it, you're trapped in a stacking context. The fix isn't a number — it's moving the element outside the context.",
+      "mid": "The first thing to check: does any ancestor have transform, opacity < 1, or will-change? Those silently create stacking contexts.",
+      "staff": "Audit your component library for transform: translateZ(0) on animation wrappers — that pattern creates stacking contexts that trap modals and tooltips."
+    },
+    {
+      "chapter": "demo",
+      "junior": "See how the modal hides behind the colored box in broken mode? That box has a transform on it — creating a stacking context. Portal mode renders the modal outside that context.",
+      "mid": "Check the DOM in Elements panel. Fixed mode: modal is a direct body child. Broken mode: modal is nested inside the transform container.",
+      "staff": "DevTools Layers panel (3D view) is the fastest way to visualize the stacking context tree — each composited layer is its own context."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "isolation: isolate is the clean way to create a stacking context on purpose — it has zero visual effect unlike opacity or transform.",
+      "mid": "A z-index token scale prevents the 9999 arms race. Define --z-modal, --z-tooltip, --z-dropdown once and reference them everywhere.",
+      "staff": "Portal rendering is the architectural solution — it decouples component logical position from DOM physical position, which is the right mental model for overlay components."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I once spent three hours debugging a dropdown that was hidden by a card. The card had opacity: 0.99 — added by a designer to 'soften' a background. One stacking context, one missed dropdown.",
+      "mid": "The will-change: transform pattern for GPU compositing is useful for animations but creates stacking contexts. Teams add it for perf and forget the side effect.",
+      "staff": "Headless UI and Radix UI both use portals for overlays by default. When teams fork those components and remove the portal, this bug reliably re-emerges."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're solving the 'z-index 9999 still doesn't work' mystery. It's about stacking contexts — they're not obvious, but once you understand them, modal bugs disappear.",
+        "mid": "This case is about CSS stacking contexts — why z-index has no effect against them, what creates them accidentally, and the portal pattern that escapes them.",
+        "staff": "We're covering the full stacking context trigger list, isolation: isolate as the semantic solution, and the design system z-index token scale pattern."
+      }
+    ]
+  }
+}

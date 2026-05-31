@@ -1,0 +1,414 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "The Event Loop: One Thread, Many Queues"
+description: "Why JavaScript can handle timers, promises, and click events on a single thread — and how understanding the event loop prevents subtle, hard-to-reproduce bugs."
+slug: event-loop-one-thread
+track: javascript
+readMin: 12
+flagship: true
+demoType: animation
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Concurrency model
+schemaType: Article
+relatedCases:
+  - slug: closure-stale-state
+    title: Closures and Stale State in Handlers
+  - slug: abort-controller-ghost-updates
+    title: Ghost Updates and Race Conditions
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Zero milliseconds — but not zero wait</h2>
+
+  <div class="tone-junior">
+    <p>
+      You write <code>setTimeout(fn, 0)</code> expecting <code>fn</code> to run immediately.
+      It doesn't. Something else runs first. You add <code>await</code> to a fetch — and a Promise
+      you never awaited resolves before your next line. The console logs come out in the wrong order.
+    </p>
+    <p>
+      JavaScript has exactly one thread. Yet it can handle user clicks, network responses,
+      animations, and timers all at once — without crashing or mixing them up.
+      How? The event loop.
+    </p>
+    <p>
+      Once you see the event loop clearly, a whole category of "why did this run first?" bugs
+      disappears forever.
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      <code>setTimeout(fn, 0)</code> schedules a <em>macrotask</em>. An immediately-resolved
+      <code>Promise.then(fn)</code> schedules a <em>microtask</em>. Microtasks drain completely
+      before the next macrotask — and before the browser paints. This ordering is specified, not
+      accidental, and it has real consequences for perceived responsiveness.
+    </p>
+    <p>
+      The bugs it produces are subtle: a DOM update that doesn't render because it's inside a
+      microtask flood; a "stale" event listener value; a progress bar that jumps to 100% without
+      intermediate steps.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      The HTML Living Standard defines the event loop processing model precisely: run the oldest
+      macrotask from the task queue, drain all microtasks, optionally run rendering steps, repeat.
+      That "optionally" is controlled by the browser's rendering pipeline — typically aligned to
+      vsync (~16.7ms at 60fps). The gap between "task runs" and "user sees the result" is where
+      perceived latency lives.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Three queues, one thread</h2>
+
+  <div class="tone-junior">
+    <p>
+      Think of JavaScript like a chef with one pair of hands. The chef can only do one thing at
+      a time, but has three kinds of tickets:
+    </p>
+    <ul>
+      <li><strong>Big tickets (macrotasks):</strong> setTimeout, setInterval, I/O, user events</li>
+      <li><strong>Urgent tickets (microtasks):</strong> Promise callbacks, queueMicrotask</li>
+      <li><strong>Paint tickets (render steps):</strong> requestAnimationFrame, style calculation</li>
+    </ul>
+    <p>
+      The rule: finish one big ticket → clear all urgent tickets → paint if it's time → next big
+      ticket. Urgent tickets always jump the queue ahead of the next big ticket.
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      The event loop spec has this shape per iteration:
+    </p>
+    <ol>
+      <li>Pick the oldest task from the <strong>task queue</strong> (macrotask) — run it to completion</li>
+      <li>Drain the <strong>microtask queue</strong> completely (each microtask can enqueue more microtasks)</li>
+      <li>If a frame is due: run <strong>requestAnimationFrame</strong> callbacks, then update rendering</li>
+      <li>If nothing is pending: wait; otherwise repeat</li>
+    </ol>
+    <p>
+      The implication: a Promise chain that resolves synchronously can starve the rendering
+      pipeline if it keeps enqueuing more microtasks. This is the microtask flood anti-pattern.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      Two additional layers matter in production:
+    </p>
+    <ul>
+      <li>
+        <strong>Scheduler API (<code>scheduler.postTask</code>):</strong> Chrome 94+ allows
+        explicit priority hints (<code>user-blocking</code>, <code>user-visible</code>,
+        <code>background</code>) to influence task ordering — giving you coarse control over the
+        macrotask queue beyond the single-queue model.
+      </li>
+      <li>
+        <strong>Web Workers:</strong> Separate event loop on a separate thread. Offload CPU-bound
+        work (parsing, compression, heavy computation) without blocking the main loop. Message
+        passing via <code>postMessage</code> triggers a macrotask on the receiving end.
+      </li>
+    </ul>
+    <p>
+      Long Animation Frames (LoAF) in Chrome DevTools now surfaces when a single task + microtask
+      drain exceeds 50ms — this is your production signal for event loop contention.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story — bad pattern ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The blocking script problem</h2>
+
+  <div class="tone-junior">
+    <p>
+      Here's a classic trap: you have a list of 10,000 items to process. You write a loop that
+      processes them all at once. The page freezes. Scrolling stops. Users see the spinning
+      cursor. The browser can't render anything because JavaScript is still running.
+    </p>
+    <p>
+      This is called <strong>blocking the main thread</strong>. JavaScript is running, but the
+      event loop can't move on to rendering or handling clicks — because the current task hasn't
+      finished.
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Blocks the main thread — no rendering during loop
+function processAll(items) {
+  for (const item of items) {
+    heavyTransform(item); // each takes ~1ms = 10s total
+  }
+}</code></pre>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      Long tasks prevent the browser from responding to user input and updating the display.
+      The Performance panel shows them as red blocks in the main thread timeline. Total Blocking
+      Time (TBT) — the INP successor metric's cousin — measures this directly.
+    </p>
+    <p>
+      The subtler version: a Promise chain that never yields. Each <code>.then()</code> is a
+      microtask — they drain before rendering. A chain of 500 tight microtasks is as blocking
+      as a tight for-loop from the rendering pipeline's perspective.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      The Long Tasks API (<code>PerformanceObserver</code> + <code>longtask</code> entry type)
+      surfaces tasks > 50ms in production. Combined with attribution timing, you can identify
+      which script caused the blockage. LoAF (Long Animation Frames) extends this to include
+      the full rendering update blocked by long tasks.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story — good pattern ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Yielding to the event loop</h2>
+
+  <div class="tone-junior">
+    <p>
+      The fix is to break work into small chunks and let the event loop breathe between chunks.
+      The simplest way: wrap each chunk in a <code>setTimeout(0)</code> (or better,
+      <code>scheduler.yield()</code> if available).
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ Yields between chunks — browser can paint + handle clicks
+async function processInChunks(items, chunkSize = 100) {
+  for (let i = 0; i &lt; items.length; i += chunkSize) {
+    const chunk = items.slice(i, i + chunkSize);
+    chunk.forEach(heavyTransform);
+    await new Promise(r => setTimeout(r, 0)); // yield
+  }
+}</code></pre>
+    <p>
+      Each <code>await setTimeout(0)</code> pauses execution, returns control to the event loop
+      (letting it render and handle events), then comes back. The work takes the same total time,
+      but the page stays responsive.
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      Better still, use the Scheduler API when available:
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Progressive enhancement — use scheduler.yield if available
+const yieldToMain = () =>
+  typeof scheduler !== 'undefined' && scheduler.yield
+    ? scheduler.yield()
+    : new Promise(r => setTimeout(r, 0));
+
+async function processInChunks(items) {
+  for (let i = 0; i &lt; items.length; i += 100) {
+    items.slice(i, i + 100).forEach(heavyTransform);
+    await yieldToMain();
+  }
+}</code></pre>
+    <p>
+      <code>scheduler.yield()</code> is prioritized differently from a 0ms timeout — it
+      cooperates with the browser's scheduling without the artificial 1ms minimum delay browsers
+      clamp setTimeout(0) to.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      For genuinely parallel CPU work, a Web Worker is the right tool. The main thread stays
+      completely free; results arrive as a macrotask via <code>postMessage</code>:
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// worker.js
+self.onmessage = ({ data: items }) => {
+  const results = items.map(heavyTransform);
+  self.postMessage(results);
+};
+
+// main.js
+const worker = new Worker('/worker.js');
+worker.postMessage(items);
+worker.onmessage = ({ data: results }) => updateUI(results);</code></pre>
+    <p>
+      Decision heuristic: use chunked processing when total work is &lt;1s; use a Worker when
+      > 1s or when work can be easily serialized.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Task vs microtask execution order</h2>
+
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Order proof — run this in the browser console:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>console.log('1 — synchronous');
+
+setTimeout(() => console.log('2 — macrotask (setTimeout 0)'), 0);
+
+Promise.resolve().then(() => console.log('3 — microtask (Promise)'));
+
+queueMicrotask(() => console.log('4 — microtask (queueMicrotask)'));
+
+console.log('5 — synchronous');
+
+// Output order: 1, 5, 3, 4, 2
+// Synchronous first → microtasks before macrotask</code></pre>
+    <div style="margin-top:16px; display:grid; grid-template-columns: repeat(5,1fr); gap:8px; font-family:var(--mono,monospace); font-size:11px; text-align:center;">
+      <div style="padding:8px 4px; border-radius:6px; background:var(--casebook-surface-2); color:var(--casebook-ink);">① sync<br><small style="color:var(--casebook-ink-faint)">call stack</small></div>
+      <div style="padding:8px 4px; border-radius:6px; background:var(--casebook-surface-2); color:var(--casebook-ink);">⑤ sync<br><small style="color:var(--casebook-ink-faint)">call stack</small></div>
+      <div style="padding:8px 4px; border-radius:6px; background:#c8e6c9; color:#1b5e20;">③ µtask<br><small>Promise</small></div>
+      <div style="padding:8px 4px; border-radius:6px; background:#c8e6c9; color:#1b5e20;">④ µtask<br><small>queue</small></div>
+      <div style="padding:8px 4px; border-radius:6px; background:#ffe0b2; color:#e65100;">② macro<br><small>setTimeout</small></div>
+    </div>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: blocking vs yielding</h2>
+
+  <div class="tone-junior">
+    <p>Click "Blocking" — the counter freezes while work runs. Click "Yielding" — the counter keeps ticking because the loop yields to the event loop between chunks.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Notice how yielding maintains frame budget (≤16ms per task). The counter update is a rAF callback — it only runs when the event loop reaches render steps.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Open DevTools Performance while clicking "Blocking" — you'll see a long task ≥50ms and TBT accumulation. "Yielding" shows many short tasks below the 50ms threshold.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Try it: blocking vs yielding"
+           data-required="true"
+           data-demo-type="animation"
+           data-demo-slug="event-loop-one-thread">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> The demo shows a counter updating while
+          heavy work runs — blocked (counter freezes) vs yielding (counter stays live).</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Blocking — freeze
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Yielding — responsive
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Yielding — responsive</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Measuring and fixing event loop pressure</h2>
+
+  <div class="tone-junior">
+    <p>
+      The simplest rule: if your page ever freezes or drops frames, check for synchronous loops
+      over large data. Use the browser's Performance tab → look for long red blocks in the
+      main thread timeline.
+    </p>
+    <p>To fix: add <code>await new Promise(r =&gt; setTimeout(r, 0))</code> inside long loops.</p>
+  </div>
+
+  <div class="tone-mid">
+    <p>Observe long tasks in production with the Long Tasks API:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    if (entry.duration > 50) {
+      console.warn('Long task:', entry.duration.toFixed(1) + 'ms');
+    }
+  }
+});
+observer.observe({ type: 'longtask', buffered: true });</code></pre>
+    <p>
+      In React: expensive renders block the event loop like any other synchronous work.
+      <code>React.startTransition</code> marks state updates as lower priority — React can
+      yield mid-render to handle urgent updates (e.g. typing).
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      The full toolchain for event loop observability:
+    </p>
+    <ul>
+      <li><strong>Long Tasks API:</strong> entry.duration &gt; 50ms threshold</li>
+      <li><strong>Long Animation Frames (LoAF):</strong> Chrome 123+ — whole frame duration including microtask drain + render work</li>
+      <li><strong>INP (Interaction to Next Paint):</strong> measures the worst input delay including event handling + style/paint — directly tied to event loop health</li>
+      <li><strong>scheduler.postTask:</strong> explicit task priority hints (Chrome 94+)</li>
+    </ul>
+    <p>
+      The mental model for production: every macrotask &gt; 50ms is a potential INP regression.
+      Every microtask flood is a potential invisible rendering pause. Measure first, optimize
+      where it shows in RUM.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+<section class="case-chapter case-references" data-chapter="references">
+  <h3>References</h3>
+
+  <div class="tone-mid">
+    <ol>
+      <li>Jake Archibald, <a href="https://www.youtube.com/watch?v=cCOL7MC4Pl0" rel="noopener noreferrer">In The Loop</a> — JSConf Asia 2018. The definitive visual walkthrough.</li>
+      <li>MDN, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop" rel="noopener noreferrer">The event loop</a>.</li>
+      <li>web.dev, <a href="https://web.dev/articles/optimize-long-tasks" rel="noopener noreferrer">Optimize long tasks</a>.</li>
+    </ol>
+  </div>
+
+  <div class="tone-staff">
+    <ol>
+      <li>Jake Archibald, <em>In The Loop</em> — JSConf Asia 2018.</li>
+      <li>HTML Living Standard — <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loops" rel="noopener noreferrer">Event loops</a>.</li>
+      <li>web.dev — <a href="https://web.dev/articles/inp" rel="noopener noreferrer">Interaction to Next Paint (INP)</a>.</li>
+      <li>web.dev — <a href="https://web.dev/articles/scheduler-yield" rel="noopener noreferrer">scheduler.yield() explainer</a>.</li>
+      <li>Chrome DevTools — Long Animation Frames (LoAF) documentation.</li>
+    </ol>
+  </div>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Microtasks (Promises) always run before the next macrotask (setTimeout) — that's why order surprises you.</div>
+        <div class="tone-mid">Microtask queue drains completely before rendering — a flood of .then() callbacks is as blocking as a for-loop.</div>
+        <div class="tone-staff">Use LoAF and INP attribution in production RUM to pinpoint which task sources cause rendering gaps.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Break big loops into chunks with setTimeout(0) — the page stays responsive while you process.</div>
+        <div class="tone-mid">Use scheduler.yield() over setTimeout(0) where available — it cooperates better with browser scheduling priorities.</div>
+        <div class="tone-staff">CPU-bound work &gt;1s belongs in a Web Worker — message passing adds one macrotask round-trip but keeps the main loop completely free.</div>
+      </li>
+      <li>
+        <div class="tone-junior">requestAnimationFrame runs just before the browser paints — use it for smooth visual updates, not data processing.</div>
+        <div class="tone-mid">React.startTransition marks state updates as interruptible — React can yield mid-render when urgent work appears.</div>
+        <div class="tone-staff">Any task &gt;50ms is a Long Task and a potential INP regression — the Long Tasks API and LoAF give you production-grade measurement hooks.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,384 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Two Trees: Hydration Explained"
+description: "Why React's hydration fails silently in production, what the two-tree mismatch actually means, and how to prevent it before it reaches users."
+slug: hydration-two-trees
+track: react
+readMin: 11
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: SSR mismatch
+schemaType: Article
+relatedCases:
+  - slug: closure-stale-state
+    title: Closures and Stale State in Handlers
+  - slug: key-prop-identity
+    title: Keys Are Identity, Not Index
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The component that works in dev but breaks in prod</h2>
+
+  <div class="tone-junior">
+    <p>
+      You build a date display component. It works perfectly in development. You deploy to
+      production. Users see the page flicker, or see a timestamp that's wrong for a split
+      second, or the browser console fills with warnings you never saw locally.
+    </p>
+    <p>
+      The culprit: <strong>hydration mismatch</strong>. The HTML your server rendered doesn't
+      match what React rendered in the browser — and React throws away the server HTML and
+      re-renders from scratch.
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      Hydration is the process where React takes server-rendered HTML and "attaches" event
+      listeners and React state to it, making the page interactive without re-rendering everything.
+      When the server HTML doesn't match what React would render client-side, React must
+      discard the server HTML and render fresh — defeating the purpose of SSR.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      React 18 changed hydration failure behavior: in strict mode, it throws a recoverable
+      error and replaces the subtree. In production builds, it silently hydrates with the
+      client render — users see a flash. Suppressing that flash requires ensuring the trees
+      match at the point of hydration, not after. This is a correctness constraint, not a
+      performance one.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Two trees that must match</h2>
+
+  <div class="tone-junior">
+    <p>
+      When you use SSR (Next.js, Remix, etc.), your page loads in two phases:
+    </p>
+    <ol>
+      <li><strong>Server renders HTML</strong> — React runs on the server and generates HTML string. Browser receives and displays it immediately (fast first paint).</li>
+      <li><strong>React "hydrates" the HTML</strong> — React runs in the browser, builds its virtual DOM, and attaches to the server HTML.</li>
+    </ol>
+    <p>
+      These two runs must produce identical HTML. If they differ — even by one character — you
+      have a mismatch. React either ignores it (silent, with a potential flash) or re-renders
+      the whole subtree (visible flicker).
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      The two trees are: (1) the server VDOM, serialised to HTML, and (2) the client VDOM
+      built during hydration. React walks both trees simultaneously. Any attribute or text
+      node that differs triggers a warning in dev and a silent patch or subtree re-render in prod.
+    </p>
+    <p>Common mismatch sources:</p>
+    <ul>
+      <li><strong>Date/time:</strong> <code>new Date()</code> returns different values on server and client</li>
+      <li><strong>Random IDs:</strong> <code>Math.random()</code> or <code>crypto.randomUUID()</code> produce different values each run</li>
+      <li><strong>localStorage/window reads:</strong> not available on server, available on client</li>
+      <li><strong>Browser extensions:</strong> inject HTML into the page, confusing React's tree walk</li>
+    </ul>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      React 18's <code>hydrateRoot</code> API introduced better error boundaries for hydration
+      failures and the ability to suppress mismatches with <code>suppressHydrationWarning</code>
+      at the element level. React 19 extends this with full-document hydration improvements.
+      The architectural principle: mismatches should be intentionally suppressed, not accidentally
+      created.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story — bad pattern ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Classic mismatch sources</h2>
+
+  <div class="tone-junior">
+    <p><strong>The Date trap</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ new Date() on server at 10:00:00 !== new Date() on client at 10:00:01
+function LastUpdated() {
+  return &lt;span&gt;Updated: {new Date().toLocaleTimeString()}&lt;/span&gt;;
+}</code></pre>
+
+    <p><strong>The window trap</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ window is undefined on server — crashes or renders differently
+function ThemeProvider() {
+  const theme = window.localStorage.getItem('theme') || 'light';
+  return &lt;div data-theme={theme}&gt;{children}&lt;/div&gt;;
+}</code></pre>
+
+    <p><strong>The random ID trap</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Different UUID on server vs client → id mismatch
+function FormField({ label }) {
+  const id = Math.random().toString(36).slice(2);
+  return (
+    &lt;&gt;
+      &lt;label htmlFor={id}&gt;{label}&lt;/label&gt;
+      &lt;input id={id} /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      All three share the same root: the value differs between the server execution context and
+      the client execution context. The component is pure (same props → same output) — but the
+      implicit inputs (<code>Date.now()</code>, <code>window</code>, <code>Math.random()</code>)
+      aren't stable across contexts.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      Browser extensions are a fourth source teams rarely account for: ad-blockers, password
+      managers, and accessibility tools inject HTML nodes that React doesn't expect. The correct
+      response is <code>suppressHydrationWarning</code> on the container element, not changing
+      your component tree.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story — good pattern ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Three clean fixes</h2>
+
+  <div class="tone-junior">
+    <p><strong>Fix 1: useEffect for client-only values</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ Server renders null; client renders the time after mount
+function LastUpdated() {
+  const [time, setTime] = useState(null);
+  useEffect(() => {
+    setTime(new Date().toLocaleTimeString());
+  }, []);
+  if (!time) return null; // or a placeholder
+  return &lt;span&gt;Updated: {time}&lt;/span&gt;;
+}</code></pre>
+
+    <p><strong>Fix 2: stable IDs with React 18's useId</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ useId generates the same stable ID on server and client
+import { useId } from 'react';
+function FormField({ label }) {
+  const id = useId();
+  return (
+    &lt;&gt;
+      &lt;label htmlFor={id}&gt;{label}&lt;/label&gt;
+      &lt;input id={id} /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+    <p><strong>Fix 3: suppress intentional mismatches</strong></p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ Tell React this element will differ — intentional, documented
+&lt;time dateTime={date.toISOString()} suppressHydrationWarning&gt;
+  {date.toLocaleString()} {/* locale may differ server/client */}
+&lt;/time&gt;</code></pre>
+  </div>
+
+  <div class="tone-mid">
+    <p>
+      <code>useId()</code> generates incrementing IDs that are consistent between server and
+      client because both start from the same component tree structure. It's the correct
+      replacement for <code>Math.random()</code> IDs in forms, tooltips, and ARIA associations.
+    </p>
+    <p>
+      The useEffect pattern works because React intentionally runs effects only on the client —
+      the server render is "committed" HTML, and effects update it post-mount. The cost: a brief
+      flash of the server value, acceptable for non-critical UI.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      For theme-from-localStorage: the correct pattern is an inline FOUC script in
+      <code>&lt;head&gt;</code> that reads localStorage and sets a data attribute before React
+      hydrates. The React component then reads the attribute (already set by the script) —
+      both server and client render the same attribute value. This is how the portfolio's
+      theme system works.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Hydration timeline</h2>
+
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">What happens during SSR + hydration:</p>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <span style="font-family:var(--mono,monospace);font-size:10px;min-width:60px;color:var(--casebook-ink-faint);padding-top:2px;">SERVER</span>
+        <div style="flex:1;background:var(--casebook-surface-2);border-radius:6px;padding:10px 12px;font-size:0.8125rem;">
+          React renders component tree → HTML string → sent to browser
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <span style="font-family:var(--mono,monospace);font-size:10px;min-width:60px;color:var(--casebook-ink-faint);padding-top:2px;">BROWSER</span>
+        <div style="flex:1;background:var(--casebook-surface-2);border-radius:6px;padding:10px 12px;font-size:0.8125rem;">
+          Receives HTML → displays immediately (FCP) → downloads JS bundle
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <span style="font-family:var(--mono,monospace);font-size:10px;min-width:60px;color:#4CAF50;padding-top:2px;">HYDRATE</span>
+        <div style="flex:1;background:#e8f5e9;border-radius:6px;padding:10px 12px;font-size:0.8125rem;color:#1b5e20;">
+          React runs client-side → builds VDOM → walks server HTML → attaches listeners (TREES MATCH ✓)
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <span style="font-family:var(--mono,monospace);font-size:10px;min-width:60px;color:#f44336;padding-top:2px;">MISMATCH</span>
+        <div style="flex:1;background:#ffebee;border-radius:6px;padding:10px 12px;font-size:0.8125rem;color:#b71c1c;">
+          React re-renders subtree → user sees flash → console warning in dev
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: mismatch vs stable hydration</h2>
+
+  <div class="tone-junior">
+    <p>Toggle "Broken" to see a component using Math.random() — it renders differently each time (simulating server vs client mismatch). "Fixed" uses useId and stays stable.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Notice the ID values. Broken generates a new random ID on every "render" — the server and client IDs never match. Fixed uses a stable, incrementing ID.</p>
+  </div>
+  <div class="tone-staff">
+    <p>In a real app, inspect the warning in Chrome DevTools Console (dev build): "Warning: Prop 'id' did not match. Server: 'xyz123'. Client: 'abc456'." That's the signal to investigate.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Try it: hydration mismatch vs stable"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="hydration-two-trees">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> Shows the difference between a random ID (mismatch on hydration) vs React's stable useId.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Broken — random ID
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Fixed — stable useId
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — stable useId</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Debugging hydration mismatches</h2>
+
+  <div class="tone-junior">
+    <p>
+      The warning text is your friend: React logs the expected vs received values.
+      Grep your component tree for <code>Math.random()</code>, <code>Date.now()</code>,
+      <code>new Date()</code>, and any <code>window.*</code> reads in render functions.
+    </p>
+  </div>
+
+  <div class="tone-mid">
+    <p>React 18 improved hydration error messages. Look for:</p>
+    <ul>
+      <li><em>"Warning: Text content did not match. Server: X, Client: Y"</em></li>
+      <li><em>"Warning: Prop did not match. X Server: Y, Client: Z"</em></li>
+    </ul>
+    <p>
+      The message tells you which prop and which component. From there: check if that prop's
+      source is environment-dependent. Move it to a <code>useEffect</code> or use a stable
+      server-safe alternative.
+    </p>
+    <p>
+      Next.js 13+ adds a client-boundary with <code>"use client"</code> — server components
+      don't hydrate at all, which eliminates the mismatch category for those components.
+    </p>
+  </div>
+
+  <div class="tone-staff">
+    <p>
+      For complex SSR apps, React 18's <code>startTransition</code> during hydration allows
+      the server HTML to remain interactive while React hydrates in the background —
+      a technique called "selective hydration." Mismatches in selectively-hydrated subtrees
+      are demoted to warnings rather than causing full re-renders, reducing the visible impact.
+    </p>
+    <p>
+      Metrics to track: CLS (Cumulative Layout Shift) — hydration mismatches are a top
+      source of unexpected CLS in SSR apps. A spike in CLS correlates directly with
+      hydration re-renders in production.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+<section class="case-chapter case-references" data-chapter="references">
+  <h3>References</h3>
+
+  <div class="tone-mid">
+    <ol>
+      <li>React docs — <a href="https://react.dev/reference/react-dom/client/hydrateRoot" rel="noopener noreferrer">hydrateRoot</a>.</li>
+      <li>React docs — <a href="https://react.dev/reference/react/useId" rel="noopener noreferrer">useId</a>.</li>
+    </ol>
+  </div>
+
+  <div class="tone-staff">
+    <ol>
+      <li>React docs — <a href="https://react.dev/reference/react-dom/client/hydrateRoot" rel="noopener noreferrer">hydrateRoot</a>.</li>
+      <li>React 18 Architecture — Selective Hydration.</li>
+      <li>Next.js docs — App Router and React Server Components.</li>
+      <li>web.dev — <a href="https://web.dev/articles/cls" rel="noopener noreferrer">Cumulative Layout Shift (CLS)</a>.</li>
+    </ol>
+  </div>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Server-rendered HTML and React's client render must match exactly — any difference causes a mismatch warning and potential flicker.</div>
+        <div class="tone-mid">Hydration mismatches come from environment-dependent values in render: Date, Math.random(), window, localStorage.</div>
+        <div class="tone-staff">React 18 selective hydration demotes subtree mismatch to a warning; CLS spikes in production are a reliable signal for hydration re-renders.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Use <code>useId()</code> instead of <code>Math.random()</code> for stable IDs — React generates the same ID on server and client.</div>
+        <div class="tone-mid">Defer client-only values (Date, localStorage, window) to useEffect so they only run after hydration, not during it.</div>
+        <div class="tone-staff">suppressHydrationWarning is for intentional mismatches — document why, don't use it to paper over real mismatch bugs.</div>
+      </li>
+      <li>
+        <div class="tone-junior">The theme-from-localStorage FOUC fix is an inline script in head — sets a class before React runs, so server and client agree.</div>
+        <div class="tone-mid">React Server Components (Next.js App Router) don't hydrate — they eliminate this category for components that don't need client-side interactivity.</div>
+        <div class="tone-staff">Treat hydration mismatches like type errors — zero tolerance in CI (React's --verbose flag surfaces them as exit-code failures in test suites).</div>
+      </li>
+    </ul>
+  </div>
+</section>

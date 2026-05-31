@@ -1,0 +1,126 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "When Micro-Frontends Stop Sharing a Design System"
+description: "How design system version drift happens in micro-frontend architectures — and the Module Federation singleton pattern that prevents it."
+slug: micro-frontend-boundary-drift
+track: advanced-frontend
+readMin: 11
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Design system governance
+schemaType: Article
+relatedCases:
+  - slug: z-index-stacking-context
+    title: z-index and the Stacking Context
+  - slug: hydration-two-trees
+    title: Hydration and the Two-Tree Problem
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Two teams, two versions, one broken brand</h2>
+  <div class="tone-junior">
+    <p>Team A owns the product catalog micro-frontend. Team B owns checkout. Both use the company's design system. Six months ago, Team A upgraded to design system v3.2. Team B stayed on v2.8 because they had a freeze. A user navigates from catalog to checkout: the button border radius jumps from 8px to 4px, the blue shifts slightly, and the spacing feels different. No errors, just a silently broken experience.</p>
+    <p>This is design system version drift — and it's one of the most common failure modes when teams own independent micro-frontends.</p>
+  </div>
+  <div class="tone-mid">
+    <p>In a monolith, the design system version is a single dependency in a single package.json. All components share the same instance. In a micro-frontend architecture, each team's bundle can include its own copy of the design system at their own version. Without explicit enforcement, drift is the natural outcome — teams update on their own schedule, pin during freezes, and fall behind.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The problem has two layers: (1) <em>runtime duplication</em> — the same design system code ships twice in the browser, once per micro-frontend, increasing bundle size; (2) <em>visual inconsistency</em> — different versions have different token values, component APIs, and visual outputs. Layer 1 is a performance issue; Layer 2 is a UX/brand issue. Both are solved by the same mechanism: singleton shared dependencies in Module Federation.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Module Federation singleton shared dependencies</h2>
+  <div class="tone-junior">
+    <p>Module Federation lets micro-frontends share dependencies at runtime — the design system loads once and is reused by all micro-frontends. The key setting is <code>singleton: true</code>: if multiple micro-frontends try to load the design system, only the first-loaded version runs.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Shell app's webpack.config.js (module federation plugin)
+new ModuleFederationPlugin({
+  name: 'shell',
+  shared: {
+    '@company/design-system': {
+      singleton: true,       // only one instance
+      requiredVersion: '^3.0.0',
+      eager: true,           // shell loads it first
+    },
+  },
+});</code></pre>
+    <p>With this config, all micro-frontends receive the shell's design system version. No team can load a different version at runtime.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The version enforcement options:</p>
+    <ul>
+      <li><strong><code>singleton: true</code></strong> — one instance; first loaded wins; logs a warning if version mismatch</li>
+      <li><strong><code>requiredVersion: '^3.0.0'`</strong> — throws at runtime if the loaded version doesn't satisfy the semver range</li>
+      <li><strong><code>strictVersion: true</code></strong> — throws if exact version doesn't match (use for breaking changes)</li>
+    </ul>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Each micro-frontend also declares the shared dep
+// They don't need to specify a version — they accept the shell's
+new ModuleFederationPlugin({
+  name: 'checkout',
+  shared: {
+    '@company/design-system': {
+      singleton: true,
+      // no requiredVersion here: accept whatever shell provides
+    },
+  },
+});</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>The governance model that makes this sustainable:</p>
+    <ul>
+      <li><strong>Shell owns the design system version</strong> — the shell app's package.json is the single source of truth for the shared design system version</li>
+      <li><strong>Minor versions auto-update</strong> — <code>^3.0.0</code> range means all micro-frontends automatically receive 3.x patches when shell upgrades</li>
+      <li><strong>Major versions are migration events</strong> — breaking token/API changes require coordinated migration across all micro-frontends before the shell upgrades</li>
+      <li><strong>CI enforcement</strong> — a CI check that validates all micro-frontends declare the same <code>singleton: true</code> for the design system prevents drift from being accidentally introduced</li>
+    </ul>
+    <p>The deeper principle: <em>governance through tooling beats governance through process</em>. A Jira ticket to "keep design system in sync" will fail. A webpack config that makes mismatched versions a runtime error will not.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: drifted vs aligned design system</h2>
+  <div class="tone-junior"><p>"Drifted" shows two micro-frontends side-by-side with different design system versions — notice the button border radius, spacing, and color token differences. "Aligned" shows the same two micro-frontends sharing a singleton — visually consistent across the boundary.</p></div>
+  <div class="tone-mid"><p>Inspect the buttons in each mode. In drifted mode, the catalog button uses the v3 token scale (border-radius: 8px, gap: 12px) and the checkout button uses the v2 token scale (border-radius: 4px, gap: 8px). Same brand, two versions, silent divergence.</p></div>
+  <div class="tone-staff"><p>Open DevTools → Sources in the drifted mode. You'll find both design system versions in the bundle — the same library shipped twice. In aligned mode, one version, shared. This is the bundle size argument alongside the visual consistency argument.</p></div>
+
+  <section class="case-demo" aria-label="Try it: drifted vs aligned design system" data-required="true" data-demo-type="toggle" data-demo-slug="micro-frontend-boundary-drift">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Drifted — two versions</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Aligned — singleton</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Aligned — singleton</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">In micro-frontend architectures, each team's bundle can ship its own copy of the design system. Without enforcement, versions drift and the UI becomes visually inconsistent.</div>
+        <div class="tone-mid">Module Federation's singleton: true makes a shared dependency load only once at runtime — the shell's version wins. All micro-frontends receive the same instance.</div>
+        <div class="tone-staff">Shell owns the design system version. Minor versions auto-update via semver range. Major versions are migration events. CI enforcement validates all micro-frontends declare the same singleton config.</div>
+      </li>
+      <li>
+        <div class="tone-junior">The singleton config goes in every micro-frontend's Module Federation plugin, not just the shell. All participants must agree to share the single instance.</div>
+        <div class="tone-mid">requiredVersion: '^3.0.0' throws a runtime error for mismatched versions — turning silent visual drift into a loud failure that gets fixed. strictVersion: true enforces exact version matches for breaking-change releases.</div>
+        <div class="tone-staff">Governance through tooling beats governance through process. A webpack config that makes version mismatch a runtime error is more reliable than a Jira ticket asking teams to stay in sync.</div>
+      </li>
+    </ul>
+  </div>
+</section>

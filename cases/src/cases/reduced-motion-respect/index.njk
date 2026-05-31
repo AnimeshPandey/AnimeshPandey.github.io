@@ -1,0 +1,113 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: prefers-reduced-motion Contracts
+description: "How to honour the OS 'reduce motion' setting in your animations — without removing all motion for everyone."
+slug: reduced-motion-respect
+track: accessibility
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Motion
+schemaType: Article
+relatedCases:
+  - slug: focus-visible-not-outline-none
+    title: ":focus-visible vs outline: none"
+  - slug: motion-safe-fallback
+    title: "@media (prefers-reduced-motion)"
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The animation that triggers migraines</h2>
+  <div class="tone-junior">
+    <p>Some users have vestibular disorders — conditions where movement on screen causes real physical symptoms: dizziness, nausea, headaches, even migraines. These users set "Reduce Motion" in their OS settings specifically to prevent this. If your site ignores that setting and plays full-scale animations, you're causing harm. The fix is a single CSS media query.</p>
+  </div>
+  <div class="tone-mid">
+    <p><code>prefers-reduced-motion</code> is an OS-level accessibility setting that browsers expose as a media query. About 25% of iPhone users have it enabled (Apple 2021 data). Ignoring it means your animated hero, page transitions, and skeleton shimmer are running uninvited for a significant portion of your audience.</p>
+  </div>
+  <div class="tone-staff">
+    <p>WCAG 2.1 SC 2.3.3 (Animation from Interactions, AAA) requires that motion triggered by interaction can be disabled. prefers-reduced-motion is the mechanism. The "safe" default: always check the query; never put the burden on users to find an in-app toggle they shouldn't need.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Two strategies: disable vs slow-down</h2>
+  <div class="tone-junior">
+    <p>You have two options when <code>prefers-reduced-motion: reduce</code> is detected:</p>
+    <ol>
+      <li><strong>Disable motion entirely</strong> — remove animations, use instant transitions</li>
+      <li><strong>Reduce motion</strong> — keep functional animations (state changes, loading indicators) but remove decorative spinning, parallax, and large-scale movement</li>
+    </ol>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Option 1: disable all animation */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Option 2: targeted — remove decorative, keep functional */
+@media (prefers-reduced-motion: reduce) {
+  .hero-parallax { transform: none !important; }
+  .skeleton-shimmer { animation: none; background: var(--casebook-surface-2); }
+  .page-transition { transition: none; }
+}</code></pre>
+  </div>
+  <div class="tone-mid">
+    <p>The <code>prefers-reduced-motion: no-preference</code> media query targets users who have NOT set reduce motion — use it for "motion-optional" animations that are off by default:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Animation off by default; opt-in with no-preference */
+.card { transition: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .card { transition: transform 0.2s ease; }
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>The "safe by default" pattern — write animations with no-preference guard rather than reduce override. This ensures users who never set the preference still get motion, while reduce-preference users never see it by accident. Particularly important for skeleton shimmer, progress bar animations, and loading spinners — all of which are functional (provide information) but motion-heavy.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: animated vs motion-safe</h2>
+  <div class="tone-junior"><p>Toggle between broken (full animation ignoring the OS setting) and fixed (honours prefers-reduced-motion). If you have "Reduce Motion" enabled on your OS, the fixed version will be static.</p></div>
+  <div class="tone-mid"><p>The demo simulates the reduce-motion state. In real usage, the CSS media query reads the actual OS setting — no JavaScript needed for the basic case.</p></div>
+  <div class="tone-staff"><p>The fixed demo uses the no-preference guard pattern — animation is off by default and only enabled via @media (prefers-reduced-motion: no-preference). This is safer than the reduce override.</p></div>
+
+  <section class="case-demo" aria-label="Try it: reduced motion" data-required="true" data-demo-type="toggle" data-demo-slug="reduced-motion-respect">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — ignores OS setting</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — honours reduce motion</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — honours reduce motion</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Always add @media (prefers-reduced-motion: reduce) overrides for any animation that moves large elements or loops continuously.</div>
+        <div class="tone-mid">The "safe by default" pattern wraps animations in @media (prefers-reduced-motion: no-preference) — motion is opt-in, not opt-out.</div>
+        <div class="tone-staff">WCAG 2.1 SC 2.3.3 requires that motion triggered by interaction can be disabled — prefers-reduced-motion is the implementation mechanism, not a nice-to-have.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Skeleton shimmer, progress bar animations, and spinning loaders should all be disabled under reduce-motion — they're functional but motion-heavy.</div>
+        <div class="tone-mid">Keep functional state-change animations (button press feedback, form error appearance) even under reduce motion — they communicate state, not decoration.</div>
+        <div class="tone-staff">Add a prefers-reduced-motion test to your automated a11y checks — axe-core doesn't catch this; write a custom assertion that verifies animation-duration on animated elements.</div>
+      </li>
+    </ul>
+  </div>
+</section>

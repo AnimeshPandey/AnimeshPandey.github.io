@@ -185,8 +185,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "heading-hierarchy-one-h1",
@@ -290,8 +291,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "screen-reader-only-class",
@@ -695,8 +697,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "monorepo-shared-chunk",
@@ -1184,8 +1187,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "memory-window-summarize",
@@ -1479,8 +1483,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "debug-coach-socratic",
@@ -1689,8 +1694,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "prompt-injection-xss",
@@ -2240,8 +2246,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "structured-output-form-fill",
@@ -2564,8 +2571,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "parallax-accessibility",
@@ -2949,8 +2957,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "focus-trap-modal",
@@ -3579,8 +3588,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "tree-shaking-side-effects",
@@ -3859,8 +3869,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "logical-properties-rtl",
@@ -4069,8 +4080,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "abort-controller-ghost-updates",
@@ -4104,8 +4116,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "async-await-sequential-trap",
@@ -4174,8 +4187,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "event-loop-one-thread",
@@ -4209,8 +4223,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "iterator-protocol-custom",
@@ -4664,8 +4679,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "graphql-overfetch",
@@ -5259,8 +5275,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "toast-stack-limit",
@@ -5469,8 +5486,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "image-lazy-above-fold",
@@ -5574,8 +5592,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "preconnect-fonts",
@@ -5959,8 +5978,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "loss-aversion-delete",
@@ -6310,8 +6330,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "key-prop-identity",
@@ -6345,8 +6366,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "lifting-state-too-high",
@@ -6975,8 +6997,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "subresource-integrity",
@@ -7500,8 +7523,9 @@
         "next"
       ],
       "artPanels": 8,
-      "status": "idea",
-      "outcomes": []
+      "status": "live",
+      "outcomes": [],
+      "publishedAt": "2026-05-31T00:00:00Z"
     },
     {
       "slug": "accessibility-axe-ci",

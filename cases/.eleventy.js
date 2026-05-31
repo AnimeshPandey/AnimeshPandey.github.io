@@ -20,7 +20,7 @@ module.exports = function (eleventyConfig) {
   /* ── Passthrough ── */
   eleventyConfig.addPassthroughCopy('src/assets');
   eleventyConfig.addPassthroughCopy({ 'src/cases/**/images': 'cases' });
-  eleventyConfig.addPassthroughCopy({ 'src/cases/**/casey.json': 'cases' });
+  eleventyConfig.addPassthroughCopy('src/cases/**/casey.json');
 
   /* ── Collections ── */
   eleventyConfig.addCollection('liveCases', () =>

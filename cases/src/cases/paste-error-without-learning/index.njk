@@ -1,0 +1,109 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Paste Error, Zero Learning (Anti-pattern)"
+description: "Why the paste-fix-repeat cycle with AI makes you a worse developer over time — and the diagnosis-first pattern that builds real understanding."
+slug: paste-error-without-learning
+track: agentic-ai
+readMin: 7
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Deliberate AI use
+schemaType: Article
+relatedCases:
+  - slug: context-window-budget
+    title: Context Window Budget for FE Tasks
+  - slug: abort-controller-ghost-updates
+    title: Ghost Updates and Race Conditions
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Fix without understanding is future debt</h2>
+  <div class="tone-junior">
+    <p>You see "TypeError: Cannot read properties of undefined (reading 'map')." You paste it into the AI chat. It says add <code>?.map</code> or default to <code>[]</code>. You do it. The error is gone. An hour later: same error, different component. You paste it again. Same answer. A week later: you can't explain to your team why five components use optional chaining in the same spot.</p>
+    <p>The error wasn't the bug — undefined data during loading was the bug. Each patch hid a symptom without addressing the root cause. You got faster at applying band-aids and slower at diagnosing wounds.</p>
+  </div>
+  <div class="tone-mid">
+    <p>AI accelerates your existing workflow. If your workflow is "see error → get fix → ship it," AI makes you faster at that workflow. But the workflow is wrong. The correct workflow is "see error → read it → form a hypothesis → ask a targeted question → understand the answer → apply and verify." AI accelerates the middle steps; the diagnosis and verification are yours.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This is a cognitive dependency risk, not an AI problem specifically. Cargo-culting from StackOverflow predates LLMs by a decade. AI makes the copy-paste loop faster and frictionless — which amplifies both the good (faster iteration on understood problems) and the bad (faster accumulation of poorly-understood patches). The defense is deliberate comprehension, not avoidance of AI.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The diagnosis-first pattern</h2>
+  <div class="tone-junior">
+    <p>Before pasting an error into AI, write one sentence: <em>what you think is wrong</em>. That's it. One sentence forces your brain to engage with the error message instead of treating it as a black box to hand off.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Paste-without-diagnosis
+"TypeError: Cannot read properties of undefined (reading 'map')
+[stack trace]
+fix this"
+
+// ✅ Diagnosis-first
+"Getting 'Cannot read properties of undefined (reading map)' at line 47.
+I think products is undefined on the first render because the React Query
+hook hasn't resolved yet. Is that right? And if so, why doesn't the
+component wait for isLoading before rendering?"</code></pre>
+    <p>The second prompt gets you a teaching answer. The first gets you a patch.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The rubber duck pattern: describe the problem to yourself before describing it to the model. The description forces a hypothesis. Then use AI to validate or refute it:</p>
+    <ul>
+      <li><strong>"I think [X] is causing [Y] because [Z]. Is that right?"</strong> — validates your reasoning</li>
+      <li><strong>"I expected [A] but got [B]. What am I missing about how [concept] works?"</strong> — fills knowledge gaps</li>
+      <li><strong>"The fix is [patch]. But is this addressing the root cause or just the symptom?"</strong> — catches shallow fixes</li>
+    </ul>
+    <p>When the model answers, verify the explanation makes sense. If you can't explain the fix to a colleague in two sentences, you don't understand it yet.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The professional concern: shallow fixes compound into systemic problems. A codebase where null checks, optional chaining, and <code>?? []</code> defaults are scattered because each was a copilot suggestion masks data-layer invariant violations. The type system should catch undefined data, not runtime guards applied at every consumer. </p>
+    <p>When reviewing AI-assisted code, ask not "does this fix the symptom?" but "does this fix the system?" Patches that survive PR review because they're small and correct locally accumulate into an unmaintainable codebase.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: paste vs diagnose</h2>
+  <div class="tone-junior"><p>"Paste" mode shows a raw error being sent to AI — watch the generic fix it gets back. "Diagnose" mode shows the same error with a one-sentence hypothesis — watch the teaching answer that explains root cause and prevention.</p></div>
+  <div class="tone-mid"><p>In diagnose mode, the AI asks a follow-up question. That's the signal you entered a diagnostic conversation rather than a vending-machine fix loop. Follow-up questions mean the model has enough context to be specific.</p></div>
+  <div class="tone-staff"><p>In the paste mode, the suggested fix adds <code>?.map()</code> — which hides the undefined rather than preventing it. The diagnose mode identifies the missing loading guard and the type annotation that should have caught this at compile time.</p></div>
+
+  <section class="case-demo" aria-label="Try it: paste vs diagnose-first" data-required="true" data-demo-type="toggle" data-demo-slug="paste-error-without-learning">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Paste — raw error</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Diagnose — hypothesis first</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Diagnose — hypothesis first</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Before pasting an error, write one sentence about what you think is wrong. This single step changes "give me a fix" into a learning conversation.</div>
+        <div class="tone-mid">The paste-fix-repeat loop builds speed at symptom-patching. The diagnosis-first pattern builds understanding of root causes. AI amplifies whichever workflow you use.</div>
+        <div class="tone-staff">AI-assisted shallow fixes compound: scattered null guards, untyped assertions, and suppressed warnings accumulate because each fix was individually small. Review for root cause, not just symptom resolution.</div>
+      </li>
+      <li>
+        <div class="tone-junior">If you can't explain a fix to a colleague in two sentences, you don't understand it yet. Understanding is the check, not "did the error go away."</div>
+        <div class="tone-mid">Use AI to validate hypotheses ("I think X is happening because Y — is that right?") rather than to generate fixes from blank context. You get better answers and you learn faster.</div>
+        <div class="tone-staff">The systemic fix: tighten the type system so these errors can't happen at runtime. Optional chaining at every consumer is a symptom of missing type guarantees at the data layer.</div>
+      </li>
+    </ul>
+  </div>
+</section>

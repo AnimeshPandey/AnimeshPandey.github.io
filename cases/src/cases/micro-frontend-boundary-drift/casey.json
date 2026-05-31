@@ -1,0 +1,36 @@
+{
+  "slug": "micro-frontend-boundary-drift",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "When two teams ship separate micro-frontends, they each install their own copy of the design system. A month later: different button borders, different font sizes, different spacing. The root cause is missing version enforcement.",
+      "mid": "Module Federation's shared dependencies config is the enforcement mechanism. Declare your design system as a singleton shared external: it loads once, all micro-frontends use the same instance.",
+      "staff": "Design system drift in micro-frontends is architectural entropy. Without a single-version policy enforced at the federation layer, each team naturally drifts — they pin at install time and update on their own schedule. The fix is governance, not willpower."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle between 'Drifted' (two teams, two design system versions) and 'Aligned' (one shared singleton). Notice the button spacing and color token differences in the drifted version.",
+      "mid": "In the aligned version, the shell app owns the design system version — all micro-frontends receive it as a shared external. No micro-frontend can override it or pin to a different version.",
+      "staff": "The Module Federation config: `shared: { '@designsystem/tokens': { singleton: true, requiredVersion: '^3.0.0' } }`. The `singleton: true` flag means the first-loaded version wins — and the shell's version wins if it loads first."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "A client had a checkout micro-frontend built by Team A and a product catalog built by Team B. Same brand, but checkout buttons were 4px larger with a different border radius. Users reported the site felt 'inconsistent.' Root cause: two different design system versions.",
+      "mid": "The fix that didn't work: adding a 'design system sync' Jira ticket to every sprint. The fix that worked: enforcing `singleton: true` in the webpack Module Federation config. Governance through tooling beats governance through process.",
+      "staff": "Long-term: invest in design system versioning strategy. Major versions (breaking tokens/APIs) are migration events. Minor versions (new components) should auto-update via the shared singleton. The versioning contract between design system and product teams is the organizational asset — the code is just enforcement."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're solving a common micro-frontend problem: when two teams each ship their own version of the design system, the UI drifts apart.",
+        "mid": "This case covers design system version drift in micro-frontend architectures — Module Federation singleton config, version enforcement, and the governance model.",
+        "staff": "We're covering the Module Federation shared-singleton pattern, the architectural entropy model, versioning contracts between design system and product teams, and the org governance angle."
+      }
+    ]
+  }
+}

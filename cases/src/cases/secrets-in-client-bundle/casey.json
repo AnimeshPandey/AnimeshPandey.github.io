@@ -1,0 +1,36 @@
+{
+  "slug": "secrets-in-client-bundle",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Any env var starting with REACT_APP_, VITE_, or NEXT_PUBLIC_ is in your JavaScript bundle. Open DevTools Sources and search — you can find it in seconds.",
+      "mid": "Minification is not security. Any determined person (or bot scanner) can extract a key from a minified bundle in under a minute.",
+      "staff": "Gitleaks and GitHub secret scanning catch keys in git history. A key that was ever committed — even if removed — should be rotated. Git history is permanent."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The broken demo has a fake API key in the bundle. Search for 'KEY' in DevTools Sources — you'll find it. The fixed version makes the same call through /api/proxy.",
+      "mid": "Check the Network tab request URLs. Broken: key is a URL parameter (visible in logs, proxies, CDNs). Fixed: URL is /api/proxy, key is on the server.",
+      "staff": "Run strings on the production bundle to verify no key leaked. This is a good addition to your deployment CI checklist."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "A freelance client got a $3,000 AWS bill from a key they put in a React app. The key was scraped within hours of deployment. Key rotation + proxy fixed it.",
+      "mid": "The pattern I see most often: team uses NEXT_PUBLIC_ prefix 'because it needs to work on the client.' The fix: add a Next.js API route as a proxy — 10 minutes of work.",
+      "staff": "Secret scanning bots are automated. GitHub Actions, npm publish, and Vercel deployments are all monitored by scanners looking for leaked API keys. Assume anything public is scanned."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're fixing a security mistake that costs real money: putting API keys in frontend JavaScript where anyone can read them.",
+        "mid": "This case covers the secrets-in-bundle vulnerability — why client-side JavaScript is public, the proxy pattern, and serverless functions as a lightweight fix.",
+        "staff": "We're covering OWASP A02 cryptographic failures, the full secret management lifecycle (rotation, CI scanning, rate limiting), and framework-specific patterns for keeping secrets server-side."
+      }
+    ]
+  }
+}

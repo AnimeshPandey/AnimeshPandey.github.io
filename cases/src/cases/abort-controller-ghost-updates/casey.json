@@ -1,0 +1,42 @@
+{
+  "slug": "abort-controller-ghost-updates",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The search box flicker is a race condition — old requests finish after new ones. AbortController fixes it by cancelling stale requests before they can update the UI.",
+      "mid": "Debouncing is a band-aid; cancellation is the cure. Even with 300ms debounce, a slow cache miss on the first query can still race a fast hit on the latest.",
+      "staff": "Measure with Network throttling in DevTools — Fast 4G makes races subtle. Slow 3G makes them unavoidable. AbortController eliminates the category."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Try typing fast in the broken demo — see the flicker? Now try the fixed version. Same fast typing, no flicker. The earlier requests are cancelled before they can overwrite.",
+      "mid": "Watch the network panel. 'Fixed' mode shows strikethrough requests — actual cancellations, not just ignored responses.",
+      "staff": "In production, cancelled requests reduce server load for search endpoints — a secondary benefit beyond UI correctness."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "AbortSignal.timeout(5000) auto-cancels after 5 seconds — great for preventing indefinite loading states on slow connections.",
+      "mid": "AbortSignal.any() is the composition primitive — combine user-triggered cancel with timeout cancel in one signal.",
+      "staff": "Thread the signal all the way through your data layer. A wrapper that strips the signal before passing it to fetch defeats the purpose."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "My first real race condition: a product filter that showed results for the wrong category after fast tab switching. AbortController fixed it in 10 lines.",
+      "mid": "I've seen the mounted-check pattern in codebases described as 'the fix for the setState on unmounted component warning' — it's not; it's a workaround that wastes bandwidth.",
+      "staff": "Search-as-you-type race conditions are the most common, but I've seen the same pattern in wizard forms where each step fetches data — same fix applies."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're fixing the bug where search results flicker or show the wrong data after fast typing. It's called a race condition, and AbortController is the answer.",
+        "mid": "This case covers race conditions in async fetch — why debouncing isn't enough, and how AbortController cancels stale requests before they corrupt your UI state.",
+        "staff": "We're covering the full AbortController API — signal threading, AbortError handling, AbortSignal.any for composed cancellation, and data library patterns."
+      }
+    ]
+  }
+}

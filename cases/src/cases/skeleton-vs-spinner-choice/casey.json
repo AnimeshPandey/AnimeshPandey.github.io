@@ -1,0 +1,36 @@
+{
+  "slug": "skeleton-vs-spinner-choice",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Skeletons work when you know the shape of what's loading. Spinners work when you don't. A skeleton for a search result with unknown count is the wrong choice — use a spinner.",
+      "mid": "The 200ms rule applies to both: don't flash a skeleton or spinner for fast loads. Add a delay: only show the indicator if the load takes longer than 200ms.",
+      "staff": "Skeleton screens improve perceived performance by giving the brain a prediction to confirm. But they fail when the layout doesn't match the skeleton — mismatched skeletons are worse than spinners because they create wrong expectations."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle between the same content loading with a spinner vs a skeleton. Notice how the skeleton feels faster even when both have the same 1.2s load time.",
+      "mid": "The skeleton version eliminates the 'blank void' phase — the brain sees structure and starts processing. The spinner version is pure waiting. This is why skeleton improves perceived performance without changing real performance.",
+      "staff": "The effect is strongest for content-heavy layouts (feeds, cards, tables). For single-element loads (a modal, a button state), a spinner is more honest — no structure to predict. Match the indicator to the loading shape."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "Facebook popularized skeleton screens in 2013 for the News Feed. Before: spinner while feed loaded. After: gray boxes in card shapes. Perceived load time dropped significantly with zero change to actual load time.",
+      "mid": "The team I worked with applied skeleton screens to a dashboard — but the API sometimes returned 0, 1, or 10 items. The skeleton always showed 4 cards. When 0 cards loaded, the layout shift was jarring. We switched to a spinner for that endpoint.",
+      "staff": "Lukew Wroblewski's research on skeleton screens distinguishes 'known-shape content' (profile, article, feed row) from 'unknown-shape content' (search results, dynamic lists). The rule: use skeletons only for known shapes, spinners for unknown counts."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're figuring out when to use skeleton screens vs spinners — and why the wrong choice makes loading feel worse.",
+        "mid": "This case covers the skeleton vs spinner decision matrix, the 200ms threshold rule, and how the 'predicted shape' is what makes skeletons work.",
+        "staff": "We're covering the psychology of predictive loading, the known-shape vs unknown-shape heuristic, and the failure modes of mismatched skeletons."
+      }
+    ]
+  }
+}

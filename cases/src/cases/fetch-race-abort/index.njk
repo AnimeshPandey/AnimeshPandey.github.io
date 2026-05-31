@@ -1,0 +1,126 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "fetch + AbortController: Cancel Ghost Requests"
+description: "The exact pattern to cancel in-flight fetch requests and prevent stale-data updates in any async fetch context."
+slug: fetch-race-abort
+track: networking
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Cancellation
+schemaType: Article
+relatedCases:
+  - slug: abort-controller-ghost-updates
+    title: Ghost Updates and Race Conditions
+  - slug: event-loop-one-thread
+    title: "The Event Loop: One Thread, Many Queues"
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The request you can't stop</h2>
+  <div class="tone-junior">
+    <p>User navigates to a product page. A large product details fetch starts. They immediately click away to another page. The original fetch is still running — it will complete, call your state setter, and maybe crash the app ("can't update state on unmounted component"). You need to cancel it. <code>AbortController</code> is how.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Every fetch request you start should have a cancellation strategy. The two common triggers: (1) the component unmounted before the response arrived, or (2) a new request superseded the old one. Without cancellation, both result in stale-data updates, wasted bandwidth, and potential state corruption.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This case is the networking companion to the abort-controller-ghost-updates case — focused on the raw fetch pattern without React context. The same AbortController API, applied in vanilla JS, custom hooks, and service layers.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The three-line cancellation pattern</h2>
+  <div class="tone-junior">
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// 1. Create a controller
+const controller = new AbortController();
+
+// 2. Pass the signal to fetch
+const res = await fetch('/api/data', { signal: controller.signal });
+
+// 3. Cancel when needed
+controller.abort(); // network connection dropped immediately</code></pre>
+    <p>When <code>abort()</code> is called, the fetch rejects with a <code>DOMException</code> named <code>AbortError</code>. Catch it and return — it's not a real error.</p>
+  </div>
+  <div class="tone-mid">
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Complete fetch wrapper with cancellation
+async function fetchWithAbort(url, signal) {
+  try {
+    const res = await fetch(url, { signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    if (err.name === 'AbortError') return null; // cancelled — not an error
+    throw err; // real error — re-throw
+  }
+}
+
+// Usage: cancel previous, start new
+let currentController = null;
+async function loadData(id) {
+  currentController?.abort();
+  currentController = new AbortController();
+  const data = await fetchWithAbort(`/api/${id}`, currentController.signal);
+  if (data) updateUI(data); // data is null if aborted
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>For parallel requests with a single cancellation point:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const controller = new AbortController();
+const { signal } = controller;
+
+// All three requests share one signal — one abort() cancels all
+const [user, posts, comments] = await Promise.all([
+  fetch('/api/user', { signal }).then(r => r.json()),
+  fetch('/api/posts', { signal }).then(r => r.json()),
+  fetch('/api/comments', { signal }).then(r => r.json()),
+]);</code></pre>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: uncancelled vs cancelled fetch</h2>
+  <div class="tone-junior"><p>Start a slow fetch then immediately click Cancel. "Broken" — the fetch completes and updates state anyway. "Fixed" — the fetch is aborted, no state update, no error.</p></div>
+  <div class="tone-mid"><p>Open the Network panel. "Fixed" shows the request as "cancelled" with a strikethrough — the connection was actually dropped, not just ignored.</p></div>
+  <div class="tone-staff"><p>Compare request duration in Network panel: cancelled requests in fixed mode terminate immediately. Broken mode requests run to completion, wasting bandwidth and triggering unnecessary state updates.</p></div>
+
+  <section class="case-demo" aria-label="Try it: fetch cancellation" data-required="true" data-demo-type="toggle" data-demo-slug="fetch-race-abort">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — no cancel</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — AbortController</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — AbortController</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Every fetch that can be superseded or outlive its context needs an AbortController. Create controller, pass signal, call abort() on cleanup.</div>
+        <div class="tone-mid">AbortError is not a real error — catch it and return null. Only re-throw non-abort errors to your error handler.</div>
+        <div class="tone-staff">One controller can cancel many parallel fetches — pass the same signal to all fetch calls in a Promise.all to abort the whole batch at once.</div>
+      </li>
+      <li>
+        <div class="tone-junior">AbortSignal.timeout(ms) creates an auto-cancelling signal — no manual controller needed for simple fetch timeouts.</div>
+        <div class="tone-mid">In React useEffect, the cleanup function (return () => ...) is where abort() belongs — it runs on component unmount and on every effect re-run.</div>
+        <div class="tone-staff">TanStack Query v5 passes AbortSignal automatically to query functions — thread it to fetch. SWR does the same. Using these libraries correctly is using AbortController correctly.</div>
+      </li>
+    </ul>
+  </div>
+</section>

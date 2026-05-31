@@ -1,0 +1,36 @@
+{
+  "slug": "lcp-not-hero-image",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Before starting any LCP optimization, run the PerformanceObserver snippet to see what element the browser actually flagged. It's often not what you think.",
+      "mid": "The filmstrip in Chrome DevTools Performance panel shows a yellow marker for LCP. Hover it — the highlighted element is your target. Start there, not with the hero image.",
+      "staff": "CrUX LCP attribution is more valuable than lab data here — real users on real devices may have a different LCP element than your dev machine shows."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The broken demo simulates a page waiting for a font before the heading renders — that wait is measured as LCP time. The fixed version preloads the font so the heading renders immediately.",
+      "mid": "The LCP score difference between the two modes is typically 1-2 seconds on Slow 3G — the difference between 'Good' and 'Needs Improvement' in CWV.",
+      "staff": "The four-phase LCP breakdown (TTFB + load delay + load time + render delay) is in PageSpeed Insights under 'Diagnose performance issues'. Address the largest phase first."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I spent a week compressing images for a marketing site. LCP didn't budge because the actual LCP element was an h1 waiting on a 350KB font file. Preloading the font fixed it.",
+      "mid": "Every performance sprint I've seen assume LCP = hero image. The PerformanceObserver check takes 30 seconds — add it to your perf audit checklist first.",
+      "staff": "For a product with text-heavy above-fold content (news, docs, SaaS dashboards), text LCP is nearly always the case. Image-focused optimization is often a red herring."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're solving the mystery of LCP — why optimizing the hero image doesn't always help, and how to find the actual element that's slowing your score.",
+        "mid": "This case covers LCP element identification — why it's often text, how to measure it with PerformanceObserver, and the right optimization for each element type.",
+        "staff": "We're covering LCP attribution phases in CrUX, font-loading impact on text LCP, and SSR as the fastest path to low LCP for text elements."
+      }
+    ]
+  }
+}

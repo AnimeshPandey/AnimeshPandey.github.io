@@ -1,0 +1,36 @@
+{
+  "slug": "fetch-race-abort",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Every fetch that can be cancelled should have an AbortController. The three-line pattern — create, pass signal, abort on cleanup — prevents an entire category of bugs.",
+      "mid": "AbortError is expected, not an error. The catch block pattern: if AbortError, return null; else re-throw. Keep it consistent across your data layer.",
+      "staff": "One signal can cancel multiple parallel fetches. Pass the same AbortController.signal to all fetch calls in a Promise.all — one abort() drops them all."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Start a request and cancel it in broken mode — it completes anyway. Fixed mode shows the cancelled request in the Network panel with an actual termination.",
+      "mid": "The Network panel strikethrough is the proof: the browser actually dropped the TCP connection, not just ignored the response. That's real bandwidth saved.",
+      "staff": "In production, cancelled search requests reduce server load significantly — especially for typeahead endpoints that fire 10+ requests per search session."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "My first AbortController use was a product detail page where navigating away left a 2-second fetch running and crashing the next page's state. Three lines fixed it.",
+      "mid": "The 'can't update state on unmounted component' React warning is almost always a fetch that needs an AbortController in the cleanup function.",
+      "staff": "Teams that use TanStack Query or SWR correctly get AbortController for free — the libraries pass the signal. The bugs appear when teams write custom fetch hooks without it."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're learning how to cancel fetch requests — so they don't update state after you navigate away or start a new request.",
+        "mid": "This case is the networking deep-dive on AbortController — the three-line pattern, AbortError handling, and composing signals across parallel requests.",
+        "staff": "We're covering the full signal API, parallel abort patterns, framework integration (TanStack Query, SWR), and the production bandwidth case for cancellation."
+      }
+    ]
+  }
+}

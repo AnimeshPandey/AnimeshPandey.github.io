@@ -1,0 +1,116 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Fake Progress Bars and Trust"
+description: "Why fabricated percentage progress bars damage user trust — and what honest loading indicators look like instead."
+slug: fake-loading-progress
+track: psychology-perception
+readMin: 7
+flagship: true
+demoType: animation
+publishedAt: "2026-05-31T00:00:00Z"
+principle: Honest feedback
+schemaType: Article
+relatedCases:
+  - slug: skeleton-vs-spinner-choice
+    title: When Skeletons Beat Spinners (Product)
+  - slug: reduced-motion-respect
+    title: "Respecting prefers-reduced-motion"
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The bar that lies at 95%</h2>
+  <div class="tone-junior">
+    <p>You've seen it: a progress bar races to 90%, then slows to a crawl. It hits 95% and stalls. You wait five seconds. Ten. Fifteen. The bar doesn't move. You start wondering if something broke. Finally, at 100%, the page loads. That wait felt much longer than if the bar had never made a promise at all.</p>
+    <p>The bar was fake. It was a CSS animation with a timer, not connected to actual progress. The 95% stall happened because the real work took longer than the fake bar predicted. You felt betrayed by a number.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The psychology: a percentage bar sets a precise numerical expectation. The brain treats "95% done" as "5% remaining." When the remaining 5% takes 40% of the total time, the expectation is violated — and expectation violation feels significantly worse than a wait with no expectation set. An honest indeterminate indicator (a spinner, a pulse animation) sets no expectation and therefore cannot be violated.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The research (Antonides et al., 2002 on wait experience; applied to UI loading by multiple UX teams) distinguishes between "wait experience" and "wait expectation violation." A spinner is a pure wait experience — uncomfortable but not betraying. A fake percentage bar adds expectation violation on top of the wait. Measurement: perceived wait time in violation conditions can run 40–60% longer than clock time, vs 10–20% longer for honest spinners.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The loading indicator decision tree</h2>
+  <div class="tone-junior">
+    <p><strong>Under 200ms</strong>: show nothing. A flash of a spinner for a fast operation is more distracting than useful.</p>
+    <p><strong>200ms – 3s</strong>: show an indeterminate indicator — spinner, animated dots, or a looping progress pulse. No percentage, no ETA.</p>
+    <p><strong>Over 3s with known progress</strong>: show real deterministic progress. Use actual milestones: "Uploading (1 of 3 files)", "Processing…", "Almost done." Real milestones are more trustworthy than fake percentages.</p>
+    <p><strong>Over 3s without known progress</strong>: stay indeterminate but add text ("This may take a minute"). Honesty about unknowns beats fabricated precision.</p>
+  </div>
+  <div class="tone-mid">
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Fake progress: setTimeout driving a CSS animation
+const [progress, setProgress] = useState(0);
+useEffect(() =&gt; {
+  const timer = setInterval(() =&gt; {
+    setProgress(p =&gt; Math.min(p + 2, 95)); // stalls at 95%
+  }, 100);
+  return () =&gt; clearInterval(timer);
+}, []);
+
+// ✅ Real progress: event-driven from actual upload
+xhr.upload.addEventListener('progress', (e) =&gt; {
+  if (e.lengthComputable) {
+    setProgress(Math.round((e.loaded / e.total) * 100));
+  }
+});</code></pre>
+    <p>If you don't have real progress events, use an indeterminate animation — not a fake deterministic one.</p>
+  </div>
+  <div class="tone-staff">
+    <p>When you genuinely have async work with no progress signal (e.g., a server-side job with no streaming), the honest options are:</p>
+    <ul>
+      <li><strong>Indeterminate animation</strong> — simple and honest</li>
+      <li><strong>Polling with last-known status</strong> — "Processing your video… (started 12s ago)"</li>
+      <li><strong>Step-based labeling</strong> — show named stages ("Transcoding", "Generating thumbnails") even without percentages; each stage name is a real server event, not a timer</li>
+      <li><strong>Optimistic background processing</strong> — let the user do other things, notify on completion</li>
+    </ul>
+    <p>The principle: every number you display is a promise. Only display numbers you can keep.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch it: fake vs honest progress</h2>
+  <div class="tone-junior"><p>The "Fake" animation shows a progress bar rushing to 90%, then stalling. Notice the moment of psychological discomfort at the stall. The "Honest" animation shows an indeterminate pulse — no number, no false promise, no betrayal.</p></div>
+  <div class="tone-mid"><p>Both animations represent the same 4-second operation. The fake bar makes the wait feel longer because of the stall. The honest indicator makes the wait feel shorter because there is no violated expectation.</p></div>
+  <div class="tone-staff"><p>The third option in the demo shows real deterministic progress with named milestones from actual server-sent events. Compare the perceived wait across all three for the same clock duration.</p></div>
+
+  <section class="case-demo" aria-label="Watch: fake vs honest progress indicators" data-required="true" data-demo-type="animation" data-demo-slug="fake-loading-progress">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Fake — timer-driven bar</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Honest — indeterminate</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Honest — indeterminate</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A spinning circle or a pulsing bar with no percentage is honest — it says "working, don't know how long." A fake 95% stall says "I lied to you." Choose honesty.</div>
+        <div class="tone-mid">The 200ms / 3s thresholds: nothing under 200ms, indeterminate from 200ms–3s, real milestones over 3s. Only show deterministic progress when you have real progress events.</div>
+        <div class="tone-staff">Expectation violation compounds wait pain. Every percentage you display is a numerical promise. Fabricating precise numbers for inherently indeterminate operations reliably increases perceived wait time.</div>
+      </li>
+      <li>
+        <div class="tone-junior">If you're using setTimeout to drive a progress bar, you're faking it. Use real upload progress events, server-sent events, or WebSocket progress for real deterministic bars.</div>
+        <div class="tone-mid">For genuinely unknowable async work: indeterminate animation + elapsed time label ("Processing… 12s") or step-based labeling from real server events — never timer-fabricated percentages.</div>
+        <div class="tone-staff">The design principle: every number is a promise. Named stages from real server events are trustworthy. A spinner with honest copy ("This may take a minute") outperforms a fake percentage bar in both trust and measured perceived wait time.</div>
+      </li>
+    </ul>
+  </div>
+</section>
