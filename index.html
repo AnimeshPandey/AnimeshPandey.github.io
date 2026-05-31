@@ -530,12 +530,14 @@
       <div class="rm-panel-head-left">
         <span class="rm-panel-eyebrow" aria-hidden="true">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          briefing
+          <span data-i18n="recruiter.eyebrow">briefing</span>
         </span>
-        <h2 class="rm-panel-title" id="rm-panel-title">Recruiter briefing</h2>
+        <h2 class="rm-panel-title" id="rm-panel-title" data-i18n="recruiter.title">Recruiter briefing</h2>
       </div>
       <div class="rm-panel-head-actions">
-        <button class="rm-panel-btn" id="rm-panel-minimize" aria-label="Minimize briefing - recruiter mode stays on">
+        <button class="rm-panel-btn" id="rm-panel-minimize"
+                data-i18n-attr="aria-label" data-i18n="recruiter.minimizeLabel"
+                aria-label="Minimize briefing - recruiter mode stays on">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
       </div>
@@ -548,12 +550,14 @@
       <div class="rm-foot-ctas">
         <a href="/resume.pdf" download class="rm-foot-btn rm-foot-prime">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Resume
+          <span data-i18n="nav.resume">Resume</span>
         </a>
-        <a href="mailto:animeshpandey1909@gmail.com" class="rm-foot-btn">Email</a>
-        <button class="rm-foot-btn" id="rm-copy-brief" aria-label="Copy plain-text brief to clipboard">Copy brief</button>
+        <a href="mailto:animeshpandey1909@gmail.com" class="rm-foot-btn" data-i18n="recruiter.email">Email</a>
+        <button class="rm-foot-btn" id="rm-copy-brief"
+                data-i18n-attr="aria-label" data-i18n="recruiter.copyBriefLabel"
+                aria-label="Copy plain-text brief to clipboard"><span data-i18n="recruiter.copyBrief">Copy brief</span></button>
       </div>
-      <p class="rm-honesty" id="rm-panel-desc"><em>Synthesized from this portfolio's public content - not a live AI model.</em></p>
+      <p class="rm-honesty" id="rm-panel-desc"><em data-i18n="recruiter.honesty">Synthesized from this portfolio's public content - not a live AI model.</em></p>
     </footer>
   </div>
 </div>
@@ -580,10 +584,10 @@
           <span data-i18n="hero.ctaExperience">View experience</span>
           <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg>
         </a>
-        <button type="button" class="btn btn-outline" id="resume-preview-trigger" aria-haspopup="dialog">
-          <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
-          <span data-i18n="hero.ctaResume">Resume</span>
-        </button>
+        <a href="/cases/" class="btn btn-outline">
+          <svg class="icon" aria-hidden="true"><use href="#i-sparkle"/></svg>
+          <span data-i18n="hero.ctaCasebook">The Casebook</span>
+        </a>
         <a href="#contact" class="btn btn-outline">
           <span data-i18n="hero.ctaContact">Let's talk</span>
           <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
@@ -592,11 +596,11 @@
 
       <!-- Fact strip — mobile only, card hidden -->
       <div class="hero-facts" aria-label="Quick facts" role="list">
-        <span class="hero-fact" role="listitem"><span class="fact-dot" aria-hidden="true"></span>Open to roles</span>
+        <span class="hero-fact" role="listitem"><span class="fact-dot" aria-hidden="true"></span><span data-i18n="hero.factOpen">Open to roles</span></span>
         <span class="hero-fact" role="listitem">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore
         </span>
-        <span class="hero-fact" role="listitem">7+ years</span>
+        <span class="hero-fact" role="listitem" data-i18n="hero.factYears">7+ years</span>
         <span class="hero-fact" role="listitem">React</span>
         <span class="hero-fact" role="listitem">TypeScript</span>
         <span class="hero-fact" role="listitem">Next.js</span>
@@ -606,21 +610,21 @@
 
     <!-- Right column: info card — desktop only -->
     <aside class="hero-card" aria-label="Quick facts">
-      <span class="hc-comment">// frontend lead · measurement &amp; AI</span>
+      <span class="hc-comment" data-i18n="hero.cardCommentRole">// frontend lead · measurement &amp; AI</span>
       <hr class="hc-divider" />
-      <span class="hc-comment">// currently</span>
+      <span class="hc-comment" data-i18n="hero.cardCommentCurrently">// currently</span>
       <p class="hc-val">Senior Software Engineer at <a href="https://lifesight.io" class="hc-link" target="_blank" rel="noopener noreferrer">Lifesight</a></p>
       <hr class="hc-divider" />
 
-      <span class="hc-comment">// location</span>
+      <span class="hc-comment" data-i18n="hero.cardCommentLocation">// location</span>
       <p class="hc-val">Bangalore, India</p>
       <hr class="hc-divider" />
 
-      <span class="hc-comment">// experience</span>
+      <span class="hc-comment" data-i18n="hero.cardCommentExperience">// experience</span>
       <p class="hc-val">7+ years · SaaS &amp; GovTech</p>
       <hr class="hc-divider" />
 
-      <span class="hc-comment">// core stack</span>
+      <span class="hc-comment" data-i18n="hero.cardCommentStack">// core stack</span>
       <div class="hc-stack">
         <span>React</span><span>TypeScript</span><span>Next.js</span>
         <span>Microfrontends</span><span>Node.js</span>
@@ -629,13 +633,14 @@
 
       <span class="hc-status">
         <span class="hc-pulse" aria-hidden="true"></span>
-        Open to new roles
+        <span data-i18n="hero.cardOpenStatus">Open to new roles</span>
       </span>
 
-      <a href="resume.pdf" download class="hc-dl" aria-label="Download resume PDF">
+      <button type="button" class="hc-dl" id="resume-preview-hc" aria-haspopup="dialog"
+              data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
-        resume.pdf
-      </a>
+        <span data-i18n="hero.viewResume">View resume</span>
+      </button>
     </aside>
 
     <!-- Tech skill ticker strip — always visible, spans full hero width -->
@@ -653,7 +658,7 @@
       </div>
       <div class="scroll-cue">
         <svg width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
-        scroll
+        <span data-i18n="hero.scrollCue">scroll</span>
       </div>
     </div>
   </section>
@@ -722,10 +727,10 @@
       <article class="t-item fade-up">
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date"><time datetime="2025-09">Sept 2025</time> to <time>Present</time></span>
+          <span class="t-date"><time datetime="2025-09">Sept 2025</time> <span data-i18n="experience.to">to</span> <time data-i18n="experience.present">Present</time></span>
           <a href="https://lifesight.io" class="t-co" target="_blank" rel="noopener noreferrer">Lifesight</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
-          <span class="t-industry">SaaS Analytics</span>
+          <span class="t-industry" data-i18n="experience.industries.saasAnalytics">SaaS Analytics</span>
         </div>
         <h3 class="t-role" data-i18n="experience.lifesight.role">Senior Software Engineer</h3>
         <p class="t-desc" data-i18n="experience.lifesight.desc">Leading frontend development for Lifesight's Unified Measurement OS, a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards.</p>
@@ -737,10 +742,10 @@
       <article class="t-item fade-up">
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date"><time datetime="2022-04">Apr 2022</time> to <time datetime="2025-09">Sept 2025</time></span>
+          <span class="t-date"><time datetime="2022-04">Apr 2022</time> <span data-i18n="experience.to">to</span> <time datetime="2025-09">Sept 2025</time></span>
           <a href="https://tekion.com" class="t-co" target="_blank" rel="noopener noreferrer">Tekion</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
-          <span class="t-industry">Automotive Retail</span>
+          <span class="t-industry" data-i18n="experience.industries.automotiveRetail">Automotive Retail</span>
         </div>
         <h3 class="t-role" data-i18n="experience.tekion.role">Software Engineer</h3>
         <p class="t-desc" data-i18n="experience.tekion.desc">Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by <strong>30%</strong> for <strong>50k+ daily users</strong>. Introduced AI-driven development tooling cutting team toil by 30%.</p>
@@ -749,10 +754,10 @@
         </div>
         <div class="t-sub">
           <div class="t-meta">
-            <span class="t-date"><time datetime="2021-01">Jan 2021</time> to <time datetime="2022-04">Apr 2022</time></span>
+            <span class="t-date"><time datetime="2021-01">Jan 2021</time> <span data-i18n="experience.to">to</span> <time datetime="2022-04">Apr 2022</time></span>
           </div>
-          <h3 class="t-role">Associate Software Engineer</h3>
-          <p class="t-desc">Developed enterprise automotive retail applications using ReactJS, Redux, and React Native. Built <strong>20+ reusable UI components</strong> and microfrontend modules documented in Storybook, accelerating feature delivery across engineering teams.</p>
+          <h3 class="t-role" data-i18n="experience.tekionAssociate.role">Associate Software Engineer</h3>
+          <p class="t-desc" data-i18n="experience.tekionAssociate.desc">Developed enterprise automotive retail applications using ReactJS, Redux, and React Native. Built <strong>20+ reusable UI components</strong> and microfrontend modules documented in Storybook, accelerating feature delivery across engineering teams.</p>
           <div class="tags" aria-label="Technologies used">
             <span class="tag">ReactJS</span><span class="tag">Redux</span><span class="tag">React Native</span><span class="tag">Storybook</span>
           </div>
@@ -762,22 +767,22 @@
       <article class="t-item fade-up">
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date"><time datetime="2019-06">Jun 2019</time> to <time datetime="2021-01">Jan 2021</time></span>
+          <span class="t-date"><time datetime="2019-06">Jun 2019</time> <span data-i18n="experience.to">to</span> <time datetime="2021-01">Jan 2021</time></span>
           <a href="https://vassarlabs.com" class="t-co" target="_blank" rel="noopener noreferrer">Vassar Labs</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Hyderabad</span>
-          <span class="t-industry">GovTech</span>
+          <span class="t-industry" data-i18n="experience.industries.govtech">GovTech</span>
         </div>
-        <h3 class="t-role">Software Development Engineer</h3>
-        <p class="t-desc">Led frontend development of Kerala-WRIS dashboards providing real-time water resource visibility to millions of residents. Built geospatial visualisation systems for government clients and reduced API overhead by <strong>30%</strong> through frontend optimisation.</p>
+        <h3 class="t-role" data-i18n="experience.vassar.role">Software Development Engineer</h3>
+        <p class="t-desc" data-i18n="experience.vassar.desc">Led frontend development of Kerala-WRIS dashboards providing real-time water resource visibility to millions of residents. Built geospatial visualisation systems for government clients and reduced API overhead by <strong>30%</strong> through frontend optimisation.</p>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">Angular 8</span><span class="tag">Highcharts</span><span class="tag">Leaflet</span><span class="tag">D3.js</span><span class="tag">AngularJS</span>
         </div>
         <div class="t-sub">
           <div class="t-meta">
-            <span class="t-date"><time datetime="2018-05">May 2018</time> to <time datetime="2018-11">Nov 2018</time></span>
+            <span class="t-date"><time datetime="2018-05">May 2018</time> <span data-i18n="experience.to">to</span> <time datetime="2018-11">Nov 2018</time></span>
           </div>
-          <h3 class="t-role">Software Development Intern</h3>
-          <p class="t-desc">Developed a real-time SCADA monitoring system for Andhra Pradesh Water Resources using AngularJS and D3.js, enabling operational dashboards for field teams.</p>
+          <h3 class="t-role" data-i18n="experience.vassarIntern.role">Software Development Intern</h3>
+          <p class="t-desc" data-i18n="experience.vassarIntern.desc">Developed a real-time SCADA monitoring system for Andhra Pradesh Water Resources using AngularJS and D3.js, enabling operational dashboards for field teams.</p>
           <div class="tags" aria-label="Technologies used">
             <span class="tag">AngularJS</span><span class="tag">D3.js</span>
           </div>
@@ -860,12 +865,12 @@
     <div class="projects-grid">
 
       <article class="pc wide fade-up" data-impact='[{"l":"50k+ daily users","v":95,"d":"50k+"},{"l":"Load time cut","v":30,"d":"−30%"},{"l":"Independent teams","v":60,"d":"10+"}]'>
-        <p class="pc-type">Architecture · Tekion</p>
-        <h3 class="pc-name">Microfrontend Architecture at Scale</h3>
-        <p class="pc-desc">Architected and shipped a production microfrontend system using Webpack Module Federation across 10+ mission-critical enterprise automotive retail modules, each owned by an independent squad and deployed without cross-team coordination. Achieved a 30% reduction in load times through aggressive code splitting, route-level lazy loading, and bundle-level Lighthouse budgets enforced in CI. Introduced AI-driven development tooling that cut engineering toil by 30%. The platform serves 50,000+ daily active users across dealership and OEM workflows.</p>
+        <p class="pc-type" data-i18n="projects.microfrontend.type">Architecture · Tekion</p>
+        <h3 class="pc-name" data-i18n="projects.microfrontend.title">Microfrontend Architecture at Scale</h3>
+        <p class="pc-desc" data-i18n="projects.microfrontend.desc">Architected and shipped a production microfrontend system using Webpack Module Federation across 10+ mission-critical enterprise automotive retail modules, each owned by an independent squad and deployed without cross-team coordination. Achieved a 30% reduction in load times through aggressive code splitting, route-level lazy loading, and bundle-level Lighthouse budgets enforced in CI. Introduced AI-driven development tooling that cut engineering toil by 30%. The platform serves 50,000+ daily active users across dealership and OEM workflows.</p>
         <div class="pc-metric" aria-label="Scale achieved">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-users"/></svg>
-          50k+ daily users · 30% faster loads · 10+ independent teams
+          <span data-i18n="projects.microfrontend.metric">50k+ daily users · 30% faster loads · 10+ independent teams</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">Webpack Module Federation</span><span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Performance</span><span class="tag">GitHub Actions</span><span class="tag">Lighthouse</span>
@@ -873,12 +878,12 @@
       </article>
 
       <article class="pc fade-up" data-impact='[{"l":"API overhead cut","v":30,"d":"−30%"},{"l":"Residents served","v":80,"d":"millions"}]'>
-        <p class="pc-type">GovTech · Vassar Labs</p>
-        <h3 class="pc-name">Kerala-WRIS Water Intelligence Platform</h3>
-        <p class="pc-desc">Led frontend development for the Government of Kerala's statewide water resource information system. Built real-time geospatial dashboards over Leaflet with district-level overlays, time-series hydrology charts in Highcharts, and D3.js data-layer visualisations for field operations teams. Reduced API overhead by 30% through frontend caching and request batching strategies. Concurrently built a real-time SCADA monitoring system for Andhra Pradesh Water Resources used by field teams for operational visibility.</p>
+        <p class="pc-type" data-i18n="projects.wris.type">GovTech · Vassar Labs</p>
+        <h3 class="pc-name" data-i18n="projects.wris.title">Kerala-WRIS Water Intelligence Platform</h3>
+        <p class="pc-desc" data-i18n="projects.wris.desc">Led frontend development for the Government of Kerala's statewide water resource information system. Built real-time geospatial dashboards over Leaflet with district-level overlays, time-series hydrology charts in Highcharts, and D3.js data-layer visualisations for field operations teams. Reduced API overhead by 30% through frontend caching and request batching strategies. Concurrently built a real-time SCADA monitoring system for Andhra Pradesh Water Resources used by field teams for operational visibility.</p>
         <div class="pc-metric" aria-label="Impact">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
-          30% API reduction · millions of residents served
+          <span data-i18n="projects.wris.metric">30% API reduction · millions of residents served</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">Angular 8</span><span class="tag">Highcharts</span><span class="tag">Leaflet</span><span class="tag">D3.js</span><span class="tag">AngularJS</span><span class="tag">GovTech</span>
@@ -886,12 +891,12 @@
       </article>
 
       <article class="pc fade-up" data-impact='[{"l":"LLM streaming","v":100,"d":"real-time"},{"l":"Tool-call panels","v":75,"d":"inline"},{"l":"Progressive UX","v":85,"d":"done"}]'>
-        <p class="pc-type">AI Product · Lifesight</p>
-        <h3 class="pc-name">Mia: Agentic AI Analytics Interface</h3>
-        <p class="pc-desc">Built the frontend for Lifesight's agentic AI assistant, which interprets complex marketing datasets and surfaces attribution insights through a streaming conversational interface. Implemented real-time LLM response streaming, tool-call visualisation panels that expose reasoning steps, and deep integration with the Unified Measurement OS data layer. Designed to handle ambiguous multi-step queries from non-technical marketing stakeholders with progressive disclosure of confidence and caveats.</p>
+        <p class="pc-type" data-i18n="projects.mia.type">AI Product · Lifesight</p>
+        <h3 class="pc-name" data-i18n="projects.mia.title">Mia: Agentic AI Analytics Interface</h3>
+        <p class="pc-desc" data-i18n="projects.mia.desc">Built the frontend for Lifesight's agentic AI assistant, which interprets complex marketing datasets and surfaces attribution insights through a streaming conversational interface. Implemented real-time LLM response streaming, tool-call visualisation panels that expose reasoning steps, and deep integration with the Unified Measurement OS data layer. Designed to handle ambiguous multi-step queries from non-technical marketing stakeholders with progressive disclosure of confidence and caveats.</p>
         <div class="pc-metric" aria-label="Category">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-sparkle"/></svg>
-          Agentic AI · Streaming UI · Tool-call visualisation
+          <span data-i18n="projects.mia.metric">Agentic AI · Streaming UI · Tool-call visualisation</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">ReactJS</span><span class="tag">Agentic AI</span><span class="tag">LLM Streaming</span>
@@ -899,12 +904,12 @@
       </article>
 
       <article class="pc fade-up" data-impact='[{"l":"Proactive alerts","v":100,"d":"inline"},{"l":"AI narration","v":80,"d":"LLM"}]'>
-        <p class="pc-type">AI Feature · Lifesight</p>
-        <h3 class="pc-name">Attribution Anomaly Intelligence</h3>
-        <p class="pc-desc">Embedded AI layer within the Lifesight attribution dashboard that continuously monitors media spend signals and proactively surfaces anomalies without requiring the user to go looking. Statistical changepoint detection (z-score + PELT algorithm) runs on the data pipeline; results are handed to an LLM that generates plain-English explanations of what shifted, why it likely happened, and what action to consider. Surfaces budget pacing issues, channel-level attribution drift, and incrementality test failures as inline insight cards - not alerts that get ignored.</p>
+        <p class="pc-type" data-i18n="projects.anomaly.type">AI Feature · Lifesight</p>
+        <h3 class="pc-name" data-i18n="projects.anomaly.title">Attribution Anomaly Intelligence</h3>
+        <p class="pc-desc" data-i18n="projects.anomaly.desc">Embedded AI layer within the Lifesight attribution dashboard that continuously monitors media spend signals and proactively surfaces anomalies without requiring the user to go looking. Statistical changepoint detection (z-score + PELT algorithm) runs on the data pipeline; results are handed to an LLM that generates plain-English explanations of what shifted, why it likely happened, and what action to consider. Surfaces budget pacing issues, channel-level attribution drift, and incrementality test failures as inline insight cards - not alerts that get ignored.</p>
         <div class="pc-metric" aria-label="Category">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-sparkle"/></svg>
-          AI anomaly detection · LLM narration · Proactive insights
+          <span data-i18n="projects.anomaly.metric">AI anomaly detection · LLM narration · Proactive insights</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">LLM</span><span class="tag">Anomaly Detection</span><span class="tag">Data Visualisation</span>
@@ -912,12 +917,12 @@
       </article>
 
       <article class="pc fade-up" data-impact='[{"l":"SSR first-paint","v":100,"d":"fast"},{"l":"Core Web Vitals","v":90,"d":"✓ CI"},{"l":"Playwright cover","v":80,"d":"full"}]'>
-        <p class="pc-type">Analytics Platform · Lifesight</p>
-        <h3 class="pc-name">Marketing Intelligence Dashboard</h3>
-        <p class="pc-desc">Delivered enterprise-grade analytics dashboards powering Lifesight's Unified Measurement OS: MMM (Media Mix Modelling) curves, incrementality test results, and causal attribution breakdowns for enterprise brands managing multi-million-dollar ad budgets. Built with Next.js SSR for fast first-paint on dense data-heavy views, enforced Core Web Vitals budgets in CI, and established platform-wide Playwright testing standards that became the team baseline.</p>
+        <p class="pc-type" data-i18n="projects.marketingDash.type">Analytics Platform · Lifesight</p>
+        <h3 class="pc-name" data-i18n="projects.marketingDash.title">Marketing Intelligence Dashboard</h3>
+        <p class="pc-desc" data-i18n="projects.marketingDash.desc">Delivered enterprise-grade analytics dashboards powering Lifesight's Unified Measurement OS: MMM (Media Mix Modelling) curves, incrementality test results, and causal attribution breakdowns for enterprise brands managing multi-million-dollar ad budgets. Built with Next.js SSR for fast first-paint on dense data-heavy views, enforced Core Web Vitals budgets in CI, and established platform-wide Playwright testing standards that became the team baseline.</p>
         <div class="pc-metric" aria-label="Performance metric">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
-          SSR · Core Web Vitals · Playwright coverage
+          <span data-i18n="projects.marketingDash.metric">SSR · Core Web Vitals · Playwright coverage</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">ReactJS</span><span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">SSR</span><span class="tag">Playwright</span><span class="tag">A/B Testing</span>
@@ -925,12 +930,12 @@
       </article>
 
       <article class="pc fade-up" data-impact='[{"l":"Components built","v":65,"d":"20+"},{"l":"Code duplication","v":25,"d":"−25%"},{"l":"WCAG 2.1 pass","v":100,"d":"✓"}]'>
-        <p class="pc-type">Design System · Tekion</p>
-        <h3 class="pc-name">Enterprise Component Library</h3>
-        <p class="pc-desc">Designed and maintained a Storybook-documented shared component library used across 10+ product modules at Tekion. Built 20+ reusable, accessible UI components (forms, data tables, modal flows, navigation patterns) with full TypeScript typing, WCAG 2.1 compliance, and interactive documentation. Reduced per-team duplicate code by 25% and measurably shortened time-to-feature across multiple engineering squads.</p>
+        <p class="pc-type" data-i18n="projects.componentLib.type">Design System · Tekion</p>
+        <h3 class="pc-name" data-i18n="projects.componentLib.title">Enterprise Component Library</h3>
+        <p class="pc-desc" data-i18n="projects.componentLib.desc">Designed and maintained a Storybook-documented shared component library used across 10+ product modules at Tekion. Built 20+ reusable, accessible UI components (forms, data tables, modal flows, navigation patterns) with full TypeScript typing, WCAG 2.1 compliance, and interactive documentation. Reduced per-team duplicate code by 25% and measurably shortened time-to-feature across multiple engineering squads.</p>
         <div class="pc-metric" aria-label="Impact">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
-          20+ components · 25% less duplication · WCAG 2.1
+          <span data-i18n="projects.componentLib.metric">20+ components · 25% less duplication · WCAG 2.1</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">Storybook</span><span class="tag">TypeScript</span><span class="tag">React</span><span class="tag">Design Systems</span><span class="tag">Accessibility</span>
@@ -938,12 +943,12 @@
       </article>
 
       <article class="pc fade-up" data-impact='[{"l":"Engineering toil","v":30,"d":"−30%"},{"l":"React 18 migrated","v":100,"d":"done"},{"l":"Time saved","v":90,"d":"days"}]'>
-        <p class="pc-type">AI Tooling · Tekion</p>
-        <h3 class="pc-name">AI Dev Tooling Suite</h3>
-        <p class="pc-desc">Internal CLI and VS Code extension that automated the highest-toil parts of Tekion's frontend development cycle, cutting team overhead by 30%. The scaffolder generates a fully wired microfrontend module in under 10 seconds - Webpack Module Federation config, Storybook stories, Jest setup, and GitHub Actions job - from a single command. An AI-assisted PR review workflow uses GPT-4 to flag accessibility regressions, performance anti-patterns, and missing test coverage before human review. Also shipped automated migration scripts for the React 16 to 18 upgrade across all 10+ modules, completing the migration in days rather than weeks.</p>
+        <p class="pc-type" data-i18n="projects.aiTooling.type">AI Tooling · Tekion</p>
+        <h3 class="pc-name" data-i18n="projects.aiTooling.title">AI Dev Tooling Suite</h3>
+        <p class="pc-desc" data-i18n="projects.aiTooling.desc">Internal CLI and VS Code extension that automated the highest-toil parts of Tekion's frontend development cycle, cutting team overhead by 30%. The scaffolder generates a fully wired microfrontend module in under 10 seconds - Webpack Module Federation config, Storybook stories, Jest setup, and GitHub Actions job - from a single command. An AI-assisted PR review workflow uses GPT-4 to flag accessibility regressions, performance anti-patterns, and missing test coverage before human review. Also shipped automated migration scripts for the React 16 to 18 upgrade across all 10+ modules, completing the migration in days rather than weeks.</p>
         <div class="pc-metric" aria-label="Impact">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
-          30% toil reduction · React 18 migration automated
+          <span data-i18n="projects.aiTooling.metric">30% toil reduction · React 18 migration automated</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">TypeScript</span><span class="tag">Node.js</span><span class="tag">VS Code API</span><span class="tag">OpenAI API</span><span class="tag">GitHub Actions</span><span class="tag">AST Codemods</span>
@@ -951,12 +956,12 @@
       </article>
 
       <article class="pc fade-up" data-impact='[{"l":"Offline-first","v":100,"d":"SQLite"},{"l":"VIN scanning","v":70,"d":"native"},{"l":"Shared state","v":80,"d":"Redux"}]'>
-        <p class="pc-type">Mobile · Tekion</p>
-        <h3 class="pc-name">Dealer Operations Mobile App</h3>
-        <p class="pc-desc">React Native companion to Tekion's web-based dealer management platform, designed for dealership staff who work on the shop floor and can't stay at a desk. Covers real-time inventory lookup with VIN scanning, live service queue visibility, and customer CRM access. Built offline-first with SQLite-backed local state that syncs over a conflict-free delta protocol when connectivity restores - critical in underground service bays with patchy signal. Deep-linked from the web platform and shares Redux slices with the web app via a shared library, keeping business logic in one place.</p>
+        <p class="pc-type" data-i18n="projects.dealerApp.type">Mobile · Tekion</p>
+        <h3 class="pc-name" data-i18n="projects.dealerApp.title">Dealer Operations Mobile App</h3>
+        <p class="pc-desc" data-i18n="projects.dealerApp.desc">React Native companion to Tekion's web-based dealer management platform, designed for dealership staff who work on the shop floor and can't stay at a desk. Covers real-time inventory lookup with VIN scanning, live service queue visibility, and customer CRM access. Built offline-first with SQLite-backed local state that syncs over a conflict-free delta protocol when connectivity restores - critical in underground service bays with patchy signal. Deep-linked from the web platform and shares Redux slices with the web app via a shared library, keeping business logic in one place.</p>
         <div class="pc-metric" aria-label="Category">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-users"/></svg>
-          Offline-first · VIN scanning · Shared Redux state
+          <span data-i18n="projects.dealerApp.metric">Offline-first · VIN scanning · Shared Redux state</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">React Native</span><span class="tag">Redux</span><span class="tag">TypeScript</span><span class="tag">SQLite</span><span class="tag">Offline-first</span>
@@ -964,12 +969,12 @@
       </article>
 
       <article class="pc fade-up" data-impact='[{"l":"Regressions caught","v":60,"d":"12 / mo 1"},{"l":"CI coverage","v":100,"d":"all MFEs"}]'>
-        <p class="pc-type">Developer Tooling · Tekion</p>
-        <h3 class="pc-name">Performance CI Guard</h3>
-        <p class="pc-desc">GitHub Actions pipeline that runs Lighthouse CI against a Playwright-rendered preview deployment on every pull request, automatically blocking merges when Core Web Vitals or bundle size regresses beyond configured thresholds. Posts a generated PR comment with before/after metric tables, a bundle diff, and a 30-day trend sparkline so reviewers have full context without leaving GitHub. Historical performance data is persisted to a Postgres store and surfaced on an internal dashboard used by engineering leadership to track platform health across all 10+ microfrontend modules. Went from no performance visibility to catching 12 regressions in the first month.</p>
+        <p class="pc-type" data-i18n="projects.perfGuard.type">Developer Tooling · Tekion</p>
+        <h3 class="pc-name" data-i18n="projects.perfGuard.title">Performance CI Guard</h3>
+        <p class="pc-desc" data-i18n="projects.perfGuard.desc">GitHub Actions pipeline that runs Lighthouse CI against a Playwright-rendered preview deployment on every pull request, automatically blocking merges when Core Web Vitals or bundle size regresses beyond configured thresholds. Posts a generated PR comment with before/after metric tables, a bundle diff, and a 30-day trend sparkline so reviewers have full context without leaving GitHub. Historical performance data is persisted to a Postgres store and surfaced on an internal dashboard used by engineering leadership to track platform health across all 10+ microfrontend modules. Went from no performance visibility to catching 12 regressions in the first month.</p>
         <div class="pc-metric" aria-label="Impact">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-bolt"/></svg>
-          12 regressions caught in month 1 · full CI coverage
+          <span data-i18n="projects.perfGuard.metric">12 regressions caught in month 1 · full CI coverage</span>
         </div>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">GitHub Actions</span><span class="tag">Lighthouse CI</span><span class="tag">Playwright</span><span class="tag">Node.js</span><span class="tag">Postgres</span>
@@ -990,14 +995,14 @@
     <!-- Casebook CTA -->
     <div class="casebook-cta fade-up" role="complementary" aria-label="The Frontend Casebook">
       <div class="casebook-cta__inner">
-        <p class="casebook-cta__kicker">// case studies</p>
-        <h3 class="casebook-cta__title">The Frontend Casebook</h3>
-        <p class="casebook-cta__desc">
+        <p class="casebook-cta__kicker" data-i18n="writing.casebookKicker">// case studies</p>
+        <h3 class="casebook-cta__title" data-i18n="writing.casebookTitle">The Frontend Casebook</h3>
+        <p class="casebook-cta__desc" data-i18n="writing.casebookDesc">
           Scrollable frontend case studies — skeleton screens, perceived performance,
           streaming UIs. With interactive demos and reading levels for junior, mid, and staff engineers.
         </p>
         <a href="/cases/" class="btn btn--primary casebook-cta__btn">
-          Explore the Casebook
+          <span data-i18n="writing.casebookBtn">Explore the Casebook</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                aria-hidden="true" style="vertical-align:middle;margin-left:4px;">
@@ -1014,39 +1019,39 @@
       <article class="article-item article-item--featured fade-up" role="listitem">
         <div class="article-meta">
           <span class="article-date"><time datetime="2021-03-06">Mar 2021</time></span>
-          <span class="article-badge">On site</span>
+          <span class="article-badge" data-i18n="writing.onSite">On site</span>
           <div class="article-crosspost" aria-label="Also published on">
-            Also on
+            <span data-i18n="writing.alsoOn">Also on</span>
             <a href="https://javascript.plainenglish.io/functional-javascript-fundamentals-469859265014" target="_blank" rel="noopener noreferrer">Medium</a>
             <span aria-hidden="true">·</span>
             <a href="https://dev.to/anmshpndy/functional-javascript-fundamentals-44f2" target="_blank" rel="noopener noreferrer">Dev.to</a>
           </div>
           <span class="article-readtime" aria-label="Estimated read time">
             <svg class="icon-sm" aria-hidden="true"><use href="#i-clock"/></svg>
-            21 min read
+            21 <span data-i18n="writing.minRead">min read</span>
           </span>
         </div>
         <h3 class="article-title">
-          <a href="/fundamentals-of-functional-javascript/">
+          <a href="/fundamentals-of-functional-javascript/" data-i18n="writing.article.functionalJs.title">
             Fundamentals of Functional JavaScript
           </a>
         </h3>
-        <p class="article-excerpt">What makes a function pure, why procedures aren't functions, and how declarative thinking transforms the way you write JavaScript. A primer on functional programming fundamentals.</p>
+        <p class="article-excerpt" data-i18n="writing.article.functionalJs.excerpt">What makes a function pure, why procedures aren't functions, and how declarative thinking transforms the way you write JavaScript. A primer on functional programming fundamentals.</p>
       </article>
 
       <article class="article-item fade-up" role="listitem">
         <div class="article-meta">
           <span class="article-date"><time datetime="2021-02-28">Feb 2021</time></span>
-          <span class="article-badge">On site</span>
+          <span class="article-badge" data-i18n="writing.onSite">On site</span>
           <div class="article-crosspost" aria-label="Also published on">
-            Also on
+            <span data-i18n="writing.alsoOn">Also on</span>
             <a href="https://anmshpndy.medium.com/how-well-do-you-know-this-ff6c22e21f00" target="_blank" rel="noopener noreferrer">Medium</a>
             <span aria-hidden="true">·</span>
             <a href="https://dev.to/anmshpndy/how-well-do-you-know-this-2cg1" target="_blank" rel="noopener noreferrer">Dev.to</a>
           </div>
           <span class="article-readtime" aria-label="Estimated read time">
             <svg class="icon-sm" aria-hidden="true"><use href="#i-clock"/></svg>
-            5 min read
+            5 <span data-i18n="writing.minRead">min read</span>
           </span>
         </div>
         <h3 class="article-title">
@@ -1054,24 +1059,24 @@
             How Well Do You Know <code>this</code>?
           </a>
         </h3>
-        <p class="article-excerpt">JavaScript's <code>this</code> is a runtime binding determined by call-site context. This piece works through all four binding rules (new, explicit, implicit, default) in order of precedence.</p>
+        <p class="article-excerpt" data-i18n="writing.article.knowThis.excerpt">JavaScript's <code>this</code> is a runtime binding determined by call-site context. This piece works through all four binding rules (new, explicit, implicit, default) in order of precedence.</p>
       </article>
 
       <article class="article-item article-item--featured fade-up" role="listitem">
         <div class="article-meta">
           <span class="article-date"><time datetime="2026-05-31">May 2026</time></span>
-          <span class="article-badge">On site</span>
+          <span class="article-badge" data-i18n="writing.onSite">On site</span>
           <span class="article-readtime" aria-label="Estimated read time">
             <svg class="icon-sm" aria-hidden="true"><use href="#i-clock"/></svg>
-            18 min read
+            18 <span data-i18n="writing.minRead">min read</span>
           </span>
         </div>
         <h3 class="article-title">
-          <a href="/streaming-agent-ui-without-chatbot-clipart/">
+          <a href="/streaming-agent-ui-without-chatbot-clipart/" data-i18n="writing.article.streamingAgent.title">
             Streaming Agent UI Without the Chatbot Clipart
           </a>
         </h3>
-        <p class="article-excerpt">How to build a streaming AI agent UI that feels native to your product. SSE lifecycle, tool-call panels, AbortController, UX states for thinking / streaming / error - and why skipping the chat bubble is the right call.</p>
+        <p class="article-excerpt" data-i18n="writing.article.streamingAgent.excerpt">How to build a streaming AI agent UI that feels native to your product. SSE lifecycle, tool-call panels, AbortController, UX states for thinking / streaming / error - and why skipping the chat bubble is the right call.</p>
       </article>
 
     </div>
@@ -1089,7 +1094,7 @@
           </span>
           <span class="article-readtime" aria-label="Estimated read time">
             <svg class="icon-sm" aria-hidden="true"><use href="#i-clock"/></svg>
-            8 min read
+            8 <span data-i18n="writing.minRead">min read</span>
           </span>
         </div>
         <h3 class="article-title">
@@ -1098,14 +1103,14 @@
             <svg class="icon-sm ext-icon" aria-hidden="true"><use href="#i-external"/></svg>
           </a>
         </h3>
-        <p class="article-excerpt">An in-depth look at JavaScript's most misunderstood keyword: implicit, explicit, and new binding rules demystified with real examples.</p>
+        <p class="article-excerpt" data-i18n="writing.article.hackerNoonThis.excerpt">An in-depth look at JavaScript's most misunderstood keyword: implicit, explicit, and new binding rules demystified with real examples.</p>
       </article>
 
     </div>
 
     <!-- Blog platform profiles -->
     <div class="writing-profiles fade-up">
-      <span class="profiles-label">Find me on</span>
+      <span class="profiles-label" data-i18n="writing.findMeOn">Find me on</span>
       <div class="profile-chips">
         <a href="https://hackernoon.com/u/anmshpndy" class="profile-chip" target="_blank" rel="noopener noreferrer" aria-label="HackerNoon profile">
           <svg class="icon-sm" aria-hidden="true"><use href="#i-hackernoon"/></svg>HackerNoon
@@ -1129,75 +1134,75 @@
     </div>
 
     <!-- In the pipeline -->
-    <h3 class="writing-subhead writing-subhead--pipeline">// in the pipeline</h3>
-    <p class="writing-pipeline-note">Essays in progress — topics from production frontend engineering.</p>
+    <h3 class="writing-subhead writing-subhead--pipeline" data-i18n="sections.writing.pipeline">// in the pipeline</h3>
+    <p class="writing-pipeline-note" data-i18n="sections.writing.pipelineNote">Essays in progress — topics from production frontend engineering.</p>
     <div class="writing-list writing-list--pipeline">
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Coming Q3 2026</p>
-          <h3 class="wi-title">Building Performance Budgets at Scale</h3>
-          <p class="wi-excerpt">How we wired Lighthouse CI, bundle budgets, and PR comments so 10+ microfrontends couldn't regress Core Web Vitals silently.</p>
+          <p class="wi-date" data-i18n="writing.pipeline.perfBudgets.date">Coming Q3 2026</p>
+          <h3 class="wi-title" data-i18n="writing.pipeline.perfBudgets.title">Building Performance Budgets at Scale</h3>
+          <p class="wi-excerpt" data-i18n="writing.pipeline.perfBudgets.excerpt">How we wired Lighthouse CI, bundle budgets, and PR comments so 10+ microfrontends couldn't regress Core Web Vitals silently.</p>
         </div>
-        <span class="wi-badge wi-badge--draft" aria-label="Status: Draft">Draft</span>
+        <span class="wi-badge wi-badge--draft" aria-label="Status: Draft" data-i18n="writing.pipeline.status.draft">Draft</span>
       </div>
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Coming Q4 2026</p>
-          <h3 class="wi-title">Microfrontends: Lessons from Three Years in Production</h3>
-          <p class="wi-excerpt">Module Federation worked until it didn't - versioning, shared dependencies, and the debugging stories nobody puts in the sales deck.</p>
+          <p class="wi-date" data-i18n="writing.pipeline.mfeProduction.date">Coming Q4 2026</p>
+          <h3 class="wi-title" data-i18n="writing.pipeline.mfeProduction.title">Microfrontends: Lessons from Three Years in Production</h3>
+          <p class="wi-excerpt" data-i18n="writing.pipeline.mfeProduction.excerpt">Module Federation worked until it didn't - versioning, shared dependencies, and the debugging stories nobody puts in the sales deck.</p>
         </div>
-        <span class="wi-badge wi-badge--outline" aria-label="Status: Outline">Outline</span>
+        <span class="wi-badge wi-badge--outline" aria-label="Status: Outline" data-i18n="writing.pipeline.status.outline">Outline</span>
       </div>
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Researching</p>
-          <h3 class="wi-title">Data-Dense Dashboards Without Cognitive Overload</h3>
-          <p class="wi-excerpt">Patterns from MMM and attribution UIs: hierarchy, defaults, and when not to add another chart.</p>
+          <p class="wi-date" data-i18n="writing.pipeline.dataDense.date">Researching</p>
+          <h3 class="wi-title" data-i18n="writing.pipeline.dataDense.title">Data-Dense Dashboards Without Cognitive Overload</h3>
+          <p class="wi-excerpt" data-i18n="writing.pipeline.dataDense.excerpt">Patterns from MMM and attribution UIs: hierarchy, defaults, and when not to add another chart.</p>
         </div>
-        <span class="wi-badge wi-badge--research" aria-label="Status: Research">Research</span>
+        <span class="wi-badge wi-badge--research" aria-label="Status: Research" data-i18n="writing.pipeline.status.research">Research</span>
       </div>
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Coming 2026</p>
-          <h3 class="wi-title">From React 16 to 18 Across a Monorepo in Days</h3>
-          <p class="wi-excerpt">The migration playbook we used at Tekion - codemods, feature flags, and the tests that caught what types missed.</p>
+          <p class="wi-date" data-i18n="writing.pipeline.react18.date">Coming 2026</p>
+          <h3 class="wi-title" data-i18n="writing.pipeline.react18.title">From React 16 to 18 Across a Monorepo in Days</h3>
+          <p class="wi-excerpt" data-i18n="writing.pipeline.react18.excerpt">The migration playbook we used at Tekion - codemods, feature flags, and the tests that caught what types missed.</p>
         </div>
-        <span class="wi-badge wi-badge--outline" aria-label="Status: Outline">Outline</span>
+        <span class="wi-badge wi-badge--outline" aria-label="Status: Outline" data-i18n="writing.pipeline.status.outline">Outline</span>
       </div>
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Exploring</p>
-          <h3 class="wi-title">Designing Recruiter-First Portfolio UX</h3>
-          <p class="wi-excerpt">Why I built a briefing mode, what I'd do differently, and how static sites can still feel product-grade.</p>
+          <p class="wi-date" data-i18n="writing.pipeline.portfolioUx.date">Exploring</p>
+          <h3 class="wi-title" data-i18n="writing.pipeline.portfolioUx.title">Designing Recruiter-First Portfolio UX</h3>
+          <p class="wi-excerpt" data-i18n="writing.pipeline.portfolioUx.excerpt">Why I built a briefing mode, what I'd do differently, and how static sites can still feel product-grade.</p>
         </div>
-        <span class="wi-badge wi-badge--idea" aria-label="Status: Idea">Idea</span>
+        <span class="wi-badge wi-badge--idea" aria-label="Status: Idea" data-i18n="writing.pipeline.status.idea">Idea</span>
       </div>
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Backlog</p>
-          <h3 class="wi-title">Canvas vs DOM for Marketing Hero Effects</h3>
-          <p class="wi-excerpt">When particles earn their keep - and when <code>prefers-reduced-motion</code> should win.</p>
+          <p class="wi-date" data-i18n="writing.pipeline.canvasVsDom.date">Backlog</p>
+          <h3 class="wi-title" data-i18n="writing.pipeline.canvasVsDom.title">Canvas vs DOM for Marketing Hero Effects</h3>
+          <p class="wi-excerpt" data-i18n="writing.pipeline.canvasVsDom.excerpt">When particles earn their keep - and when prefers-reduced-motion should win.</p>
         </div>
-        <span class="wi-badge wi-badge--idea" aria-label="Status: Idea">Idea</span>
+        <span class="wi-badge wi-badge--idea" aria-label="Status: Idea" data-i18n="writing.pipeline.status.idea">Idea</span>
       </div>
 
       <div class="wi fade-up">
         <div>
-          <p class="wi-date">Backlog</p>
-          <h3 class="wi-title">Static Sites That Feel Premium Without a Framework</h3>
-          <p class="wi-excerpt">Tokens, lazy features, and discipline - how this portfolio is structured and why.</p>
+          <p class="wi-date" data-i18n="writing.pipeline.staticSites.date">Backlog</p>
+          <h3 class="wi-title" data-i18n="writing.pipeline.staticSites.title">Static Sites That Feel Premium Without a Framework</h3>
+          <p class="wi-excerpt" data-i18n="writing.pipeline.staticSites.excerpt">Tokens, lazy features, and discipline - how this portfolio is structured and why.</p>
         </div>
-        <span class="wi-badge wi-badge--idea" aria-label="Status: Idea">Idea</span>
+        <span class="wi-badge wi-badge--idea" aria-label="Status: Idea" data-i18n="writing.pipeline.status.idea">Idea</span>
       </div>
 
     </div>
-    <p class="writing-pipeline-footer">Want early access? <a href="#contact">Say hi</a> - happy to share drafts with engineers evaluating similar problems.</p>
+    <p class="writing-pipeline-footer" data-i18n-html="sections.writing.pipelineFooter">Want early access? <a href="#contact">Say hi</a> - happy to share drafts with engineers evaluating similar problems.</p>
 
   </section>
 
@@ -1206,7 +1211,7 @@
   <!-- EDUCATION -->
   <section id="education" aria-labelledby="education-heading">
     <p class="section-label" data-i18n="sections.education.label">// education</p>
-    <h2 id="education-heading">Where I <em>studied</em></h2>
+    <h2 id="education-heading" data-i18n-html="education.heading">Where I <em>studied</em></h2>
     <div class="edu-card fade-up">
       <div>
         <div class="edu-header">
@@ -1217,12 +1222,12 @@
             <h3 class="edu-inst">Indian Institute of Information Technology,<br>Design and Management (IIITDM) Jabalpur</h3>
           </div>
         </div>
-        <p class="edu-deg">B.Tech in Computer Science and Engineering</p>
+        <p class="edu-deg" data-i18n="education.degree">B.Tech in Computer Science and Engineering</p>
         <p class="edu-meta"><time datetime="2015">2015</time> – <time datetime="2019">2019</time></p>
       </div>
       <div>
         <div class="edu-cpi" aria-label="CPI: 7.9">7.9</div>
-        <div class="edu-cpi-label" aria-hidden="true">CPI / 10</div>
+        <div class="edu-cpi-label" aria-hidden="true" data-i18n="education.cpiLabel">CPI / 10</div>
       </div>
     </div>
   </section>
@@ -1249,10 +1254,6 @@
       <a href="https://linkedin.com/in/pandeyanimesh" class="cq-btn" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="LinkedIn profile">
         <svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg>
         LinkedIn
-      </a>
-      <a href="resume.pdf" download class="cq-btn" role="listitem" aria-label="Download resume">
-        <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
-        Resume PDF
       </a>
     </div>
     </div><!-- /contact-info -->
@@ -1285,7 +1286,7 @@
         <span data-i18n="contact.submit">Send message</span>
         <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
       </button>
-      <p class="form-privacy">Your message is sent securely to my inbox via <a href="https://web3forms.com/privacy" target="_blank" rel="noopener noreferrer">Web3Forms</a>. I don't sell your data.</p>
+      <p class="form-privacy" data-i18n-html="contact.formPrivacy">Your message is sent securely to my inbox via <a href="https://web3forms.com/privacy" target="_blank" rel="noopener noreferrer">Web3Forms</a>. I don't sell your data.</p>
       <div class="form-success" id="formSuccess" role="status" aria-live="polite" tabindex="-1"></div>
     </form>
   </section>
@@ -1302,7 +1303,7 @@
       <div class="foot-socials">
         <a href="mailto:animeshpandey1909@gmail.com" class="social-btn" aria-label="Send email to Animesh">
           <svg class="icon-lg" aria-hidden="true"><use href="#i-mail"/></svg>
-          <span>Email</span>
+          <span data-i18n="footer.email">Email</span>
         </a>
         <a href="https://linkedin.com/in/pandeyanimesh" class="social-btn" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
           <svg class="icon-lg" aria-hidden="true"><use href="#i-linkedin"/></svg>
@@ -1316,16 +1317,18 @@
           <svg class="icon-lg" aria-hidden="true"><use href="#i-x"/></svg>
           <span>X</span>
         </a>
-        <a href="resume.pdf" download class="social-btn" aria-label="Download resume PDF">
+        <button type="button" class="social-btn" id="resume-preview-footer" aria-haspopup="dialog"
+                data-i18n-attr="aria-label" data-i18n="a11y.previewResume"
+                aria-label="Preview or download resume">
           <svg class="icon-lg" aria-hidden="true"><use href="#i-download"/></svg>
-          <span>Resume</span>
-        </a>
+          <span data-i18n="footer.resume">Resume</span>
+        </button>
       </div>
     </nav>
   </div>
 </footer>
 
-<button class="back-top" id="back-top" aria-label="Back to top">
+<button class="back-top" id="back-top" aria-label="Back to top" data-i18n-attr="aria-label" data-i18n="a11y.backToTop">
   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
     <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
   </svg>
@@ -1349,7 +1352,7 @@
       </div>
     </header>
     <div class="resume-modal-body">
-      <iframe src="/resume.pdf#view=FitH&amp;toolbar=0&amp;navpanes=0" class="resume-embed" title="Resume PDF preview"></iframe>
+      <iframe src="/resume.pdf#view=FitH&amp;toolbar=0&amp;navpanes=0" class="resume-embed" title="Resume PDF preview" data-i18n-attr="title" data-i18n="resume.iframeTitle"></iframe>
       <div class="resume-embed-fallback" hidden>
         <p data-i18n="resume.fallbackText">PDF preview isn't available in this browser.</p>
         <a href="/resume.pdf" download="Animesh_Pandey_Resume.pdf" class="btn btn-dark">

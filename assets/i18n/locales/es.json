@@ -30,7 +30,8 @@
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
     "openRecruiterBriefing": "Abrir briefing de reclutador",
-    "exitRecruiterMode": "Salir del modo reclutador"
+    "exitRecruiterMode": "Salir del modo reclutador",
+    "backToTop": "Volver arriba"
   },
   "hero": {
     "badge": "disponible para roles staff y senior",
@@ -44,12 +45,32 @@
     ],
     "tagline": "Construyo interfaces que aguantan datos reales: dashboards de inteligencia de marketing, plataformas de microfrontends para 50k+ usuarios diarios y productos de IA agéntica. Desde Bangalore · abierto a roles remotos.",
     "ctaExperience": "Ver experiencia",
+    "ctaCasebook": "El Casebook",
     "ctaResume": "Currículum",
     "ctaContact": "Hablemos",
     "cardRole": "Ingeniero Frontend Senior",
     "cardLocation": "Bangalore, India",
     "cardOpen": "Abierto a oportunidades",
-    "downloadResume": "Descargar Currículum"
+    "downloadResume": "Descargar Currículum",
+    "cardCommentRole": "// líder frontend · medición e IA",
+    "cardCommentCurrently": "// actualmente",
+    "cardCommentLocation": "// ubicación",
+    "cardCommentExperience": "// experiencia",
+    "cardCommentStack": "// stack principal",
+    "cardOpenStatus": "Abierto a nuevos roles",
+    "viewResume": "Ver currículum",
+    "factOpen": "Abierto a roles",
+    "factYears": "7+ años",
+    "scrollCue": "desplazar"
+  },
+  "recruiter": {
+    "eyebrow": "briefing",
+    "title": "Informe para reclutadores",
+    "minimizeLabel": "Minimizar briefing - el modo reclutador sigue activo",
+    "email": "Email",
+    "copyBriefLabel": "Copiar resumen al portapapeles",
+    "copyBrief": "Copiar resumen",
+    "honesty": "Sintetizado del contenido público de este portfolio - no es un modelo de IA en vivo."
   },
   "sections": {
     "about": {
@@ -77,8 +98,8 @@
       "onThisSite": "En este sitio",
       "publishedElsewhere": "Publicado en otros lugares",
       "pipeline": "// en desarrollo",
-      "pipelineNote": "Ensayos en progreso - temas relacionados con el trabajo de producción en Tekion y Lifesight.",
-      "pipelineFooter": "¿Quieres acceso anticipado? Escríbeme."
+      "pipelineNote": "Ensayos en progreso — temas de ingeniería frontend en producción.",
+      "pipelineFooter": "¿Quieres acceso anticipado? <a href=\"#contact\">Escríbeme</a> - encantado de compartir borradores con ingenieros que evalúan problemas similares."
     },
     "contact": {
       "label": "// contacto",
@@ -100,14 +121,164 @@
     "mentored": "Ingenieros mentorizados"
   },
   "experience": {
+    "to": "a",
+    "present": "Presente",
+    "industries": {
+      "saasAnalytics": "SaaS Analytics",
+      "automotiveRetail": "Retail Automotriz",
+      "govtech": "GovTech"
+    },
     "lifesight": {
       "role": "Ingeniero de software senior",
-      "desc": "Lidero el frontend del Unified Measurement OS de Lifesight: SaaS de inteligencia de marketing con MMM, pruebas de incrementalidad y atribución causal. Dashboards SSR y producto de IA Mia."
+      "desc": "Lidero el frontend del Unified Measurement OS de Lifesight: SaaS de inteligencia de marketing con MMM, pruebas de incrementalidad y atribución causal. Dashboards SSR y producto de IA agéntica Mia."
     },
     "tekion": {
       "role": "Ingeniero de software",
       "desc": "Más de 10 módulos frontend críticos en retail automotriz empresarial. Microfrontends con Webpack Module Federation. Reducción del 30% en tiempos de carga para 50k+ usuarios diarios."
+    },
+    "tekionAssociate": {
+      "role": "Ingeniero de software asociado",
+      "desc": "Desarrollé aplicaciones de retail automotriz empresarial con ReactJS, Redux y React Native. Construí 20+ componentes UI reutilizables documentados en Storybook."
+    },
+    "vassar": {
+      "role": "Ingeniero de desarrollo de software",
+      "desc": "Lideré el desarrollo frontend de los dashboards Kerala-WRIS, proporcionando visibilidad de recursos hídricos en tiempo real a millones de residentes. Reduje la sobrecarga de API un 30%."
+    },
+    "vassarIntern": {
+      "role": "Becario de desarrollo de software",
+      "desc": "Desarrollé un sistema de monitoreo SCADA en tiempo real para los recursos hídricos de Andhra Pradesh usando AngularJS y D3.js, habilitando dashboards operacionales para equipos de campo."
     }
+  },
+  "projects": {
+    "intro": "Trabajo seleccionado en analítica SaaS, retail automotriz y GovTech.",
+    "microfrontend": {
+      "type": "Arquitectura · Tekion",
+      "title": "Arquitectura de Microfrontends a Escala",
+      "desc": "Arquitecté y entregué un sistema de microfrontends en producción con Webpack Module Federation en 10+ módulos críticos de retail automotriz empresarial. Logré una reducción del 30% en tiempos de carga. La plataforma atiende a 50.000+ usuarios diarios.",
+      "metric": "50k+ usuarios diarios · 30% cargas más rápidas · 10+ equipos independientes"
+    },
+    "wris": {
+      "type": "GovTech · Vassar Labs",
+      "title": "Plataforma de Inteligencia Hídrica Kerala-WRIS",
+      "desc": "Lideré el desarrollo frontend del sistema de información de recursos hídricos del estado de Kerala. Construí dashboards geoespaciales en tiempo real con Leaflet, gráficos de hidrología con Highcharts. Reduje la sobrecarga de API un 30%.",
+      "metric": "30% reducción de API · millones de residentes atendidos"
+    },
+    "mia": {
+      "type": "Producto IA · Lifesight",
+      "title": "Mia: Interfaz de IA Agéntica para Analytics",
+      "desc": "Construí el frontend del asistente de IA agéntica de Lifesight, que interpreta datasets de marketing complejos a través de una interfaz conversacional de streaming. Implementé streaming LLM en tiempo real y paneles de visualización de llamadas a herramientas.",
+      "metric": "IA agéntica · UI de streaming · Visualización de tool-calls"
+    },
+    "anomaly": {
+      "type": "Funcionalidad IA · Lifesight",
+      "title": "Inteligencia de Anomalías de Atribución",
+      "desc": "Capa de IA embebida en el dashboard de atribución de Lifesight que monitorea continuamente las señales de gasto en medios. La detección estadística de puntos de cambio corre en el pipeline; un LLM genera explicaciones en lenguaje natural.",
+      "metric": "Detección de anomalías IA · Narración LLM · Insights proactivos"
+    },
+    "marketingDash": {
+      "type": "Plataforma Analytics · Lifesight",
+      "title": "Dashboard de Inteligencia de Marketing",
+      "desc": "Entregué dashboards de analytics de nivel empresarial para el Unified Measurement OS de Lifesight: curvas MMM, resultados de pruebas de incrementalidad y atribución causal. Next.js SSR para primer renderizado rápido, presupuestos Core Web Vitals en CI.",
+      "metric": "SSR · Core Web Vitals · Cobertura Playwright"
+    },
+    "componentLib": {
+      "type": "Sistema de Diseño · Tekion",
+      "title": "Biblioteca de Componentes Empresariales",
+      "desc": "Diseñé y mantuve una biblioteca de componentes compartida documentada en Storybook, usada en 10+ módulos de Tekion. Construí 20+ componentes UI accesibles con TypeScript, WCAG 2.1 y documentación interactiva. Reduje código duplicado un 25%.",
+      "metric": "20+ componentes · 25% menos duplicación · WCAG 2.1"
+    },
+    "aiTooling": {
+      "type": "Herramientas IA · Tekion",
+      "title": "Suite de Herramientas de Desarrollo con IA",
+      "desc": "CLI interno y extensión de VS Code que automatizó las partes más tediosas del ciclo de desarrollo frontend de Tekion, reduciendo la carga del equipo un 30%. El scaffolder genera un módulo de microfrontend completo desde un único comando.",
+      "metric": "30% reducción de trabajo tedioso · Migración React 18 automatizada"
+    },
+    "dealerApp": {
+      "type": "Móvil · Tekion",
+      "title": "App Móvil de Operaciones de Concesionario",
+      "desc": "Compañero React Native de la plataforma web de gestión de concesionarios de Tekion, diseñado para el personal que trabaja en el taller. Cubre búsqueda de inventario con escaneo VIN, visibilidad de cola de servicio y acceso a CRM. Offline-first con SQLite.",
+      "metric": "Offline-first · Escaneo VIN · Estado Redux compartido"
+    },
+    "perfGuard": {
+      "type": "Herramientas para Desarrolladores · Tekion",
+      "title": "Guardián de Rendimiento en CI",
+      "desc": "Pipeline de GitHub Actions que ejecuta Lighthouse CI contra cada pull request, bloqueando merges automáticamente cuando Core Web Vitals o el tamaño del bundle regresa. Publica un comentario de PR con tablas de métricas antes/después.",
+      "metric": "12 regresiones detectadas en el primer mes · cobertura CI completa"
+    }
+  },
+  "writing": {
+    "casebookKicker": "// casos de estudio",
+    "casebookTitle": "El Casebook de Frontend",
+    "casebookDesc": "Casos de estudio de frontend desplazables — skeleton screens, rendimiento percibido, UIs de streaming. Con demos interactivas y niveles de lectura para ingenieros junior, mid y staff.",
+    "casebookBtn": "Explorar el Casebook",
+    "onSite": "En este sitio",
+    "alsoOn": "También en",
+    "minRead": "min de lectura",
+    "findMeOn": "Encuéntrame en",
+    "article": {
+      "functionalJs": {
+        "title": "Fundamentos de JavaScript Funcional",
+        "excerpt": "Qué hace pura a una función, por qué los procedimientos no son funciones, y cómo el pensamiento declarativo transforma la forma en que escribes JavaScript."
+      },
+      "knowThis": {
+        "excerpt": "El this de JavaScript es un enlace en tiempo de ejecución determinado por el contexto del sitio de llamada. Este artículo recorre las cuatro reglas de enlace en orden de precedencia."
+      },
+      "streamingAgent": {
+        "title": "UI de Agente de Streaming Sin el Chatbot de Clip Art",
+        "excerpt": "Cómo construir una UI de agente IA de streaming que se sienta nativa en tu producto. Ciclo de vida SSE, paneles de tool-calls, AbortController y estados UX para pensar/transmitir/error."
+      },
+      "hackerNoonThis": {
+        "excerpt": "Un análisis profundo de la palabra clave más incomprendida de JavaScript: reglas de enlace implícito, explícito y new desmitificadas con ejemplos reales."
+      }
+    },
+    "pipeline": {
+      "status": {
+        "draft": "Borrador",
+        "outline": "Esquema",
+        "research": "Investigación",
+        "idea": "Idea"
+      },
+      "perfBudgets": {
+        "date": "Próximamente Q3 2026",
+        "title": "Construyendo Presupuestos de Rendimiento a Escala",
+        "excerpt": "Cómo conectamos Lighthouse CI, presupuestos de bundle y comentarios de PR para que 10+ microfrontends no pudieran regresar Core Web Vitals silenciosamente."
+      },
+      "mfeProduction": {
+        "date": "Próximamente Q4 2026",
+        "title": "Microfrontends: Lecciones de Tres Años en Producción",
+        "excerpt": "Module Federation funcionó hasta que no — versionado, dependencias compartidas y las historias de depuración que nadie pone en el discurso de ventas."
+      },
+      "dataDense": {
+        "date": "Investigando",
+        "title": "Dashboards Densos en Datos Sin Sobrecarga Cognitiva",
+        "excerpt": "Patrones de UIs MMM y de atribución: jerarquía, valores por defecto y cuándo no añadir otro gráfico."
+      },
+      "react18": {
+        "date": "Próximamente 2026",
+        "title": "De React 16 a 18 en un Monorepo en Días",
+        "excerpt": "El manual de migración que usamos en Tekion — codemods, feature flags y los tests que atraparon lo que los tipos no pudieron."
+      },
+      "portfolioUx": {
+        "date": "Explorando",
+        "title": "Diseñando UX de Portfolio Orientado al Reclutador",
+        "excerpt": "Por qué construí un modo de briefing, qué haría diferente y cómo los sitios estáticos pueden seguir sintiéndose de nivel producto."
+      },
+      "canvasVsDom": {
+        "date": "Pendiente",
+        "title": "Canvas vs DOM para Efectos Hero de Marketing",
+        "excerpt": "Cuándo las partículas merecen la pena — y cuándo prefers-reduced-motion debería ganar."
+      },
+      "staticSites": {
+        "date": "Pendiente",
+        "title": "Sitios Estáticos que se Sienten Premium Sin un Framework",
+        "excerpt": "Tokens, funcionalidades lazy y disciplina — cómo está estructurado este portfolio y por qué."
+      }
+    }
+  },
+  "education": {
+    "heading": "Dónde <em>estudié</em>",
+    "degree": "Ingeniería en Ciencias de la Computación (B.Tech)",
+    "cpiLabel": "CPI / 10"
   },
   "contact": {
     "intro": "Abierto a roles a tiempo completo, contratos y conversaciones interesantes.",
@@ -121,24 +292,25 @@
     "submit": "Enviar mensaje",
     "nameError": "Introduce tu nombre.",
     "emailError": "Introduce un email válido.",
-    "messageError": "Introduce un mensaje."
+    "messageError": "Introduce un mensaje.",
+    "formPrivacy": "Tu mensaje se envía de forma segura a mi bandeja de entrada a través de <a href=\"https://web3forms.com/privacy\" target=\"_blank\" rel=\"noopener noreferrer\">Web3Forms</a>. No vendo tus datos."
   },
   "skills": {
     "constellationHint": "Pulsa ? en escritorio para explorar el stack en 3D"
   },
   "footer": {
     "location": "Animesh Pandey · Bangalore, India",
-    "backHome": "← anmshpndy.com"
+    "backHome": "← anmshpndy.com",
+    "email": "Email",
+    "resume": "Currículum"
   },
   "resume": {
     "modalTitle": "Animesh Pandey — Currículum",
     "downloadPdf": "Descargar PDF",
     "closePreview": "Cerrar vista previa del currículum",
     "fallbackText": "La vista previa del PDF no está disponible en este navegador.",
-    "fallbackDownload": "Descargar PDF en su lugar"
-  },
-  "projects": {
-    "intro": "Trabajo seleccionado en analítica SaaS, retail automotriz y GovTech."
+    "fallbackDownload": "Descargar PDF en su lugar",
+    "iframeTitle": "Vista previa del currículum PDF"
   },
   "faq": {
     "label": "// preguntas frecuentes",

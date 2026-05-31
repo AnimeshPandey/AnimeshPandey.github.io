@@ -30,7 +30,8 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "openRecruiterBriefing": "Open recruiter briefing",
-    "exitRecruiterMode": "Exit recruiter mode"
+    "exitRecruiterMode": "Exit recruiter mode",
+    "backToTop": "Back to top"
   },
   "hero": {
     "badge": "Open to senior & staff roles",
@@ -44,12 +45,32 @@
     ],
     "tagline": "I ship interfaces that survive real data: marketing intelligence dashboards, microfrontend platforms for 50k+ daily users, and agentic AI products. Based in Bangalore · open to remote-friendly roles.",
     "ctaExperience": "View experience",
+    "ctaCasebook": "The Casebook",
     "ctaResume": "Resume",
     "ctaContact": "Let's talk",
     "cardRole": "Senior Frontend Engineer",
     "cardLocation": "Bangalore, India",
     "cardOpen": "Open to opportunities",
-    "downloadResume": "Download Resume"
+    "downloadResume": "Download Resume",
+    "cardCommentRole": "// frontend lead · measurement & AI",
+    "cardCommentCurrently": "// currently",
+    "cardCommentLocation": "// location",
+    "cardCommentExperience": "// experience",
+    "cardCommentStack": "// core stack",
+    "cardOpenStatus": "Open to new roles",
+    "viewResume": "View resume",
+    "factOpen": "Open to roles",
+    "factYears": "7+ years",
+    "scrollCue": "scroll"
+  },
+  "recruiter": {
+    "eyebrow": "briefing",
+    "title": "Recruiter briefing",
+    "minimizeLabel": "Minimize briefing - recruiter mode stays on",
+    "email": "Email",
+    "copyBriefLabel": "Copy plain-text brief to clipboard",
+    "copyBrief": "Copy brief",
+    "honesty": "Synthesized from this portfolio's public content - not a live AI model."
   },
   "sections": {
     "about": {
@@ -77,8 +98,8 @@
       "onThisSite": "On this site",
       "publishedElsewhere": "Published elsewhere",
       "pipeline": "// in the pipeline",
-      "pipelineNote": "Essays in progress - topics tied to production work at Tekion and Lifesight.",
-      "pipelineFooter": "Want early access? Say hi - happy to share drafts with engineers evaluating similar problems."
+      "pipelineNote": "Essays in progress — topics from production frontend engineering.",
+      "pipelineFooter": "Want early access? <a href=\"#contact\">Say hi</a> - happy to share drafts with engineers evaluating similar problems."
     },
     "contact": {
       "label": "// contact",
@@ -101,6 +122,13 @@
     "mentored": "Engineers mentored"
   },
   "experience": {
+    "to": "to",
+    "present": "Present",
+    "industries": {
+      "saasAnalytics": "SaaS Analytics",
+      "automotiveRetail": "Automotive Retail",
+      "govtech": "GovTech"
+    },
     "lifesight": {
       "role": "Senior Software Engineer",
       "desc": "Leading frontend development for Lifesight's Unified Measurement OS, a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards."
@@ -109,14 +137,149 @@
       "role": "Software Engineer",
       "desc": "Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by 30% for 50k+ daily users."
     },
-    "vassar": {
-      "role": "Software Development Engineer",
-      "desc": "Led frontend development of Kerala-WRIS dashboards. Built geospatial visualisation systems and reduced API overhead by 30%."
-    },
     "tekionAssociate": {
       "role": "Associate Software Engineer",
-      "desc": "Developed enterprise automotive retail applications. Built 20+ reusable UI components documented in Storybook."
+      "desc": "Developed enterprise automotive retail applications using ReactJS, Redux, and React Native. Built 20+ reusable UI components and microfrontend modules documented in Storybook, accelerating feature delivery across engineering teams."
+    },
+    "vassar": {
+      "role": "Software Development Engineer",
+      "desc": "Led frontend development of Kerala-WRIS dashboards providing real-time water resource visibility to millions of residents. Built geospatial visualisation systems for government clients and reduced API overhead by 30% through frontend optimisation."
+    },
+    "vassarIntern": {
+      "role": "Software Development Intern",
+      "desc": "Developed a real-time SCADA monitoring system for Andhra Pradesh Water Resources using AngularJS and D3.js, enabling operational dashboards for field teams."
     }
+  },
+  "projects": {
+    "intro": "Selected work across SaaS analytics, automotive retail, and GovTech.",
+    "microfrontend": {
+      "type": "Architecture · Tekion",
+      "title": "Microfrontend Architecture at Scale",
+      "desc": "Architected and shipped a production microfrontend system using Webpack Module Federation across 10+ mission-critical enterprise automotive retail modules, each owned by an independent squad. Achieved a 30% reduction in load times through aggressive code splitting and Lighthouse budgets in CI. The platform serves 50,000+ daily active users across dealership and OEM workflows.",
+      "metric": "50k+ daily users · 30% faster loads · 10+ independent teams"
+    },
+    "wris": {
+      "type": "GovTech · Vassar Labs",
+      "title": "Kerala-WRIS Water Intelligence Platform",
+      "desc": "Led frontend development for the Government of Kerala's statewide water resource information system. Built real-time geospatial dashboards over Leaflet with district-level overlays, time-series hydrology charts in Highcharts, and D3.js data-layer visualisations. Reduced API overhead by 30% through frontend caching and request batching strategies.",
+      "metric": "30% API reduction · millions of residents served"
+    },
+    "mia": {
+      "type": "AI Product · Lifesight",
+      "title": "Mia: Agentic AI Analytics Interface",
+      "desc": "Built the frontend for Lifesight's agentic AI assistant, which interprets complex marketing datasets and surfaces attribution insights through a streaming conversational interface. Implemented real-time LLM response streaming, tool-call visualisation panels, and deep integration with the Unified Measurement OS data layer.",
+      "metric": "Agentic AI · Streaming UI · Tool-call visualisation"
+    },
+    "anomaly": {
+      "type": "AI Feature · Lifesight",
+      "title": "Attribution Anomaly Intelligence",
+      "desc": "Embedded AI layer within the Lifesight attribution dashboard that continuously monitors media spend signals and proactively surfaces anomalies. Statistical changepoint detection runs on the data pipeline; results are handed to an LLM that generates plain-English explanations of what shifted and what action to consider.",
+      "metric": "AI anomaly detection · LLM narration · Proactive insights"
+    },
+    "marketingDash": {
+      "type": "Analytics Platform · Lifesight",
+      "title": "Marketing Intelligence Dashboard",
+      "desc": "Delivered enterprise-grade analytics dashboards powering Lifesight's Unified Measurement OS: MMM curves, incrementality test results, and causal attribution breakdowns for enterprise brands. Built with Next.js SSR for fast first-paint, enforced Core Web Vitals budgets in CI, and established platform-wide Playwright testing standards.",
+      "metric": "SSR · Core Web Vitals · Playwright coverage"
+    },
+    "componentLib": {
+      "type": "Design System · Tekion",
+      "title": "Enterprise Component Library",
+      "desc": "Designed and maintained a Storybook-documented shared component library used across 10+ product modules at Tekion. Built 20+ reusable, accessible UI components with full TypeScript typing, WCAG 2.1 compliance, and interactive documentation. Reduced per-team duplicate code by 25%.",
+      "metric": "20+ components · 25% less duplication · WCAG 2.1"
+    },
+    "aiTooling": {
+      "type": "AI Tooling · Tekion",
+      "title": "AI Dev Tooling Suite",
+      "desc": "Internal CLI and VS Code extension that automated the highest-toil parts of Tekion's frontend development cycle, cutting team overhead by 30%. The scaffolder generates a fully wired microfrontend module from a single command. An AI-assisted PR review workflow flags accessibility regressions and performance anti-patterns before human review.",
+      "metric": "30% toil reduction · React 18 migration automated"
+    },
+    "dealerApp": {
+      "type": "Mobile · Tekion",
+      "title": "Dealer Operations Mobile App",
+      "desc": "React Native companion to Tekion's web-based dealer management platform, designed for dealership staff on the shop floor. Covers real-time inventory lookup with VIN scanning, live service queue visibility, and customer CRM access. Built offline-first with SQLite-backed local state that syncs over a conflict-free delta protocol.",
+      "metric": "Offline-first · VIN scanning · Shared Redux state"
+    },
+    "perfGuard": {
+      "type": "Developer Tooling · Tekion",
+      "title": "Performance CI Guard",
+      "desc": "GitHub Actions pipeline that runs Lighthouse CI against a Playwright-rendered preview deployment on every pull request, automatically blocking merges when Core Web Vitals or bundle size regresses. Posts a generated PR comment with before/after metric tables, a bundle diff, and a 30-day trend sparkline.",
+      "metric": "12 regressions caught in month 1 · full CI coverage"
+    }
+  },
+  "writing": {
+    "casebookKicker": "// case studies",
+    "casebookTitle": "The Frontend Casebook",
+    "casebookDesc": "Scrollable frontend case studies — skeleton screens, perceived performance, streaming UIs. With interactive demos and reading levels for junior, mid, and staff engineers.",
+    "casebookBtn": "Explore the Casebook",
+    "onSite": "On site",
+    "alsoOn": "Also on",
+    "minRead": "min read",
+    "findMeOn": "Find me on",
+    "article": {
+      "functionalJs": {
+        "title": "Fundamentals of Functional JavaScript",
+        "excerpt": "What makes a function pure, why procedures aren't functions, and how declarative thinking transforms the way you write JavaScript. A primer on functional programming fundamentals."
+      },
+      "knowThis": {
+        "excerpt": "JavaScript's this is a runtime binding determined by call-site context. This piece works through all four binding rules (new, explicit, implicit, default) in order of precedence."
+      },
+      "streamingAgent": {
+        "title": "Streaming Agent UI Without the Chatbot Clipart",
+        "excerpt": "How to build a streaming AI agent UI that feels native to your product. SSE lifecycle, tool-call panels, AbortController, UX states for thinking / streaming / error - and why skipping the chat bubble is the right call."
+      },
+      "hackerNoonThis": {
+        "excerpt": "An in-depth look at JavaScript's most misunderstood keyword: implicit, explicit, and new binding rules demystified with real examples."
+      }
+    },
+    "pipeline": {
+      "status": {
+        "draft": "Draft",
+        "outline": "Outline",
+        "research": "Research",
+        "idea": "Idea"
+      },
+      "perfBudgets": {
+        "date": "Coming Q3 2026",
+        "title": "Building Performance Budgets at Scale",
+        "excerpt": "How we wired Lighthouse CI, bundle budgets, and PR comments so 10+ microfrontends couldn't regress Core Web Vitals silently."
+      },
+      "mfeProduction": {
+        "date": "Coming Q4 2026",
+        "title": "Microfrontends: Lessons from Three Years in Production",
+        "excerpt": "Module Federation worked until it didn't - versioning, shared dependencies, and the debugging stories nobody puts in the sales deck."
+      },
+      "dataDense": {
+        "date": "Researching",
+        "title": "Data-Dense Dashboards Without Cognitive Overload",
+        "excerpt": "Patterns from MMM and attribution UIs: hierarchy, defaults, and when not to add another chart."
+      },
+      "react18": {
+        "date": "Coming 2026",
+        "title": "From React 16 to 18 Across a Monorepo in Days",
+        "excerpt": "The migration playbook we used at Tekion - codemods, feature flags, and the tests that caught what types missed."
+      },
+      "portfolioUx": {
+        "date": "Exploring",
+        "title": "Designing Recruiter-First Portfolio UX",
+        "excerpt": "Why I built a briefing mode, what I'd do differently, and how static sites can still feel product-grade."
+      },
+      "canvasVsDom": {
+        "date": "Backlog",
+        "title": "Canvas vs DOM for Marketing Hero Effects",
+        "excerpt": "When particles earn their keep - and when prefers-reduced-motion should win."
+      },
+      "staticSites": {
+        "date": "Backlog",
+        "title": "Static Sites That Feel Premium Without a Framework",
+        "excerpt": "Tokens, lazy features, and discipline - how this portfolio is structured and why."
+      }
+    }
+  },
+  "education": {
+    "heading": "Where I <em>studied</em>",
+    "degree": "B.Tech in Computer Science and Engineering",
+    "cpiLabel": "CPI / 10"
   },
   "contact": {
     "intro": "Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.",
@@ -130,42 +293,25 @@
     "submit": "Send message",
     "nameError": "Please enter your name.",
     "emailError": "Please enter a valid email.",
-    "messageError": "Please enter a message."
+    "messageError": "Please enter a message.",
+    "formPrivacy": "Your message is sent securely to my inbox via <a href=\"https://web3forms.com/privacy\" target=\"_blank\" rel=\"noopener noreferrer\">Web3Forms</a>. I don't sell your data."
   },
   "skills": {
     "constellationHint": "Press ? on desktop to explore the stack in 3D"
   },
   "footer": {
     "location": "Animesh Pandey · Bangalore, India",
-    "backHome": "← anmshpndy.com"
+    "backHome": "← anmshpndy.com",
+    "email": "Email",
+    "resume": "Resume"
   },
   "resume": {
     "modalTitle": "Animesh Pandey — Resume",
     "downloadPdf": "Download PDF",
     "closePreview": "Close resume preview",
     "fallbackText": "PDF preview isn't available in this browser.",
-    "fallbackDownload": "Download PDF instead"
-  },
-  "projects": {
-    "intro": "Selected work across SaaS analytics, automotive retail, and GovTech.",
-    "microfrontend": {
-      "type": "Architecture · Tekion",
-      "title": "Microfrontend Architecture at Scale",
-      "desc": "Architected and shipped a production microfrontend system using Webpack Module Federation across 10+ mission-critical enterprise automotive retail modules.",
-      "metric": "50k+ daily users · 30% faster loads · 10+ independent teams"
-    },
-    "wris": {
-      "type": "GovTech · Vassar Labs",
-      "title": "Kerala-WRIS Water Intelligence Platform",
-      "desc": "Led frontend development for the Government of Kerala's statewide water resource information system.",
-      "metric": "30% API reduction · millions of residents served"
-    },
-    "mia": {
-      "type": "AI Product · Lifesight",
-      "title": "Mia: Agentic AI Analytics Interface",
-      "desc": "Built the frontend for Lifesight's agentic AI assistant with streaming conversational UI and tool-call panels.",
-      "metric": "Agentic AI · Streaming UI · Tool-call visualisation"
-    }
+    "fallbackDownload": "Download PDF instead",
+    "iframeTitle": "Resume PDF preview"
   },
   "faq": {
     "label": "// common questions",
