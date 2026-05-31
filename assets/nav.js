@@ -165,5 +165,33 @@
         }
       });
     }());
+
+    /* Desktop "More" menu */
+    var moreBtn = document.getElementById('nav-more-btn');
+    var morePanel = document.getElementById('nav-more-panel');
+    if (moreBtn && morePanel) {
+      moreBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = morePanel.hidden;
+        morePanel.hidden = !open;
+        moreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      document.addEventListener('click', function () {
+        if (!morePanel.hidden) {
+          morePanel.hidden = true;
+          moreBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+      morePanel.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !morePanel.hidden) {
+          morePanel.hidden = true;
+          moreBtn.setAttribute('aria-expanded', 'false');
+          moreBtn.focus();
+        }
+      });
+    }
   });
 })();

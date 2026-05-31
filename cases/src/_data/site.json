@@ -11,5 +11,16 @@
   "author": {
     "name": "Animesh Pandey",
     "url": "https://anmshpndy.com/"
+  },
+  "newsletter": {
+    "enabled": false,
+    "username": "",
+    "subscribeUrl": ""
+  },
+  "publishing": {
+    "cadenceDaysMin": 7,
+    "cadenceDaysMax": 10,
+    "newBadgeDays": 14,
+    "requireConfirm": true
   }
 }

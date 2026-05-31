@@ -1,17 +1,21 @@
-{# ── subscribe-cta.njk ── RSS + newsletter (Buttondown embed placeholder) ── #}
+{# ── subscribe-cta.njk ── RSS + newsletter (Buttondown when configured) ── #}
 <section class="casebook-subscribe" aria-label="Subscribe">
   <h2 class="casebook-subscribe__title">Inside the Casebook</h2>
   <p class="casebook-subscribe__desc">
     New cases every few weeks — patterns from production UI engineering.
+    {% if site.newsletter and site.newsletter.enabled %}
     Double opt-in, easy unsubscribe.
+    {% else %}
+    Subscribe via RSS now; email list opens when configured.
+    {% endif %}
   </p>
 
-  {# Buttondown embed placeholder — replace src with embed URL when Buttondown is configured #}
+  {% if site.newsletter and site.newsletter.enabled and site.newsletter.username %}
   <form class="casebook-subscribe__form"
-        action="https://buttondown.com/api/emails/embed-subscribe/animeshpandey"
+        action="https://buttondown.com/api/emails/embed-subscribe/{{ site.newsletter.username }}"
         method="post"
         target="popupwindow"
-        onsubmit="window.open('https://buttondown.com/animeshpandey', 'popupwindow')"
+        onsubmit="window.open('https://buttondown.com/{{ site.newsletter.username }}', 'popupwindow')"
         aria-label="Newsletter subscription">
     <label for="subscribe-email" class="visually-hidden">Email address</label>
     <input id="subscribe-email"
@@ -23,11 +27,16 @@
            aria-required="true" />
     <button type="submit">Subscribe</button>
   </form>
-
   <p class="casebook-subscribe__privacy">
     No spam. Unsubscribe anytime.
     Emails sent via <a href="https://buttondown.com" rel="noopener noreferrer">Buttondown</a>.
   </p>
+  {% else %}
+  <p class="casebook-subscribe__pending" role="status">
+    Email signup is not live yet — use the RSS feed below for new cases.
+    (Create a Buttondown newsletter and set <code>newsletter.username</code> in <code>site.json</code>.)
+  </p>
+  {% endif %}
 
   <a href="/cases/feed.xml"
      class="casebook-subscribe__rss"
