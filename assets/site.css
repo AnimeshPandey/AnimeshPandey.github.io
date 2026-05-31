@@ -1704,3 +1704,27 @@ code.article-title-code {
   transition: color .15s;
 }
 .article-footer-link:hover { color: var(--accent); }
+
+/* ── Casebook CTA (writing section) ── */
+.casebook-cta {
+  margin: 28px 0 36px;
+  padding: 28px 32px;
+  background: var(--surface-2, var(--bg-2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 12px);
+  border-left: 3px solid var(--accent);
+}
+.casebook-cta__kicker {
+  font-family: var(--mono); font-size: var(--text-xs, 0.6875rem);
+  color: var(--accent); letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.casebook-cta__title {
+  font-family: var(--serif); font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: var(--ink); margin-bottom: 10px; font-weight: 400;
+}
+.casebook-cta__desc {
+  color: var(--ink-2); font-size: 0.9375rem; line-height: 1.6;
+  max-width: 56ch; margin-bottom: 20px;
+}
+.casebook-cta__btn { display: inline-flex; align-items: center; gap: 6px; }

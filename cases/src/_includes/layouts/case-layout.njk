@@ -1,0 +1,62 @@
+---
+layout: layouts/casebook-layout.njk
+---
+{# ── Progress bar ── #}
+<div class="casebook-progress" id="casebook-progress" aria-hidden="true"></div>
+
+<div class="casebook-case">
+  {# ── Main story column ── #}
+  <article class="case-scroll" role="article">
+    {# ── Breadcrumb ── #}
+    {% include 'partials/case-header.njk' %}
+
+    {# ── Cover ── #}
+    <header class="case-cover">
+      <p class="case-cover__track">{{ track | replace("-", " ") | title }}</p>
+      <h1 class="case-cover__title">{{ title }}</h1>
+      <div class="case-cover__meta">
+        <span>{{ readMin | default(10) }} min read</span>
+        {% if publishedAt %}
+          <span>· {{ publishedAt | readableDate }}</span>
+        {% endif %}
+        {% if flagship %}
+          <span class="case-cover__badge">★ Flagship</span>
+        {% endif %}
+      </div>
+    </header>
+
+    {# ── Tone switcher ── #}
+    {% include 'partials/case-tone-switcher.njk' %}
+
+    {# ── Case content (chapters from per-case index.njk) ── #}
+    {{ content | safe }}
+
+    {# ── Related cases ── #}
+    {% include 'partials/case-related.njk' %}
+
+    {# ── Subscribe CTA ── #}
+    {% include 'partials/subscribe-cta.njk' %}
+
+    {# ── Footer credit ── #}
+    {% include 'partials/case-footer.njk' %}
+  </article>
+
+  {# ── Casey coach aside (desktop) ── #}
+  <aside aria-label="Casey your guide" class="casey-coach">
+    {% include 'partials/casey-coach.njk' %}
+  </aside>
+</div>
+
+{# ── Casey coach dock (mobile) ── #}
+<div class="casey-coach casey-coach--dock-bottom" aria-label="Casey your guide (dock)" id="casey-dock">
+  {% include 'partials/casey-coach.njk' %}
+</div>
+
+{# ── Case scripts ── #}
+{# Inline casey data for JS #}
+<script type="application/json" id="casey-data">{{ caseyData | jsonLd | safe }}</script>
+
+<script src="/cases/assets/js/case-scroll.js" defer></script>
+<script src="/cases/assets/js/casey-coach.js" defer></script>
+<script type="module" src="/cases/assets/js/casey-voice.js"></script>
+<script type="module" src="/cases/assets/js/demo-loader.js"></script>

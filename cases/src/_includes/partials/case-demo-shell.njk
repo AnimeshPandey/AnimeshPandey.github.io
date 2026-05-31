@@ -1,0 +1,41 @@
+{# ── case-demo-shell.njk ── Interactive demo wrapper ── #}
+{# Vars expected: demoType, slug, demoTitle #}
+<section class="case-demo"
+         aria-label="Try it: {{ demoTitle | default('Interactive demo') }}"
+         data-required="true"
+         data-demo-type="{{ demoType | default('animation') }}"
+         data-demo-slug="{{ slug }}">
+
+  <div class="case-demo__header">
+    <span class="case-demo__title">
+      {% if demoType == 'animation' %}⚡{% else %}▶{% endif %}
+      {{ demoTitle | default('Try it') }}
+    </span>
+  </div>
+
+  <div class="case-demo__body">
+    {# Without JS: show the "fixed / good" state ─ see noscript below #}
+    <noscript>
+      <div class="case-demo__noscript">
+        <p><strong>Demo requires JavaScript</strong> — here's the recommended (fixed) state:</p>
+        {% block noscript_content %}{% endblock %}
+      </div>
+    </noscript>
+
+    {# ── Demo controls and viewport — hidden until JS initialises ── #}
+    <div class="case-demo__interactive" hidden>
+      <div class="case-demo__controls" role="group" aria-label="Demo controls">
+        <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+          Broken — spinner
+        </button>
+        <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+          Fixed — skeleton
+        </button>
+      </div>
+      <p class="case-demo__state-label" aria-live="polite" id="demo-state-label">
+        Showing: Fixed (skeleton) — recommended
+      </p>
+      <div class="case-demo__viewport" id="demo-viewport"></div>
+    </div>
+  </div>
+</section>

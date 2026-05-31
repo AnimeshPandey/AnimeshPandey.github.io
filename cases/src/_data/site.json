@@ -1,0 +1,15 @@
+{
+  "name": "The Frontend Casebook",
+  "shortName": "Casebook",
+  "url": "https://anmshpndy.com/cases/",
+  "origin": "https://anmshpndy.com",
+  "pathPrefix": "/cases/",
+  "subtitle": "Scrollable frontend case studies — junior to staff, with demos and Casey.",
+  "tagline": "Visual case studies for frontend and agent UI engineering.",
+  "locale": "en",
+  "phase": "portfolio-subpath",
+  "author": {
+    "name": "Animesh Pandey",
+    "url": "https://anmshpndy.com/"
+  }
+}

@@ -1,0 +1,27 @@
+{# ── casey-coach.njk ── Avatar + hint bubble ── #}
+{# Rendered twice: in desktop aside + mobile dock. JS targets both. #}
+<div class="casey-coach__card" data-casey-tier="junior" data-casey-state="idle">
+  <div class="casey-coach__card-header">
+    <img class="casey-coach__avatar"
+         src="/cases/assets/casey/junior/idle.svg"
+         alt="Casey, junior (idle)"
+         width="48" height="48"
+         data-casey-avatar="true" />
+    <span class="casey-coach__name">Casey · Junior</span>
+  </div>
+
+  <p class="casey-coach__bubble" aria-live="polite" id="casey-bubble-{{ loop.index if loop else '0' }}">
+    Hey! I'm Casey — scroll through the case and I'll chime in with hints.
+  </p>
+
+  <button type="button" class="casey-coach__voice" aria-label="Listen with Casey (text-to-speech)"
+          title="Listen with Casey">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+    </svg>
+    <span class="visually-hidden">Listen with Casey</span>
+  </button>
+</div>

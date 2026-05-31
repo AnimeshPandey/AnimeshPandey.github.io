@@ -1,0 +1,47 @@
+{# ── casebook-preferences.njk ── Appearance light/dark/system menu ── #}
+<div class="casebook-prefs" id="casebook-prefs">
+  <button type="button"
+          class="casebook-prefs__trigger"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="casebook-prefs-menu"
+          id="casebook-prefs-btn"
+          title="Appearance settings">
+    <span class="visually-hidden">Appearance and preferences</span>
+    {# Sun/moon icon — updates via JS #}
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true" id="casebook-prefs-icon">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  </button>
+
+  <div id="casebook-prefs-menu"
+       class="casebook-prefs__menu"
+       role="menu"
+       aria-labelledby="casebook-prefs-btn"
+       hidden>
+    <p class="casebook-prefs__label" id="prefs-appearance-label">Appearance</p>
+    <div role="group" aria-labelledby="prefs-appearance-label">
+      <button type="button" role="menuitemradio" data-color-mode="light"
+              aria-checked="false">Light</button>
+      <button type="button" role="menuitemradio" data-color-mode="dark"
+              aria-checked="false">Dark</button>
+      <button type="button" role="menuitemradio" data-color-mode="system"
+              aria-checked="true">Match system</button>
+    </div>
+    <p class="casebook-prefs__hint">
+      Motion follows your system "reduce motion" setting.
+    </p>
+    <a href="/cases/about/#accessibility"
+       class="casebook-prefs__link">Accessibility →</a>
+  </div>
+</div>

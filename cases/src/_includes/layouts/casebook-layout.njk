@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="{{ site.locale | default('en') }}"
+      data-casebook-color="light"
+      data-asset-base="/cases/assets/casey/">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  {# ── FOUC guard: apply stored casebook-color before CSS loads ── #}
+  <script>
+  (function () {
+    var KEY = 'casebook-color-mode';
+    var stored = 'system';
+    try { stored = localStorage.getItem(KEY) || 'system'; } catch (e) {}
+    {# Optional: soft-sync with portfolio dark theme on first visit #}
+    if (stored === 'system') {
+      try {
+        var pt = localStorage.getItem('theme') || '';
+        if (pt === 'dark' || pt === 'slate' || pt === 'dusk' || pt === 'high-contrast') stored = 'dark';
+      } catch (e) {}
+    }
+    var dark = stored === 'dark' ||
+      (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.dataset.casebookColor = dark ? 'dark' : 'light';
+  })();
+  </script>
+
+  {# ── SEO partial ── #}
+  {% include 'partials/head-seo.njk' %}
+
+  {# ── Styles: portfolio foundation tokens → casebook ── #}
+  {# Note: foundation.css and theme.css live at the portfolio root (/assets/), not /cases/ #}
+  <link rel="stylesheet" href="/assets/styles/foundation.css" />
+  <link rel="stylesheet" href="/assets/theme.css" />
+  <link rel="stylesheet" href="/cases/assets/css/casebook.css" />
+
+  {# ── RSS alternate ── #}
+  <link rel="alternate" type="application/rss+xml"
+        title="{{ site.name }} — RSS"
+        href="/cases/feed.xml" />
+
+  {# ── meta theme-color (updated by casebook-preferences.js) ── #}
+  <meta name="theme-color" content="#FAF8F4" id="casebook-theme-color" />
+</head>
+<body>
+  {# ── Skip link ── #}
+  <a href="#main" class="casebook-skip">Skip to story</a>
+
+  {# ── Header ── #}
+  <header class="casebook-header" role="banner">
+    <div class="casebook-header__inner">
+      <a href="/cases/" class="casebook-header__logo"
+         aria-label="{{ site.name }}, home">
+        <span>{ }</span> Casebook
+      </a>
+      <nav aria-label="Casebook navigation">
+        <ul class="casebook-header__nav" role="list">
+          <li><a href="/cases/">Cases</a></li>
+          <li><a href="/cases/about/">About</a></li>
+        </ul>
+      </nav>
+      {# ── Preferences (appearance) ── #}
+      {% include 'partials/casebook-preferences.njk' %}
+    </div>
+  </header>
+
+  {# ── Main content slot ── #}
+  <main id="main" tabindex="-1">
+    {{ content | safe }}
+  </main>
+
+  {# ── Footer ── #}
+  <footer class="casebook-footer" role="contentinfo">
+    <p>
+      <a href="/cases/">The Frontend Casebook</a>
+      &nbsp;·&nbsp;
+      <a href="/">Animesh Pandey</a>
+      &nbsp;·&nbsp;
+      <a href="/cases/feed.xml" type="application/rss+xml">RSS</a>
+    </p>
+    <p class="case-format-credit">
+      Story format inspired by
+      <a href="https://growth.design/case-studies/" rel="noopener noreferrer">Growth.Design case studies</a>.
+    </p>
+  </footer>
+
+  {# ── Deferred scripts ── #}
+  <script src="/cases/assets/js/casebook-preferences.js" defer></script>
+</body>
+</html>

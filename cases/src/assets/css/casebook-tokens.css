@@ -1,0 +1,56 @@
+/* ── casebook-tokens.css ───────────────────────────────────────────────────
+   Casebook semantic tokens.
+   Inherits portfolio theme.css (--bg, --ink, --sage, etc.) for light mode.
+   Provides --casebook-* aliases resolved by data-casebook-color="light|dark".
+──────────────────────────────────────────────────────────────────────────── */
+
+/* ── Light (inherits portfolio light theme values) ── */
+:root,
+[data-casebook-color="light"] {
+  --casebook-bg:         var(--bg, #FAF8F4);
+  --casebook-surface:    var(--surface, #F2EDE4);
+  --casebook-ink:        var(--ink, #1C1714);
+  --casebook-ink-muted:  var(--ink-2, #5C4F47);
+  --casebook-ink-faint:  var(--ink-3, #9B8C84);
+  --casebook-accent:     var(--sage, #4E7A68);
+  --casebook-border:     var(--border, #DDD6C9);
+  --casebook-border-2:   var(--border-2, #CAC2B4);
+  --casebook-surface-2:  var(--surface-2, #E9E2D5);
+  --casebook-header-bg:  rgba(250, 248, 244, 0.92);
+  --casebook-progress:   var(--sage, #4E7A68);
+  --casey-bubble-bg:     var(--surface, #F2EDE4);
+  --case-chapter-gap:    2rem;
+}
+
+/* ── Dark ── */
+[data-casebook-color="dark"] {
+  --casebook-bg:         #141210;
+  --casebook-surface:    #1C1916;
+  --casebook-ink:        #F5F0E8;
+  --casebook-ink-muted:  #C4B8AE;
+  --casebook-ink-faint:  #7A6E68;
+  --casebook-accent:     #7BAF98;
+  --casebook-border:     #2E2926;
+  --casebook-border-2:   #3D3632;
+  --casebook-surface-2:  #252220;
+  --casebook-header-bg:  rgba(20, 18, 16, 0.92);
+  --casebook-progress:   #7BAF98;
+  --casey-bubble-bg:     #252220;
+  --case-chapter-gap:    2rem;
+}
+
+/* ── Transition between color modes (gate behind class set by preferences.js) ── */
+html.casebook-color-transition,
+html.casebook-color-transition *,
+html.casebook-color-transition *::before,
+html.casebook-color-transition *::after {
+  transition: background-color 0.2s ease, color 0.15s ease, border-color 0.15s ease !important;
+}
+
+/* ── Reduced motion class (set by casebook-preferences.js) ── */
+.casebook--reduce-motion *,
+.casebook--reduce-motion *::before,
+.casebook--reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  transition-duration: 0.001ms !important;
+}

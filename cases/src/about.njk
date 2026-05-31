@@ -1,0 +1,111 @@
+---
+layout: layouts/casebook-layout.njk
+title: About the Casebook
+description: The Frontend Casebook methodology, Casey your guide, accessibility preferences, and newsletter.
+schemaType: AboutPage
+slug: about
+permalink: /about/index.html
+---
+
+<div class="casebook-about">
+
+  <h1>About the Casebook</h1>
+
+  <p>
+    <strong>The Frontend Casebook</strong> is a collection of Growth.Design-style case studies
+    for frontend engineers — focused on the real decisions, tradeoffs, and patterns that ship
+    production UI.
+  </p>
+  <p>
+    Each case walks through a real problem: <em>what goes wrong, why, what better looks like,</em>
+    and how to implement it. With an interactive demo and reading levels for junior, mid, and
+    staff engineers.
+  </p>
+
+  <h2>Methodology</h2>
+  <p>
+    Story format inspired by <a href="https://growth.design/case-studies/" rel="noopener noreferrer">Growth.Design</a>.
+    Cases are structured as:
+  </p>
+  <ul>
+    <li><strong>Hook</strong> — the user pain</li>
+    <li><strong>Concept</strong> — the principle behind it</li>
+    <li><strong>Story</strong> — patterns good and bad</li>
+    <li><strong>Demo</strong> — try it, broken vs fixed</li>
+    <li><strong>Depth</strong> — implementation notes</li>
+    <li><strong>Takeaway</strong> — what to remember</li>
+  </ul>
+
+  <h2>Casey</h2>
+  <p>
+    Casey is your guide — a developer kitten who ages with the reading level.
+    Junior Casey gives friendly tips; Staff Casey surfaces production gotchas.
+    Hints appear as you scroll through chapters.
+    Voice is opt-in only — tap <em>Listen with Casey</em> to start.
+  </p>
+
+  <h2>Reading levels</h2>
+  <p>
+    Every case ships with three tones: <strong>Junior</strong>, <strong>Mid</strong>, and
+    <strong>Staff</strong>. Junior explains concepts from scratch; Mid assumes React familiarity;
+    Staff digs into production measurement and tradeoffs.
+  </p>
+  <p>
+    Your selection persists across cases — you control the depth.
+  </p>
+
+  <h2 id="accessibility">Accessibility</h2>
+  <p>
+    The Casebook aims for <strong>WCAG 2.2 AA</strong> compliance. Here's what you can control:
+  </p>
+  <ul>
+    <li>
+      <strong>Appearance</strong> — use the sun/moon button in the header to choose Light, Dark,
+      or Match system. Your choice is saved locally.
+    </li>
+    <li>
+      <strong>Reading level</strong> — the tone switcher (Junior / Mid / Staff) controls content
+      depth, not colour. These are separate controls.
+    </li>
+    <li>
+      <strong>Motion</strong> — scroll reveals and Casey animations respect your OS
+      <em>Reduce Motion</em> setting. No manual toggle needed.
+    </li>
+    <li>
+      <strong>Voice (Casey)</strong> — opt-in only. Tap "Listen with Casey" to start;
+      it stops automatically when you switch tone or appearance.
+    </li>
+    <li>
+      <strong>Focus</strong> — all interactive controls have visible focus rings (≥ 3px).
+      Tab order follows reading order.
+    </li>
+    <li>
+      <strong>Skip link</strong> — press Tab immediately after loading to reveal "Skip to story".
+    </li>
+  </ul>
+  <p>
+    Found an issue?
+    <a href="mailto:animeshpandey1909@gmail.com">Email Animesh</a>
+    or open a GitHub issue.
+  </p>
+
+  <h2 id="newsletter">Newsletter</h2>
+  <p>
+    <em>Inside the Casebook</em> — a short note when a new case ships.
+    Double opt-in, easy unsubscribe.
+    Your email is stored by <a href="https://buttondown.com" rel="noopener noreferrer">Buttondown</a> — no other tracking.
+  </p>
+
+  {% include 'partials/subscribe-cta.njk' %}
+
+  <h2>About the author</h2>
+  <p>
+    Built by <a href="{{ site.author.url }}">Animesh Pandey</a> — Senior Frontend Engineer,
+    7+ years shipping production SaaS UIs.
+    The Casebook is the collection of patterns I wish I'd had earlier.
+  </p>
+  <p>
+    <a href="/">← Animesh's portfolio</a>
+  </p>
+
+</div>

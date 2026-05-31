@@ -1,0 +1,42 @@
+{
+  "slug": "skeleton-screens-perceived-speed",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "You know that frozen spinner feeling? Same. We're fixing how waiting *feels*, not just how fast the server is.",
+      "mid": "Perceived wait ≠ server TTFB. This case separates the two and shows why skeleton UI often wins on perceived speed.",
+      "staff": "Pair skeleton UI with RUM LCP and INP attribution — lab metrics miss the perception gap."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Tap Broken first — count the seconds in your head. Then tap Fixed. Same wait, different feel.",
+      "mid": "Toggle and notice layout stability. The spinner causes CLS when content pops in; skeleton doesn't.",
+      "staff": "Filmstrip: did paint wait on network or skeleton construction? That's your actual perf budget."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "The CSS is surprisingly simple — a few divs with a shimmer animation. No special library needed.",
+      "mid": "React Suspense boundaries make skeleton placement declarative — fallback prop takes your skeleton.",
+      "staff": "Coordinate skeleton geometry with your design tokens. Mismatched sizes cause micro-CLS on swap."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "First internship we only had spinners. Skeletons felt scary until the design system shipped placeholder components.",
+      "mid": "Spinners are easy to drop in; skeletons need agreed layout primitives across teams.",
+      "staff": "Org-wide: define skeleton components before perf A/B tests — otherwise you're measuring implementation variance, not the pattern."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're fixing how waiting feels — not just how fast the server is. You'll be surprised how much of 'slow' is in our heads.",
+        "mid": "This case is about labour perception: why skeleton screens often beat spinners, even at identical load times.",
+        "staff": "We separate perceived performance from lab metrics, and look at what to measure in production RUM."
+      }
+    ]
+  }
+}

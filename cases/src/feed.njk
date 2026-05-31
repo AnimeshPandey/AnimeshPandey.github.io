@@ -1,0 +1,23 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ site.name }}</title>
+    <link>{{ site.url }}</link>
+    <description>{{ site.subtitle }}</description>
+    <language>{{ site.locale | default('en') }}</language>
+    <atom:link href="{{ site.url }}feed.xml" rel="self" type="application/rss+xml" />
+    {% for case in collections.liveCases %}
+    <item>
+      <title>{{ case.title | escape }}</title>
+      <link>{{ site.url }}{{ case.slug }}/</link>
+      <guid isPermaLink="true">{{ site.url }}{{ case.slug }}/</guid>
+      <pubDate>{{ case.publishedAt | rssDate }}</pubDate>
+      <description>{{ case.principle | escape }}</description>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>
