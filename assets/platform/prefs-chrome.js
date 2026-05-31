@@ -9,7 +9,7 @@
   var docBound = false;
 
   function isFixed(menu) {
-    return menu.hasAttribute('data-popover-fixed') ||
+    return menu.getAttribute('data-popover-fixed') === 'true' ||
       menu.classList.contains('prefs-menu--fixed');
   }
 

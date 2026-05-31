@@ -69,30 +69,12 @@
             <li class="theme-menu-item lang-menu-item" role="option" data-l="es" tabindex="-1">Español</li>
           </ul>
         </div>
-        <div class="more-picker">
-          <button type="button" class="more-pick-btn platform-icon-btn" id="more-pick-btn-header"
-                  aria-label="More" aria-expanded="false" aria-controls="more-menu-header">
-            <svg class="icon-sm" aria-hidden="true"><use href="#i-more"/></svg>
-          </button>
-          <ul id="more-menu-header" class="more-menu prefs-menu" role="menu" hidden>
-            <li role="none">
-              <button type="button" class="nav-resume more-menu-item" id="nav-resume-preview"
-                      aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
-                <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
-                <span data-i18n="nav.resume">Resume</span>
-              </button>
-            </li>
-            {% if showRecruiter %}
-            <li role="none">
-              <button type="button" class="header-rm-toggle more-menu-item" id="header-rm-toggle"
-                      aria-pressed="false" data-i18n-attr="aria-label" data-i18n="a11y.openRecruiterBriefing">
-                <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-                <span data-i18n="nav.recruiterShort">Recruiter</span><span class="header-rm-dot" aria-hidden="true"></span>
-              </button>
-            </li>
-            {% endif %}
-          </ul>
-        </div>
+        <button type="button" class="nav-resume-icon platform-icon-btn" id="nav-resume-preview"
+                aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume"
+                aria-label="Preview resume">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+          <span class="visually-hidden" data-i18n="nav.resume">Resume</span>
+        </button>
         {% endif %}
       </div>
 
