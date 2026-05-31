@@ -139,6 +139,17 @@ header.scrolled {
 .ts-dusk          { background: #18131E; border-color: #D4A840; }
 .ts-high-contrast { background: #000000; border-color: #FFD700; }
 
+/* ── Language picker (extends .theme-picker / .theme-pick-btn patterns) ── */
+.lang-pick-btn {
+  width: auto; padding: 0 10px; gap: 5px;
+}
+.lang-pick-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: .06em; color: currentColor;
+}
+/* Lang menu scrollable if many locales */
+.lang-menu { max-height: 320px; overflow-y: auto; }
+
 /* Hamburger */
 .hamburger {
   width: 44px; height: 44px; border: none; background: transparent;

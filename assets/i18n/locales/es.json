@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "title": "Animesh Pandey · Ingeniero Frontend Senior | React, TypeScript, Next.js",
+    "description": "Animesh Pandey es un Ingeniero Frontend Senior en Bangalore con 7+ años construyendo plataformas SaaS escalables: dashboards MMM, microfrontends para 50k+ usuarios diarios y productos de IA agéntica."
+  },
+  "nav": {
+    "about": "sobre mí",
+    "experience": "experiencia",
+    "skills": "habilidades",
+    "projects": "proyectos",
+    "writing": "escritura",
+    "education": "educación",
+    "contact": "contacto",
+    "resume": "Currículum",
+    "downloadResume": "Descargar Currículum",
+    "chooseTheme": "Elegir tema",
+    "chooseLanguage": "Elegir idioma"
+  },
+  "a11y": {
+    "skipToMain": "Saltar al contenido principal",
+    "skipToArticle": "Saltar al artículo",
+    "home": "Animesh Pandey, inicio",
+    "previewResume": "Ver o descargar currículum",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "openRecruiterBriefing": "Abrir briefing de reclutador",
+    "exitRecruiterMode": "Salir del modo reclutador"
+  },
+  "hero": {
+    "badge": "disponible para roles staff y senior",
+    "badge2": "5 productos · 50k+ usuarios diarios",
+    "tagline": "Construyo interfaces que aguantan datos reales: dashboards de inteligencia de marketing, plataformas de microfrontends para 50k+ usuarios diarios y productos de IA agéntica. Desde Bangalore · abierto a roles remotos.",
+    "ctaExperience": "Ver experiencia",
+    "ctaResume": "Currículum",
+    "ctaContact": "Hablemos",
+    "cardRole": "Ingeniero Frontend Senior",
+    "cardLocation": "Bangalore, India",
+    "cardOpen": "Abierto a oportunidades",
+    "downloadResume": "Descargar Currículum"
+  },
+  "sections": {
+    "about": {
+      "label": "// sobre mí",
+      "title": "Ingeniero reflexivo,",
+      "titleEm": "pensador de producto"
+    },
+    "experience": {
+      "label": "// experiencia",
+      "title": "Dónde he enviado código"
+    },
+    "skills": {
+      "label": "// habilidades",
+      "title": "Stack y oficio",
+      "intro": "Herramientas de producción de plataformas recientes - no una lista de palabras de moda."
+    },
+    "projects": {
+      "label": "// proyectos",
+      "title": "Cosas que he construido"
+    },
+    "writing": {
+      "label": "// escritura",
+      "title": "Sobre el oficio",
+      "intro": "Escribo sobre patrones JavaScript, decisiones de diseño de sistemas y compromisos de ingeniería frontend que encuentro en el trabajo.",
+      "onThisSite": "En este sitio",
+      "publishedElsewhere": "Publicado en otros lugares",
+      "pipeline": "// en desarrollo",
+      "pipelineNote": "Ensayos en progreso - temas relacionados con el trabajo de producción en Tekion y Lifesight.",
+      "pipelineFooter": "¿Quieres acceso anticipado? Escríbeme."
+    },
+    "contact": {
+      "label": "// contacto",
+      "title": "Construyamos algo juntos"
+    },
+    "education": {
+      "label": "// educación"
+    }
+  },
+  "footer": {
+    "location": "Animesh Pandey · Bangalore, India",
+    "backHome": "← anmshpndy.com"
+  },
+  "resume": {
+    "modalTitle": "Animesh Pandey — Currículum",
+    "downloadPdf": "Descargar PDF",
+    "closePreview": "Cerrar vista previa del currículum",
+    "fallbackText": "La vista previa del PDF no está disponible en este navegador.",
+    "fallbackDownload": "Descargar PDF en su lugar"
+  }
+}
