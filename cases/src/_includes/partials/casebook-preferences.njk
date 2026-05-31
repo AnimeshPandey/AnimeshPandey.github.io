@@ -1,34 +1,37 @@
 <div class="casebook-prefs theme-picker" id="casebook-prefs">
   <button type="button"
           class="casebook-prefs__trigger theme-pick-btn platform-icon-btn"
-          aria-haspopup="true"
+          aria-haspopup="listbox"
           aria-expanded="false"
           aria-controls="casebook-prefs-menu"
           id="casebook-prefs-btn"
-          aria-label="Display settings">
+          aria-label="Theme: High contrast. Change">
     <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
-    <span class="visually-hidden">Display settings</span>
+    <span class="visually-hidden">Choose theme</span>
   </button>
 
-  <div id="casebook-prefs-menu"
-       class="casebook-prefs__menu theme-menu prefs-menu"
-       role="menu"
-       aria-labelledby="casebook-prefs-btn"
-       hidden>
-    <p class="prefs-section-label">Appearance</p>
-    <ul class="prefs-menu-list" role="group">
-      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-color-mode="light" aria-checked="false">Light</button></li>
-      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-color-mode="dark" aria-checked="false">Dark</button></li>
-      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-color-mode="system" aria-checked="false">Match system</button></li>
-    </ul>
-
-    <p class="prefs-section-label">Contrast</p>
-    <ul class="prefs-menu-list" role="group">
-      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-contrast-mode="normal" aria-checked="false">Standard</button></li>
-      <li><button type="button" class="theme-menu-item" role="menuitemradio" data-contrast-mode="high" aria-checked="true">High contrast (default)</button></li>
-    </ul>
-
-    <p class="casebook-prefs__hint">Motion follows your system “reduce motion” setting.</p>
-    <a href="{{ '/cases/about/' | url }}#accessibility" class="casebook-prefs__link">Accessibility →</a>
-  </div>
+  <ul id="casebook-prefs-menu"
+      class="casebook-prefs__menu theme-menu prefs-menu"
+      role="listbox"
+      aria-label="Choose theme"
+      hidden>
+    <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1">
+      <span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast
+    </li>
+    <li class="theme-menu-item" role="option" data-t="light" tabindex="-1">
+      <span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper
+    </li>
+    <li class="theme-menu-item" role="option" data-t="dark" tabindex="-1">
+      <span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal
+    </li>
+    <li class="theme-menu-item" role="option" data-t="sage" tabindex="-1">
+      <span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist
+    </li>
+    <li class="theme-menu-item" role="option" data-t="slate" tabindex="-1">
+      <span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio
+    </li>
+    <li class="theme-menu-item" role="option" data-t="dusk" tabindex="-1">
+      <span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial
+    </li>
+  </ul>
 </div>
