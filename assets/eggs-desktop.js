@@ -287,7 +287,7 @@
         npmHint.className = 'egg-hint';
         npmHint.setAttribute('aria-hidden', 'true');
         npmHint.textContent = '✦  type npm test';
-        hintEl.parentNode.insertBefore(npmHint, hintEl.nextSibling);
+        hintEl.appendChild(npmHint);
         setTimeout(function () { npmHint.classList.add('visible'); }, 9000);
         setTimeout(function () { npmHint.classList.remove('visible'); }, 16000);
       }

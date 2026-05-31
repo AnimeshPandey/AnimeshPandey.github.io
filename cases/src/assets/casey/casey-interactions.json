@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "assetBase": "/cases/assets/casey",
+  "tiers": ["junior", "mid", "staff"],
+  "poses": ["idle", "blink", "perk", "point", "think", "celebrate", "sleep", "wave"],
+  "voiceProfiles": {
+    "junior": { "rate": 1.02, "pitch": 1.08 },
+    "mid": { "rate": 0.96, "pitch": 1.0 },
+    "staff": { "rate": 0.88, "pitch": 0.92 }
+  },
+  "tierMotion": {
+    "junior": { "bouncePx": 6, "breatheDurationSec": 3.5 },
+    "mid": { "bouncePx": 4, "breatheDurationSec": 4 },
+    "staff": { "bouncePx": 2, "breatheDurationSec": 5 }
+  },
+  "interactions": [
+    {
+      "id": "init",
+      "trigger": "dom-ready",
+      "pose": "idle",
+      "animation": "breathe",
+      "loop": true
+    },
+    {
+      "id": "blink",
+      "trigger": "timer-random",
+      "intervalMsMin": 4000,
+      "intervalMsMax": 8000,
+      "pose": "blink",
+      "animation": "blink-once",
+      "durationMs": 400,
+      "thenPose": "idle"
+    },
+    {
+      "id": "tone-change",
+      "trigger": "casebook-tone-change",
+      "pose": "idle",
+      "animation": "tier-fade",
+      "durationMs": 250,
+      "cancelSpeech": true
+    },
+    {
+      "id": "chapter-hook",
+      "trigger": "chapter-visible",
+      "chapter": "hook",
+      "pose": "perk",
+      "durationMs": 400,
+      "thenPose": "idle"
+    },
+    {
+      "id": "chapter-concept",
+      "trigger": "chapter-visible",
+      "chapter": "concept",
+      "pose": "think",
+      "durationMs": 500,
+      "thenPose": "idle"
+    },
+    {
+      "id": "demo-visible",
+      "trigger": "chapter-visible",
+      "chapter": "demo",
+      "pose": "point",
+      "holdWhileVisible": true
+    },
+    {
+      "id": "demo-fixed",
+      "trigger": "case-demo-fixed",
+      "pose": "celebrate",
+      "animation": "bounce-once",
+      "durationMs": 600,
+      "thenPose": "idle"
+    },
+    {
+      "id": "reduced-motion",
+      "trigger": "prefers-reduced-motion",
+      "pose": "sleep",
+      "animation": "none"
+    }
+  ],
+  "hintChapters": ["hook", "concept", "story", "demo", "takeaway"],
+  "tierLabels": {
+    "junior": "Casey · Junior dev",
+    "mid": "Casey · Mid-level dev",
+    "staff": "Casey · Staff engineer"
+  }
+}
