@@ -3,6 +3,7 @@
 {% set homeHref = homeHref | default('/') %}
 {% set showRecruiter = showRecruiter | default(true) %}
 {% set showSectionDropdown = showSectionDropdown | default(product == 'portfolio-home') %}
+{% set navActive = navActive | default('') %}
 
 <header class="platform-header{% if product == 'casebook' %} platform-header--casebook{% endif %}">
   <div class="nav-inner">
@@ -12,8 +13,9 @@
     </a>
     <nav class="platform-header__nav" aria-label="Casebook navigation">
       <ul class="casebook-header__nav" role="list">
-        <li><a href="{{ '/cases/' | url }}">Cases</a></li>
-        <li><a href="{{ '/cases/about/' | url }}">About</a></li>
+        <li><a href="{{ '/cases/' | url }}"{% if navActive == 'cases' %} aria-current="page"{% endif %}>Cases</a></li>
+        <li><a href="{{ '/cases/about/' | url }}"{% if navActive == 'about' %} aria-current="page"{% endif %}>About</a></li>
+        <li><a href="/">Portfolio</a></li>
       </ul>
     </nav>
     {% else %}
@@ -81,16 +83,17 @@
         {% endif %}
       </div>
 
-      {% if product != 'casebook' %}
-      <button id="hamburger" class="hamburger platform-icon-btn" aria-expanded="false" aria-controls="mobile-nav" data-i18n-attr="aria-label" data-i18n="a11y.openMenu">
+      <button id="hamburger" class="hamburger platform-icon-btn" aria-expanded="false" aria-controls="mobile-nav"
+              aria-label="{% if product == 'casebook' %}Open Casebook menu{% else %}Open menu{% endif %}">
         <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
       </button>
-      {% endif %}
     </div>
   </div>
 </header>
 
-{% if product != 'casebook' %}
 <div id="nav-overlay" aria-hidden="true"></div>
+{% if product == 'casebook' %}
+{% include "partials/mobile-nav-casebook.njk" %}
+{% else %}
 {% include "partials/mobile-nav.njk" %}
 {% endif %}

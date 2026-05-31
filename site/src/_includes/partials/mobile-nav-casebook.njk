@@ -1,0 +1,21 @@
+<nav id="mobile-nav" class="mobile-nav--casebook" aria-label="Casebook navigation">
+  <div class="mobile-nav-header">
+    <a href="{{ '/cases/' | url }}" class="nav-logo casebook-header__logo"
+       aria-label="{{ site.name | default('The Frontend Casebook') }}, home">
+      <span>{ }</span> Casebook
+    </a>
+    <button id="mobile-nav-close" class="mobile-nav-close" type="button" aria-label="Close menu">
+      <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
+    </button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li>
+      <a href="{{ '/cases/' | url }}"{% if navActive == 'cases' %} aria-current="page"{% endif %}>Cases</a>
+    </li>
+    <li>
+      <a href="{{ '/cases/about/' | url }}"{% if navActive == 'about' %} aria-current="page"{% endif %}>About</a>
+    </li>
+    <li><a href="/">Portfolio</a></li>
+  </ul>
+  <p class="mobile-nav-footer__hint">Use the palette icon in the header for display settings.</p>
+</nav>
