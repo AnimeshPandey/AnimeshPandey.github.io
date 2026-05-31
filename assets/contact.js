@@ -21,9 +21,18 @@
   'use strict';
 
   /* ── Config ── */
-  var W3F_KEY       = 'YOUR_WEB3FORMS_ACCESS_KEY'; // replace after Web3Forms signup
+  var W3F_KEY_EMBED = 'YOUR_WEB3FORMS_ACCESS_KEY'; // CI replaces; meta tag preferred (see index.html)
   var W3F_URL       = 'https://api.web3forms.com/submit';
   var FALLBACK_TO   = 'animeshpandey1909@gmail.com';
+  var PLACEHOLDER   = 'YOUR_WEB3FORMS_ACCESS_KEY';
+
+  function getW3fKey() {
+    var meta = document.querySelector('meta[name="web3forms-access-key"]');
+    var fromMeta = meta && meta.getAttribute('content');
+    if (fromMeta && fromMeta !== PLACEHOLDER) return fromMeta.trim();
+    if (W3F_KEY_EMBED && W3F_KEY_EMBED !== PLACEHOLDER) return W3F_KEY_EMBED.trim();
+    return '';
+  }
 
   /* ── DOM refs ── */
   var form      = document.getElementById('contactForm');
@@ -110,9 +119,10 @@
 
     /* If key is still placeholder (local dev / misconfigured deploy):
        show an in-page message — never auto-open the email client. */
-    if (!W3F_KEY || W3F_KEY === 'YOUR_WEB3FORMS_ACCESS_KEY') {
+    var W3F_KEY = getW3fKey();
+    if (!W3F_KEY) {
       setLoading(false);
-      console.error('[contact] Web3Forms key not set. Configure W3F_KEY or check CI secret injection.');
+      console.error('[contact] Web3Forms key not set. Check meta[web3forms-access-key], CI secret W3F_ACCESS_KEY, and hard-refresh (service worker may cache old contact.js).');
       showResult(
         'Form not configured. ' +
         '<a href="' + buildMailto(name, email, msg) + '" class="form-fallback-link">Email me directly →</a>',

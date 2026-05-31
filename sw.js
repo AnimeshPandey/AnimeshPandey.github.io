@@ -1,4 +1,4 @@
-const CACHE = 'ap-v21';
+const CACHE = 'ap-v23';
 const ASSETS = [
   '/',
   '/assets/theme.css',
@@ -41,6 +41,16 @@ self.addEventListener('activate', function (e) {
   self.clients.claim();
 });
 
+function networkFirst(request) {
+  return fetch(request)
+    .then(function (res) {
+      var clone = res.clone();
+      caches.open(CACHE).then(function (c) { c.put(request, clone); });
+      return res;
+    })
+    .catch(function () { return caches.match(request); });
+}
+
 self.addEventListener('fetch', function (e) {
   var url = new URL(e.request.url);
 
@@ -49,15 +59,13 @@ self.addEventListener('fetch', function (e) {
 
   /* HTML: network-first (always fresh content, falls back to cache) */
   if (e.request.headers.get('accept') && e.request.headers.get('accept').includes('text/html')) {
-    e.respondWith(
-      fetch(e.request)
-        .then(function (res) {
-          var clone = res.clone();
-          caches.open(CACHE).then(function (c) { c.put(e.request, clone); });
-          return res;
-        })
-        .catch(function () { return caches.match(e.request); })
-    );
+    e.respondWith(networkFirst(e.request));
+    return;
+  }
+
+  /* contact.js: network-first — deploy-injected Web3Forms key must not stay stale in cache */
+  if (url.pathname === '/assets/contact.js') {
+    e.respondWith(networkFirst(e.request));
     return;
   }
 
