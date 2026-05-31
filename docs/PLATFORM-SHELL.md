@@ -49,7 +49,7 @@ Product CSS owns page content only (hero, hub grid, Casey, recruiter, eggs). Do 
 
 **First visit on Casebook:** FOUC script may infer dark from portfolio dark-family themes when `casebook-color-mode` is unset. `theme-bridge.js` does **not** overwrite stored Casebook prefs on later visits.
 
-**Default contrast on Casebook:** `normal` (high contrast is opt-in).
+**Default contrast on Casebook:** `high` (users can opt down to normal via the display menu).
 
 Casebook does **not** load `theme.js`, `i18n.js`, `visuals.js`, recruiter, or eggs.
 

@@ -162,6 +162,20 @@
     });
   }
 
+  function initMoreMenu() {
+    var btn = document.getElementById('more-pick-btn-header');
+    var menu = document.getElementById('more-menu-header');
+    if (!btn || !menu || !window.PrefsChrome) return;
+
+    window.PrefsChrome.PopoverMenu(btn, menu, {
+      onSelect: function (e, ctx) {
+        var item = e.target.closest('.more-menu-item');
+        if (!item) return;
+        ctx.close();
+      }
+    });
+  }
+
   function initHashOnLoad() {
     var hash = window.location.hash;
     if (!hash || hash.length < 2) return;
@@ -272,6 +286,7 @@
     initScrollSpy();
     initSectionRail();
     initSectionsDropdown();
+    initMoreMenu();
     initResumeModal();
     initChromeMisc();
     initHashOnLoad();
