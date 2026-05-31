@@ -152,6 +152,45 @@ header.scrolled {
 /* Lang menu scrollable if many locales */
 .lang-menu { max-height: 320px; overflow-y: auto; }
 
+/* ── More picker (Resume + Recruiter collapsed into ··· menu) ── */
+.more-picker { position: relative; }
+
+.more-pick-btn {
+  width: 44px; height: 44px; border-radius: 8px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--ink-2); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.more-pick-btn:hover,
+.more-pick-btn[aria-expanded="true"] {
+  color: var(--accent); border-color: var(--accent); background: var(--accent-bg);
+}
+
+.more-menu {
+  position: absolute; top: calc(100% + 8px); right: 0;
+  min-width: 176px; list-style: none; margin: 0; padding: 6px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-menu);
+  z-index: var(--z-dropdown);
+}
+
+.more-menu-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 9px 10px; border-radius: 7px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .04em;
+  color: var(--ink-2); background: transparent; border: none;
+  cursor: pointer; white-space: nowrap; text-align: left;
+  transition: background .15s, color .15s;
+}
+.more-menu-item:hover,
+.more-menu-item:focus-visible {
+  background: var(--surface-2); color: var(--ink);
+  outline: none;
+}
+.more-menu-item[aria-pressed="true"] { color: var(--accent); }
+
 /* Hamburger */
 .hamburger {
   width: 44px; height: 44px; border: none; background: transparent;

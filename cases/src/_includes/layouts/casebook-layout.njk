@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ site.locale | default('en') }}"
       data-casebook-color="light"
-      data-casebook-contrast="normal"
+      data-casebook-contrast="high"
       data-asset-base="{{ '/assets/casey/' | url }}">
 <head>
   <meta charset="UTF-8" />
@@ -23,9 +23,9 @@
     var dark = stored === 'dark' ||
       (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     document.documentElement.dataset.casebookColor = dark ? 'dark' : 'light';
-    var contrast = 'normal';
-    try { contrast = localStorage.getItem(CONTRAST_KEY) || 'normal'; } catch (e) {}
-    document.documentElement.dataset.casebookContrast = contrast === 'high' ? 'high' : 'normal';
+    var contrast = 'high';
+    try { contrast = localStorage.getItem(CONTRAST_KEY) || 'high'; } catch (e) {}
+    document.documentElement.dataset.casebookContrast = contrast === 'normal' ? 'normal' : 'high';
   })();
   </script>
 

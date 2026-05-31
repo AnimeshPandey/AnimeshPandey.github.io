@@ -362,6 +362,9 @@
     <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
     </symbol>
+    <symbol id="i-more" viewBox="0 0 18 18" fill="currentColor">
+      <circle cx="3" cy="9" r="1.5"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="9" r="1.5"/>
+    </symbol>
     <!-- Platform logos -->
     <symbol id="i-hackernoon" viewBox="0 0 24 24" fill="currentColor">
       <path d="M3 2h4v9h10V2h4v20h-4v-8H7v8H3z"/>
@@ -430,12 +433,28 @@
             <li class="theme-menu-item lang-menu-item" role="option" data-l="es" tabindex="-1">Español</li>
           </ul>
         </div>
-        <button type="button" class="nav-resume nav-resume-icon platform-icon-btn" id="nav-resume-preview" aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg><span>Resume</span>
-        </button>
-        <button type="button" class="header-rm-toggle platform-icon-btn" id="header-rm-toggle" aria-pressed="false" data-i18n-attr="aria-label" data-i18n="a11y.openRecruiterBriefing">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg><span>Recruiter</span><span class="header-rm-dot" aria-hidden="true"></span>
-        </button>
+        <div class="more-picker">
+          <button type="button" class="more-pick-btn platform-icon-btn" id="more-pick-btn-header"
+                  aria-label="More" aria-expanded="false" aria-controls="more-menu-header">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-more"/></svg>
+          </button>
+          <ul id="more-menu-header" class="more-menu prefs-menu" role="menu" hidden>
+            <li role="none">
+              <button type="button" class="nav-resume more-menu-item" id="nav-resume-preview"
+                      aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
+                <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+                <span data-i18n="nav.resume">Resume</span>
+              </button>
+            </li>
+            <li role="none">
+              <button type="button" class="header-rm-toggle more-menu-item" id="header-rm-toggle"
+                      aria-pressed="false" data-i18n-attr="aria-label" data-i18n="a11y.openRecruiterBriefing">
+                <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
+                <span data-i18n="nav.recruiterShort">Recruiter</span><span class="header-rm-dot" aria-hidden="true"></span>
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
       <button id="hamburger" class="hamburger platform-icon-btn" aria-expanded="false" aria-controls="mobile-nav" data-i18n-attr="aria-label" data-i18n="a11y.openMenu">
         <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
