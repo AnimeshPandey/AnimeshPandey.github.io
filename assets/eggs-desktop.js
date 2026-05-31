@@ -81,14 +81,37 @@
       return { px: W / 2 + p.x * R * s, py: H / 2 + p.y * R * s, s: s, z: p.z };
     }
 
+    function themeColors() {
+      var cs = getComputedStyle(document.documentElement);
+      return {
+        bg: (cs.getPropertyValue('--surface-0') || cs.getPropertyValue('--bg') || '#0e0c0b').trim(),
+        accent: (cs.getPropertyValue('--accent') || '#bf5a32').trim(),
+        ink: (cs.getPropertyValue('--ink') || '#f0e6da').trim()
+      };
+    }
+
+    function hexToRgb(hex) {
+      var h = hex.replace('#', '');
+      if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+      if (h.length !== 6) return null;
+      return { r: parseInt(h.slice(0, 2), 16), g: parseInt(h.slice(2, 4), 16), b: parseInt(h.slice(4, 6), 16) };
+    }
+
+    function rgba(hex, a) {
+      var rgb = hexToRgb(hex);
+      if (!rgb) return 'rgba(191,90,50,' + a + ')';
+      return 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + a + ')';
+    }
+
     function draw() {
       if (!open) return;
       raf = requestAnimationFrame(draw);
       if (!dragging) { rotY += velY; rotX += velX; }
 
+      var colors = themeColors();
       var W = canvas.width, H = canvas.height;
       ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = '#0e0c0b';
+      ctx.fillStyle = colors.bg;
       ctx.fillRect(0, 0, W, H);
 
       var rotated = pts.map(rotate);
@@ -104,7 +127,7 @@
             var alpha = (1 - Math.sqrt(dd) / 0.85) * 0.12 * ((avgD + 1) / 2);
             ctx.beginPath();
             ctx.moveTo(pa2.px, pa2.py); ctx.lineTo(pb2.px, pb2.py);
-            ctx.strokeStyle = 'rgba(191,90,50,' + alpha.toFixed(3) + ')';
+            ctx.strokeStyle = rgba(colors.accent, alpha);
             ctx.lineWidth = 0.6;
             ctx.stroke();
           }
@@ -120,13 +143,13 @@
         var dotA = 0.2 + norm * 0.8;
         ctx.beginPath();
         ctx.arc(q.px, q.py, dotR, 0, 6.2832);
-        ctx.fillStyle = 'rgba(191,90,50,' + dotA.toFixed(2) + ')';
+        ctx.fillStyle = rgba(colors.accent, dotA);
         ctx.fill();
 
         if (norm > 0.4) {
           var fs = (9 + norm * 5).toFixed(0);
           ctx.font = fs + 'px "JetBrains Mono",monospace';
-          ctx.fillStyle = 'rgba(240,230,218,' + (0.15 + norm * 0.7).toFixed(2) + ')';
+          ctx.fillStyle = rgba(colors.ink, 0.15 + norm * 0.7);
           ctx.textAlign = 'left';
           ctx.fillText(p.label, q.px + dotR + 4, q.py + 4);
         }

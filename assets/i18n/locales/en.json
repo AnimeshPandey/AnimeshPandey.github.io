@@ -14,7 +14,12 @@
     "resume": "Resume",
     "downloadResume": "Download Resume",
     "chooseTheme": "Choose theme",
-    "chooseLanguage": "Choose language"
+    "chooseLanguage": "Choose language",
+    "sections": "Sections menu",
+    "preferences": "Preferences",
+    "language": "Language",
+    "theme": "Theme",
+    "recruiter": "Recruiter briefing"
   },
   "a11y": {
     "skipToMain": "Skip to main content",
@@ -74,6 +79,45 @@
     "education": {
       "label": "// education"
     }
+  },
+  "about": {
+    "p1": "I'm a Senior Frontend Engineer based in Bangalore, India, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.",
+    "p2": "At Lifesight, I lead frontend development for a unified marketing intelligence platform, building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at Tekion scaling frontend systems used by 50,000+ daily users.",
+    "p3": "I believe great frontend engineering lives at the intersection of technical rigour and product empathy. I care about the milliseconds, the accessibility, the test coverage, not just the code that ships.",
+    "faqLabel": "// common questions"
+  },
+  "stats": {
+    "years": "Years experience",
+    "users": "Daily users served",
+    "load": "Load time reduction",
+    "mentored": "Engineers mentored"
+  },
+  "experience": {
+    "lifesight": {
+      "role": "Senior Software Engineer",
+      "desc": "Leading frontend development for Lifesight's Unified Measurement OS, a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards."
+    },
+    "tekion": {
+      "role": "Software Engineer",
+      "desc": "Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by 30% for 50k+ daily users."
+    }
+  },
+  "contact": {
+    "intro": "Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.",
+    "emailMe": "Email me",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "you@company.com",
+    "messagePlaceholder": "Tell me about the role or project...",
+    "submit": "Send message",
+    "nameError": "Please enter your name.",
+    "emailError": "Please enter a valid email.",
+    "messageError": "Please enter a message."
+  },
+  "skills": {
+    "constellationHint": "Press ? on desktop to explore the stack in 3D"
   },
   "footer": {
     "location": "Animesh Pandey · Bangalore, India",

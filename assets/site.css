@@ -58,6 +58,7 @@ header {
   display: flex; align-items: center;
   padding-left: max(var(--page-pad), env(safe-area-inset-left));
   padding-right: max(var(--page-pad), env(safe-area-inset-right));
+  padding-top: env(safe-area-inset-top, 0);
   transition: top .35s cubic-bezier(.16,1,.3,1), box-shadow .2s;
 }
 header.scrolled {
@@ -174,8 +175,16 @@ header.scrolled {
   transform: translateX(100%); transition: transform .28s ease;
   display: flex; flex-direction: column;
   padding: var(--page-pad);
-  padding-top: 0;
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: max(var(--page-pad), env(safe-area-inset-bottom));
   overflow-y: auto;
+}
+.mobile-rm-toggle {
+  width: 100%; min-height: 48px; margin-top: 4px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px;
+  border: 1px solid var(--border-2); border-radius: 8px;
+  background: var(--surface); color: var(--ink-2); cursor: pointer;
 }
 #mobile-nav.open { transform: translateX(0); }
 
@@ -1470,6 +1479,19 @@ html.theme-transitioning footer {
 /* ═══════════════════════════════════════
    BREAKPOINT: ≥820px (desktop)
    ═══════════════════════════════════════ */
+.skills-constellation-hint {
+  margin-top: -8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+@media (min-width: 820px) {
+  .skills-constellation-hint:not([hidden]) { display: block; }
+}
+@media (max-width: 819px) {
+  .skills-constellation-hint { display: none !important; }
+}
+
 @media (min-width: 820px) {
   .hamburger { display: none; }
   .nav-links { display: flex; }

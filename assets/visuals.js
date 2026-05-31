@@ -36,6 +36,7 @@
     initTagStagger();
     initArticleTap();
     initEggs();
+    initSkillsConstellationHint();
     initThemeWink();
     if (caps.iob) initTimelineHighlight();
     initImpactLens();
@@ -411,6 +412,13 @@
       .catch(function (err) { console.warn('[eggs] load failed', err); });
   }
 
+  function initSkillsConstellationHint() {
+    var hint = document.querySelector('.skills-constellation-hint');
+    if (!hint || caps.reducedMotion) return;
+    if (!mq('(min-width: 820px)')) return;
+    hint.removeAttribute('hidden');
+  }
+
   /* ══════════════════════════════════════════════════
      THEME WINK (X2) — 5 rapid toggles → one-line toast
      Cross-tier; once per session.
@@ -552,13 +560,14 @@
   function initRecruiterMode() {
     /* ── DOM refs ── */
     var headerToggle  = document.getElementById('header-rm-toggle');
+    var headerToggleMobile = document.getElementById('header-rm-toggle-mobile');
     var headerExitBtn = document.getElementById('header-rm-exit');
     var header        = document.querySelector('header');
 
     /* Only the header icon toggle syncs aria-pressed */
-    var allToggles = [headerToggle].filter(Boolean);
+    var allToggles = [headerToggle, headerToggleMobile].filter(Boolean);
 
-    if (!headerToggle) return;
+    if (!allToggles.length) return;
 
     /* ── State ── */
     var on = false;
@@ -645,11 +654,11 @@
     if (on) set(true);
 
     /* ── Header toggle: click always enters mode + opens briefing ── */
-    if (headerToggle) {
-      headerToggle.addEventListener('click', function () {
-        enterAndOpen(headerToggle);
+    allToggles.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        enterAndOpen(btn);
       });
-    }
+    });
 
     /* ── Header exit: exits mode (closes panel too via set(false)) ── */
     if (headerExitBtn) {

@@ -38,27 +38,23 @@ jobs:
         working-directory: cases
         run: npm run build
 
+      - name: Install portfolio site dependencies
+        working-directory: site
+        run: npm install
+
+      - name: Build portfolio site (Eleventy)
+        working-directory: site
+        run: npm run build
+
       # ── Stage merged artifact ──────────────────────────────────────────────
-      # Portfolio lives at root; casebook _site output goes to /cases/
+      # Root site from site/_site/; casebook at /cases/
       - name: Stage deployment artifact
         run: |
           set -euo pipefail
           mkdir -p _deploy
 
-          # Copy portfolio (exclude casebook source, build output, dev files)
-          rsync -a \
-            --exclude='.git' \
-            --exclude='.github' \
-            --exclude='cases/src' \
-            --exclude='cases/node_modules' \
-            --exclude='cases/_site' \
-            --exclude='cases/.eleventy.js' \
-            --exclude='cases/package.json' \
-            --exclude='cases/.gitignore' \
-            --exclude='_deploy' \
-            . _deploy/
+          rsync -a site/_site/ _deploy/
 
-          # Overlay Eleventy build output at /cases/
           mkdir -p _deploy/cases
           rsync -a cases/_site/ _deploy/cases/
 

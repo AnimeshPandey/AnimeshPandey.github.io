@@ -62,7 +62,7 @@
     });
 
     var sections = document.querySelectorAll('section[id]');
-    var navLinks = document.querySelectorAll('.nav-links a, .mobile-nav-links a');
+    var navLinks = document.querySelectorAll('.nav-sections__menu a, .mobile-nav-links a');
     function onScroll() {
       var current = '';
       sections.forEach(function (s) {
@@ -166,32 +166,11 @@
       });
     }());
 
-    /* Desktop "More" menu */
-    var moreBtn = document.getElementById('nav-more-btn');
-    var morePanel = document.getElementById('nav-more-panel');
-    if (moreBtn && morePanel) {
-      moreBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var open = morePanel.hidden;
-        morePanel.hidden = !open;
-        moreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-      document.addEventListener('click', function () {
-        if (!morePanel.hidden) {
-          morePanel.hidden = true;
-          moreBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-      morePanel.addEventListener('click', function (e) {
-        e.stopPropagation();
-      });
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !morePanel.hidden) {
-          morePanel.hidden = true;
-          moreBtn.setAttribute('aria-expanded', 'false');
-          moreBtn.focus();
-        }
-      });
+    /* Desktop Sections dropdown */
+    var sectionsBtn = document.getElementById('nav-sections-btn');
+    var sectionsMenu = document.getElementById('nav-sections-menu');
+    if (sectionsBtn && sectionsMenu && window.PrefsChrome) {
+      window.PrefsChrome.PopoverMenu(sectionsBtn, sectionsMenu);
     }
   });
 })();

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <script>
+  (function(){var v=['light','dark','sage','slate','dusk','high-contrast'];var t=localStorage.getItem('theme');document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'high-contrast';var l=localStorage.getItem('locale');if(l)document.documentElement.lang=l;})();
+  </script>
+  <title>{{ title }} · Animesh Pandey</title>
+  <meta name="description" content="{{ description }}" />
+  <meta name="author" content="Animesh Pandey" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#FAF8F4" />
+  <link rel="canonical" href="{{ canonical }}" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/styles/foundation.css" />
+  <link rel="stylesheet" href="/assets/theme.css" />
+  <link rel="stylesheet" href="/assets/platform/chrome.css" />
+  <link rel="stylesheet" href="/assets/platform/prefs-chrome.css" />
+  <link rel="stylesheet" href="/assets/site.css" />
+  {% if structuredData %}{{ structuredData | safe }}{% endif %}
+</head>
+<body>
+{% include "partials/icon-sprite-nav.njk" %}
+<a class="skip-link" href="#article-content" data-i18n="a11y.skipToArticle">Skip to article</a>
+{% set homeHref = '/' %}
+{% include "partials/site-header.njk" %}
+{{ content | safe }}
+<footer>
+  <div class="foot-inner">
+    <div class="foot-l" data-i18n="footer.location">Animesh Pandey · Bangalore, India</div>
+    <a href="/" class="article-footer-link" data-i18n="footer.backHome">← anmshpndy.com</a>
+  </div>
+</footer>
+{% include "partials/site-scripts.njk" %}
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "YOUR_CF_BEACON_TOKEN"}'></script>
+</body>
+</html>

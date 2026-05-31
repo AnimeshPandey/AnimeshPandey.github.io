@@ -14,7 +14,12 @@
     "resume": "Currículum",
     "downloadResume": "Descargar Currículum",
     "chooseTheme": "Elegir tema",
-    "chooseLanguage": "Elegir idioma"
+    "chooseLanguage": "Elegir idioma",
+    "sections": "Menú de secciones",
+    "preferences": "Preferencias",
+    "language": "Idioma",
+    "theme": "Tema",
+    "recruiter": "Informe para reclutadores"
   },
   "a11y": {
     "skipToMain": "Saltar al contenido principal",
@@ -74,6 +79,44 @@
     "education": {
       "label": "// educación"
     }
+  },
+  "about": {
+    "p1": "Soy ingeniero frontend senior en Bangalore, India, con más de 7 años construyendo plataformas SaaS escalables en analítica, retail automotriz y dominios geoespaciales.",
+    "p2": "En Lifesight lidero el desarrollo frontend de una plataforma unificada de inteligencia de marketing. Antes pasé más de 4 años en Tekion escalando sistemas usados por más de 50.000 usuarios diarios.",
+    "p3": "Creo que la gran ingeniería frontend vive en la intersección del rigor técnico y la empatía por el producto."
+  },
+  "stats": {
+    "years": "Años de experiencia",
+    "users": "Usuarios diarios",
+    "load": "Reducción de tiempo de carga",
+    "mentored": "Ingenieros mentorizados"
+  },
+  "experience": {
+    "lifesight": {
+      "role": "Ingeniero de software senior",
+      "desc": "Lidero el frontend del Unified Measurement OS de Lifesight: SaaS de inteligencia de marketing con MMM, pruebas de incrementalidad y atribución causal. Dashboards SSR y producto de IA Mia."
+    },
+    "tekion": {
+      "role": "Ingeniero de software",
+      "desc": "Más de 10 módulos frontend críticos en retail automotriz empresarial. Microfrontends con Webpack Module Federation. Reducción del 30% en tiempos de carga para 50k+ usuarios diarios."
+    }
+  },
+  "contact": {
+    "intro": "Abierto a roles a tiempo completo, contratos y conversaciones interesantes.",
+    "emailMe": "Enviar email",
+    "name": "Nombre",
+    "email": "Email",
+    "message": "Mensaje",
+    "namePlaceholder": "Tu nombre",
+    "emailPlaceholder": "tu@empresa.com",
+    "messagePlaceholder": "Cuéntame sobre el rol o proyecto...",
+    "submit": "Enviar mensaje",
+    "nameError": "Introduce tu nombre.",
+    "emailError": "Introduce un email válido.",
+    "messageError": "Introduce un mensaje."
+  },
+  "skills": {
+    "constellationHint": "Pulsa ? en escritorio para explorar el stack en 3D"
   },
   "footer": {
     "location": "Animesh Pandey · Bangalore, India",

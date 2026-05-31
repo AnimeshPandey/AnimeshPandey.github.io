@@ -1,0 +1,13 @@
+{
+  "name": "anmshpndy-portfolio-site",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "eleventy",
+    "start": "eleventy --serve --port 8090"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "^2.0.1"
+  }
+}

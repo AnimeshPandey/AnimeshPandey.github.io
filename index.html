@@ -78,6 +78,7 @@
   <link rel="stylesheet" href="/assets/styles/foundation.css" />
   <link rel="stylesheet" href="/assets/theme.css" />
   <link rel="stylesheet" href="/assets/platform/chrome.css" />
+  <link rel="stylesheet" href="/assets/platform/prefs-chrome.css" />
   <link rel="stylesheet" href="/assets/site.css" />
 
   <!-- Structured Data -->
@@ -381,143 +382,126 @@
 <div class="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
 <div class="copy-toast" id="copyToast" role="status" aria-live="polite"></div>
 
-<!-- HEADER / NAV -->
+<!-- HEADER / NAV (shared partial: site/src/_includes/partials/site-header.njk) -->
 <header>
   <div class="nav-inner">
-    <a href="#hero" class="nav-logo" aria-label="Animesh Pandey, home">AP<span>.</span></a>
+    <a href="#hero" class="nav-logo" data-i18n-attr="aria-label" data-i18n="a11y.home">AP<span>.</span></a>
     <div class="nav-right">
-      <nav aria-label="Main navigation">
-        <ul class="nav-links">
-          <li><a href="#about"      data-i18n="nav.about">about</a></li>
-          <li><a href="#experience" data-i18n="nav.experience">experience</a></li>
-          <li><a href="#skills"     data-i18n="nav.skills">skills</a></li>
-          <li><a href="#projects"   data-i18n="nav.projects">projects</a></li>
-          <li><a href="#writing"    data-i18n="nav.writing">writing</a></li>
-          <li><a href="#contact"    data-i18n="nav.contact">contact</a></li>
+      <div class="nav-sections nav-sections--desktop">
+        <button type="button" class="nav-sections__btn" id="nav-sections-btn"
+                aria-expanded="false" aria-controls="nav-sections-menu"
+                data-i18n-attr="aria-label" data-i18n="nav.sections">Sections</button>
+        <ul id="nav-sections-menu" class="nav-sections__menu prefs-menu" role="menu" hidden>
+          <li role="none"><a href="#about" role="menuitem" data-i18n="nav.about">about</a></li>
+          <li role="none"><a href="#experience" role="menuitem" data-i18n="nav.experience">experience</a></li>
+          <li role="none"><a href="#skills" role="menuitem" data-i18n="nav.skills">skills</a></li>
+          <li role="none"><a href="#projects" role="menuitem" data-i18n="nav.projects">projects</a></li>
+          <li role="none"><a href="#writing" role="menuitem" data-i18n="nav.writing">writing</a></li>
+          <li role="none"><a href="#contact" role="menuitem" data-i18n="nav.contact">contact</a></li>
         </ul>
-      </nav>
-      <div class="nav-more nav-more--desktop" id="nav-more">
-        <button type="button" class="nav-more__btn" id="nav-more-btn"
-                aria-expanded="false" aria-controls="nav-more-panel">
-          More
+      </div>
+      <div class="nav-utilities">
+        <div class="theme-picker">
+          <button type="button" class="theme-pick-btn platform-icon-btn" id="theme-pick-btn-header"
+                  aria-label="Theme: High contrast. Change" aria-expanded="false" aria-controls="theme-menu-header">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+          </button>
+          <ul id="theme-menu-header" class="theme-menu prefs-menu" role="listbox" aria-label="Choose theme" hidden>
+            <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+            <li class="theme-menu-item" role="option" data-t="light" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+            <li class="theme-menu-item" role="option" data-t="dark" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
+            <li class="theme-menu-item" role="option" data-t="sage" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
+            <li class="theme-menu-item" role="option" data-t="slate" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
+            <li class="theme-menu-item" role="option" data-t="dusk" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial</li>
+          </ul>
+        </div>
+        <div class="theme-picker lang-picker">
+          <button type="button" class="lang-pick-btn platform-icon-btn" id="lang-pick-btn-header"
+                  aria-label="Language: EN. Change" aria-expanded="false" aria-controls="lang-menu-header">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
+            <span class="lang-pick-label" aria-hidden="true">EN</span>
+          </button>
+          <ul id="lang-menu-header" class="theme-menu lang-menu prefs-menu" role="listbox" aria-label="Choose language" hidden>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true" tabindex="-1">English</li>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" tabindex="-1">हिन्दी</li>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="es" tabindex="-1">Español</li>
+          </ul>
+        </div>
+        <button type="button" class="nav-resume nav-resume-icon platform-icon-btn" id="nav-resume-preview" aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg><span>Resume</span>
         </button>
-        <div id="nav-more-panel" class="nav-more__panel" hidden>
-          <p class="nav-more__section-label">Preferences</p>
-          <div class="theme-picker nav-more__picker">
-            <button class="theme-pick-btn" id="theme-pick-btn"
-                    aria-label="Theme: High contrast. Change"
-                    aria-expanded="false"
-                    aria-controls="theme-menu-header">
-              <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
-              <span class="nav-more__picker-label">Theme</span>
-            </button>
-            <ul id="theme-menu-header" class="theme-menu" role="listbox" aria-label="Choose theme" hidden>
-              <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true"  tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
-              <li class="theme-menu-item" role="option" data-t="light"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
-              <li class="theme-menu-item" role="option" data-t="dark"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
-              <li class="theme-menu-item" role="option" data-t="sage"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
-              <li class="theme-menu-item" role="option" data-t="slate"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
-              <li class="theme-menu-item" role="option" data-t="dusk"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
-            </ul>
-          </div>
-          <div class="theme-picker lang-picker nav-more__picker">
-            <button class="theme-pick-btn lang-pick-btn" id="lang-pick-btn-header"
-                    aria-label="Language: EN. Change"
-                    aria-expanded="false"
-                    aria-controls="lang-menu-header">
-              <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
-              <span class="lang-pick-label" aria-hidden="true">EN</span>
-              <span class="nav-more__picker-label">Language</span>
-            </button>
-            <ul id="lang-menu-header" class="theme-menu lang-menu" role="listbox" aria-label="Choose language" hidden>
-              <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true"  tabindex="-1">English</li>
-              <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" aria-selected="false" tabindex="-1">हिन्दी</li>
-              <li class="theme-menu-item lang-menu-item" role="option" data-l="es" aria-selected="false" tabindex="-1">Español</li>
-            </ul>
-          </div>
-          <p class="nav-more__section-label">Tools</p>
-          <div class="header-rm-group nav-more__rm" id="header-rm-group">
-            <button class="header-rm-toggle" id="header-rm-toggle"
-                    aria-pressed="false"
-                    aria-label="Open recruiter briefing">
-              <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-              <span>Recruiter briefing</span>
-              <span class="header-rm-dot" aria-hidden="true"></span>
-            </button>
-            <button class="header-rm-exit" id="header-rm-exit"
-                    aria-label="Exit recruiter mode">
-              <svg class="icon-sm" aria-hidden="true"><use href="#i-close"/></svg>
-            </button>
-          </div>
-          <button type="button" class="nav-resume nav-more__resume" id="nav-resume-preview" aria-haspopup="dialog" aria-label="Preview or download resume">
-            <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
-            Resume
+        <div class="header-rm-group" id="header-rm-group">
+          <button type="button" class="header-rm-toggle platform-icon-btn" id="header-rm-toggle" aria-pressed="false" data-i18n-attr="aria-label" data-i18n="a11y.openRecruiterBriefing">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg><span>Recruiter</span><span class="header-rm-dot" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="header-rm-exit platform-icon-btn" id="header-rm-exit" data-i18n-attr="aria-label" data-i18n="a11y.exitRecruiterMode">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-close"/></svg>
           </button>
         </div>
       </div>
-      <button id="hamburger" class="hamburger" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+      <button id="hamburger" class="hamburger platform-icon-btn" aria-expanded="false" aria-controls="mobile-nav" data-i18n-attr="aria-label" data-i18n="a11y.openMenu">
         <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
       </button>
     </div>
   </div>
 </header>
-
-<!-- Mobile nav overlay -->
 <div id="nav-overlay" aria-hidden="true"></div>
-
-<!-- Mobile nav panel -->
 <nav id="mobile-nav" aria-label="Mobile navigation">
   <div class="mobile-nav-header">
-    <a href="#hero" class="nav-logo" aria-label="Animesh Pandey, home">AP<span>.</span></a>
-    <button id="mobile-nav-close" class="mobile-nav-close" aria-label="Close menu">
+    <a href="#hero" class="nav-logo" data-i18n-attr="aria-label" data-i18n="a11y.home">AP<span>.</span></a>
+    <button id="mobile-nav-close" class="mobile-nav-close" type="button" data-i18n-attr="aria-label" data-i18n="a11y.closeMenu">
       <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
     </button>
   </div>
   <ul class="mobile-nav-links">
-    <li><a href="#about"      data-i18n="nav.about">about</a></li>
+    <li><a href="#about" data-i18n="nav.about">about</a></li>
     <li><a href="#experience" data-i18n="nav.experience">experience</a></li>
-    <li><a href="#skills"     data-i18n="nav.skills">skills</a></li>
-    <li><a href="#projects"   data-i18n="nav.projects">projects</a></li>
-    <li><a href="#writing"    data-i18n="nav.writing">writing</a></li>
-    <li><a href="#contact"    data-i18n="nav.contact">contact</a></li>
+    <li><a href="#skills" data-i18n="nav.skills">skills</a></li>
+    <li><a href="#projects" data-i18n="nav.projects">projects</a></li>
+    <li><a href="#writing" data-i18n="nav.writing">writing</a></li>
+    <li><a href="#contact" data-i18n="nav.contact">contact</a></li>
   </ul>
   <div class="mobile-nav-footer">
-    <p class="mobile-nav-footer__label">Preferences</p>
-    <div class="mobile-nav-footer__pickers">
-      <div class="theme-picker lang-picker">
-        <button class="theme-pick-btn lang-pick-btn" id="lang-pick-btn-mobile"
-                aria-label="Language: EN. Change"
-                aria-expanded="false"
-                aria-controls="lang-menu-mobile">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
-          <span class="lang-pick-label" aria-hidden="true">EN</span>
-        </button>
-        <ul id="lang-menu-mobile" class="theme-menu lang-menu" role="listbox" aria-label="Choose language" hidden>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true"  tabindex="-1">English</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" aria-selected="false" tabindex="-1">हिन्दी</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="es" aria-selected="false" tabindex="-1">Español</li>
-        </ul>
+    <p class="mobile-nav-footer__label" data-i18n="nav.preferences">Preferences</p>
+    <div class="mobile-nav-prefs">
+      <div class="prefs-cell">
+        <span class="prefs-cell-label" data-i18n="nav.language">Language</span>
+        <div class="theme-picker lang-picker">
+          <button type="button" class="lang-pick-btn" id="lang-pick-btn-mobile" aria-label="Language: EN. Change" aria-expanded="false" aria-controls="lang-menu-mobile">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
+            <span class="lang-pick-label">EN</span>
+          </button>
+          <ul id="lang-menu-mobile" class="theme-menu lang-menu prefs-menu" role="listbox" hidden data-popover-fixed="true">
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true" tabindex="-1">English</li>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" tabindex="-1">हिन्दी</li>
+            <li class="theme-menu-item lang-menu-item" role="option" data-l="es" tabindex="-1">Español</li>
+          </ul>
+        </div>
       </div>
-      <div class="theme-picker">
-        <button class="theme-pick-btn" id="theme-pick-btn-mobile"
-                aria-label="Theme: High contrast. Change"
-                aria-expanded="false"
-                aria-controls="theme-menu-mobile">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
-        </button>
-        <ul id="theme-menu-mobile" class="theme-menu" role="listbox" aria-label="Choose theme" hidden>
-          <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true"  tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
-          <li class="theme-menu-item" role="option" data-t="light"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
-          <li class="theme-menu-item" role="option" data-t="dark"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
-          <li class="theme-menu-item" role="option" data-t="sage"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
-          <li class="theme-menu-item" role="option" data-t="slate"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
-          <li class="theme-menu-item" role="option" data-t="dusk"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
-        </ul>
+      <div class="prefs-cell">
+        <span class="prefs-cell-label" data-i18n="nav.theme">Theme</span>
+        <div class="theme-picker">
+          <button type="button" class="theme-pick-btn" id="theme-pick-btn-mobile" aria-label="Theme: High contrast. Change" aria-expanded="false" aria-controls="theme-menu-mobile">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+          </button>
+          <ul id="theme-menu-mobile" class="theme-menu prefs-menu" role="listbox" hidden data-popover-fixed="true">
+            <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+            <li class="theme-menu-item" role="option" data-t="light" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+            <li class="theme-menu-item" role="option" data-t="dark" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
+            <li class="theme-menu-item" role="option" data-t="sage" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
+            <li class="theme-menu-item" role="option" data-t="slate" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
+            <li class="theme-menu-item" role="option" data-t="dusk" tabindex="-1"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial</li>
+          </ul>
+        </div>
       </div>
     </div>
-    <button type="button" class="nav-resume mobile-nav-resume" id="nav-resume-preview-mobile" aria-haspopup="dialog" aria-label="Preview or download resume">
+    <button type="button" class="nav-resume mobile-nav-resume" id="nav-resume-preview-mobile" aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
       <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
-      Resume
+      <span data-i18n="nav.resume">Resume</span>
+    </button>
+    <button type="button" class="header-rm-toggle mobile-rm-toggle" id="header-rm-toggle-mobile" aria-pressed="false" data-i18n-attr="aria-label" data-i18n="a11y.openRecruiterBriefing">
+      <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
+      <span data-i18n="nav.recruiter">Recruiter briefing</span>
     </button>
   </div>
 </nav>
@@ -668,9 +652,9 @@
     <h2 id="about-heading"><span data-i18n="sections.about.title">Thoughtful engineer,</span><br><em data-i18n="sections.about.titleEm">product thinker</em></h2>
     <div class="about-cols">
       <div class="about-body fade-up">
-        <p>I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
-        <p>At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform, building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
-        <p>I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage, not just the code that ships.</p>
+        <p data-i18n="about.p1">I'm a Senior Frontend Engineer based in <strong>Bangalore, India</strong>, with 7+ years of experience building scalable SaaS platforms across analytics, automotive retail, and geospatial domains.</p>
+        <p data-i18n="about.p2">At <strong>Lifesight</strong>, I lead frontend development for a unified marketing intelligence platform, building the dashboards and AI-powered interfaces that help enterprise brands make smarter decisions. Before that, I spent 4+ years at <strong>Tekion</strong> scaling frontend systems used by 50,000+ daily users.</p>
+        <p data-i18n="about.p3">I believe great frontend engineering lives at the intersection of <strong>technical rigour</strong> and <strong>product empathy</strong>. I care about the milliseconds, the accessibility, the test coverage, not just the code that ships.</p>
       </div>
 
       <!-- FAQ accordion — supports FAQPage schema; moves beside text on desktop -->
@@ -707,22 +691,22 @@
       <div class="stat" role="listitem">
         <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-clock"/></svg></div>
         <div class="stat-n">7+</div>
-        <div class="stat-l">Years experience</div>
+        <div class="stat-l" data-i18n="stats.years">Years experience</div>
       </div>
       <div class="stat" role="listitem">
         <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-users"/></svg></div>
         <div class="stat-n">50k+</div>
-        <div class="stat-l">Daily users served</div>
+        <div class="stat-l" data-i18n="stats.users">Daily users served</div>
       </div>
       <div class="stat" role="listitem">
         <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-bolt"/></svg></div>
         <div class="stat-n">30%</div>
-        <div class="stat-l">Load time reduction</div>
+        <div class="stat-l" data-i18n="stats.load">Load time reduction</div>
       </div>
       <div class="stat" role="listitem">
         <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-heart"/></svg></div>
         <div class="stat-n">8+</div>
-        <div class="stat-l">Engineers mentored</div>
+        <div class="stat-l" data-i18n="stats.mentored">Engineers mentored</div>
       </div>
     </div>
   </section>
@@ -743,8 +727,8 @@
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
           <span class="t-industry">SaaS Analytics</span>
         </div>
-        <h3 class="t-role">Senior Software Engineer</h3>
-        <p class="t-desc">Leading frontend development for Lifesight's Unified Measurement OS, a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards.</p>
+        <h3 class="t-role" data-i18n="experience.lifesight.role">Senior Software Engineer</h3>
+        <p class="t-desc" data-i18n="experience.lifesight.desc">Leading frontend development for Lifesight's Unified Measurement OS, a marketing intelligence SaaS combining MMM, incrementality testing, and causal attribution. Building SSR analytics dashboards, contributing to Mia (their agentic AI product), and establishing platform-wide testing and performance standards.</p>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Next.js</span><span class="tag">Storybook</span><span class="tag">Playwright</span><span class="tag">A/B Testing</span>
         </div>
@@ -758,8 +742,8 @@
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
           <span class="t-industry">Automotive Retail</span>
         </div>
-        <h3 class="t-role">Software Engineer</h3>
-        <p class="t-desc">Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by <strong>30%</strong> for <strong>50k+ daily users</strong>. Introduced AI-driven development tooling cutting team toil by 30%.</p>
+        <h3 class="t-role" data-i18n="experience.tekion.role">Software Engineer</h3>
+        <p class="t-desc" data-i18n="experience.tekion.desc">Owned 10+ mission-critical frontend modules across enterprise automotive retail. Built Storybook-documented component libraries and microfrontend architectures with Webpack Module Federation. Reduced load times by <strong>30%</strong> for <strong>50k+ daily users</strong>. Introduced AI-driven development tooling cutting team toil by 30%.</p>
         <div class="tags" aria-label="Technologies used">
           <span class="tag">ReactJS</span><span class="tag">TypeScript</span><span class="tag">Redux</span><span class="tag">Next.js</span><span class="tag">GraphQL</span><span class="tag">Microfrontends</span><span class="tag">Webpack</span><span class="tag">GitHub Actions</span>
         </div>
@@ -810,6 +794,7 @@
     <p class="section-label" data-i18n="sections.skills.label">// skills</p>
     <h2 id="skills-heading" data-i18n="sections.skills.title">Stack &amp; craft</h2>
     <p class="section-intro" data-i18n="sections.skills.intro">Production tools from recent platforms - not a buzzword dump.</p>
+    <p class="skills-constellation-hint section-intro" data-i18n="skills.constellationHint" hidden>Press ? on desktop to explore the stack in 3D</p>
 
     <div class="sv-grid">
 
@@ -1249,7 +1234,7 @@
     <p class="section-label" data-i18n="sections.contact.label">// contact</p>
     <h2 id="contact-heading" data-i18n="sections.contact.title">Let's build something</h2>
     <div class="contact-info">
-    <p class="contact-intro">Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.</p>
+    <p class="contact-intro" data-i18n="contact.intro">Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.</p>
 
     <!-- Quick actions -->
     <div class="contact-quick" role="list" aria-label="Quick contact options">
@@ -1259,7 +1244,7 @@
       </button>
       <a href="mailto:animeshpandey1909@gmail.com" class="cq-btn" role="listitem" aria-label="Send email">
         <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
-        Email me
+        <span data-i18n="contact.emailMe">Email me</span>
       </a>
       <a href="https://linkedin.com/in/pandeyanimesh" class="cq-btn" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="LinkedIn profile">
         <svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg>
@@ -1281,23 +1266,23 @@
 
       <div class="form-row">
         <div class="field">
-          <label for="fname">Name</label>
-          <input type="text" id="fname" name="name" placeholder="Your name" required autocomplete="name" inputmode="text" />
-          <span class="field-error" id="fname-err" role="alert">Please enter your name.</span>
+          <label for="fname" data-i18n="contact.name">Name</label>
+          <input type="text" id="fname" name="name" data-i18n-attr="placeholder" data-i18n="contact.namePlaceholder" placeholder="Your name" required autocomplete="name" inputmode="text" />
+          <span class="field-error" id="fname-err" role="alert" data-i18n="contact.nameError">Please enter your name.</span>
         </div>
         <div class="field">
-          <label for="femail">Email</label>
-          <input type="email" id="femail" name="email" placeholder="you@company.com" required autocomplete="email" inputmode="email" />
-          <span class="field-error" id="femail-err" role="alert">Please enter a valid email.</span>
+          <label for="femail" data-i18n="contact.email">Email</label>
+          <input type="email" id="femail" name="email" data-i18n-attr="placeholder" data-i18n="contact.emailPlaceholder" placeholder="you@company.com" required autocomplete="email" inputmode="email" />
+          <span class="field-error" id="femail-err" role="alert" data-i18n="contact.emailError">Please enter a valid email.</span>
         </div>
       </div>
       <div class="field">
-        <label for="fmsg">Message</label>
-        <textarea id="fmsg" name="message" placeholder="Tell me about the role or project..." required></textarea>
-        <span class="field-error" id="fmsg-err" role="alert">Please enter a message.</span>
+        <label for="fmsg" data-i18n="contact.message">Message</label>
+        <textarea id="fmsg" name="message" data-i18n-attr="placeholder" data-i18n="contact.messagePlaceholder" placeholder="Tell me about the role or project..." required></textarea>
+        <span class="field-error" id="fmsg-err" role="alert" data-i18n="contact.messageError">Please enter a message.</span>
       </div>
       <button type="submit" class="form-btn">
-        Send message
+        <span data-i18n="contact.submit">Send message</span>
         <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
       </button>
       <p class="form-privacy">Your message is sent securely to my inbox via <a href="https://web3forms.com/privacy" target="_blank" rel="noopener noreferrer">Web3Forms</a>. I don't sell your data.</p>
@@ -1380,6 +1365,8 @@
 
 <script src="/assets/js/constants.js" defer></script>
 <script src="/assets/platform/chrome.js" defer></script>
+<script src="/assets/platform/prefs-chrome.js" defer></script>
+<script src="/assets/platform/theme-bridge.js" defer></script>
 <script src="/assets/theme.js" defer></script>
 <script src="/assets/i18n/i18n.js" defer></script>
 <script src="/assets/nav.js" defer></script>

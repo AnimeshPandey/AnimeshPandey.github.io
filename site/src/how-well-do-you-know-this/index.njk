@@ -1,0 +1,87 @@
+---
+layout: layouts/article.njk
+permalink: /how-well-do-you-know-this/index.html
+title: 'How Well Do You Know "this"?'
+description: 'A deep dive into JavaScript''s this keyword: the four binding rules, call-site context, and how to predict what this refers to at runtime.'
+canonical: https://anmshpndy.com/how-well-do-you-know-this/
+publishedAt: 2021-02-28
+---
+<main id="article-content">
+  <div class="article-shell">
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
+      <a href="/#writing">Writing</a>
+      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
+      <span aria-current="page">How Well Do You Know "this"?</span>
+    </nav>
+
+    <header class="article-header">
+      <p class="article-label">JavaScript · Binding Rules</p>
+      <h1 class="article-title-main">How Well Do You Know <code class="article-title-code">this</code>?</h1>
+      <div class="article-byline">
+        <span>Animesh Pandey</span>
+        <span>·</span>
+        <time datetime="2021-02-28">February 28, 2021</time>
+        <span>·</span>
+        <span>5 min read</span>
+      </div>
+    </header>
+
+    <div class="article-prose">
+      <p>JavaScript's <code>this</code> keyword is one of the most misunderstood features in the language. Unlike other languages where <code>this</code> refers to the enclosing class instance, in JavaScript <code>this</code> is a <strong>runtime binding</strong> determined entirely by how and where a function is called: its call site.</p>
+
+      <p>There are four binding rules, applied in order of precedence. Understanding them lets you predict exactly what <code>this</code> will refer to in any context, without guessing or reaching for <code>.bind()</code> by reflex.</p>
+
+      <h2>The four binding rules</h2>
+
+      <p><strong>1. new binding:</strong> When a function is called with <code>new</code>, a brand new object is created and <code>this</code> inside the function refers to that object.</p>
+
+      <p><strong>2. Explicit binding:</strong> Using <code>.call()</code>, <code>.apply()</code>, or <code>.bind()</code> explicitly sets <code>this</code> to the provided object, regardless of call site.</p>
+
+      <p><strong>3. Implicit binding:</strong> When a function is called as a method of an object (<code>obj.fn()</code>), <code>this</code> refers to that object. The binding can be lost if the function is extracted and called independently.</p>
+
+      <p><strong>4. Default binding:</strong> The fallback when none of the above apply. In strict mode, <code>this</code> is <code>undefined</code>; in non-strict mode, it falls back to the global object.</p>
+
+      <blockquote>
+        The full article on Medium walks through each rule with annotated code examples, explains binding loss, and covers arrow functions, which don't have their own <code>this</code> at all.
+      </blockquote>
+    </div>
+
+    <div class="article-cta">
+      <p class="article-cta-label">// Read the full article</p>
+      <a href="https://anmshpndy.medium.com/how-well-do-you-know-this-ff6c22e21f00" target="_blank" rel="noopener noreferrer" class="article-cta-btn">
+        Read on Medium ↗
+      </a>
+      <div class="article-cta-also">
+        <span class="article-cta-also-label">Also on:</span>
+        <a href="https://dev.to/anmshpndy/how-well-do-you-know-this-2cg1" target="_blank" rel="noopener noreferrer" class="article-cta-chip">Dev.to</a>
+        <a href="https://hackernoon.com/everything-you-need-to-know-about-this-vo2933yg" target="_blank" rel="noopener noreferrer" class="article-cta-chip">HackerNoon</a>
+      </div>
+    </div>
+
+    <div class="article-series">
+      <p class="article-series-label">// Also by Animesh</p>
+      <a href="/fundamentals-of-functional-javascript/" class="article-series-link">
+        <span class="article-series-title">Fundamentals of Functional JavaScript</span>
+        <span class="article-series-meta">21 min read</span>
+      </a>
+    </div>
+
+    <div class="article-author">
+      <div class="article-author-avatar" aria-hidden="true">AP</div>
+      <div>
+        <div class="article-author-name">Animesh Pandey</div>
+        <div class="article-author-role">Senior Frontend Engineer · Bangalore, India</div>
+        <div class="article-author-links">
+          <a href="/">Portfolio</a>
+          <a href="/#writing">More writing</a>
+          <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://x.com/anmshpndy" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
