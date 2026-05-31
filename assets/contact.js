@@ -21,16 +21,21 @@
   'use strict';
 
   /* ── Config ── */
-  var W3F_KEY_EMBED = 'YOUR_WEB3FORMS_ACCESS_KEY'; // CI replaces; meta tag preferred (see index.html)
+  var W3F_KEY_EMBED = 'YOUR_WEB3FORMS_ACCESS_KEY'; // CI sed replaces this string only
   var W3F_URL       = 'https://api.web3forms.com/submit';
   var FALLBACK_TO   = 'animeshpandey1909@gmail.com';
-  var PLACEHOLDER   = 'YOUR_WEB3FORMS_ACCESS_KEY';
+  /* Must NOT contain YOUR_WEB3FORMS_ACCESS_KEY — CI sed would break key detection */
+  var UNCONFIGURED  = '__WEB3FORMS_KEY_NOT_SET__';
+
+  function isConfiguredKey(key) {
+    return !!key && key.indexOf('YOUR_WEB3FORMS') === -1 && key !== UNCONFIGURED;
+  }
 
   function getW3fKey() {
     var meta = document.querySelector('meta[name="web3forms-access-key"]');
     var fromMeta = meta && meta.getAttribute('content');
-    if (fromMeta && fromMeta !== PLACEHOLDER) return fromMeta.trim();
-    if (W3F_KEY_EMBED && W3F_KEY_EMBED !== PLACEHOLDER) return W3F_KEY_EMBED.trim();
+    if (isConfiguredKey(fromMeta)) return fromMeta.trim();
+    if (isConfiguredKey(W3F_KEY_EMBED)) return W3F_KEY_EMBED.trim();
     return '';
   }
 
@@ -156,8 +161,9 @@
         showResult('✓ Message sent! I’ll get back to you soon.', 'is-success');
       } else {
         var fb = buildMailto(name, email, msg);
+        var detail = (data && data.message) ? ' (' + String(data.message).replace(/</g, '&lt;') + ')' : '';
         showResult(
-          'Something went wrong. ' +
+          'Something went wrong' + detail + '. ' +
           '<a href="' + fb + '" class="form-fallback-link">Email me directly →</a>',
           'is-error'
         );
