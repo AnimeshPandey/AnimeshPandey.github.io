@@ -33,8 +33,15 @@
     "exitRecruiterMode": "Exit recruiter mode"
   },
   "hero": {
-    "badge": "open to staff & senior roles",
+    "badge": "Open to senior & staff roles",
     "badge2": "5 products · 50k+ users daily",
+    "sub": "Senior Frontend Engineer · React, TypeScript, Next.js",
+    "rotate": [
+      "shipping interfaces since 2017",
+      "currently @ Lifesight",
+      "open to staff & senior roles",
+      "5 products · 50k+ users daily"
+    ],
     "tagline": "I ship interfaces that survive real data: marketing intelligence dashboards, microfrontend platforms for 50k+ daily users, and agentic AI products. Based in Bangalore · open to remote-friendly roles.",
     "ctaExperience": "View experience",
     "ctaResume": "Resume",
@@ -165,15 +172,15 @@
     "items": [
       {
         "q": "Is Animesh available for hire?",
-        "a": "Yes. Animesh is open to senior and staff frontend roles, contract work, and selective consulting. Reach out via the contact form or email."
+        "aHtml": "Yes, currently open to full-time senior or staff frontend engineering roles and consulting engagements. Based in Bangalore, open to remote globally. Reach me at <a href=\"mailto:animeshpandey1909@gmail.com\">animeshpandey1909@gmail.com</a> or <a href=\"https://linkedin.com/in/pandeyanimesh\" target=\"_blank\" rel=\"noopener noreferrer\">LinkedIn</a>."
       },
       {
         "q": "What technologies does Animesh specialise in?",
-        "a": "React, TypeScript, Next.js, microfrontends, design systems, SSR analytics dashboards, and agentic AI product interfaces."
+        "aHtml": "React, TypeScript, Next.js, Webpack Module Federation (microfrontends), design systems, SSR, performance optimisation, accessibility (WCAG 2.1), Playwright/Jest testing, and CI/CD with GitHub Actions."
       },
       {
         "q": "Where does Animesh currently work?",
-        "a": "Animesh is a Senior Software Engineer at Lifesight in Bangalore, leading frontend for their marketing intelligence platform."
+        "aHtml": "Senior Software Engineer at <a href=\"https://lifesight.io\" target=\"_blank\" rel=\"noopener noreferrer\">Lifesight</a>, a marketing intelligence SaaS in Bangalore, where he leads frontend for the Unified Measurement OS platform."
       }
     ]
   }

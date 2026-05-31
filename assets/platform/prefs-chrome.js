@@ -42,6 +42,9 @@
     if (!entry || entry.menu.hidden) return;
     entry.menu.hidden = true;
     entry.btn.setAttribute('aria-expanded', 'false');
+    entry.menu.querySelectorAll('[role="option"]').forEach(function (el) {
+      el.setAttribute('tabindex', '-1');
+    });
     if (isFixed(entry.menu)) clearFixed(entry.menu);
     var i = openMenus.indexOf(entry);
     if (i !== -1) openMenus.splice(i, 1);
@@ -90,10 +93,14 @@
     function open() {
       closeAll(entry);
       if (isFixed(menu) || btn.closest('#mobile-nav')) {
+        menu.setAttribute('data-popover-fixed', 'true');
         positionFixed(menu, btn);
       }
       menu.hidden = false;
       btn.setAttribute('aria-expanded', 'true');
+      menu.querySelectorAll('[role="option"]').forEach(function (el) {
+        el.setAttribute('tabindex', '0');
+      });
       var items = focusableIn(menu);
       if (items.length) items[0].focus();
       if (openMenus.indexOf(entry) === -1) openMenus.push(entry);

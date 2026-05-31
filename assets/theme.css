@@ -31,6 +31,13 @@
   --bp-lg:          820px;
   --bp-xl:          1024px;
   --theme-color-val: #FAF8F4;
+  --skill-cat-frontend: #BF5A32;
+  --skill-cat-architecture: #4E8FA4;
+  --skill-cat-ai: #9060A8;
+  --skill-cat-testing: #4E7A68;
+  --skill-cat-tooling: #8A6952;
+  --skill-cat-data: #7072BA;
+  --skill-cat-backend: #4A7090;
 }
 
 /* ── Dark / Charcoal ── */
@@ -54,6 +61,13 @@
   --hero-glow-b:    rgba(123,175,152,.04);
   --header-bg:      rgba(20,18,16,.92);
   --theme-color-val: #141210;
+  --skill-cat-frontend: #E07A52;
+  --skill-cat-architecture: #6BB8D4;
+  --skill-cat-ai: #B88AD4;
+  --skill-cat-testing: #7BAF98;
+  --skill-cat-tooling: #B89A7A;
+  --skill-cat-data: #9094E8;
+  --skill-cat-backend: #6A9AB8;
 }
 
 /* ── Sage mist — light base, forest-green accent ── */
@@ -77,6 +91,13 @@
   --hero-glow-b:    rgba(45,122,79,.05);
   --header-bg:      rgba(244,247,244,.92);
   --theme-color-val: #F4F7F4;
+  --skill-cat-frontend: #2D7A4F;
+  --skill-cat-architecture: #3A8A6E;
+  --skill-cat-ai: #5A7A9A;
+  --skill-cat-testing: #2D7A4F;
+  --skill-cat-tooling: #6A7A5A;
+  --skill-cat-data: #4A6A8A;
+  --skill-cat-backend: #3A6A7A;
 }
 
 /* ── Slate studio — cool dark, cyan-teal accent ── */
@@ -100,6 +121,13 @@
   --hero-glow-b:    rgba(91,191,170,.04);
   --header-bg:      rgba(20,27,34,.92);
   --theme-color-val: #141B22;
+  --skill-cat-frontend: #3BBFBF;
+  --skill-cat-architecture: #5BBFAA;
+  --skill-cat-ai: #88A8E8;
+  --skill-cat-testing: #5BBFAA;
+  --skill-cat-tooling: #8A9AA8;
+  --skill-cat-data: #7090D8;
+  --skill-cat-backend: #4A8AA8;
 }
 
 /* ── Dusk editorial — deep plum, gold accent ── */
@@ -123,6 +151,13 @@
   --hero-glow-b:    rgba(168,122,192,.05);
   --header-bg:      rgba(24,19,30,.92);
   --theme-color-val: #18131E;
+  --skill-cat-frontend: #D4A840;
+  --skill-cat-architecture: #A87AC0;
+  --skill-cat-ai: #C8A060;
+  --skill-cat-testing: #A87AC0;
+  --skill-cat-tooling: #B89870;
+  --skill-cat-data: #8898D0;
+  --skill-cat-backend: #7090B0;
 }
 
 /* ── High contrast — WCAG-first, near #000/#fff ── */
@@ -146,6 +181,13 @@
   --hero-glow-b:    rgba(68,221,136,.04);
   --header-bg:      rgba(0,0,0,.96);
   --theme-color-val: #000000;
+  --skill-cat-frontend: #FFD700;
+  --skill-cat-architecture: #44DD88;
+  --skill-cat-ai: #88CCFF;
+  --skill-cat-testing: #44DD88;
+  --skill-cat-tooling: #DDAA66;
+  --skill-cat-data: #88AAFF;
+  --skill-cat-backend: #66BBDD;
 }
 
 /* ── System dark preference — applies only when no theme is explicitly set ── */

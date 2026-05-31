@@ -259,11 +259,66 @@
 
 .platform-header--casebook {
   position: sticky;
-  height: 56px;
+  top: 0;
+  height: var(--nav-h, 56px);
 }
 
 .platform-header--casebook .nav-inner {
   max-width: 1100px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.platform-header--casebook .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.platform-header--casebook .nav-utilities {
+  align-items: center;
+}
+
+.platform-header--casebook .casebook-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.platform-header--casebook .casebook-header__nav a {
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--casebook-ink-muted, var(--ink-2));
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.platform-header--casebook .casebook-header__nav a:hover {
+  color: var(--casebook-accent, var(--accent));
+  background: var(--casebook-surface-2, var(--surface-2));
+}
+
+.platform-header--casebook .nav-logo {
+  font-family: var(--serif, 'DM Serif Display', Georgia, serif);
+  font-size: 17px;
+  color: var(--casebook-ink, var(--ink));
+  text-decoration: none;
+}
+
+.platform-header--casebook .nav-logo span {
+  color: var(--casebook-accent, var(--accent));
 }
 
 .platform-header__nav {
@@ -297,6 +352,115 @@
   border: none;
   background: transparent;
   cursor: pointer;
+}
+
+/* Shared theme / language menus (portfolio + casebook) */
+.theme-picker { position: relative; }
+
+.theme-pick-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--border, var(--casebook-border));
+  background: transparent;
+  color: var(--ink-2, var(--casebook-ink-muted));
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.theme-pick-btn:hover,
+.theme-pick-btn[aria-expanded="true"] {
+  color: var(--accent, var(--casebook-accent));
+  border-color: var(--accent, var(--casebook-accent));
+  background: var(--accent-bg, var(--casebook-surface-2));
+}
+
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 192px;
+  max-width: min(280px, 92vw);
+  max-height: min(70vh, 420px);
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  background: var(--surface, var(--casebook-surface));
+  border: 1px solid var(--border, var(--casebook-border));
+  border-radius: var(--radius, 10px);
+  box-shadow: var(--shadow-menu, 0 12px 40px rgba(0, 0, 0, 0.12));
+  z-index: var(--z-dropdown, 200);
+}
+
+.theme-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 7px;
+  font-family: var(--sans, system-ui, sans-serif);
+  font-size: 13px;
+  color: var(--ink-2, var(--casebook-ink-muted));
+  cursor: pointer;
+  pointer-events: auto;
+  white-space: nowrap;
+  outline: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.theme-menu-item:hover,
+.theme-menu-item:focus {
+  background: var(--surface-2, var(--casebook-surface-2));
+  color: var(--ink, var(--casebook-ink));
+}
+
+.theme-menu-item[aria-selected="true"],
+.theme-menu-item[aria-checked="true"] {
+  background: var(--accent-bg, var(--casebook-surface-2));
+  color: var(--accent, var(--casebook-accent));
+  font-weight: 500;
+}
+
+.theme-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1.5px solid transparent;
+}
+
+.ts-light         { background: #FAF8F4; border-color: #BF5A32; }
+.ts-dark          { background: #141210; border-color: #E07A52; }
+.ts-sage          { background: #F4F7F4; border-color: #2D7A4F; }
+.ts-slate         { background: #141B22; border-color: #3BBFBF; }
+.ts-dusk          { background: #18131E; border-color: #D4A840; }
+.ts-high-contrast { background: #000000; border-color: #FFD700; }
+
+.lang-pick-btn {
+  width: auto;
+  min-width: 44px;
+  padding: 0 10px;
+  gap: 5px;
+}
+
+.lang-pick-label {
+  font-family: var(--mono, monospace);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.lang-menu {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+#casebook-portfolio-themes .theme-menu-item {
+  list-style: none;
 }
 
 .casebook-prefs__hint {

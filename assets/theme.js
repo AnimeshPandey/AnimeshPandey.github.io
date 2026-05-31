@@ -33,6 +33,8 @@
 
     if (window.ThemeBridge) window.ThemeBridge.onPortfolioThemeChange(id);
 
+    document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: id } }));
+
     requestAnimationFrame(function () {
       var metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) {
@@ -76,6 +78,9 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    if (!window.PrefsChrome && !window.DisplayMenu) {
+      console.warn('[theme] PrefsChrome not loaded — theme picker disabled');
+    }
     applyTheme(getStoredTheme());
     var btns = document.querySelectorAll('.theme-pick-btn:not(.lang-pick-btn)');
     for (var i = 0; i < btns.length; i++) {

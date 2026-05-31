@@ -35,6 +35,13 @@
   "hero": {
     "badge": "disponible para roles staff y senior",
     "badge2": "5 productos · 50k+ usuarios diarios",
+    "sub": "Ingeniero Frontend Senior · React, TypeScript, Next.js",
+    "rotate": [
+      "enviando interfaces desde 2017",
+      "actualmente en Lifesight",
+      "abierto a roles staff y senior",
+      "5 productos · 50k+ usuarios diarios"
+    ],
     "tagline": "Construyo interfaces que aguantan datos reales: dashboards de inteligencia de marketing, plataformas de microfrontends para 50k+ usuarios diarios y productos de IA agéntica. Desde Bangalore · abierto a roles remotos.",
     "ctaExperience": "Ver experiencia",
     "ctaResume": "Currículum",
@@ -129,5 +136,25 @@
     "closePreview": "Cerrar vista previa del currículum",
     "fallbackText": "La vista previa del PDF no está disponible en este navegador.",
     "fallbackDownload": "Descargar PDF en su lugar"
+  },
+  "projects": {
+    "intro": "Trabajo seleccionado en analítica SaaS, retail automotriz y GovTech."
+  },
+  "faq": {
+    "label": "// preguntas frecuentes",
+    "items": [
+      {
+        "q": "¿Está Animesh disponible para contratación?",
+        "aHtml": "Sí, abierto a roles senior/staff a tiempo completo y consultoría. Desde Bangalore, remoto global. Escríbeme a <a href=\"mailto:animeshpandey1909@gmail.com\">animeshpandey1909@gmail.com</a> o <a href=\"https://linkedin.com/in/pandeyanimesh\" target=\"_blank\" rel=\"noopener noreferrer\">LinkedIn</a>."
+      },
+      {
+        "q": "¿En qué tecnologías se especializa Animesh?",
+        "aHtml": "React, TypeScript, Next.js, Webpack Module Federation (microfrontends), design systems, SSR, optimización de rendimiento, accesibilidad (WCAG 2.1), pruebas Playwright/Jest y CI/CD con GitHub Actions."
+      },
+      {
+        "q": "¿Dónde trabaja Animesh actualmente?",
+        "aHtml": "Ingeniero de software senior en <a href=\"https://lifesight.io\" target=\"_blank\" rel=\"noopener noreferrer\">Lifesight</a>, SaaS de inteligencia de marketing en Bangalore, liderando frontend del Unified Measurement OS."
+      }
+    ]
   }
 }

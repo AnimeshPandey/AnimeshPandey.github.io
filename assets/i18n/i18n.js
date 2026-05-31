@@ -62,6 +62,39 @@
     });
 
     applyListTemplates(dict);
+    applyHeroRotate(dict);
+    applyFaqList(dict);
+  }
+
+  function applyHeroRotate(dict) {
+    var lines = dict && dict.hero && dict.hero.rotate;
+    if (!Array.isArray(lines)) return;
+    var spans = document.querySelectorAll('.hero-rotate span');
+    spans.forEach(function (el, i) {
+      if (lines[i] != null) el.textContent = lines[i];
+    });
+  }
+
+  function applyFaqList(dict) {
+    var items = dict && dict.faq && dict.faq.items;
+    if (!Array.isArray(items)) return;
+    var list = document.querySelector('.faq-list[data-i18n-faq]');
+    if (!list) return;
+    var tpl = list.querySelector('[data-i18n-faq-item]');
+    if (!tpl) return;
+    var parent = tpl.parentNode;
+    parent.querySelectorAll('[data-i18n-faq-item]').forEach(function (n) { n.remove(); });
+    items.forEach(function (item) {
+      var node = tpl.cloneNode(true);
+      node.removeAttribute('data-i18n-faq-item');
+      var q = node.querySelector('[data-i18n-field="q"]');
+      var a = node.querySelector('[data-i18n-field="a"]');
+      var aHtml = node.querySelector('[data-i18n-field="aHtml"]');
+      if (q) q.textContent = item.q || '';
+      if (aHtml && item.aHtml != null) aHtml.innerHTML = item.aHtml;
+      else if (a) a.textContent = item.a || '';
+      parent.appendChild(node);
+    });
   }
 
   function applyListTemplates(dict) {
@@ -160,14 +193,14 @@
     menu.setAttribute('data-popover-fixed', btn.closest('#mobile-nav') ? 'true' : 'false');
     window.PrefsChrome.PopoverMenu(btn, menu, {
       onSelect: function (e, ctx) {
-        var item = e.target.closest('.lang-menu-item');
-        if (!item || !item.dataset.l) return;
+        var item = e.target.closest('.lang-menu-item[data-l]');
+        if (!item) return;
         setLocale(item.dataset.l);
         ctx.close();
       },
       onActivate: function (e, ctx) {
         var active = document.activeElement;
-        if (active && active.dataset && active.dataset.l) {
+        if (active && active.classList && active.classList.contains('lang-menu-item') && active.dataset.l) {
           setLocale(active.dataset.l);
           ctx.close();
         }
@@ -176,6 +209,9 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    if (!window.PrefsChrome) {
+      console.warn('[i18n] PrefsChrome not loaded — language picker disabled');
+    }
     document.querySelectorAll('.lang-pick-btn').forEach(function (btn) {
       var menuId = btn.getAttribute('aria-controls');
       initLangPicker(btn, menuId ? document.getElementById(menuId) : null);

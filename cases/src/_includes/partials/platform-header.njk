@@ -1,0 +1,20 @@
+{# Casebook copy — keep in sync with site/src/_includes/partials/platform-header.njk #}
+<header class="platform-header platform-header--casebook" role="banner">
+  <div class="nav-inner">
+    <a href="{{ '/cases/' | url }}" class="nav-logo casebook-header__logo"
+       aria-label="{{ site.name | default('The Frontend Casebook') }}, home">
+      <span>{ }</span> Casebook
+    </a>
+    <div class="nav-right">
+      <nav class="platform-header__nav" aria-label="Casebook navigation">
+        <ul class="casebook-header__nav" role="list">
+          <li><a href="{{ '/cases/' | url }}">Cases</a></li>
+          <li><a href="{{ '/cases/about/' | url }}">About</a></li>
+        </ul>
+      </nav>
+      <div class="nav-utilities">
+        {% include 'partials/casebook-preferences.njk' %}
+      </div>
+    </div>
+  </div>
+</header>

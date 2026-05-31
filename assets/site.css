@@ -49,7 +49,8 @@ body {
 .skip-link:focus { top: 0; }
 
 /* ── Nav ── */
-header {
+header,
+.platform-header {
   position: fixed; inset: 0 0 auto 0; height: var(--nav-h);
   top: 0;
   background: var(--header-bg); backdrop-filter: blur(16px);
@@ -949,6 +950,13 @@ footer {
   border-top: 3px solid var(--cat, var(--border-2));
   transition: transform .2s ease, box-shadow .2s;
 }
+.sv-card--frontend     { --cat: var(--skill-cat-frontend); }
+.sv-card--architecture { --cat: var(--skill-cat-architecture); }
+.sv-card--ai           { --cat: var(--skill-cat-ai); }
+.sv-card--testing      { --cat: var(--skill-cat-testing); }
+.sv-card--tooling      { --cat: var(--skill-cat-tooling); }
+.sv-card--data         { --cat: var(--skill-cat-data); }
+.sv-card--backend      { --cat: var(--skill-cat-backend); }
 @media (hover: hover) and (pointer: fine) {
   .sv-card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(28,23,20,.07); }
 }
@@ -1172,7 +1180,9 @@ body.rm-panel-open .nav-resume { display: none; }
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
 }
-.resume-modal-inner { display: flex; flex-direction: column; height: 100%; }
+.resume-modal-inner {
+  display: flex; flex-direction: column; height: 100%; min-height: 0;
+}
 .resume-modal-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 16px; border-bottom: 1px solid var(--border);
@@ -1195,10 +1205,13 @@ body.rm-panel-open .nav-resume { display: none; }
 }
 .resume-modal-close:hover { color: var(--ink); background: var(--surface-2); }
 .resume-modal-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.resume-modal-body { flex: 1; overflow: hidden; }
+.resume-modal-body {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column;
+}
 .resume-embed {
-  display: block; width: 100%; height: 100%;
-  border: none; background: var(--surface);
+  display: block; width: 100%; flex: 1; min-height: 0;
+  height: 100%; border: none; background: var(--surface);
 }
 .resume-embed-fallback {
   display: flex; flex-direction: column; align-items: center; justify-content: center;

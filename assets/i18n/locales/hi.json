@@ -35,6 +35,13 @@
   "hero": {
     "badge": "स्टाफ और सीनियर रोल के लिए उपलब्ध",
     "badge2": "5 प्रोडक्ट · 50k+ रोज़ाना यूज़र",
+    "sub": "सीनियर फ्रंटएंड इंजीनियर · React, TypeScript, Next.js",
+    "rotate": [
+      "2017 से इंटरफेस शिप कर रहा हूँ",
+      "अभी @ Lifesight",
+      "स्टाफ और सीनियर रोल के लिए खुला",
+      "5 प्रोडक्ट · 50k+ रोज़ाना यूज़र"
+    ],
     "tagline": "मैं रियल डेटा पर काम करने वाले इंटरफेस बनाता हूँ: मार्केटिंग इंटेलिजेंस डैशबोर्ड, माइक्रोफ्रंटएंड प्लेटफॉर्म और एजेंटिक AI प्रोडक्ट। बैंगलोर से · रिमोट-फ्रेंडली रोल के लिए खुला।",
     "ctaExperience": "अनुभव देखें",
     "ctaResume": "रेज़्यूमे",
@@ -129,5 +136,25 @@
     "closePreview": "रेज़्यूमे प्रीव्यू बंद करें",
     "fallbackText": "इस ब्राउज़र में PDF प्रीव्यू उपलब्ध नहीं है।",
     "fallbackDownload": "इसके बजाय PDF डाउनलोड करें"
+  },
+  "projects": {
+    "intro": "SaaS एनालिटिक्स, ऑटोमोटिव रिटेल और GovTech में चुनिंदा काम।"
+  },
+  "faq": {
+    "label": "// सामान्य प्रश्न",
+    "items": [
+      {
+        "q": "क्या अनिमेश हायर के लिए उपलब्ध हैं?",
+        "aHtml": "हाँ, फुल-टाइम सीनियर/स्टाफ फ्रंटएंड रोल और कंसल्टिंग के लिए खुले हैं। बैंगलोर से, ग्लोबल रिमोट के लिए उपलब्ध। <a href=\"mailto:animeshpandey1909@gmail.com\">animeshpandey1909@gmail.com</a> या <a href=\"https://linkedin.com/in/pandeyanimesh\" target=\"_blank\" rel=\"noopener noreferrer\">LinkedIn</a> पर संपर्क करें।"
+      },
+      {
+        "q": "अनिमेश किन तकनीकों में विशेषज्ञ हैं?",
+        "aHtml": "React, TypeScript, Next.js, Webpack Module Federation (microfrontends), design systems, SSR, performance optimisation, accessibility (WCAG 2.1), Playwright/Jest testing, और GitHub Actions के साथ CI/CD।"
+      },
+      {
+        "q": "अनिमेश अभी कहाँ काम करते हैं?",
+        "aHtml": "<a href=\"https://lifesight.io\" target=\"_blank\" rel=\"noopener noreferrer\">Lifesight</a> में सीनियर सॉफ्टवेयर इंजीनियर, बैंगलोर — Unified Measurement OS प्लेटफॉर्म के लिए फ्रंटएंड का नेतृत्व।"
+      }
+    ]
   }
 }
