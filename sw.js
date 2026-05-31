@@ -1,12 +1,18 @@
-const CACHE = 'ap-v27';
+const CACHE = 'ap-v28';
 const ASSETS = [
   '/',
   /* Design system — load order: foundation → theme → site */
   '/assets/styles/foundation.css',
   '/assets/theme.css',
+  '/assets/platform/chrome.css',
+  '/assets/platform/prefs-chrome.css',
   '/assets/site.css',
-  /* JS — constants first, then modules */
+  /* JS — constants first, then platform chrome, then modules */
   '/assets/js/constants.js',
+  '/assets/platform/chrome.js',
+  '/assets/platform/prefs-chrome.js',
+  '/assets/platform/theme-bridge.js',
+  '/assets/platform/display-menu.js',
   '/assets/theme.js',
   '/assets/nav.js',
   '/assets/visuals.js',
@@ -74,6 +80,12 @@ self.addEventListener('fetch', function (e) {
 
   /* contact.js: network-first — deploy-injected Web3Forms key must not stay stale in cache */
   if (url.pathname === '/assets/contact.js') {
+    e.respondWith(networkFirst(e.request));
+    return;
+  }
+
+  /* platform chrome: network-first so picker fixes deploy immediately */
+  if (url.pathname.indexOf('/assets/platform/') === 0) {
     e.respondWith(networkFirst(e.request));
     return;
   }

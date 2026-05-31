@@ -213,8 +213,35 @@
       hero.addEventListener('mouseleave', function () { mx = -999; my = -999; });
     }
 
-    var DARK_THEMES = { dark: 1, slate: 1, dusk: 1, 'high-contrast': 1 };
-    function isDark() { return !!DARK_THEMES[document.documentElement.dataset.theme]; }
+    var particleColors = { dotBase: '80,55,35,', lineBase: '100,75,50,' };
+
+    function refreshParticleColors() {
+      var cs = getComputedStyle(document.documentElement);
+      var ink = (cs.getPropertyValue('--ink') || '#1C1714').trim();
+      var accent = (cs.getPropertyValue('--accent') || '#BF5A32').trim();
+      function hexToRgb(hex) {
+        var h = hex.replace('#', '');
+        if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+        if (h.length !== 6) return null;
+        return {
+          r: parseInt(h.slice(0, 2), 16),
+          g: parseInt(h.slice(2, 4), 16),
+          b: parseInt(h.slice(4, 6), 16)
+        };
+      }
+      var ir = hexToRgb(ink);
+      var ar = hexToRgb(accent);
+      if (ir) {
+        particleColors.dotBase = ir.r + ',' + ir.g + ',' + ir.b + ',';
+        particleColors.lineBase = ir.r + ',' + ir.g + ',' + ir.b + ',';
+      }
+      if (ar) {
+        particleColors.lineBase = ar.r + ',' + ar.g + ',' + ar.b + ',';
+      }
+    }
+
+    refreshParticleColors();
+    document.addEventListener('themechange', refreshParticleColors);
 
     var running = true;
     function loop() {
@@ -222,9 +249,8 @@
       requestAnimationFrame(loop);
       ctx.clearRect(0, 0, W, H);
 
-      var dark = isDark();
-      var dotBase  = dark ? '240,230,218,' : '80,55,35,';
-      var lineBase = dark ? '220,210,200,' : '100,75,50,';
+      var dotBase = particleColors.dotBase;
+      var lineBase = particleColors.lineBase;
 
       for (var j = 0; j < N; j++) {
         px[j] += vx[j]; py[j] += vy[j];

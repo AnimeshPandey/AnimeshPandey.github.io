@@ -382,8 +382,8 @@
 <div class="progress-bar" role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
 <div class="copy-toast" id="copyToast" role="status" aria-live="polite"></div>
 
-<!-- HEADER / NAV (shared partial: site/src/_includes/partials/site-header.njk) -->
-<header>
+<!-- HEADER / NAV (sync with site/src/_includes/partials/platform-header.njk) -->
+<header class="platform-header">
   <div class="nav-inner">
     <a href="#hero" class="nav-logo" data-i18n-attr="aria-label" data-i18n="a11y.home">AP<span>.</span></a>
     <div class="nav-right">
@@ -564,9 +564,9 @@
 
     <!-- Left column -->
     <div class="hero-left">
-      <div class="badge"><span class="badge-dot" aria-hidden="true"></span>Open to senior &amp; staff roles</div>
+      <div class="badge"><span class="badge-dot" aria-hidden="true"></span><span data-i18n="hero.badge">Open to senior &amp; staff roles</span></div>
       <h1 class="hero-name">Animesh<br>Pandey<span class="dot" aria-hidden="true">.</span></h1>
-      <p class="hero-sub">Senior Frontend Engineer · React, TypeScript, Next.js</p>
+      <p class="hero-sub" data-i18n="hero.sub">Senior Frontend Engineer · React, TypeScript, Next.js</p>
       <p class="hero-rotate" aria-live="polite" aria-atomic="true">
         <span class="active">shipping interfaces since 2017</span>
         <span>currently @ Lifesight</span>
@@ -672,27 +672,13 @@
 
       <!-- FAQ accordion — supports FAQPage schema; moves beside text on desktop -->
       <div class="faq-section fade-up">
-      <p class="section-label" style="margin-bottom:20px">// common questions</p>
-      <div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
+      <p class="section-label" style="margin-bottom:20px" data-i18n="faq.label">// common questions</p>
+      <div class="faq-list" data-i18n-faq itemscope itemtype="https://schema.org/FAQPage">
 
-        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-          <summary class="faq-q" itemprop="name">Is Animesh available for hire?</summary>
+        <details class="faq-item" data-i18n-faq-item itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+          <summary class="faq-q" itemprop="name" data-i18n-field="q">Is Animesh available for hire?</summary>
           <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-            <p itemprop="text">Yes, currently open to full-time senior or staff frontend engineering roles and consulting engagements. Based in Bangalore, open to remote globally. Reach me at <a href="mailto:animeshpandey1909@gmail.com">animeshpandey1909@gmail.com</a> or <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer">LinkedIn</a>.</p>
-          </div>
-        </details>
-
-        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-          <summary class="faq-q" itemprop="name">What technologies does Animesh specialise in?</summary>
-          <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-            <p itemprop="text">React, TypeScript, Next.js, Webpack Module Federation (microfrontends), design systems, SSR, performance optimisation, accessibility (WCAG 2.1), Playwright/Jest testing, and CI/CD with GitHub Actions.</p>
-          </div>
-        </details>
-
-        <details class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-          <summary class="faq-q" itemprop="name">Where does Animesh currently work?</summary>
-          <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-            <p itemprop="text">Senior Software Engineer at <a href="https://lifesight.io" target="_blank" rel="noopener noreferrer">Lifesight</a>, a marketing intelligence SaaS in Bangalore, where he leads frontend for the Unified Measurement OS platform.</p>
+            <p itemprop="text" data-i18n-field="aHtml">Yes, currently open to full-time senior or staff frontend engineering roles and consulting engagements. Based in Bangalore, open to remote globally. Reach me at <a href="mailto:animeshpandey1909@gmail.com">animeshpandey1909@gmail.com</a> or <a href="https://linkedin.com/in/pandeyanimesh" target="_blank" rel="noopener noreferrer">LinkedIn</a>.</p>
           </div>
         </details>
 
@@ -811,49 +797,49 @@
 
     <div class="sv-grid">
 
-        <div class="sv-card" style="--cat:#bf5a32">
+        <div class="sv-card sv-card--frontend">
           <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg><span>Frontend</span></div>
           <div class="sv-chips">
             <span class="sv-chip sv-feat">React</span><span class="sv-chip sv-feat">TypeScript</span><span class="sv-chip sv-feat">Next.js</span><span class="sv-chip">JavaScript</span><span class="sv-chip">React Native</span><span class="sv-chip">Redux</span><span class="sv-chip">Zustand</span><span class="sv-chip">React Query</span><span class="sv-chip">Tailwind</span><span class="sv-chip">CSS3</span><span class="sv-chip">Angular</span>
           </div>
         </div>
 
-        <div class="sv-card" style="--cat:#4e8fa4">
+        <div class="sv-card sv-card--architecture">
           <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span>Architecture</span></div>
           <div class="sv-chips">
             <span class="sv-chip sv-feat">Microfrontends</span><span class="sv-chip">Module Federation</span><span class="sv-chip">Design Systems</span><span class="sv-chip">Monorepo</span><span class="sv-chip">SSR / SSG</span><span class="sv-chip">WCAG 2.1</span><span class="sv-chip">Storybook</span><span class="sv-chip">Perf Budgets</span>
           </div>
         </div>
 
-        <div class="sv-card" style="--cat:#9060a8">
+        <div class="sv-card sv-card--ai">
           <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-sparkle"/></svg><span>AI &amp; Agents</span></div>
           <div class="sv-chips">
             <span class="sv-chip sv-feat">Agentic AI</span><span class="sv-chip">LLM Streaming</span><span class="sv-chip">Tool Calling</span><span class="sv-chip">RAG</span><span class="sv-chip">OpenAI API</span><span class="sv-chip">LangChain</span><span class="sv-chip">Prompt Engineering</span>
           </div>
         </div>
 
-        <div class="sv-card" style="--cat:#4e7a68">
+        <div class="sv-card sv-card--testing">
           <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-beaker"/></svg><span>Testing</span></div>
           <div class="sv-chips">
             <span class="sv-chip">Playwright</span><span class="sv-chip">Jest</span><span class="sv-chip">React Testing Library</span><span class="sv-chip">Cypress</span><span class="sv-chip">E2E / Unit / Integration</span>
           </div>
         </div>
 
-        <div class="sv-card" style="--cat:#8a6952">
+        <div class="sv-card sv-card--tooling">
           <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-tool"/></svg><span>Build &amp; Tooling</span></div>
           <div class="sv-chips">
             <span class="sv-chip">Webpack</span><span class="sv-chip">Vite</span><span class="sv-chip">Turborepo</span><span class="sv-chip">Nx</span><span class="sv-chip">GitHub Actions</span><span class="sv-chip">Docker</span><span class="sv-chip">CI/CD</span>
           </div>
         </div>
 
-        <div class="sv-card" style="--cat:#7072ba">
+        <div class="sv-card sv-card--data">
           <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg><span>Data &amp; Viz</span></div>
           <div class="sv-chips">
             <span class="sv-chip">D3.js</span><span class="sv-chip">Highcharts</span><span class="sv-chip">Recharts</span><span class="sv-chip">Leaflet</span><span class="sv-chip">GraphQL</span><span class="sv-chip">REST / OpenAPI</span><span class="sv-chip">A/B Testing</span>
           </div>
         </div>
 
-        <div class="sv-card" style="--cat:#4a7090">
+        <div class="sv-card sv-card--backend">
           <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-cloud"/></svg><span>Backend &amp; Cloud</span></div>
           <div class="sv-chips">
             <span class="sv-chip">Node.js</span><span class="sv-chip">Express</span><span class="sv-chip">PostgreSQL</span><span class="sv-chip">AWS</span><span class="sv-chip">Azure</span><span class="sv-chip">Microservices</span>
@@ -1362,7 +1348,7 @@
       </div>
     </header>
     <div class="resume-modal-body">
-      <iframe src="/resume.pdf#view=FitH" class="resume-embed" title="Resume PDF preview"></iframe>
+      <iframe src="/resume.pdf#view=FitH&amp;toolbar=0&amp;navpanes=0" class="resume-embed" title="Resume PDF preview"></iframe>
       <div class="resume-embed-fallback" hidden>
         <p data-i18n="resume.fallbackText">PDF preview isn't available in this browser.</p>
         <a href="/resume.pdf" download="Animesh_Pandey_Resume.pdf" class="btn btn-dark">

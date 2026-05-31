@@ -4,13 +4,40 @@
 
   var FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-  function smoothScrollToHash(href) {
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function setActiveHash(hash, replace) {
+    if (!hash || hash.charAt(0) !== '#') return;
+    var url = hash + window.location.search;
+    if (history.replaceState && replace) {
+      history.replaceState(null, '', url);
+    } else if (history.pushState) {
+      history.pushState(null, '', url);
+    } else {
+      window.location.hash = hash.slice(1);
+    }
+  }
+
+  function smoothScrollToHash(href, options) {
+    options = options || {};
     if (!href || href.charAt(0) !== '#') return false;
     var id = href.slice(1);
     var el = document.getElementById(id);
     if (!el) return false;
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.scrollIntoView({
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+      block: 'start'
+    });
+    if (options.updateHash !== false) {
+      setActiveHash(href, !!options.replace);
+    }
     return true;
+  }
+
+  function navigateToHash(href, replace) {
+    return smoothScrollToHash(href, { replace: replace, updateHash: true });
   }
 
   function initMobileDrawer() {
@@ -48,7 +75,7 @@
         var href = a.getAttribute('href');
         if (href && href.indexOf('#') !== -1) {
           var hash = href.indexOf('#') === 0 ? href : href.substring(href.indexOf('#'));
-          if (hash.length > 1 && smoothScrollToHash(hash)) e.preventDefault();
+          if (hash.length > 1 && navigateToHash(hash, false)) e.preventDefault();
         }
         closeMenu();
       });
@@ -94,6 +121,12 @@
         var active = hash === '#' + current;
         a.setAttribute('aria-current', active ? 'true' : 'false');
       });
+      if (current) {
+        var newHash = '#' + current;
+        if (window.location.hash !== newHash) {
+          setActiveHash(newHash, true);
+        }
+      }
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -106,7 +139,7 @@
     rail.querySelectorAll('a[href^="#"]').forEach(function (a) {
       a.addEventListener('click', function (e) {
         var href = a.getAttribute('href');
-        if (smoothScrollToHash(href)) e.preventDefault();
+        if (navigateToHash(href, false)) e.preventDefault();
       });
     });
   }
@@ -122,10 +155,19 @@
         if (!link) return;
         var href = link.getAttribute('href');
         var hash = href.indexOf('#') >= 0 ? href.substring(href.indexOf('#')) : href;
-        if (smoothScrollToHash(hash)) {
+        if (navigateToHash(hash, false)) {
           ctx.close();
         }
       }
+    });
+  }
+
+  function initHashOnLoad() {
+    var hash = window.location.hash;
+    if (!hash || hash.length < 2) return;
+    if (!document.getElementById(hash.slice(1))) return;
+    requestAnimationFrame(function () {
+      smoothScrollToHash(hash, { replace: true, updateHash: true });
     });
   }
 
@@ -232,5 +274,6 @@
     initSectionsDropdown();
     initResumeModal();
     initChromeMisc();
+    initHashOnLoad();
   });
 })();

@@ -91,12 +91,14 @@
       if (colorBtn) {
         try { localStorage.setItem(COLOR_KEY, colorBtn.dataset.colorMode); } catch (err) {}
         applyColor(colorBtn.dataset.colorMode);
+        ctx.close();
         return;
       }
       var contrastBtn = e.target.closest('[data-contrast-mode]');
       if (contrastBtn) {
         try { localStorage.setItem(CONTRAST_KEY, contrastBtn.dataset.contrastMode); } catch (err) {}
         applyContrast(contrastBtn.dataset.contrastMode);
+        ctx.close();
         return;
       }
       var themeItem = e.target.closest('#casebook-portfolio-themes .theme-menu-item[data-t]');
