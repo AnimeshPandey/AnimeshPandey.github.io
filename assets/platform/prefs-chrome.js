@@ -85,6 +85,10 @@
 
   function PopoverMenu(btn, menu, options) {
     if (!btn || !menu) return null;
+    if (btn.dataset.prefsPopoverBound === '1') {
+      return btn._prefsPopoverApi || null;
+    }
+    btn.dataset.prefsPopoverBound = '1';
     options = options || {};
     bindDocument();
 
@@ -145,7 +149,9 @@
       if (e.key === 'Tab') close();
     });
 
-    return { open: open, close: close, entry: entry };
+    var api = { open: open, close: close, entry: entry };
+    btn._prefsPopoverApi = api;
+    return api;
   }
 
   global.PrefsChrome = { PopoverMenu: PopoverMenu, closeAll: closeAll };

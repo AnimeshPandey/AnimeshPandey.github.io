@@ -208,7 +208,7 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  function bootLangPickers() {
     if (!window.PrefsChrome) {
       console.warn('[i18n] PrefsChrome not loaded — language picker disabled');
     }
@@ -217,7 +217,13 @@
       initLangPicker(btn, menuId ? document.getElementById(menuId) : null);
     });
     setLocale(detectLocale(), true);
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootLangPickers);
+  } else {
+    bootLangPickers();
+  }
 
   window.AP_I18N = {
     setLocale: setLocale,
