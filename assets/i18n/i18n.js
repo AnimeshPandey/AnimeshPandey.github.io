@@ -15,7 +15,8 @@
   'use strict';
 
   /* ── Supported locales ── */
-  var LOCALES = ['en', 'hi', 'es', 'fr', 'de', 'pt-BR', 'ja', 'zh-Hans', 'ar'];
+  /* Must match files in assets/i18n/locales/*.json */
+  var LOCALES = ['en', 'hi', 'es'];
   var RTL_LOCALES = ['ar'];
   var DEFAULT_LOCALE = 'en';
 
@@ -94,6 +95,13 @@
     document.documentElement.dir = RTL_LOCALES.indexOf(locale) !== -1 ? 'rtl' : 'ltr';
   }
 
+  function applyMeta(dict) {
+    if (!dict || !dict.meta) return;
+    if (dict.meta.title) document.title = dict.meta.title;
+    var desc = document.querySelector('meta[name="description"]');
+    if (desc && dict.meta.description) desc.setAttribute('content', dict.meta.description);
+  }
+
   /* ── Sync picker UI ── */
   function syncPicker(locale) {
     var items = document.querySelectorAll('.lang-menu-item');
@@ -119,12 +127,13 @@
     /* Cache hit */
     if (dictCache[locale]) {
       currentLocale = locale;
-      applyTranslations(dictCache[locale]);
-      applyLangMeta(locale);
-      syncPicker(locale);
-      try { localStorage.setItem('locale', locale); } catch (e) {}
-      if (!silent) announce('Language changed to ' + locale);
-      return;
+        applyTranslations(dictCache[locale]);
+        applyLangMeta(locale);
+        applyMeta(dictCache[locale]);
+        syncPicker(locale);
+        try { localStorage.setItem('locale', locale); } catch (e) {}
+        if (!silent) announce('Language changed to ' + locale);
+        return;
     }
 
     /* Fetch */
@@ -138,6 +147,7 @@
         currentLocale = locale;
         applyTranslations(dict);
         applyLangMeta(locale);
+        applyMeta(dict);
         syncPicker(locale);
         try { localStorage.setItem('locale', locale); } catch (e) {}
         if (!silent) announce('Language changed to ' + locale);
@@ -224,6 +234,14 @@
 
     /* Initial load — skip announce on first load */
     setLocale(locale, true);
+
+    /* Hide lang menu items for locales without JSON files */
+    document.querySelectorAll('.lang-menu-item').forEach(function (item) {
+      if (item.dataset.l && LOCALES.indexOf(item.dataset.l) === -1) {
+        item.hidden = true;
+        item.setAttribute('aria-disabled', 'true');
+      }
+    });
   });
 
   /* ── Public API ── */

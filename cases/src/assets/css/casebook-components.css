@@ -336,6 +336,34 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   padding: 10px 8px;
   z-index: 300;
 }
+.casebook-prefs__trigger-label {
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--casebook-ink-muted);
+  margin-left: 4px;
+}
+@media (max-width: 480px) {
+  .casebook-prefs__trigger-label { display: none; }
+}
+
+.casebook-prefs__group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.casebook-subscribe__pending {
+  font-size: 0.875rem;
+  color: var(--casebook-ink-muted);
+  margin: 0 0 12px;
+  max-width: 48ch;
+}
+.casebook-subscribe__pending code {
+  font-size: 0.8em;
+}
+
 .casebook-prefs__label {
   font-family: var(--mono, monospace);
   font-size: 10px; letter-spacing: .1em; text-transform: uppercase;

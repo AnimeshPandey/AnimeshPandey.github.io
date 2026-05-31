@@ -954,21 +954,50 @@ footer {
   font-weight: 500;
 }
 
-/* ── Desktop easter egg: [ press ? ] hint (static, always loaded) ── */
-.egg-key-hint {
+/* ── Hero bottom rail: ? hint + scroll cue (aligned) ── */
+.hero-chrome-rail {
   display: none;
-  position: absolute; bottom: 28px; right: var(--page-pad); z-index: 2;
-  align-items: center; gap: 8px;
-  font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
-  color: var(--ink-3); text-transform: uppercase; pointer-events: none; user-select: none;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: var(--space-4, 16px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.egg-key-hint,
+.scroll-cue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
   animation: cue-fade 3s ease-in-out infinite;
 }
+
 .egg-key-hint kbd {
-  font-family: var(--mono); font-size: 9px;
-  background: var(--surface); border: 1px solid var(--border-2);
-  border-radius: 3px; padding: 2px 6px; color: var(--ink-2);
+  font-family: var(--mono);
+  font-size: 9px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 3px;
+  padding: 2px 6px;
+  color: var(--ink-2);
 }
-@media (min-width: 820px) { .egg-key-hint { display: flex; } }
+
+.scroll-cue svg {
+  animation: cue-bounce 0.9s ease-in-out infinite;
+}
+
+@media (min-width: 820px) {
+  .hero-chrome-rail {
+    display: flex;
+  }
+}
 
 /* (Egg overlay CSS moved to lazy-loaded eggs.css) */
 
@@ -1437,15 +1466,6 @@ html.theme-transitioning footer {
   .hero-card { display: flex; flex-direction: column; }
   .hero-facts { display: none; }
   .hero-ticker { grid-column: 1 / -1; align-self: end; }
-
-  .scroll-cue {
-    display: flex; position: absolute; bottom: 28px; left: var(--page-pad);
-    align-items: center; gap: 10px; z-index: 1;
-    font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
-    color: var(--ink-3); text-transform: uppercase;
-    animation: cue-fade 3s ease-in-out infinite;
-  }
-  .scroll-cue svg { animation: cue-bounce .9s ease-in-out infinite; }
 
   .timeline { padding-left: 30px; }
   .t-dot { left: -34px; }

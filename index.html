@@ -11,7 +11,7 @@
   (function(){
     var v=['light','dark','sage','slate','dusk','high-contrast'];
     var t=localStorage.getItem('theme');
-    document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'dark';
+    document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'high-contrast';
     var l=localStorage.getItem('locale');
     if(l){document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl';}
   })();
@@ -83,6 +83,7 @@
   <!-- Styles — load order: foundation tokens → theme (color) → site (components) -->
   <link rel="stylesheet" href="/assets/styles/foundation.css" />
   <link rel="stylesheet" href="/assets/theme.css" />
+  <link rel="stylesheet" href="/assets/platform/chrome.css" />
   <link rel="stylesheet" href="/assets/site.css" />
 
   <!-- Structured Data -->
@@ -401,60 +402,65 @@
           <li><a href="#contact"    data-i18n="nav.contact">contact</a></li>
         </ul>
       </nav>
-      <div class="theme-picker">
-        <button class="theme-pick-btn" id="theme-pick-btn"
-                aria-label="Theme: Charcoal. Change"
-                aria-expanded="false"
-                aria-controls="theme-menu-header">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+      <div class="nav-more nav-more--desktop" id="nav-more">
+        <button type="button" class="nav-more__btn" id="nav-more-btn"
+                aria-expanded="false" aria-controls="nav-more-panel">
+          More
         </button>
-        <ul id="theme-menu-header" class="theme-menu" role="listbox" aria-label="Choose theme" hidden>
-          <li class="theme-menu-item" role="option" data-t="light"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
-          <li class="theme-menu-item" role="option" data-t="dark"          aria-selected="true"  tabindex="-1"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
-          <li class="theme-menu-item" role="option" data-t="sage"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
-          <li class="theme-menu-item" role="option" data-t="slate"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
-          <li class="theme-menu-item" role="option" data-t="dusk"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
-          <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
-        </ul>
+        <div id="nav-more-panel" class="nav-more__panel" hidden>
+          <p class="nav-more__section-label">Preferences</p>
+          <div class="theme-picker nav-more__picker">
+            <button class="theme-pick-btn" id="theme-pick-btn"
+                    aria-label="Theme: High contrast. Change"
+                    aria-expanded="false"
+                    aria-controls="theme-menu-header">
+              <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+              <span class="nav-more__picker-label">Theme</span>
+            </button>
+            <ul id="theme-menu-header" class="theme-menu" role="listbox" aria-label="Choose theme" hidden>
+              <li class="theme-menu-item" role="option" data-t="light"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
+              <li class="theme-menu-item" role="option" data-t="dark"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
+              <li class="theme-menu-item" role="option" data-t="sage"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
+              <li class="theme-menu-item" role="option" data-t="slate"         aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
+              <li class="theme-menu-item" role="option" data-t="dusk"          aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
+              <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true"  tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+            </ul>
+          </div>
+          <div class="theme-picker lang-picker nav-more__picker">
+            <button class="theme-pick-btn lang-pick-btn" id="lang-pick-btn-header"
+                    aria-label="Language: EN. Change"
+                    aria-expanded="false"
+                    aria-controls="lang-menu-header">
+              <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
+              <span class="lang-pick-label" aria-hidden="true">EN</span>
+              <span class="nav-more__picker-label">Language</span>
+            </button>
+            <ul id="lang-menu-header" class="theme-menu lang-menu" role="listbox" aria-label="Choose language" hidden>
+              <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true"  tabindex="-1">English</li>
+              <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" aria-selected="false" tabindex="-1">हिन्दी</li>
+              <li class="theme-menu-item lang-menu-item" role="option" data-l="es" aria-selected="false" tabindex="-1">Español</li>
+            </ul>
+          </div>
+          <p class="nav-more__section-label">Tools</p>
+          <div class="header-rm-group nav-more__rm" id="header-rm-group">
+            <button class="header-rm-toggle" id="header-rm-toggle"
+                    aria-pressed="false"
+                    aria-label="Open recruiter briefing">
+              <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
+              <span>Recruiter briefing</span>
+              <span class="header-rm-dot" aria-hidden="true"></span>
+            </button>
+            <button class="header-rm-exit" id="header-rm-exit"
+                    aria-label="Exit recruiter mode">
+              <svg class="icon-sm" aria-hidden="true"><use href="#i-close"/></svg>
+            </button>
+          </div>
+          <button type="button" class="nav-resume nav-more__resume" id="nav-resume-preview" aria-haspopup="dialog" aria-label="Preview or download resume">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+            Resume
+          </button>
+        </div>
       </div>
-      <!-- Language picker -->
-      <div class="theme-picker lang-picker">
-        <button class="theme-pick-btn lang-pick-btn" id="lang-pick-btn-header"
-                aria-label="Language: EN. Change"
-                aria-expanded="false"
-                aria-controls="lang-menu-header">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
-          <span class="lang-pick-label" aria-hidden="true">EN</span>
-        </button>
-        <ul id="lang-menu-header" class="theme-menu lang-menu" role="listbox" aria-label="Choose language" hidden>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="en"     aria-selected="true"  tabindex="-1">English</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="hi"     aria-selected="false" tabindex="-1">हिन्दी</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="es"     aria-selected="false" tabindex="-1">Español</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="fr"     aria-selected="false" tabindex="-1">Français</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="de"     aria-selected="false" tabindex="-1">Deutsch</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="pt-BR"  aria-selected="false" tabindex="-1">Português</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="ja"     aria-selected="false" tabindex="-1">日本語</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="zh-Hans" aria-selected="false" tabindex="-1">中文</li>
-          <li class="theme-menu-item lang-menu-item" role="option" data-l="ar"     aria-selected="false" tabindex="-1">العربية</li>
-        </ul>
-      </div>
-      <!-- Recruiter briefing entry — header only, icon only -->
-      <div class="header-rm-group" id="header-rm-group">
-        <button class="header-rm-toggle" id="header-rm-toggle"
-                aria-pressed="false"
-                aria-label="Open recruiter briefing">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
-          <span class="header-rm-dot" aria-hidden="true"></span>
-        </button>
-        <button class="header-rm-exit" id="header-rm-exit"
-                aria-label="Exit recruiter mode">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-close"/></svg>
-        </button>
-      </div>
-      <button type="button" class="nav-resume" id="nav-resume-preview" aria-haspopup="dialog" aria-label="Preview or download resume">
-        <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
-        Resume
-      </button>
       <button id="hamburger" class="hamburger" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
         <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
       </button>
@@ -632,14 +638,15 @@
       </div>
     </div>
 
-    <div class="egg-key-hint" id="egg-key-hint" aria-hidden="true">
-      <svg width="14" height="14" aria-hidden="true"><use href="#i-sparkle"/></svg>
-      press <kbd>?</kbd>
-    </div>
-
-    <div class="scroll-cue" aria-hidden="true">
-      <svg width="14" height="14"><use href="#i-chevron-down"/></svg>
-      scroll
+    <div class="hero-chrome-rail" aria-hidden="true">
+      <div class="egg-key-hint" id="egg-key-hint">
+        <svg width="14" height="14" aria-hidden="true"><use href="#i-sparkle"/></svg>
+        press <kbd>?</kbd>
+      </div>
+      <div class="scroll-cue">
+        <svg width="14" height="14" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+        scroll
+      </div>
     </div>
   </section>
 

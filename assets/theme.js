@@ -24,12 +24,12 @@
   function getStoredTheme() {
     try {
       var t = localStorage.getItem('theme');
-      return isValidTheme(t) ? t : 'dark';
-    } catch (e) { return 'dark'; }
+      return isValidTheme(t) ? t : 'high-contrast';
+    } catch (e) { return 'high-contrast'; }
   }
 
   function applyTheme(id) {
-    if (!isValidTheme(id)) id = 'dark';
+    if (!isValidTheme(id)) id = 'high-contrast';
 
     document.documentElement.dataset.theme = id;
     try { localStorage.setItem('theme', id); } catch (e) {}
