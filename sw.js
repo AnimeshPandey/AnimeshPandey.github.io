@@ -1,8 +1,12 @@
-const CACHE = 'ap-v26';
+const CACHE = 'ap-v27';
 const ASSETS = [
   '/',
+  /* Design system — load order: foundation → theme → site */
+  '/assets/styles/foundation.css',
   '/assets/theme.css',
   '/assets/site.css',
+  /* JS — constants first, then modules */
+  '/assets/js/constants.js',
   '/assets/theme.js',
   '/assets/nav.js',
   '/assets/visuals.js',
