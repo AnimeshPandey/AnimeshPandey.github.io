@@ -4,7 +4,7 @@
 **Live:** https://anmshpndy.com  
 **Stack:** Static HTML · CSS custom properties · vanilla JS · GitHub Pages  
 **Build step:** none — `git push main` is the entire deploy pipeline  
-**Last verified:** May 2026 · `sw.js` cache `ap-v19`
+**Last verified:** May 2026 · `sw.js` cache `ap-v20`
 
 ---
 
@@ -25,9 +25,10 @@
 13. [SEO & structured data](#seo--structured-data)
 14. [Service worker](#service-worker)
 15. [Content authority](#content-authority)
-16. [Extension playbook](#extension-playbook)
-17. [Maintainer workflows](#maintainer-workflows)
-18. [Verification checklist](#verification-checklist)
+16. [Alignment status](#alignment-status)
+17. [Extension playbook](#extension-playbook)
+18. [Maintainer workflows](#maintainer-workflows)
+19. [Verification checklist](#verification-checklist)
 
 ---
 
@@ -204,7 +205,7 @@ AnimeshPandey.github.io/
 │   ├── og-image.png                    # Social preview raster (86 KB)
 │   └── og-image.svg                    # Social preview source art
 │
-├── sw.js                               # L6 — service worker, CACHE = ap-v19 (75 LOC)
+├── sw.js                               # L6 — service worker, CACHE = ap-v20 (75 LOC)
 ├── resume.pdf                          # Downloadable resume
 ├── animesh_pandey_resume.tex           # Resume source (LaTeX)
 ├── favicon.svg
@@ -216,7 +217,12 @@ AnimeshPandey.github.io/
 ├── .github/
 │   └── workflows/static-pages.yml     # Deploy: checkout → inject secrets → upload artifact
 │
-├── ARCHITECTURE.md                     # ← this file
+├── docs/
+│   ├── ARCHITECTURE.md                 # ← this file (human documentation)
+│   └── README.md                       # Docs index
+├── .claude/
+│   ├── launch.json                     # Local dev server (port 8181)
+│   └── prompts/                        # Claude/Cursor implementation prompts only
 └── README.md
 ```
 
@@ -273,7 +279,7 @@ AnimeshPandey.github.io/
 | `CNAME` | Custom domain `anmshpndy.com` for GitHub Pages |
 | `robots.txt` | `Allow: *`, points to `sitemap.xml` |
 | `sitemap.xml` | Canonical URLs for all pages |
-| `sw.js` | Service worker — `CACHE = 'ap-v19'` |
+| `sw.js` | Service worker — `CACHE = 'ap-v20'` |
 
 ---
 
@@ -407,12 +413,19 @@ window.__EGG_DATA = {
 - **Mobile menu:** `#hamburger` → `#mobile-nav` + `#nav-overlay` — focus trap, Escape-to-close, `aria-expanded`.
 - **Desktop:** In-header `<nav>` with section hash links.
 - **Scroll-spy:** `IntersectionObserver` on `<section>` elements updates active nav link.
-- **Back to top:** `#back-top` becomes visible after 300 px scroll.
+- **Sticky header:** `.scrolled` on `header` after 8 px scroll.
+- **Reading progress:** `.progress-bar` width via `--pct` (homepage only; guarded if element missing).
+- **Back to top:** `#back-top` visible after 400 px scroll; smooth scroll + focus `#main-content`.
+
+**Alignment note:** As of May 2026, `nav.js` still contains homepage hero animations and stat count-up — **scheduled for move** to `visuals.js` (see [Alignment status](#alignment-status)). Do not add new homepage-only behaviour here.
 
 ### C · Visual orchestration (`visuals.js`)
 
 | Function | Gate | Behaviour |
 |----------|------|-----------|
+| `initScrollReveal` | `!reducedMotion` (planned) | `.fade-up` → `.in` via IO; today inline in `index.html` (**A3**) |
+| `initHeroChrome` | `finePointer && !reducedMotion` (planned) | Rotate tagline, spotlight `--mx/--my`, `.hero-card` tilt, `.hero-float` parallax; today in `nav.js` (**A1**) |
+| `initStatCountUp` | `iob && !reducedMotion` (planned) | `.stat-n` count-up; today in `nav.js` (**A1**) |
 | `initHeroCanvas` | `!reducedMotion && !saveData && canvas2d` | 2D particle field in `#hero`; mouse-repel on desktop; IO pauses when hero leaves viewport |
 | `initCardExpand` | always | `.pc-desc` overflow → "Read more" button |
 | `initCardTilt` | `finePointer && !reducedMotion` | Mouse-tracked 3D perspective tilt on `.pc`, `.sv-card`, `.edu-card` |
@@ -657,7 +670,7 @@ Missing secrets: deploy still succeeds; contact form shows a config-error messag
 
 ## Service worker
 
-**File:** `sw.js` · **Cache:** `ap-v19`
+**File:** `sw.js` · **Cache:** `ap-v20`
 
 ```js
 // Bump CACHE version in sw.js whenever a precached asset changes.
@@ -700,6 +713,41 @@ When sources conflict, this is the resolution order:
 5. eggs-data.js                ← decorative; must not contradict headline metrics
 6. JSON-LD / FAQ               ← secondary; update when (1) changes
 ```
+
+---
+
+## Alignment status
+
+The **documented** layer model is the target; the repo may drift until alignment work lands. Use **[`.claude/prompts/portfolio-architecture-alignment-prompt.md`](../.claude/prompts/portfolio-architecture-alignment-prompt.md)** to implement fixes.
+
+| ID | Status | Issue | Target owner |
+|----|--------|-------|--------------|
+| A1 | **open** | Hero rotate, spotlight, hero-card tilt, float parallax, stat count-up live in `nav.js` | `visuals.js` (`initHeroChrome`, `initStatCountUp`) |
+| A2 | **open** | Duplicate `#hero` mouse handlers (`nav.js` + canvas in `visuals.js`) | Single hero subsystem in `visuals.js` |
+| A3 | **open** | Scroll-reveal `IntersectionObserver` inline in `index.html` | `visuals.js` `initScrollReveal()` |
+| A4 | **open** | FAQ accordion CSS injected via JS in `index.html` | `site.css` FAQ section |
+| A5 | **open** | `site.css` section blocks not strictly ordered | Enforced section map (see alignment prompt Phase 2) |
+| A6 | **partial** | Recruiter mode vs panel split across `visuals.js` and `recruiter.js` | Documented; minimize duplicate `syncToggles` |
+| A7 | ok | Lazy loaders only in `visuals.js` | — |
+| A8 | **open** | Inconsistent `assets/*.js` file headers | Standard header block on every module |
+| A9 | **open** | `#yr` year script inline in `index.html` | Optional move to `nav.js` |
+| A10 | ok | Progress bar in `nav.js` with DOM guard | Homepage-only element |
+| A11 | ok | `initTagStagger()` in `visuals.js` sets `--tag-i` on project tags | — |
+| A12 | **open** | LOC table vs `wc -l` after refactors | Re-count after alignment |
+
+When an ID is fixed, set **Status** to `fixed` and add a one-line note with commit or date.
+
+### Target `nav.js` contract (L3)
+
+**Owns:** mobile menu, scroll-spy, sticky header shadow, reading progress bar (if present), back-to-top.
+
+**Must not own:** hero effects, project card tilt, eggs, recruiter panel render, contact POST, scroll-reveal.
+
+### Target `visuals.js` contract (L4)
+
+**Owns:** `caps` detection, `boot()`, hero canvas + hero chrome, scroll reveal, card UX, timeline highlight, impact lens, eggs/recruiter lazy load, hire shortcut, theme crossfade/wink, SW register (if moved from HTML).
+
+**Must not own:** panel HTML generation (delegates to `recruiter.js`).
 
 ---
 
@@ -798,7 +846,7 @@ Also add/remove any asset URLs in `ASSETS` before bumping.
 | Contact submit | `data.success` → in-page message only; **no mail client opens** |
 | Copy email | `#copyEmailBtn` → toast; clipboard has address |
 | Resume download | Header link downloads `resume.pdf` |
-| SW installed | Application tab → `ap-v19` (or current) in Storage |
+| SW installed | Application tab → `ap-v20` (or current) in Storage |
 | Offline | SW serves cached assets without network |
 
 ### Accessibility
