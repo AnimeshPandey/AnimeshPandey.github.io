@@ -4,7 +4,7 @@
 **Portfolio copy:** `AnimeshPandey.github.io/.claude/prompts/casebook-core-platform-generation-prompt.md`  
 **Target repo:** `AnimeshPandey.github.io` · **Output path:** `cases/` · **URL:** `https://anmshpndy.com/cases/`  
 **Human checklist:** [../phases/01-core-platform.md](../phases/01-core-platform.md)  
-**Architecture:** [../PLATFORM-ARCHITECTURE.md](../PLATFORM-ARCHITECTURE.md) · **UI/UX:** [../UI-UX-AND-PREFERENCES.md](../UI-UX-AND-PREFERENCES.md)
+**Architecture:** [PLATFORM-ARCHITECTURE.md](../docs/platform/PLATFORM-ARCHITECTURE.md) · **UI/UX:** [UI-UX-AND-PREFERENCES.md](../docs/platform/UI-UX-AND-PREFERENCES.md)
 
 ---
 
@@ -20,16 +20,16 @@ You are a **staff frontend engineer + technical architect + inclusive UX lead** 
 
 ## Read order (before writing code)
 
-1. [../PLATFORM-ARCHITECTURE.md](../PLATFORM-ARCHITECTURE.md) — layers, boundaries, anti-patterns  
-2. [../GLOBAL-FOUNDATION.md](../GLOBAL-FOUNDATION.md) — class names, events, storage keys  
-3. [../UI-UX-AND-PREFERENCES.md](../UI-UX-AND-PREFERENCES.md) — **themes, layout UX, a11y, motion**  
-4. [../HOSTING-AND-GROWTH.md](../HOSTING-AND-GROWTH.md) — devices, SEO, `site.json`  
-5. [../DECISIONS.md](../DECISIONS.md) · [../BRANDING.md](../BRANDING.md)  
+1. [PLATFORM-ARCHITECTURE.md](../docs/platform/PLATFORM-ARCHITECTURE.md) — layers, boundaries, anti-patterns  
+2. [GLOBAL-FOUNDATION.md](../docs/platform/GLOBAL-FOUNDATION.md) — class names, events, storage keys  
+3. [UI-UX-AND-PREFERENCES.md](../docs/platform/UI-UX-AND-PREFERENCES.md) — **themes, layout UX, a11y, motion**  
+4. [HOSTING-AND-GROWTH.md](../docs/platform/HOSTING-AND-GROWTH.md) — devices, SEO, `site.json`  
+5. [DECISIONS.md](../docs/product/DECISIONS.md) · [BRANDING.md](../docs/product/BRANDING.md)  
 6. [../phases/01-core-platform.md](../phases/01-core-platform.md) — scope & DoD  
-7. [../ELEVENTY-SCAFFOLD.md](../ELEVENTY-SCAFFOLD.md)  
-8. [../CASE-TEMPLATE.md](../CASE-TEMPLATE.md) · [../AUDIENCE-TONE.md](../AUDIENCE-TONE.md)  
-9. [../MASCOT-CASEY.md](../MASCOT-CASEY.md) · [../assets/casey/CASEY-GENERATION-PLAYBOOK.md](../assets/casey/CASEY-GENERATION-PLAYBOOK.md) · [../assets/casey/casey-interactions.json](../assets/casey/casey-interactions.json)  
-10. [../00-GROWTH-DESIGN-ANALYSIS.md](../00-GROWTH-DESIGN-ANALYSIS.md) — story beat rhythm  
+7. [ELEVENTY-SCAFFOLD.md](../docs/platform/ELEVENTY-SCAFFOLD.md)  
+8. [CASE-TEMPLATE.md](../docs/content/CASE-TEMPLATE.md) · [AUDIENCE-TONE.md](../docs/platform/AUDIENCE-TONE.md)  
+9. [MASCOT-CASEY.md](../docs/mascot/MASCOT-CASEY.md) · [../assets/casey/CASEY-GENERATION-PLAYBOOK.md](../assets/casey/CASEY-GENERATION-PLAYBOOK.md) · [../assets/casey/casey-interactions.json](../assets/casey/casey-interactions.json)  
+10. [growth-design-analysis.md](../docs/content/growth-design-analysis.md) — story beat rhythm  
 11. Flagship track row: [../tracks/01-psychology-perception.md](../tracks/01-psychology-perception.md)
 
 Copy `manifest.json` into `cases/src/_data/`:
@@ -50,10 +50,10 @@ ROLE: Staff FE architect. Build a scalable static foundation + one flagship case
 Do NOT bulk-generate other cases. Do NOT add backend, React, or Next.js.
 
 READ (in order):
-- ideas/projects/case-studies/PLATFORM-ARCHITECTURE.md
-- ideas/projects/case-studies/UI-UX-AND-PREFERENCES.md
-- ideas/projects/case-studies/GLOBAL-FOUNDATION.md
-- ideas/projects/case-studies/HOSTING-AND-GROWTH.md
+- ideas/projects/case-studies/docs/platform/PLATFORM-ARCHITECTURE.md
+- ideas/projects/case-studies/docs/platform/UI-UX-AND-PREFERENCES.md
+- ideas/projects/case-studies/docs/platform/GLOBAL-FOUNDATION.md
+- ideas/projects/case-studies/docs/platform/HOSTING-AND-GROWTH.md
 - ideas/projects/case-studies/phases/01-core-platform.md
 - ideas/projects/case-studies/prompts/01-core-platform-generation-prompt.md (full spec)
 
@@ -142,7 +142,7 @@ When done: list file tree, note any intentional Phase 2 deferrals, paste Lightho
 5. **Performance budget** — defer non-critical JS; SVG Casey; WebP images with dimensions.  
 6. **Honest indexing** — no `href` for non-live cases; no sitemap entries for stubs.
 
-Full layer diagram: [../PLATFORM-ARCHITECTURE.md](../PLATFORM-ARCHITECTURE.md).
+Full layer diagram: [PLATFORM-ARCHITECTURE.md](../docs/platform/PLATFORM-ARCHITECTURE.md).
 
 ---
 
@@ -220,7 +220,7 @@ Add `casebookUrl` filter if needed — prefer built-in `url` filter with `pathPr
 ### About (`src/about.njk`)
 
 - Methodology, tone switcher explanation, Casey intro  
-- Growth.Design credit ([BRANDING.md](../BRANDING.md))  
+- Growth.Design credit ([BRANDING.md](../docs/product/BRANDING.md))  
 - Author E-E-A-T blurb + link to portfolio  
 
 ### Flagship case (`src/cases/skeleton-screens-perceived-speed/index.njk`)
@@ -236,7 +236,7 @@ Add `casebookUrl` filter if needed — prefer built-in `url` filter with `pathPr
 | `ui-strip` | Annotated fake dashboard loading state |
 | `demo` | Include `case-demo-shell` + demo partial |
 | `fe-depth` | Implementation notes (CSS, React Suspense boundary mention in staff tone) |
-| `references` | Links from [REFERENCES.md](../REFERENCES.md) — mid/staff visible by tone |
+| `references` | Links from [REFERENCES.md](../docs/content/REFERENCES.md) — mid/staff visible by tone |
 | `takeaway` | 3 bullets |
 
 **Every chapter:** three blocks `.tone-junior`, `.tone-mid`, `.tone-staff` (mid/staff `hidden` by default; `case-scroll.js` toggles).
@@ -259,7 +259,7 @@ Expose to JS via:
 
 ## UI/UX & preferences (mandatory)
 
-Full spec: [../UI-UX-AND-PREFERENCES.md](../UI-UX-AND-PREFERENCES.md). Implement in Phase 1:
+Full spec: [UI-UX-AND-PREFERENCES.md](../docs/platform/UI-UX-AND-PREFERENCES.md). Implement in Phase 1:
 
 | Area | Requirement |
 |------|-------------|
@@ -353,7 +353,7 @@ Import portfolio `theme.css` first, then:
 @import 'casebook-print.css'; /* optional */
 ```
 
-**`casebook-tokens.css`:** Map `--casebook-*` for `[data-casebook-color="light"]` and `[data-casebook-color="dark"]` per [UI-UX-AND-PREFERENCES.md](../UI-UX-AND-PREFERENCES.md). Import portfolio `theme.css` **before** casebook.css in layout.
+**`casebook-tokens.css`:** Map `--casebook-*` for `[data-casebook-color="light"]` and `[data-casebook-color="dark"]` per [UI-UX-AND-PREFERENCES.md](../docs/platform/UI-UX-AND-PREFERENCES.md). Import portfolio `theme.css` **before** casebook.css in layout.
 
 **Layout FOUC:** Inline script in `casebook-layout.njk` `<head>` before stylesheets (see UI-UX doc).
 
@@ -393,7 +393,7 @@ Partial `head-seo.njk` accepts:
 | About | `AboutPage` |
 | Case | `Article` or `LearningResource` + `BreadcrumbList` |
 
-Generate `sitemap.njk`, `feed.njk`, `robots.njk` per [HOSTING-AND-GROWTH.md](../HOSTING-AND-GROWTH.md).
+Generate `sitemap.njk`, `feed.njk`, `robots.njk` per [HOSTING-AND-GROWTH.md](../docs/platform/HOSTING-AND-GROWTH.md).
 
 **Title pattern:** lead with specific problem, not brand alone.
 
@@ -462,5 +462,5 @@ Generate `sitemap.njk`, `feed.njk`, `robots.njk` per [HOSTING-AND-GROWTH.md](../
 
 | Prompt | When |
 |--------|------|
-| [BUILD-ONE-SHOT.md](../BUILD-ONE-SHOT.md) | Phase 3+ bulk cases **after** this platform ships |
+| [BUILD-ONE-SHOT.md](../docs/content/BUILD-ONE-SHOT.md) | Phase 3+ bulk cases **after** this platform ships |
 | Portfolio [portfolio-core-web-vitals-seo-prompt.md](../../../../AnimeshPandey.github.io/.claude/prompts/portfolio-core-web-vitals-seo-prompt.md) | Homepage only — not case routes |
