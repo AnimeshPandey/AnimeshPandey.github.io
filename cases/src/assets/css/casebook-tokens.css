@@ -47,7 +47,7 @@ html.casebook-color-transition *::after {
   transition: background-color 0.2s ease, color 0.15s ease, border-color 0.15s ease !important;
 }
 
-/* ── High contrast (default) ── */
+/* ── High contrast (opt-in) ── */
 [data-casebook-contrast="high"] {
   --casebook-ink: #000;
   --casebook-ink-muted: #1a1a1a;
