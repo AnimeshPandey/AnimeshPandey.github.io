@@ -118,8 +118,9 @@ Push to `main`. GitHub Actions (`.github/workflows/static-pages.yml`) runs in ~6
 2. `sed` injects `W3F_ACCESS_KEY` into `contact.js` and `CF_BEACON_TOKEN` into all `*.html`
 3. Uploads repo root as Pages artifact — no build, no Jekyll
 
-**Repo secrets required:** `W3F_ACCESS_KEY` (Web3Forms), `CF_BEACON_TOKEN` (Cloudflare Analytics).  
-Missing secrets: deploy still succeeds; contact form shows a config-error message; analytics is silent.
+**Repo secrets required:** `W3F_ACCESS_KEY` (Web3Forms; alias `WEB3FORMS_ACCESS_KEY`), `CF_BEACON_TOKEN` (Cloudflare; alias `CLOUDFLARE_BEACON_TOKEN`).  
+Keys are injected into `index.html` (meta tag, network-first) and `contact.js`. Service worker uses **network-first** for `contact.js` and bumps `CACHE` on secret-related deploys.  
+Missing secrets: deploy warns; contact form shows a config-error message; analytics beacon stays placeholder.
 
 ---
 

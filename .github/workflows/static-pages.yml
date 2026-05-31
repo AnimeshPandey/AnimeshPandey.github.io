@@ -26,16 +26,31 @@ jobs:
 
       - name: Inject secrets into static files
         env:
-          W3F_KEY: ${{ secrets.W3F_ACCESS_KEY }}
-          CF_TOKEN: ${{ secrets.CF_BEACON_TOKEN }}
+          W3F_ACCESS_KEY: ${{ secrets.W3F_ACCESS_KEY }}
+          WEB3FORMS_ACCESS_KEY: ${{ secrets.WEB3FORMS_ACCESS_KEY }}
+          CF_BEACON_TOKEN: ${{ secrets.CF_BEACON_TOKEN }}
+          CLOUDFLARE_BEACON_TOKEN: ${{ secrets.CLOUDFLARE_BEACON_TOKEN }}
         run: |
-          # Web3Forms access key → assets/contact.js
+          set -euo pipefail
+          W3F_KEY="${W3F_ACCESS_KEY:-}"
+          if [ -z "$W3F_KEY" ]; then W3F_KEY="${WEB3FORMS_ACCESS_KEY:-}"; fi
+          CF_TOKEN="${CF_BEACON_TOKEN:-}"
+          if [ -z "$CF_TOKEN" ]; then CF_TOKEN="${CLOUDFLARE_BEACON_TOKEN:-}"; fi
+
+          inject_w3f() {
+            sed -i "s|YOUR_WEB3FORMS_ACCESS_KEY|${W3F_KEY}|g" assets/contact.js index.html
+          }
+
+          # Web3Forms access key → assets/contact.js + index.html meta (HTML is network-first in SW)
           if [ -n "$W3F_KEY" ]; then
-            sed -i "s|YOUR_WEB3FORMS_ACCESS_KEY|${W3F_KEY}|g" assets/contact.js
-            echo "✓ Web3Forms key injected"
-            grep -c "YOUR_WEB3FORMS_ACCESS_KEY" assets/contact.js && echo "⚠ placeholder still present!" || echo "✓ placeholder replaced"
+            inject_w3f
+            echo "✓ Web3Forms key injected into contact.js and index.html"
+            if grep -q "YOUR_WEB3FORMS_ACCESS_KEY" assets/contact.js index.html; then
+              echo "::error::Web3Forms placeholder still present after inject"
+              exit 1
+            fi
           else
-            echo "⚠ W3F_ACCESS_KEY secret not set — contact form will fall back to mailto"
+            echo "::warning::No Web3Forms secret — set W3F_ACCESS_KEY (or WEB3FORMS_ACCESS_KEY) in repo Settings → Secrets"
           fi
 
           # Cloudflare beacon token → all HTML files
@@ -43,8 +58,12 @@ jobs:
             find . -name "*.html" -not -path "./.git/*" \
               -exec sed -i "s|YOUR_CF_BEACON_TOKEN|${CF_TOKEN}|g" {} +
             echo "✓ Cloudflare beacon token injected"
+            if find . -name "*.html" -not -path "./.git/*" -exec grep -l "YOUR_CF_BEACON_TOKEN" {} + | grep -q .; then
+              echo "::error::Cloudflare placeholder still present in HTML"
+              exit 1
+            fi
           else
-            echo "⚠ CF_BEACON_TOKEN secret not set — analytics beacon will not fire"
+            echo "::warning::No CF beacon secret — set CF_BEACON_TOKEN (or CLOUDFLARE_BEACON_TOKEN)"
           fi
 
       - name: Setup Pages
