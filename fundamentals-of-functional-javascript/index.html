@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <script>
-  (function(){var t=localStorage.getItem('theme');if(t!=='light')document.documentElement.dataset.theme='dark'})();
+  (function(){var v=['light','dark','sage','slate','dusk','high-contrast'];var t=localStorage.getItem('theme');document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'dark';})();
   </script>
 
   <title>Fundamentals of Functional JavaScript · Animesh Pandey</title>
@@ -86,15 +86,12 @@
     <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
     </symbol>
-    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-    </symbol>
-    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1-.23-.27-.38-.61-.38-.98C12.73 17.69 13.5 17 14.5 17H16c3.31 0 6-2.69 6-6 0-4.96-4.48-9-10-9z"/>
+      <circle cx="6.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="9.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="14.5" cy="7.5" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="17.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>
     </symbol>
     <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
@@ -112,10 +109,19 @@
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="Animesh Pandey, home">AP<span>.</span></a>
     <div class="nav-right">
-      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
-        <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"/></svg>
-        <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"/></svg>
-      </button>
+      <div class="theme-picker">
+        <button class="theme-pick-btn" id="theme-pick-btn" aria-label="Choose theme" aria-expanded="false" aria-haspopup="listbox" aria-controls="theme-menu">
+          <svg class="icon" aria-hidden="true"><use href="#i-palette"/></svg>
+        </button>
+        <ul class="theme-menu" id="theme-menu" role="listbox" aria-label="Choose theme" hidden>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="light"         aria-selected="false"><span class="theme-swatch ts-light"         aria-hidden="true"></span>Warm paper</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="dark"          aria-selected="false"><span class="theme-swatch ts-dark"          aria-hidden="true"></span>Charcoal</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="sage"          aria-selected="false"><span class="theme-swatch ts-sage"          aria-hidden="true"></span>Sage mist</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="slate"         aria-selected="false"><span class="theme-swatch ts-slate"         aria-hidden="true"></span>Slate studio</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="dusk"          aria-selected="false"><span class="theme-swatch ts-dusk"          aria-hidden="true"></span>Dusk editorial</li>
+          <li class="theme-menu-item" role="option" tabindex="-1" data-t="high-contrast" aria-selected="false"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+        </ul>
+      </div>
       <a href="/resume.pdf" download class="nav-resume" aria-label="Download resume PDF">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
         Resume

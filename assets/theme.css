@@ -1,69 +1,174 @@
-/* ── Design tokens — light (default) ── */
+/* ── Design tokens — light / warm paper (default) ── */
 :root {
   color-scheme: light;
-  --bg:         #FAF8F4;
-  --surface:    #F2EDE4;
-  --surface-2:  #E9E2D5;
-  --ink:        #1C1714;
-  --ink-2:      #5C4F47;
-  --ink-3:      #9B8C84;
-  --accent:     #BF5A32;
-  --accent-bg:  #F8E5DA;
-  --accent-dim: rgba(191,90,50,.12);
-  --sage:       #4E7A68;
-  --sage-bg:    #D3E8DF;
-  --border:     #DDD6C9;
-  --border-2:   #CAC2B4;
-  --serif:      'DM Serif Display', Georgia, serif;
-  --sans:       'Plus Jakarta Sans', system-ui, sans-serif;
-  --mono:       'JetBrains Mono', 'Courier New', monospace;
-  --max:        820px;
-  --nav-h:      56px;
-  --strip-h:    0px;
-  --radius:     12px;
-  --page-pad:   clamp(16px, 4vw, 28px);
-  --bp-sm:      480px;
-  --bp-md:      640px;
-  --bp-lg:      820px;
-  --bp-xl:      1024px;
+  --bg:             #FAF8F4;
+  --surface:        #F2EDE4;
+  --surface-2:      #E9E2D5;
+  --ink:            #1C1714;
+  --ink-2:          #5C4F47;
+  --ink-3:          #9B8C84;
+  --accent:         #BF5A32;
+  --accent-bg:      #F8E5DA;
+  --accent-dim:     rgba(191,90,50,.12);
+  --sage:           #4E7A68;
+  --sage-bg:        #D3E8DF;
+  --border:         #DDD6C9;
+  --border-2:       #CAC2B4;
+  --hero-card-bg:   #1C1714;
+  --hero-glow-a:    rgba(191,90,50,.11);
+  --hero-glow-b:    rgba(78,122,104,.04);
+  --header-bg:      rgba(250,248,244,.92);
+  --serif:          'DM Serif Display', Georgia, serif;
+  --sans:           'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono:           'JetBrains Mono', 'Courier New', monospace;
+  --max:            820px;
+  --nav-h:          56px;
+  --strip-h:        0px;
+  --radius:         12px;
+  --page-pad:       clamp(16px, 4vw, 28px);
+  --bp-sm:          480px;
+  --bp-md:          640px;
+  --bp-lg:          820px;
+  --bp-xl:          1024px;
   --theme-color-val: #FAF8F4;
 }
 
-/* ── Dark theme ── */
+/* ── Dark / Charcoal ── */
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg:         #141210;
-  --surface:    #1C1916;
-  --surface-2:  #252220;
-  --ink:        #F5F0E8;
-  --ink-2:      #C4B8AE;
-  --ink-3:      #7A6E68;
-  --accent:     #E07A52;
-  --accent-bg:  rgba(224,122,82,.14);
-  --accent-dim: rgba(224,122,82,.10);
-  --sage:       #7BAF98;
-  --sage-bg:    rgba(78,122,104,.18);
-  --border:     #2E2926;
-  --border-2:   #3D3632;
+  --bg:             #141210;
+  --surface:        #1C1916;
+  --surface-2:      #252220;
+  --ink:            #F5F0E8;
+  --ink-2:          #C4B8AE;
+  --ink-3:          #7A6E68;
+  --accent:         #E07A52;
+  --accent-bg:      rgba(224,122,82,.14);
+  --accent-dim:     rgba(224,122,82,.10);
+  --sage:           #7BAF98;
+  --sage-bg:        rgba(78,122,104,.18);
+  --border:         #2E2926;
+  --border-2:       #3D3632;
+  --hero-card-bg:   #0E0B09;
+  --hero-glow-a:    rgba(224,122,82,.10);
+  --hero-glow-b:    rgba(123,175,152,.04);
+  --header-bg:      rgba(20,18,16,.92);
   --theme-color-val: #141210;
 }
 
+/* ── Sage mist — light base, forest-green accent ── */
+[data-theme="sage"] {
+  color-scheme: light;
+  --bg:             #F4F7F4;
+  --surface:        #E8EFE6;
+  --surface-2:      #DAE5D7;
+  --ink:            #1A2218;
+  --ink-2:          #4A5C45;
+  --ink-3:          #8A9E84;
+  --accent:         #2D7A4F;
+  --accent-bg:      #D4EDE0;
+  --accent-dim:     rgba(45,122,79,.12);
+  --sage:           #2D7A4F;
+  --sage-bg:        rgba(45,122,79,.12);
+  --border:         #C8D9C4;
+  --border-2:       #B5C9B0;
+  --hero-card-bg:   #1A2218;
+  --hero-glow-a:    rgba(45,122,79,.12);
+  --hero-glow-b:    rgba(45,122,79,.05);
+  --header-bg:      rgba(244,247,244,.92);
+  --theme-color-val: #F4F7F4;
+}
+
+/* ── Slate studio — cool dark, cyan-teal accent ── */
+[data-theme="slate"] {
+  color-scheme: dark;
+  --bg:             #141B22;
+  --surface:        #1C2630;
+  --surface-2:      #23303C;
+  --ink:            #E4EEF4;
+  --ink-2:          #9BBACE;
+  --ink-3:          #5C7888;
+  --accent:         #3BBFBF;
+  --accent-bg:      rgba(59,191,191,.14);
+  --accent-dim:     rgba(59,191,191,.10);
+  --sage:           #5BBFAA;
+  --sage-bg:        rgba(91,191,170,.14);
+  --border:         #23323E;
+  --border-2:       #2E4050;
+  --hero-card-bg:   #0C1318;
+  --hero-glow-a:    rgba(59,191,191,.10);
+  --hero-glow-b:    rgba(91,191,170,.04);
+  --header-bg:      rgba(20,27,34,.92);
+  --theme-color-val: #141B22;
+}
+
+/* ── Dusk editorial — deep plum, gold accent ── */
+[data-theme="dusk"] {
+  color-scheme: dark;
+  --bg:             #18131E;
+  --surface:        #211929;
+  --surface-2:      #2C2234;
+  --ink:            #F0EAF8;
+  --ink-2:          #BBA8CC;
+  --ink-3:          #7A6888;
+  --accent:         #D4A840;
+  --accent-bg:      rgba(212,168,64,.14);
+  --accent-dim:     rgba(212,168,64,.10);
+  --sage:           #A87AC0;
+  --sage-bg:        rgba(168,122,192,.14);
+  --border:         #2E2438;
+  --border-2:       #3C3050;
+  --hero-card-bg:   #100C16;
+  --hero-glow-a:    rgba(212,168,64,.10);
+  --hero-glow-b:    rgba(168,122,192,.05);
+  --header-bg:      rgba(24,19,30,.92);
+  --theme-color-val: #18131E;
+}
+
+/* ── High contrast — WCAG-first, near #000/#fff ── */
+[data-theme="high-contrast"] {
+  color-scheme: dark;
+  --bg:             #000000;
+  --surface:        #111111;
+  --surface-2:      #1E1E1E;
+  --ink:            #FFFFFF;
+  --ink-2:          #DDDDDD;
+  --ink-3:          #999999;
+  --accent:         #FFD700;
+  --accent-bg:      rgba(255,215,0,.15);
+  --accent-dim:     rgba(255,215,0,.10);
+  --sage:           #44DD88;
+  --sage-bg:        rgba(68,221,136,.15);
+  --border:         #333333;
+  --border-2:       #555555;
+  --hero-card-bg:   #111111;
+  --hero-glow-a:    rgba(255,215,0,.08);
+  --hero-glow-b:    rgba(68,221,136,.04);
+  --header-bg:      rgba(0,0,0,.96);
+  --theme-color-val: #000000;
+}
+
+/* ── System dark preference — applies only when no theme is explicitly set ── */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme]) {
     color-scheme: dark;
-    --bg:         #141210;
-    --surface:    #1C1916;
-    --surface-2:  #252220;
-    --ink:        #F5F0E8;
-    --ink-2:      #C4B8AE;
-    --ink-3:      #7A6E68;
-    --accent:     #E07A52;
-    --accent-bg:  rgba(224,122,82,.14);
-    --accent-dim: rgba(224,122,82,.10);
-    --sage:       #7BAF98;
-    --sage-bg:    rgba(78,122,104,.18);
-    --border:     #2E2926;
-    --border-2:   #3D3632;
+    --bg:             #141210;
+    --surface:        #1C1916;
+    --surface-2:      #252220;
+    --ink:            #F5F0E8;
+    --ink-2:          #C4B8AE;
+    --ink-3:          #7A6E68;
+    --accent:         #E07A52;
+    --accent-bg:      rgba(224,122,82,.14);
+    --accent-dim:     rgba(224,122,82,.10);
+    --sage:           #7BAF98;
+    --sage-bg:        rgba(78,122,104,.18);
+    --border:         #2E2926;
+    --border-2:       #3D3632;
+    --hero-card-bg:   #0E0B09;
+    --hero-glow-a:    rgba(224,122,82,.10);
+    --hero-glow-b:    rgba(123,175,152,.04);
+    --header-bg:      rgba(20,18,16,.92);
     --theme-color-val: #141210;
   }
 }
