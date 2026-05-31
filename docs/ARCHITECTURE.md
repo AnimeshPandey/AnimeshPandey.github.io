@@ -3,8 +3,19 @@
 **Repo:** `AnimeshPandey/AnimeshPandey.github.io`  
 **Live:** https://anmshpndy.com  
 **Stack:** Static HTML · CSS custom properties · vanilla JS · GitHub Pages  
-**Build step:** none — `git push main` is the entire deploy pipeline  
-**Last verified:** May 2026 · `sw.js` cache `ap-v21`
+**Build step:** Eleventy (`site/`, `cases/`) merged at deploy — see [PLATFORM-SHELL.md](./PLATFORM-SHELL.md)  
+**Last verified:** May 2026 · `sw.js` cache `ap-v30`
+
+---
+
+## Platform shell (portfolio + Casebook)
+
+Shared chrome lives under `assets/platform/` and `site/src/_includes/partials/`. Casebook must **not** fork `platform-header.njk`; Eleventy resolves includes from `site/src/_includes` (see `cases/.eleventy.js`).
+
+| Doc / tool | Purpose |
+|------------|---------|
+| [PLATFORM-SHELL.md](./PLATFORM-SHELL.md) | Stylesheet order, theme contract, excluded features |
+| `scripts/verify-platform-shell.sh` | CI-local guard: no forked header, builds pass |
 
 ---
 

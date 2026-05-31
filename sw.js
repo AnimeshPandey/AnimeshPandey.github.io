@@ -1,11 +1,13 @@
-const CACHE = 'ap-v29';
+const CACHE = 'ap-v30';
 const ASSETS = [
   '/',
-  /* Design system — load order: foundation → theme → site */
+  /* Design system — load order: foundation → theme → shell → site */
   '/assets/styles/foundation.css',
   '/assets/theme.css',
   '/assets/platform/chrome.css',
   '/assets/platform/prefs-chrome.css',
+  '/assets/platform/shell.css',
+  '/assets/styles/components/button.css',
   '/assets/site.css',
   /* JS — constants first, then platform chrome, then modules */
   '/assets/js/constants.js',
