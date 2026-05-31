@@ -1,19 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Junior Casey — point">
-  <title>Junior Casey, point</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Junior Casey — blink">
+  <title>Junior Casey, blink</title>
   <!-- body -->
   <path d="M24,68 C20,72 20,90 30,95 L70,95 C80,90 80,72 76,68 C68,60 57,58 50,58 C43,58 32,60 24,68 Z" fill="#7DA888"/>
   <rect x="40" y="79" width="20" height="11" rx="2" fill="#6B9070" opacity="0.4"/>
-  <!-- paw: left resting -->
+  <!-- paws: resting -->
   <ellipse cx="33" cy="91" rx="9" ry="5" fill="#F2EDE6"/>
   <circle cx="28" cy="90" r="2.5" fill="#E8E0D4"/>
   <circle cx="33" cy="88" r="2.5" fill="#E8E0D4"/>
   <circle cx="38" cy="90" r="2.5" fill="#E8E0D4"/>
-  <!-- right arm: pointing -->
-  <path d="M73,74 C80,70 87,66 93,63" stroke="#7DA888" stroke-width="9" fill="none" stroke-linecap="round"/>
-  <ellipse cx="91" cy="63" rx="7" ry="5.5" fill="#F2EDE6"/>
-  <circle cx="87" cy="61" r="2.5" fill="#E8E0D4"/>
-  <circle cx="92" cy="59" r="2.5" fill="#E8E0D4"/>
-  <circle cx="96" cy="63" r="2.5" fill="#E8E0D4"/>
+  <ellipse cx="67" cy="91" rx="9" ry="5" fill="#F2EDE6"/>
+  <circle cx="62" cy="90" r="2.5" fill="#E8E0D4"/>
+  <circle cx="67" cy="88" r="2.5" fill="#E8E0D4"/>
+  <circle cx="72" cy="90" r="2.5" fill="#E8E0D4"/>
   <!-- collar -->
   <rect x="34" y="62" width="32" height="5" rx="2.5" fill="#5E8F72"/>
   <rect x="47" y="65" width="6" height="7" rx="1.5" fill="#7CB89A"/>
@@ -26,13 +24,9 @@
   <path d="M29,23 L22,11 L37,19 Z" fill="#EAB5B5" opacity="0.75"/>
   <path d="M73,24 L82,6 L60,18 Z" fill="#F2EDE6"/>
   <path d="M71,23 L78,11 L63,19 Z" fill="#EAB5B5" opacity="0.75"/>
-  <!-- eyes open -->
-  <ellipse cx="38" cy="36" rx="7.5" ry="8.5" fill="#5BA3D4"/>
-  <ellipse cx="38" cy="37" rx="5" ry="6" fill="#1A1410"/>
-  <circle cx="40" cy="33" r="2.2" fill="#fff"/>
-  <ellipse cx="62" cy="36" rx="7.5" ry="8.5" fill="#5BA3D4"/>
-  <ellipse cx="62" cy="37" rx="5" ry="6" fill="#1A1410"/>
-  <circle cx="64" cy="33" r="2.2" fill="#fff"/>
+  <!-- eyes: closed blink -->
+  <path d="M31,37 Q38,43 45,37" stroke="#1A1410" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M55,37 Q62,43 69,37" stroke="#1A1410" stroke-width="2.5" fill="none" stroke-linecap="round"/>
   <!-- nose + mouth -->
   <path d="M47,47 L50,51 L53,47 Q50,45 47,47 Z" fill="#D4909A"/>
   <path d="M45,53 Q50,58 55,53" stroke="#B07878" stroke-width="1.5" fill="none" stroke-linecap="round"/>
