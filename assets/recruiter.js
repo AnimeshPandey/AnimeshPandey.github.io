@@ -239,6 +239,7 @@
     allItems = allItems.concat(buildHighlights());
     allItems = allItems.concat(buildProjects());
     allItems = allItems.concat(buildSkills());
+    allItems = allItems.concat(buildAlsoExplore());
     allItems = allItems.concat(buildAvailability());
 
     var delay = 0;
@@ -381,6 +382,38 @@
     return elems;
   }
 
+  function buildAlsoExplore() {
+    var items = brief.alsoExplore || [];
+    if (!items.length) return [];
+    var section = mkSection('also-explore', 'Also explore');
+    var list = d.createElement('div');
+    list.className = 'rm-explore-list';
+
+    var elems = items.map(function (item) {
+      var el = d.createElement('a');
+      el.className = 'rm-explore-link';
+      el.href = item.href;
+      /* Anchor-only links stay in-page; external open in new tab */
+      if (item.href && !item.href.startsWith('#') && !item.href.startsWith('/')) {
+        el.target = '_blank';
+        el.rel = 'noopener noreferrer';
+      }
+      el.innerHTML =
+        '<span class="rm-explore-label">' + esc(item.label) + '</span>' +
+        '<span class="rm-explore-note">' + esc(item.note || '') + '</span>' +
+        '<span class="rm-explore-arrow" aria-hidden="true">↗</span>';
+      el.addEventListener('click', function () {
+        /* Close panel on click so user lands on the page cleanly */
+        if (!item.href.startsWith('/#') && !item.href.startsWith('#')) close();
+      });
+      list.appendChild(el);
+      return el;
+    });
+    section.querySelector('.rm-section-body').appendChild(list);
+    bodyEl.appendChild(section);
+    return elems;
+  }
+
   function buildAvailability() {
     var meta = brief.meta || {};
     var section = mkSection('availability', 'Availability & contact');
@@ -421,6 +454,7 @@
     buildHighlights();
     buildProjects();
     buildSkills();
+    buildAlsoExplore();
     buildAvailability();
 
     // Add summary at top of body
@@ -439,7 +473,7 @@
 
     // Make all animatable items immediately visible
     bodyEl.querySelectorAll(
-      '.rm-glance-item, .rm-signal, .rm-card, .rm-skills-tier, .rm-avail-row'
+      '.rm-glance-item, .rm-signal, .rm-card, .rm-skills-tier, .rm-explore-link, .rm-avail-row'
     ).forEach(function (el) { el.classList.add('rm-in'); });
   }
 
