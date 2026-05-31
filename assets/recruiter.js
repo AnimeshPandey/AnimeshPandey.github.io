@@ -583,7 +583,7 @@
       d.execCommand('copy');
       onDone('✓ Brief copied');
     } catch (e) {
-      onDone('Copy failed — select text manually');
+      onDone('Copy failed - select text manually');
     }
     ta.remove();
   }

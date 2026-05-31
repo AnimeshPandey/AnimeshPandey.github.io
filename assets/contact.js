@@ -129,7 +129,7 @@
         name:       name,
         email:      email,
         message:    msg,
-        subject:    'Portfolio contact — anmshpndy.com',
+        subject:    'Portfolio contact - anmshpndy.com',
         from_name:  'Portfolio Contact Form',
         botcheck:   ''   // must be empty string for real submissions
       })

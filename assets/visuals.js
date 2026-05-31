@@ -421,7 +421,7 @@
     var winks   = (window.__EGG_DATA && window.__EGG_DATA.themeWinks) || [
       'System: please pick a lane.',
       'Dark · Light · Dark · Light · …ok.',
-      'Both look great — commit to one?',
+      'Both look great - commit to one?',
       'Achievement unlocked: indecisive.'
     ];
     var winkIdx = 0;
@@ -759,7 +759,7 @@
         var field = document.getElementById('fname');
         setTimeout(function() { if (field) field.focus(); }, 700);
         if (announce) {
-          announce.textContent = 'Jumped to contact section — type your name to get in touch';
+          announce.textContent = 'Jumped to contact section - type your name to get in touch';
           setTimeout(function() { announce.textContent = ''; }, 3000);
         }
       }

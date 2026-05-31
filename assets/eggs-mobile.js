@@ -25,7 +25,7 @@
 
     badge.setAttribute('role', 'button');
     badge.setAttribute('tabindex', '0');
-    badge.setAttribute('aria-label', 'Open to senior and staff roles — tap for career snapshot');
+    badge.setAttribute('aria-label', 'Open to senior and staff roles - tap for career snapshot');
     badge.style.cursor = 'pointer';
 
     if (!hintShown) {

@@ -1,6 +1,6 @@
 # Ideas backlog (private)
 
-Planning docs (projects, articles, monetization playbooks) live in a **private** repository — not in this public portfolio repo.
+Planning docs (projects, articles, monetization playbooks) live in a **private** repository - not in this public portfolio repo.
 
 ```bash
 git clone git@github.com:AnimeshPandey/ideas.git

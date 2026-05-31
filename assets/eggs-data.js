@@ -53,7 +53,7 @@ window.__EGG_DATA = {
   themeWinks: [
     'System: please pick a lane.',
     'Dark · Light · Dark · Light · …ok.',
-    'Both look great — commit to one?',
+    'Both look great - commit to one?',
     'Achievement unlocked: indecisive.'
   ]
 };
