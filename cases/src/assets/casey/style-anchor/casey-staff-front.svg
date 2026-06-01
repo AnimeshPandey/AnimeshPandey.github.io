@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Staff Casey, wave">
-  <title>Staff Casey, wave</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Staff Casey style anchor">
+  <title>Staff Casey — style anchor (front)</title>
+  <g transform="scale(1.85) translate(2, 2)">
   
   <ellipse cx="50" cy="97" rx="22" ry="3" fill="#2D2A3E" opacity="0.12"/>
   <path d="M26,67 C22,71 22,89 30,94 L70,94 C78,89 78,71 74,67 C67,60 58,58 50,58 C42,58 34,60 26,67 Z" fill="#D4C5B0" stroke="#2D2A3E" stroke-width="2" stroke-linejoin="round"/>
@@ -13,11 +14,10 @@
   <circle cx="28" cy="91" r="2.3" fill="#EDE8DF"/>
   <circle cx="33" cy="89" r="2.3" fill="#EDE8DF"/>
   <circle cx="38" cy="91" r="2.3" fill="#EDE8DF"/>
-  <path d="M74,70 C79,59 76,48 70,41" stroke="#B8A894" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <ellipse cx="70" cy="40" rx="7" ry="7" fill="#FAFAF8" stroke="#2D2A3E" stroke-width="1"/>
-  <circle cx="65" cy="38" r="2.3" fill="#EDE8DF"/>
-  <circle cx="70" cy="35" r="2.3" fill="#EDE8DF"/>
-  <circle cx="75" cy="38" r="2.3" fill="#EDE8DF"/>
+  <ellipse cx="67" cy="92" rx="9" ry="5" fill="#FAFAF8" stroke="#2D2A3E" stroke-width="1"/>
+  <circle cx="62" cy="91" r="2.3" fill="#EDE8DF"/>
+  <circle cx="67" cy="89" r="2.3" fill="#EDE8DF"/>
+  <circle cx="72" cy="91" r="2.3" fill="#EDE8DF"/>
   <g>
   
   <path d="M26,25 L17,7 L39,19 Z" fill="#FAFAF8" stroke="#2D2A3E" stroke-width="1.2" stroke-linejoin="round"/>
@@ -46,4 +46,5 @@
   <line x1="43" y1="35" x2="57" y2="35" stroke="#8B7355" stroke-width="1.2"/>
   <line x1="22" y1="35" x2="30" y2="35" stroke="#8B7355" stroke-width="1.2"/>
   <line x1="70" y1="35" x2="78" y2="35" stroke="#8B7355" stroke-width="1.2"/></g>
+  </g>
 </svg>

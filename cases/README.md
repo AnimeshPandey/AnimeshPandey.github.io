@@ -36,6 +36,16 @@ In CI, the build runs automatically on push to `main`. The `_site/` output is me
 - **`src/cases/<slug>/index.njk`** — one Nunjucks file per case; uses `case-layout.njk`
 - **`src/cases/<slug>/casey.json`** — tier-aware hints, anecdotes, and voice script for Casey
 
+## Casey mascot assets
+
+Regenerate harmonized SVGs (reference-inspired + character bible):
+
+```bash
+node scripts/generate-casey-svgs.mjs
+```
+
+Outputs `src/assets/casey/{junior,mid,staff}/*.svg`, `style-anchor/`, and `hub/casey-empty.svg`. See `src/assets/casey/STYLE-GUIDE.md`.
+
 ## Architecture decisions
 
 - No portfolio service worker, theme.js, or recruiter scripts on `/cases/*`
