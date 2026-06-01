@@ -612,11 +612,10 @@
 
     function applyTierLabels(cfg) {
       if (!cfg || !cfg.tierLabels) return;
+      var label = cfg.tierLabels[currentTone];
+      if (!label) return;
       document.querySelectorAll('.casey-coach__name, [data-casey-tier-label]').forEach(function (el) {
-        var tier = currentTone;
-        var parent = el.closest('[data-casey-tier]');
-        if (parent && parent.dataset.caseyTier) tier = parent.dataset.caseyTier;
-        if (cfg.tierLabels[tier]) el.textContent = cfg.tierLabels[tier];
+        el.textContent = label;
       });
     }
 

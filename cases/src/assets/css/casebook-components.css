@@ -303,16 +303,11 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 
 .casey-coach__avatar-frame {
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   flex-shrink: 0;
   border: 2px solid var(--casebook-border);
   background: transparent;
-}
-
-.casey-coach__avatar-frame[data-casey-tier="junior"] .casey-avatar-frame__img {
-  transform: scale(0.88);
-  transform-origin: center bottom;
 }
 
 .casey-coach__avatar {
@@ -402,18 +397,18 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 /* Avatar frame — fixed square, crossfade pose swaps */
 .casey-avatar-frame {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   flex-shrink: 0;
   overflow: hidden;
   border-radius: 50%;
   box-sizing: border-box;
 }
 
-/* Junior poses are taller in the square canvas — scale inside frame */
-.casey-avatar-frame[data-casey-tier="junior"] .casey-avatar-frame__img {
-  transform: scale(0.84);
-  transform-origin: center bottom;
+/* Dock: slightly smaller frame on mobile */
+.casey-coach--dock-bottom .casey-avatar-frame {
+  width: 56px;
+  height: 56px;
 }
 
 .casey-hub__avatar-wrap .casey-avatar-frame,
@@ -907,11 +902,6 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   width: 72px;
   height: 72px;
   flex-shrink: 0;
-}
-
-.casey-library__avatar-frame[data-casey-tier="junior"] .casey-avatar-frame__img {
-  transform: scale(0.84);
-  transform-origin: center bottom;
 }
 
 .casey-library__img {

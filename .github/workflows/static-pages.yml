@@ -94,6 +94,7 @@ jobs:
         run: |
           cd tests
           node static/assert-casey-fur-deploy.mjs
+          node static/assert-casey-matte-box-deploy.mjs
           node static/assert-casey-html-bust.mjs
 
       # ── Inject secrets ─────────────────────────────────────────────────────
