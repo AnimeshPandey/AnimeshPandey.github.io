@@ -15,6 +15,9 @@
     <li>
       <a href="{{ '/about/' | url }}"{% if navActive == 'about' %} aria-current="page"{% endif %}>About</a>
     </li>
+    <li>
+      <a href="{{ '/account/' | url }}"{% if navActive == 'account' %} aria-current="page"{% endif %} data-casebook-auth-label>Sign in</a>
+    </li>
     <li><a href="/">Portfolio</a></li>
   </ul>
   <div class="mobile-nav-footer">

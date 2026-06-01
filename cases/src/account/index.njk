@@ -1,0 +1,66 @@
+---
+layout: layouts/casebook-layout.njk
+navActive: account
+title: Sign in — The Frontend Casebook
+description: Save your Casebook progress with a simple email sign-in link. No password required.
+permalink: /account/index.html
+---
+
+<div class="casebook-page casebook-account">
+  <header class="casebook-page__hero">
+    <h1 class="casebook-page__title">Your Casebook account</h1>
+    <p class="casebook-page__lead">
+      Progress (cases started, completed, tone, and Casey prefs) lives in your browser today.
+      Sign in with email so we can attach a magic link to your journey — and later sync across devices.
+    </p>
+  </header>
+
+  <section class="account-card" id="account-signed-out">
+    <form class="account-form" id="account-email-form" novalidate>
+      <label for="account-email" class="account-form__label">Email</label>
+      <input type="email" id="account-email" name="email" class="account-form__input"
+             autocomplete="email" required
+             placeholder="you@example.com" />
+      <button type="submit" class="account-form__submit">Send sign-in link</button>
+    </form>
+    <p class="account-form__note">
+      Beta: links are generated in your browser (no server yet). Copy the link to reopen Casebook
+      signed in on this or another device. A real email provider can be wired later.
+    </p>
+  </section>
+
+  <section class="account-card account-card--link" id="account-link-sent" hidden>
+    <h2 class="account-card__title">Open your sign-in link</h2>
+    <p class="account-card__text">Use this URL to sign in as <strong id="account-email-display"></strong>:</p>
+    <div class="account-link-row">
+      <input type="text" class="account-form__input account-link-row__input" id="account-magic-url" readonly />
+      <button type="button" class="account-form__submit account-link-row__copy" id="account-copy-link">
+        Copy
+      </button>
+    </div>
+    <p class="account-form__note">
+      Bookmark it or paste into another browser. Tokens are tied to your email hash — not for secrets,
+      only for remembering progress.
+    </p>
+    <a href="{{ '/' | url }}" class="account-form__ghost">← Back to cases</a>
+  </section>
+
+  <section class="account-card account-card--signed-in" id="account-signed-in" hidden>
+    <div class="casey-avatar-frame account-card__avatar" data-casey-tier="junior">
+      <img src="{{ '/assets/casey/junior/celebrate.png' | url }}"
+           alt="Casey celebrating"
+           width="72" height="72"
+           class="casey-avatar-frame__img casey-breathing"
+           loading="lazy" />
+    </div>
+    <h2 class="account-card__title">Signed in</h2>
+    <p class="account-card__text">You're signed in as <strong id="account-signed-in-email"></strong>.</p>
+    <div class="account-stats" id="account-stats" data-casebook-progress-strip></div>
+    <div class="account-actions">
+      <a href="{{ '/' | url }}" class="account-form__submit account-form__submit--inline">Continue learning</a>
+      <button type="button" class="account-form__ghost" id="account-sign-out">Sign out</button>
+    </div>
+  </section>
+</div>
+
+<script src="{{ '/assets/js/casebook-progression.js' | url }}" defer></script>

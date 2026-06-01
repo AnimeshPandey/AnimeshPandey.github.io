@@ -1,0 +1,52 @@
+{# ── case-continue.njk — next case CTA + track progression ── #}
+{% set nav = slug | caseNav %}
+{% if nav and nav.next %}
+<section class="case-continue" id="case-continue"
+         data-case-slug="{{ slug }}"
+         data-next-slug="{{ nav.next.slug }}"
+         aria-labelledby="case-continue-heading">
+  <div class="case-continue__progress" data-casebook-progress-strip hidden>
+    <div class="case-continue__progress-label">
+      <span data-casebook-progress-label>Your path</span>
+    </div>
+    <div class="case-continue__progress-bar" role="progressbar"
+         aria-valuemin="0" aria-valuemax="{{ nav.liveTotal }}" aria-valuenow="0"
+         data-casebook-progress-bar>
+      <span class="case-continue__progress-fill" data-casebook-progress-fill style="width: 0%"></span>
+    </div>
+    <p class="case-continue__progress-meta" data-casebook-progress-meta></p>
+  </div>
+
+  <p class="case-continue__track-meta">
+    Case {{ nav.trackIndex }} of {{ nav.trackTotal }} in <strong>{{ nav.trackLabel }}</strong>
+    · {{ nav.liveIndex }} of {{ nav.liveTotal }} live
+  </p>
+
+  <h2 class="case-continue__heading" id="case-continue-heading">Keep going</h2>
+  <p class="case-continue__lead" data-case-continue-lead>
+    Finish this takeaway, then continue the track — Casey saved your spot locally.
+  </p>
+
+  <div class="case-continue__actions">
+    <a href="{{ nav.next.href | url }}"
+       class="case-continue__btn case-continue__btn--primary"
+       data-case-continue-next>
+      <span class="case-continue__btn-label">Continue to next case</span>
+      <span class="case-continue__btn-title">{{ nav.next.title }}</span>
+    </a>
+    {% if nav.prev %}
+    <a href="{{ nav.prev.href | url }}"
+       class="case-continue__btn case-continue__btn--ghost">
+      ← {{ nav.prev.title | truncate(42, true, '…') }}
+    </a>
+    {% endif %}
+    <a href="{{ '/' | url }}" class="case-continue__btn case-continue__btn--ghost">
+      Back to all cases
+    </a>
+  </div>
+
+  <p class="case-continue__signed-out">
+    <a href="{{ '/account/' | url }}">Sign in with email</a> to sync progress across devices (beta).
+  </p>
+</section>
+{% endif %}

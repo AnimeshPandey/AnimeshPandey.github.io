@@ -747,6 +747,8 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   border-radius: 50%;
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .casey-hub__avatar-wrap:focus-visible {

@@ -1,0 +1,336 @@
+/* casebook-progression.css — hub + case progression + account */
+
+.casebook-hub__hero-stage {
+  display: grid;
+  gap: 1rem;
+  margin-block-end: 0.5rem;
+}
+
+@media (min-width: 900px) {
+  .casebook-hub__hero-stage {
+    grid-template-columns: 1fr minmax(280px, 1.1fr);
+    align-items: start;
+    gap: 1.25rem 1.75rem;
+  }
+
+  .casebook-hub__hero-stage .casey-hub {
+    margin-bottom: 0;
+  }
+}
+
+.hub-progress {
+  margin-block: 0 1rem;
+  padding: 1rem 1.125rem;
+  border: 1px solid var(--casebook-border);
+  border-radius: 10px;
+  background: var(--casebook-surface);
+}
+
+.hub-progress__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.hub-progress__title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--casebook-ink);
+}
+
+.hub-progress__account-link {
+  font-size: 0.8rem;
+  color: var(--casebook-accent);
+  text-decoration: none;
+}
+
+.hub-progress__account-link:hover {
+  text-decoration: underline;
+}
+
+.hub-progress__bar {
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--casebook-ink) 10%, transparent);
+  overflow: hidden;
+}
+
+.hub-progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--casebook-accent),
+    color-mix(in srgb, var(--casebook-accent) 70%, #fff)
+  );
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hub-progress__meta {
+  margin: 0.5rem 0 0;
+  font-family: var(--mono, monospace);
+  font-size: 0.75rem;
+  color: var(--casebook-ink-muted);
+}
+
+.hub-progress__hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  color: var(--casebook-ink-2);
+}
+
+/* Case continue block */
+.case-continue {
+  margin-block: 2.5rem 1.5rem;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--casebook-border);
+  border-radius: 12px;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--casebook-accent) 10%, var(--casebook-surface)),
+    var(--casebook-surface)
+  );
+}
+
+.case-continue--completed {
+  border-color: color-mix(in srgb, var(--casebook-accent) 45%, var(--casebook-border));
+}
+
+.case-continue__track-meta {
+  font-family: var(--mono, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--casebook-ink-muted);
+  margin: 0 0 0.75rem;
+}
+
+.case-continue__heading {
+  font-size: 1.1rem;
+  margin: 0 0 0.35rem;
+}
+
+.case-continue__lead {
+  font-size: 0.9rem;
+  color: var(--casebook-ink-2);
+  margin: 0 0 1rem;
+  max-width: 52ch;
+}
+
+.case-continue__progress {
+  margin-bottom: 1rem;
+}
+
+.case-continue__progress-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--casebook-ink) 8%, transparent);
+  overflow: hidden;
+  margin-top: 0.35rem;
+}
+
+.case-continue__progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--casebook-accent);
+  transition: width 0.4s ease;
+}
+
+.case-continue__progress-meta {
+  font-size: 0.78rem;
+  color: var(--casebook-ink-muted);
+  margin: 0.35rem 0 0;
+}
+
+.case-continue__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.case-continue__btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  min-height: 44px;
+  border: 1px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.case-continue__btn--primary {
+  background: var(--casebook-accent);
+  color: #0a0a0a;
+  font-weight: 600;
+  width: 100%;
+  max-width: 420px;
+}
+
+.case-continue__btn--primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.case-continue__btn-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+.case-continue__btn-title {
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.case-continue__btn--ghost {
+  border-color: var(--casebook-border);
+  color: var(--casebook-ink-2);
+  background: transparent;
+}
+
+.case-continue__btn--ghost:hover {
+  border-color: var(--casebook-accent);
+  color: var(--casebook-ink);
+}
+
+.case-continue__signed-out {
+  margin: 1rem 0 0;
+  font-size: 0.8rem;
+  color: var(--casebook-ink-muted);
+}
+
+.case-continue__signed-out a {
+  color: var(--casebook-accent);
+}
+
+/* Account page */
+.casebook-account {
+  max-width: 520px;
+  margin: 0 auto;
+  padding-block: 2rem 3rem;
+}
+
+.casebook-page__title {
+  font-size: 1.75rem;
+  margin: 0 0 0.5rem;
+}
+
+.casebook-page__lead {
+  color: var(--casebook-ink-2);
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.account-card {
+  padding: 1.25rem;
+  border: 1px solid var(--casebook-border);
+  border-radius: 10px;
+  background: var(--casebook-surface);
+}
+
+.account-card + .account-card {
+  margin-top: 1rem;
+}
+
+.account-card__avatar {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 0.75rem;
+}
+
+.account-card--signed-in {
+  text-align: center;
+}
+
+.account-form__label {
+  display: block;
+  font-family: var(--mono, monospace);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.35rem;
+  color: var(--casebook-ink-muted);
+}
+
+.account-form__input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.75rem;
+  min-height: 44px;
+  border: 1px solid var(--casebook-border);
+  border-radius: 8px;
+  background: var(--casebook-bg);
+  color: var(--casebook-ink);
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.account-form__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.55rem 1.1rem;
+  background: var(--casebook-accent);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.account-form__submit--inline {
+  text-decoration: none;
+}
+
+.account-form__ghost {
+  background: none;
+  border: none;
+  color: var(--casebook-ink-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  text-decoration: underline;
+}
+
+.account-form__note {
+  font-size: 0.78rem;
+  color: var(--casebook-ink-muted);
+  line-height: 1.5;
+  margin: 0.75rem 0 0;
+}
+
+.account-link-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.account-link-row__input {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: 0;
+}
+
+.account-stats {
+  font-size: 0.9rem;
+  color: var(--casebook-ink-2);
+  margin: 0.75rem 0;
+}
+
+.account-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}

@@ -10,11 +10,20 @@
 <section class="casey-hub" aria-label="Casey, your Casebook guide" data-casey-hub
   {% if flagshipCase %}data-flagship-slug="{{ flagshipCase.slug }}"{% endif %}>
 
+  <div class="casey-hub__sparkles" aria-hidden="true" data-casey-hub-sparkles>
+    <span class="casey-sparkle casey-sparkle--1"></span>
+    <span class="casey-sparkle casey-sparkle--2"></span>
+    <span class="casey-sparkle casey-sparkle--3"></span>
+    <span class="casey-sparkle casey-sparkle--4"></span>
+    <span class="casey-sparkle casey-sparkle--5"></span>
+  </div>
+
   <div class="casey-hub__avatar-wrap"
        data-casey-hub-play
        tabindex="0"
        role="button"
        aria-label="Wave at Casey, your guide">
+    <span class="casey-hub__glow" aria-hidden="true"></span>
   {# One PNG in a fixed frame — no Lottie overlay (was causing double-face with pose PNGs) #}
     <div class="casey-avatar-frame casey-hub__avatar-frame" data-casey-tier="junior">
       <img class="casey-hub__img casey-avatar-frame__img"

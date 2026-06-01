@@ -52,6 +52,11 @@
       "mid": "Case complete. The takeaway is your shipping checklist — pair it with an article in the library.",
       "staff": "Takeaway logged. Measure in RUM what you validated in the demo; cross-check the library for post-mortems."
     },
+    "continue": {
+      "junior": "Nice — the next case in your track is one scroll away.",
+      "mid": "Takeaway done. Continue the track while the pattern is fresh.",
+      "staff": "Completion logged. Chain the next case or cross-check the library."
+    },
     "demoIdle": {
       "junior": "Still there? Tap Broken, then Fixed — feel the difference.",
       "mid": "Demo idle — toggle broken vs fixed and watch layout stability.",

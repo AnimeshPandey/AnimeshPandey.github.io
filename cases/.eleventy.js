@@ -10,6 +10,7 @@ const caseyLibrary = require('./src/_data/casey-library.json');
 const companionLines = require('./src/_data/companion-lines.json');
 const hubLiveCases = require('./src/_data/hub-live-cases.json');
 const mvpQuality = require('./src/_data/mvp-quality.json');
+const { liveCases, liveCaseCount, caseNav } = require('./lib/case-navigation');
 
 module.exports = function (eleventyConfig) {
   const nunjucksEnvironment = nunjucks.configure(
@@ -39,6 +40,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addGlobalData('companionLines', companionLines);
   eleventyConfig.addGlobalData('hubLiveCases', hubLiveCases);
   eleventyConfig.addGlobalData('mvpQuality', mvpQuality);
+  eleventyConfig.addGlobalData('liveCases', liveCases);
+  eleventyConfig.addGlobalData('liveCaseCount', liveCaseCount);
+
+  eleventyConfig.addFilter('caseNav', caseNav);
 
   /* ── Collections ── */
   eleventyConfig.addCollection('liveCases', () =>

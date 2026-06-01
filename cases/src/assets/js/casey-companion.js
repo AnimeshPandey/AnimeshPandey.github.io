@@ -516,6 +516,28 @@
     }
   }
 
+  function burstHubSparkles(hubRoot) {
+    if (!hubRoot) return;
+    var el = hubRoot.querySelector('[data-casey-hub-sparkles]');
+    if (!el || !shouldShowCaseyBehavior('rotate')) return;
+    el.classList.remove('is-active');
+    void el.offsetWidth;
+    el.classList.add('is-active');
+    setTimeout(function () {
+      el.classList.remove('is-active');
+    }, 1200);
+  }
+
+  function hubAvatarWiggle(wrap) {
+    if (!wrap || !shouldShowCaseyBehavior('rotate')) return;
+    wrap.classList.remove('casey-wiggle');
+    void wrap.offsetWidth;
+    wrap.classList.add('casey-wiggle');
+    setTimeout(function () {
+      wrap.classList.remove('casey-wiggle');
+    }, 480);
+  }
+
   /* ── Surface: case coach ── */
   function initCase(opts) {
     var caseyData = opts.caseyData;
@@ -647,6 +669,25 @@
         }, 2000);
       }
     }
+
+    var coachPeekTimer = null;
+    function startCoachPeek() {
+      if (coachPeekTimer) clearInterval(coachPeekTimer);
+      if (prm || intensityOff || !shouldShowCaseyBehavior('rotate')) return;
+      coachPeekTimer = setInterval(function () {
+        if (document.hidden || currentChapter === 'takeaway') return;
+        cards.forEach(function (card) {
+          card.classList.add('casey-coach--peek');
+          setTimeout(function () {
+            card.classList.remove('casey-coach--peek');
+          }, 520);
+        });
+        if (Math.random() < 0.35) {
+          setPose('nod', { force: true, preload: false });
+        }
+      }, 48000 + Math.random() * 12000);
+    }
+    startCoachPeek();
 
     if ('IntersectionObserver' in window) {
       var pendingChapter = null;
@@ -1002,6 +1043,7 @@
         }
         setHubBreathing(false);
         setImgPose(avatar, assetBase, assetExt, currentTier, pose, { preload: false });
+        if (pose === 'nod' && Math.random() < 0.35) burstHubSparkles(hubEl);
         hubIdleTimer = setTimeout(function () {
           setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
           setHubBreathing(true);
@@ -1009,6 +1051,11 @@
         }, hold);
       }
       hubIdleTimer = setTimeout(tick, 3500 + Math.random() * 2000);
+    }
+
+    function enableHubFloat() {
+      if (!hubPlayEl || !hubMotionAllowed()) return;
+      hubPlayEl.classList.add('casey-hub__avatar-wrap--float');
     }
 
     function playHubEntrance() {
@@ -1029,11 +1076,13 @@
           setTimeout(function () {
             setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
             startHubIdleLoop();
+            enableHubFloat();
           }, 650);
         }, 480);
       } else {
         setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { alt: alt });
         startHubIdleLoop();
+        enableHubFloat();
       }
     }
 
@@ -1044,6 +1093,8 @@
         if (filterActive || prm || getIntensity() === 'off') return;
         stopHubIdleLoop();
         setHubBreathing(false);
+        burstHubSparkles(hubEl);
+        hubAvatarWiggle(hubPlayEl);
         setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', { preload: false });
         var quip = lineAt('hub.clickHi', currentTier);
         if (quip && shouldShowCaseyBehavior('bubble')) setGreetingText(quip);
@@ -1277,6 +1328,11 @@
       if (lineEl && line) lineEl.textContent = line;
       if (avatar && d.count === 0) {
         setImgPose(avatar, assetBase, assetExt, tier, 'curious', { preload: false });
+      } else if (avatar && d.count > 0 && !prm) {
+        avatar.classList.add('casey-library--bounce');
+        setTimeout(function () {
+          avatar.classList.remove('casey-library--bounce');
+        }, 600);
       }
     });
 
