@@ -232,7 +232,38 @@ const { data } = useQuery({
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: fetch in useEffect — no abort vs AbortController</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ NO ABORT</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>useEffect(() =&gt; {
+  fetch(`/api/data?id=${id}`)
+    .then(r =&gt; r.json())
+    .then(data =&gt; setState(data));
+  // no cleanup — ghost update on unmount
+}, [id]);</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">No abort: stale response updates unmounted component</p>
+      </div>
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ ABORTCONTROLLER</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>useEffect(() =&gt; {
+  const ctrl = new AbortController();
+  fetch(`/api/data?id=${id}`, {
+    signal: ctrl.signal
+  })
+    .then(r =&gt; r.json())
+    .then(data =&gt; setState(data))
+    .catch(e =&gt; {
+      if (e.name !== 'AbortError') throw e;
+    });
+  return () =&gt; ctrl.abort();
+}, [id]);</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">AbortController: in-flight request cancelled on unmount</p>
+      </div>
+
+    </div>
   </div>
 </section>
 

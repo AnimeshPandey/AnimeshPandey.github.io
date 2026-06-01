@@ -76,10 +76,64 @@ ogImage: https://anmshpndy.com/brand/cases/fitts-law-touch-targets-og.png
 
 {# ── Chapter: Demo ── #}
 {# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The "Remove" link that deleted the wrong item</h2>
+  <div class="tone-junior">
+    <p>A mobile shopping cart had a small "Remove" link next to each item — 18px tall, rendered as a plain text link with 4px of vertical padding. The links were stacked 6px apart. In a week of production data, the support team saw a pattern: "I didn't mean to remove that item." Customers were accidentally tapping "Remove" when they were trying to tap the quantity selector or the item image above it.</p>
+    <p>On a 390px-wide iPhone screen held loosely while commuting, an 18px tap target that sits 6px from another interactive element is essentially a coin flip. Users were not making mistakes. Physics was making mistakes for them.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The developer who built the cart had sized the "Remove" link to match the design comp — which was a desktop mockup. On desktop, a mouse cursor can target a 16px element reliably. A fingertip contact patch is approximately 10mm wide, which at 163 DPI (standard iPhone) covers ~64 CSS pixels. An 18px tap target with 4px padding gives a 26px hit area — less than half a fingertip width. The visual design was correct for mouse; the CSS was incorrectly carried over to mobile without adaptation.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The impact was measurable: in the week before the fix, "Remove item" actions had a 22% follow-up "Add item back" rate — an industry proxy for accidental deletion. The expected accidental deletion rate for e-commerce carts is roughly 3–5%. The 22% figure represented hundreds of accidental cart clearings per day, some of which resulted in abandoned sessions rather than recovery. The support ticket volume was the visible tip; the conversion loss from cart-clearing was the unmeasured cost.</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="story-2">
+  <h2>44px targets, 8px gaps, and an accidental-delete rate that collapsed</h2>
+  <div class="tone-junior">
+    <p>The fix converted the "Remove" text link to a button with <code>min-height: 44px</code> and enough horizontal padding to make it comfortable. The trash icon inside stayed visually small — 16px — but the tappable area expanded to meet the 44px minimum. The gap between the Remove button and the quantity stepper above it was increased from 4px to 8px.</p>
+    <p>Accidental "Add item back" rate fell from 22% to 4% in the first week. No user noticed a visual change — the icon looked identical. Only the invisible hit area changed. Support tickets about accidental removals stopped entirely within two weeks.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The implementation used the padding-extension technique: the button's visual icon is centered inside a larger clickable box using <code>display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px</code>. The outer box is the tap target; the inner icon is the visual. The gap between adjacent interactive elements was enforced with a design token (<code>--touch-gap: 8px</code>) applied via <code>gap</code> on the flex row containing quantity controls and remove button. This gap is not just spacing — it's a Fitts's Law buffer that prevents tap distributions from overlapping the boundary between targets.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The fix was also a WCAG compliance correction. WCAG 2.5.5 (Target Size, AA) requires 44×44 CSS pixels for interactive controls. WCAG 2.5.8 (Target Size Minimum, AA, added in WCAG 2.2) requires that when targets are smaller than 44×44, they must have adequate spacing to prevent overlap of their tap areas. The cart had been violating both. The design system team added automated axe-core audits to CI that flag interactive elements with reported offsetHeight or offsetWidth below 44px — catching this class of regression in PRs before they reach production.</p>
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: 24px text link vs 44px minimum button</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ SMALL TARGET — 24px hit area</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; padding: 8px; border: 1px solid var(--casebook-border); border-radius: 4px;">
+          <span style="font-size: 12px; color: var(--casebook-ink-muted);">Running shoes</span>
+          <a href="#" style="font-size: 11px; color: #2563eb; text-decoration: underline; padding: 3px 4px; line-height: 1;" onclick="return false;">Remove</a>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; padding: 8px; border: 1px solid var(--casebook-border); border-radius: 4px;">
+          <span style="font-size: 12px; color: var(--casebook-ink-muted);">Socks (3-pack)</span>
+          <a href="#" style="font-size: 11px; color: #2563eb; text-decoration: underline; padding: 3px 4px; line-height: 1;" onclick="return false;">Remove</a>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">~24px hit area, 4px gap — frequent accidental taps</p>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ LARGE TARGET — 44px min hit area</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding: 8px; border: 1px solid var(--casebook-border); border-radius: 4px;">
+          <span style="font-size: 12px; color: var(--casebook-ink-muted);">Running shoes</span>
+          <button style="display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; background: none; border: 1px solid var(--casebook-border); border-radius: 6px; cursor: pointer; font-size: 15px;" title="Remove item">&#x1F5D1;</button>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding: 8px; border: 1px solid var(--casebook-border); border-radius: 4px;">
+          <span style="font-size: 12px; color: var(--casebook-ink-muted);">Socks (3-pack)</span>
+          <button style="display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; background: none; border: 1px solid var(--casebook-border); border-radius: 6px; cursor: pointer; font-size: 15px;" title="Remove item">&#x1F5D1;</button>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">44px hit area, 8px gap — precise, WCAG 2.5.5 compliant</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -103,6 +157,63 @@ ogImage: https://anmshpndy.com/brand/cases/fitts-law-touch-targets-og.png
       </div>
     </div>
   </section>
+</section>
+
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementing 44px minimum touch targets</h2>
+  <div class="tone-junior">
+    <p>The padding-extension technique: make the visible element smaller than the tap area by padding the container button rather than setting explicit width/height on the icon.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ❌ Visual size = hit area — too small */
+.icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ✅ 44px hit area, small visual icon */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.icon-btn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none; /* prevent SVG from swallowing clicks */
+}</code></pre>
+    <p>Key pitfall: setting <code>width: 44px</code> instead of <code>min-width: 44px</code>. Use <code>min-width</code> so the button grows if a label is added later without breaking the touch target floor.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Four hidden small-target patterns and their fixes in real codebases:</p>
+    <ol>
+      <li><strong>Checkbox without label association.</strong> The input is 16×16px and clicking the label text doesn't check the box. Fix: wrap both in <code>&lt;label&gt;</code> with <code>min-height: 44px; display: flex; align-items: center; gap: 8px</code>. The entire label row becomes the tap target.</li>
+      <li><strong>Icon-only toolbar buttons.</strong> SVG icons at 24px with no padding. Fix: apply the <code>.icon-btn</code> pattern above to every icon button at the design system token level — not per-component.</li>
+      <li><strong>Table row actions.</strong> Edit/Delete icons at 24px in dense data tables. Fix: switch to swipe-to-reveal on mobile, or increase row height to accommodate 44px buttons.</li>
+      <li><strong>Bottom nav on iOS/Android.</strong> Tabs touching the gesture zone. Fix: <code>padding-bottom: max(env(safe-area-inset-bottom), 8px)</code> on the bottom nav container.</li>
+    </ol>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Safe area fix for bottom navigation */
+.bottom-nav {
+  padding-bottom: max(env(safe-area-inset-bottom), 8px);
+}
+
+/* Checkbox label as full tap target */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>At design system scale, enforce the 44px floor as a component-level constraint, not a per-instance responsibility. The <code>IconButton</code> base component should have <code>min-width: 44px; min-height: 44px</code> in its base styles — impossible to use with a smaller hit area without explicitly overriding it. For automated enforcement, add an axe-core custom rule or a Playwright accessibility check that queries all <code>button</code>, <code>a</code>, and <code>input[type=checkbox]</code> elements and asserts <code>offsetHeight >= 44 && offsetWidth >= 44</code> in your E2E test suite. WCAG 2.5.5 (Target Size, AA) and 2.5.8 (Target Size Minimum, AA in WCAG 2.2) are both testable automatically — include them in your CI accessibility gate. Apple HIG specifies 44×44pt minimum; Material Design specifies 48×48dp (which maps to ~44px at standard density). Defaulting to 44px satisfies both platform HIGs and the WCAG spec simultaneously.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

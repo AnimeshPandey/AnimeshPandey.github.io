@@ -94,7 +94,7 @@ body {
   background: var(--casebook-surface);
   padding: 20px;
   display: flex; flex-direction: column; gap: 10px;
-  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  transition: border-color 0.2s, transform 0.15s ease, box-shadow 0.15s ease;
 }
 .case-card a { text-decoration: none; color: inherit; }
 .case-card__link {
@@ -107,6 +107,15 @@ body {
   border-color: var(--casebook-accent);
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(28,23,20,.10);
+}
+.case-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-card:hover {
+    transform: none;
+  }
 }
 .case-card__link:focus-visible { outline-offset: 4px; }
 .case-card--soon { opacity: 0.7; cursor: default; }
@@ -143,7 +152,7 @@ body {
 }
 .case-card__badge--soon { color: var(--casebook-ink-faint); border-style: dashed; }
 .case-card__badge--scheduled { color: var(--casebook-accent); border-style: dashed; }
-.case-card__badge--new { color: var(--casebook-accent); background: var(--casebook-surface-2); }
+/* .case-card__badge--new defined below in "New badge" section */
 .case-card__read { font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); }
 
 /* ── Case page scroll layout ── */
@@ -249,4 +258,87 @@ html.casebook--reduce-motion .casebook-progress { transition: none; }
 .whats-new-item__badges {
   grid-column: 1 / -1; grid-row: 2;
   display: flex; gap: 6px; flex-wrap: wrap;
+}
+
+/* === What's new changelog page === */
+.whats-new-header {
+  padding: 40px 0 24px;
+  border-bottom: 1px solid var(--casebook-border);
+  margin-bottom: 32px;
+}
+.whats-new-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+.whats-new-subtitle {
+  color: var(--casebook-ink-muted);
+  margin: 0;
+}
+.whats-new-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.whats-new-entry {
+  display: grid;
+  grid-template-columns: 120px auto 1fr;
+  gap: 12px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--casebook-border);
+  font-size: 0.9375rem;
+}
+.whats-new-entry__date {
+  color: var(--casebook-ink-faint);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+.whats-new-entry__badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.whats-new-entry__badge--case {
+  background: color-mix(in srgb, var(--casebook-accent) 15%, transparent);
+  color: var(--casebook-accent);
+}
+.whats-new-entry__badge--feature {
+  background: color-mix(in srgb, var(--casebook-ink) 10%, transparent);
+  color: var(--casebook-ink-muted);
+}
+.whats-new-entry__title {
+  color: var(--casebook-ink);
+}
+.whats-new-entry__title a {
+  color: var(--casebook-ink);
+  text-decoration: none;
+}
+.whats-new-entry__title a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 640px) {
+  .whats-new-entry {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+
+/* === New badge — hub card === */
+.case-card__badge--new {
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: 100px;
 }

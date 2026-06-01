@@ -79,10 +79,60 @@ ogImage: https://anmshpndy.com/brand/cases/gestalt-spacing-as-syntax-og.png
 
 {# ── Chapter: Demo ── #}
 {# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The label that floated between two fields</h2>
+  <div class="tone-junior">
+    <p>During a user test for a new sign-up form, the facilitator watched a participant pause at the password field for almost eight seconds. "Which label is for which?" the user muttered. The form had a CSS reset that applied <code>margin-bottom: 16px</code> to every element — every label, every input, every wrapper. Everything was evenly spaced. The "Password" label sat exactly halfway between the email input above it and the password input below it.</p>
+    <p>The user guessed correctly — but that pause happened on every form field. By the last field, three users in the test had given up. The form looked clean. The spacing felt balanced. But users couldn't parse it without consciously working at it.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The technical cause was a CSS reset pattern common in component libraries: applying a uniform spacing variable (<code>--space-4: 16px</code>) to all child elements of a form. This flattened the visual hierarchy completely. The label-to-field distance equaled the field-to-next-label distance. At the Gestalt level, the label had two equally probable "owners" — the field above it and the field below it — because proximity to both was identical. The parser in the human visual system resolved the ambiguity by falling through to serial reading, which is slower and more error-prone.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The form had passed a design review and a visual QA pass. No one caught it because designers and engineers reviewing the form knew which labels belonged to which fields — the ambiguity is invisible to people with full context. It only surfaces under test with users who don't know the form. This is a systematic gap: spacing problems that only manifest for uninitiated users won't appear in code review or in QA by people who built the form.</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="story-2">
+  <h2>The 10-minute fix that hit 98% label accuracy</h2>
+  <div class="tone-junior">
+    <p>The fix was two CSS changes. Label margin-bottom went from 16px to 4px — tight against its field. Input margin-bottom went from 0 to 24px — wide gap before the next label. Nothing else changed. No visual redesign. No new components. The form looked almost identical, but the spacing now told a story: "this label belongs to the thing directly below it."</p>
+    <p>Re-running the same user test, label-field association accuracy went from 70% to 98%. The eight-second pauses disappeared. Users moved through the form without stopping to orient themselves — the structure was pre-attentively obvious.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The implementation change also involved updating the design tokens. Instead of <code>--space-4</code> (16px) applied uniformly, the team introduced two new semantic tokens: <code>--space-in-group: 4px</code> (for label-to-field within a group) and <code>--space-between-groups: 24px</code> (for field-to-next-label between groups). The ratio of 4/24 = 0.17 is well below the 0.5 threshold where ambiguity begins. The token rename was intentional — it encoded the grouping purpose directly in the name, preventing future developers from accidentally collapsing the distinction.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The design system team added a Storybook story called "Form group spacing — blur test." It rendered a form with both patterns and provided instructions: "Squint until text is illegible. Can you still identify label/field groups?" The blur test became part of the design review checklist for any new form component. At scale, this kind of embedded linting in the design process is more reliable than post-hoc review — it makes the correct spacing the obvious default and the wrong spacing visibly wrong.</p>
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: label-to-field spacing ratio</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ EQUAL SPACING (8px everywhere)</p>
+        <div style="margin-bottom: 8px;">
+          <label style="display: block; font-size: 12px; color: var(--casebook-ink-muted); margin-bottom: 8px;">Email</label>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 4px; padding: 8px 10px; font-size: 12px; color: var(--casebook-ink-faint); margin-bottom: 8px;">you@example.com</div>
+          <label style="display: block; font-size: 12px; color: var(--casebook-ink-muted); margin-bottom: 8px;">Password</label>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 4px; padding: 8px 10px; font-size: 12px; color: var(--casebook-ink-faint);">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</div>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">"Password" floats equidistant — ambiguous ownership</p>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ RATIO SPACING (4px / 20px)</p>
+        <div>
+          <label style="display: block; font-size: 12px; color: var(--casebook-ink-muted); margin-bottom: 4px;">Email</label>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 4px; padding: 8px 10px; font-size: 12px; color: var(--casebook-ink-faint); margin-bottom: 20px;">you@example.com</div>
+          <label style="display: block; font-size: 12px; color: var(--casebook-ink-muted); margin-bottom: 4px;">Password</label>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 4px; padding: 8px 10px; font-size: 12px; color: var(--casebook-ink-faint);">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</div>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Label clearly anchored to field below it</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -106,6 +156,52 @@ ogImage: https://anmshpndy.com/brand/cases/gestalt-spacing-as-syntax-og.png
       </div>
     </div>
   </section>
+</section>
+
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>CSS spacing tokens that enforce grouping semantics</h2>
+  <div class="tone-junior">
+    <p>The core pattern: two CSS variables that make label-to-field spacing always less than field-to-next-label spacing. Apply them once in your form stylesheet and every form inherits correct proximity ratios automatically.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>:root {
+  --space-intra-group: 4px;   /* label → its input */
+  --space-inter-group: 24px;  /* input → next label */
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-intra-group);
+}
+
+.form-input {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--space-inter-group);
+}</code></pre>
+    <p>Key pitfall: applying a uniform margin-bottom from a CSS reset (e.g. <code>* { margin-bottom: 16px }</code>) collapses this ratio to 1:1 and makes labels equidistant from adjacent fields. Always override with form-specific spacing after any reset.</p>
+  </div>
+  <div class="tone-mid">
+    <p>For component-based systems (React, Vue, Svelte), enforce the ratio inside a <code>&lt;FormGroup&gt;</code> wrapper component rather than relying on consumers to use the right tokens. Three implementation notes:</p>
+    <ol>
+      <li><strong>Use gap, not margin, in flex/grid form layouts.</strong> <code>gap</code> on the container gives you consistent inter-item spacing without margin collapse surprises. Combine with a tight <code>margin-bottom</code> on labels.</li>
+      <li><strong>Horizontal axis matters too.</strong> Description text below a toggle should be indented (padding-left: 24px) to appear visually attached to its parent control — proximity works on both axes.</li>
+      <li><strong>The blur test is your QA check.</strong> Screenshot the form, apply a CSS blur filter in DevTools (<code>filter: blur(4px)</code> on the form), and verify groupings are still readable. If they're ambiguous blurred, they'll be slow to parse at full resolution.</li>
+    </ol>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* FormGroup component styles */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-inter-group); /* space BETWEEN groups */
+}
+
+.form-group__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-intra-group); /* label tight to input */
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>In a design system, spacing token names should encode grouping semantics — not just numeric values. A scale of <code>--space-1</code> through <code>--space-8</code> is a menu of sizes; <code>--space-intra-group</code> and <code>--space-inter-group</code> are a contract. When designers and developers use the same semantic name for the same intent, the ratio is preserved even when absolute values change (e.g. a density update that reduces all spacing by 20% preserves the ratio as long as both tokens scale together). Add a Storybook story with the blur-test instructions embedded as a comment in the story file — it becomes discoverable documentation. For lint tooling, a Stylelint rule that warns when <code>margin-bottom</code> is set to the same value on both <code>.form-label</code> and <code>.form-input</code> within the same rule block will catch the equal-spacing accident at authoring time.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

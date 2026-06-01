@@ -147,6 +147,53 @@ xhr.upload.addEventListener('progress', (e) =&gt; {
   </section>
 </section>
 
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementing honest progress</h2>
+  <div class="tone-junior">
+    <p>For file uploads, real progress events are built into the browser. Bind to <code>XMLHttpRequest.upload.onprogress</code> — it fires with actual bytes sent vs total bytes. The pattern: bind to a real event, not a timer.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const xhr = new XMLHttpRequest();
+xhr.upload.onprogress = (e) =&gt; {
+  if (e.lengthComputable) {
+    const pct = Math.round((e.loaded / e.total) * 100);
+    progressBar.style.width = pct + '%';
+    progressLabel.textContent = pct + '%';
+  }
+};
+xhr.open('POST', '/upload');
+xhr.send(formData);</code></pre>
+    <p>The key pitfall: <code>e.lengthComputable</code> is false when the server doesn't send a <code>Content-Length</code> header (common with chunked transfer encoding). Always check it before dividing — if it's false, fall back to an indeterminate animation.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Two patterns for response-side progress (when you care about the server processing the upload, not just the upload itself):</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// fetch + ReadableStream: response body progress
+const res = await fetch('/process', { method: 'POST', body: file });
+const reader = res.body.getReader();
+let received = 0;
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+  received += value.length;
+  // Update progress if total is known
+}
+
+// Server-Sent Events: multi-step server job progress
+const es = new EventSource('/job/' + jobId + '/progress');
+es.onmessage = (e) =&gt; {
+  const { stage, percent } = JSON.parse(e.data);
+  updateProgress(stage, percent); // named stages, not raw numbers
+};
+es.addEventListener('done', () =&gt; {
+  es.close();
+  showComplete();
+});</code></pre>
+    <p>The SSE pattern is correct for multi-step server jobs (video transcoding, report generation, batch imports) where upload is instant but processing takes 10–60 seconds. Each stage emits a server event with its name and percentage — the client maps stage names to user-facing copy rather than displaying raw percentages.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The production architecture for multi-step server progress via SSE: each processing stage on the server emits <code>data: {"stage": "transcoding", "percent": 45}</code> over the event stream. The client maintains a stage map — <code>{ transcoding: "Preparing your video", thumbnails: "Generating previews", indexing: "Almost done" }</code> — and displays stage names as milestones rather than raw percentages. This is trustworthy progress: users see "Preparing your video" for a real processing stage, not "47%" that could stall at any moment. Baymard Institute's checkout UX research identifies named milestone progress as significantly less anxiety-producing than percentage bars for operations where the total duration is variable. The design principle: name the stages, not the percentage — stages are honest because they correspond to real server events; percentages are only honest when they correspond to real byte ratios. Map stages to a percentage range (e.g., transcoding = 0–60%, thumbnails = 60–85%, indexing = 85–99%) for the visual bar, but surface stage names as the primary copy. Never let the bar reach 100% before the operation actually completes.</p>
+  </div>
+</section>
+
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}

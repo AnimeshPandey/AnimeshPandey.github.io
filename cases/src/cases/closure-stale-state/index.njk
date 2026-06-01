@@ -221,7 +221,35 @@ useEffect(() => {
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: setInterval in useEffect — stale closure vs correct deps</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ STALE CLOSURE</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>useEffect(() =&gt; {
+  const id = setInterval(() =&gt; {
+    console.log(count); // always 0
+  }, 1000);
+  return () =&gt; clearInterval(id);
+}, []); // empty deps — count frozen at 0</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Empty dep array: count is always 0 in the closure</p>
+      </div>
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ FUNCTIONAL UPDATE</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>useEffect(() =&gt; {
+  const id = setInterval(() =&gt; {
+    setCount(prev =&gt; {
+      console.log(prev); // always latest
+      return prev + 1;
+    });
+  }, 1000);
+  return () =&gt; clearInterval(id);
+}, []); // safe — no dep on count</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Functional update: closure always captures current value via prev</p>
+      </div>
+
+    </div>
   </div>
 </section>
 

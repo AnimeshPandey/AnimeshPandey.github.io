@@ -84,10 +84,69 @@ function CheckoutForm() {
 
 {# ── Chapter: Demo ── #}
 {# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The 15-field form that users abandoned before field 4</h2>
+  <div class="tone-junior">
+    <p>A B2B SaaS registration form had 15 fields: first name, last name, work email, company name, company size, industry, phone, job title, country, city, how did you hear about us, use case, number of team members, billing contact email, and a terms checkbox. Every field had been justified in a planning meeting. The form launched. Signups dropped 44% compared to the previous lighter form.</p>
+    <p>Session recordings showed the same pattern over and over: users would scroll the entire form before typing anything, pause, and then either start slowly or close the tab. The median field where users abandoned: field 4. They rarely even reached the middle of the form. The problem wasn't any individual field — it was the scroll to the bottom before starting.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The abandonment mechanism wasn't cognitive fatigue from filling fields — it was cognitive pre-commitment cost. Before entering a single character, users estimated the total effort of the form. A visible 15-field block signaled a high effort cost. Low-intent users — who had not yet decided to commit — weighed that cost and left. Miller's research on working memory capacity (7±2 items) is often cited as the cause, but the more direct mechanism here was the visual scope signal: users saw "15 fields of work" as a unit, not 15 individual simple tasks.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The form had a 23% overall completion rate but a 78% completion rate among users who reached field 6. The top-of-funnel loss was the entire problem. This is a common pattern in long-form data: the metric "form completion rate" averaged over all starts obscures that the form has two distinct populations — users who commit early and complete at high rates, and users who leave before starting. Chunking addresses the second population by reducing the perceived entry cost; it does almost nothing for the first population, who would have completed regardless.</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Three steps, same 15 fields, 26-point conversion lift</h2>
+  <div class="tone-junior">
+    <p>The same 15 fields were reorganized into three steps: "About you" (name, work email, job title — 3 fields), "About your company" (company name, size, industry, country, city — 5 fields), and "Getting started" (use case, team size, billing email, how did you hear, terms — 5 fields + checkbox). A progress bar showed "Step 1 of 3."</p>
+    <p>Signups recovered to 69% above the broken form — 26 percentage points higher than the 15-field single-page version. Users didn't type more slowly or make fewer errors. They just didn't abandon before starting. The entry to step 1 went up 61% because the first thing users saw was three fields, not fifteen.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Implementation changes: each step was a separate React component rendered conditionally on a <code>step</code> state variable. Validation ran on "Continue" click for each step, not on final submit. This meant card errors surfaced at step 3, not in a 15-field error summary at the end. Step navigation preserved field values in a shared form state object — stepping back showed previously entered data. The progress bar used "Step 2 of 3" copy rather than a percentage, matching research showing concrete step counts reduce anxiety better than abstract percentages.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Post-launch measurement split three metrics: step-1 start rate (proxy for perceived entry cost), per-step completion rate (identifies which step has UX problems), and overall completion rate. Step-1 start rate improved 61%, confirming the chunking hypothesis. Step-2 completion was 91% — consistent with the "completion inertia" pattern, where users who finish step 1 are high-intent and self-selecting. The data also identified that step 3 had a 12% drop-off on the billing email field — a follow-up iteration that removed that field in favor of defaulting to the work email already captured in step 1.</p>
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: 15 fields single-page vs 3-step chunked form</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ SINGLE PAGE — 15 FIELDS</p>
+        <div style="font-size: 11px; color: var(--casebook-ink-muted);">
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">First name</div>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">Last name</div>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">Work email</div>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">Company name</div>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">Company size</div>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px; opacity: 0.5;">Industry ...</div>
+          <div style="text-align: center; font-size: 10px; color: var(--casebook-ink-faint); padding: 4px 0;">&#x2193; 9 more fields below</div>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Scroll preview signals high effort — users leave before field 1</p>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ CHUNKED — STEP 1 OF 3</p>
+        <div style="display: flex; gap: 4px; margin-bottom: 12px;">
+          <div style="flex: 1; height: 4px; background: var(--casebook-accent); border-radius: 2px;"></div>
+          <div style="flex: 1; height: 4px; background: var(--casebook-border); border-radius: 2px;"></div>
+          <div style="flex: 1; height: 4px; background: var(--casebook-border); border-radius: 2px;"></div>
+        </div>
+        <p style="font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 8px;">Step 1 of 3 — About you</p>
+        <div style="font-size: 11px; color: var(--casebook-ink-muted);">
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">First name</div>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">Work email</div>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 10px;">Job title</div>
+        </div>
+        <button style="background: var(--casebook-accent); color: #fff; border: none; border-radius: 4px; padding: 7px 14px; font-size: 12px; cursor: pointer; width: 100%;">Continue &#x2192;</button>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">3 fields visible — low entry cost, high start rate</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -111,6 +170,69 @@ function CheckoutForm() {
       </div>
     </div>
   </section>
+</section>
+
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Building chunked multi-step forms</h2>
+  <div class="tone-junior">
+    <p>The minimal pattern: conditional rendering on a <code>step</code> state variable, with fieldset/legend for semantic grouping within each step.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>function MultiStepForm() {
+  const [step, setStep] = React.useState(1);
+
+  return (
+    &lt;form&gt;
+      &lt;p&gt;Step {step} of 3&lt;/p&gt;
+
+      {step === 1 &amp;&amp; (
+        &lt;fieldset&gt;
+          &lt;legend&gt;About you&lt;/legend&gt;
+          {/* name, email, job title */}
+        &lt;/fieldset&gt;
+      )}
+      {step === 2 &amp;&amp; (
+        &lt;fieldset&gt;
+          &lt;legend&gt;About your company&lt;/legend&gt;
+          {/* company fields */}
+        &lt;/fieldset&gt;
+      )}
+      {step === 3 &amp;&amp; (
+        &lt;fieldset&gt;
+          &lt;legend&gt;Getting started&lt;/legend&gt;
+          {/* use case, team size, terms */}
+        &lt;/fieldset&gt;
+      )}
+
+      &lt;button type="button" onClick={() =&gt; setStep(s =&gt; s + 1)}&gt;
+        {step &lt; 3 ? 'Continue' : 'Submit'}
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+    <p>Key pitfall: not validating before advancing. Always validate the current step's fields before calling <code>setStep(s => s + 1)</code>. Deferring to final submit means errors surface after the user has already left the relevant step — recovery is expensive.</p>
+  </div>
+  <div class="tone-mid">
+    <p>With React Hook Form, use a single <code>useForm</code> instance shared across steps. Trigger step-level validation with <code>trigger(fieldsInCurrentStep)</code> before advancing. Four implementation notes:</p>
+    <ol>
+      <li><strong>Fieldset + legend is semantic grouping.</strong> It provides accessible group labeling for screen readers — use it even if you override the default fieldset border with CSS.</li>
+      <li><strong>Persist state on back navigation.</strong> Store all fields in the shared <code>useForm</code> register — data is preserved when users navigate back to a previous step without re-entering values.</li>
+      <li><strong>Progress: "Step N of M" beats percentages.</strong> Concrete step counts signal a finite task; percentages feel abstract and often underestimate remaining work.</li>
+      <li><strong>Keep steps semantically coherent.</strong> Don't split a related group (address line 1 in step 2, city/state in step 3) — chunking should match the user's mental model of what belongs together.</li>
+    </ol>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const { register, trigger, formState: { errors } } = useForm();
+const STEP_FIELDS = {
+  1: ['firstName', 'email', 'jobTitle'],
+  2: ['company', 'companySize', 'industry'],
+  3: ['useCase', 'teamSize', 'terms'],
+};
+
+const advance = async () => {
+  const valid = await trigger(STEP_FIELDS[step]);
+  if (valid) setStep(s => s + 1);
+};</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>At design system scale, multi-step forms need a typed step schema: each step defines its fields, validation rules, and accessible legend. A <code>&lt;FormWizard steps={schema} /&gt;</code> component consumes the schema and handles step rendering, progress display, and per-step validation automatically. This prevents the common regression where a developer adds a field to a step array without adding its validation rules. For measurement, instrument three separate events: <code>form_step_started</code>, <code>form_step_completed</code>, and <code>form_abandoned</code> with a <code>step</code> property — this gives you per-step funnel data and pinpoints where users drop. Without per-step instrumentation, you can only see overall completion rate, which masks which step is the actual problem. Add a Storybook interaction test that steps through all steps and asserts the final submit fires correctly — this catches step-skip regressions that unit tests miss.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

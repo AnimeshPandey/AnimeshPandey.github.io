@@ -253,6 +253,9 @@ var LibraryFilters = (function () {
     // Sort items in DOM
     var grid = getEl(_cfg.gridId);
     if (grid) {
+      // Skeleton flash: briefly dim cards while filter is applied
+      grid.classList.add('hub-grid--filtering');
+
       var sortedItems = filtered.map(function (e) {
         return idxToItem[String(slugToIdx[e.slug])];
       }).filter(Boolean);
@@ -274,6 +277,9 @@ var LibraryFilters = (function () {
       // Apply pagination
       var visibleItems = sortedItems;
       showItems(visibleItems, _currentPage);
+
+      // Remove skeleton class after brief delay
+      setTimeout(function () { grid.classList.remove('hub-grid--filtering'); }, 150);
     }
 
     updateCount(filtered.length, _allEntries.length);

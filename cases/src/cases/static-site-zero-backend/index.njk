@@ -81,12 +81,65 @@ netlify deploy --dir=dist --prod</code></pre>
   </div>
 </section>
 
-{# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The server that went down for content that never changed</h2>
+  <div class="tone-junior">
+    <p>A developer's marketing site for a design agency ran on an Express server on a $20/month VPS. Five pages: Home, About, Work, Services, Contact. No user accounts. No database. The content changed maybe once a month when they won a new client.</p>
+    <p>One Tuesday, the site went down. Not because of traffic — a misconfigured nginx reverse proxy update broke the routing. Ten minutes of downtime during business hours, a panicked phone call, a manual SSH fix. The content itself was fine. The five HTML pages were exactly what they'd always been. The server had failed to serve files that hadn't changed in three weeks.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The technical cause was architectural: every page request initiated a server-side render cycle — Express received the request, loaded a Pug template, rendered HTML, and sent a response. None of this work was necessary. The output was identical for every visitor, every request, every day. The server added a 180ms round-trip, an nginx process that could misconfigure, a Node.js runtime that could crash, and an SSL certificate that needed renewal — for the privilege of serving five static files.</p>
+    <p>The nginx misconfiguration was the trigger, but the real bug was choosing a server-rendered architecture for content with zero dynamic requirements.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Systemic impact: every server-rendered content site is a liability surface that doesn't need to exist. The operational cost — patching OS, maintaining Node.js runtime versions, monitoring uptime, managing SSL renewal, handling configuration drift — is fixed overhead with no corresponding value when the content is static. In an agency context with dozens of client sites, this overhead multiplies per site. One misconfiguration event per year per site, at 10 minutes of downtime each, across 20 client sites, is 3+ hours of avoidable incidents annually. The architecture itself is the bug.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Five files on a CDN, zero servers to break</h2>
+  <div class="tone-junior">
+    <p>The team rebuilt the site in Eleventy over a weekend. Same design, same content, same five pages — now as plain HTML files with the CSS inlined. They deployed to Netlify. Cost: $0. The deploy was a <code>git push</code>: Netlify ran <code>npx @11ty/eleventy</code> and published the output folder to its CDN.</p>
+    <p>There was no server to go down. The nginx that had caused the outage no longer existed. SSL was managed by Netlify automatically. The contact form went to Netlify Forms — no backend needed. Rollback was clicking "Publish deploy" on a previous build in the Netlify dashboard.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The implementation change: Eleventy's build runs once at deploy time, not per-request. Templates compile to HTML files. Those files live on Netlify's CDN edge nodes globally. A request for <code>/about/</code> hits an edge PoP 15ms from the user, returns cached HTML with no compute. TTFB dropped from ~180ms (origin round-trip) to ~18ms (CDN edge). The "Cache-Control: public, max-age=31536000, immutable" header meant the file was cached indefinitely — until the next deploy invalidated it. No server to patch, no runtime to update, no uptime to monitor.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Measurement: compare deploy pipelines before and after. Before: SSH to VPS → git pull → pm2 restart → nginx reload → manual smoke test → 8 steps, 12 minutes, human required. After: git push → Netlify webhook → build (45 seconds) → atomic CDN deploy → automatic deploy preview URL → 4 automated steps, zero humans required for standard deploys. Rollback SLA: before, 20+ minutes (requires SSH, investigation, manual fix). After, 30 seconds (one click in the Netlify dashboard to promote any previous build). The architecture change made the deployment pipeline measurably safer, faster, and autonomous.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: request path for a marketing page</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ SERVER-RENDERED</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>Browser
+  → nginx (can misconfigure)
+  → Node/Express (can crash)
+  → template render
+  → HTML response
+~180ms TTFB, server required</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Every request pays runtime cost; server outage = site outage; content identical for every user</p>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ STATIC CDN</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>git push → Eleventy build
+  → HTML files → CDN PoPs
+
+Browser
+  → CDN edge (15ms away)
+  → cached HTML
+~18ms TTFB, no server</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Pre-built at deploy time; no runtime to fail; 10× faster TTFB; rollback in 30 seconds</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -110,6 +163,39 @@ netlify deploy --dir=dist --prod</code></pre>
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Choosing and building with static site generators</h2>
+  <div class="tone-junior">
+    <p>The three most common SSGs for frontend developers right now: <strong>Eleventy (11ty)</strong> — zero-config, works with any template language, outputs plain HTML; best for blogs, portfolios, docs. <strong>Astro</strong> — component islands model, supports React/Vue/Svelte components that are zero-JS by default; best for content sites that need some interactivity. <strong>Hugo</strong> — fastest build times (1,000+ pages per second), Go templates; best for large content libraries.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code># 11ty: simplest start
+npm init; npm i @11ty/eleventy
+echo "# Hello" &gt; src/index.md
+npx @11ty/eleventy --serve
+
+# Astro: for component islands
+npm create astro@latest
+# Astro ships zero JS by default</code></pre>
+  </div>
+  <div class="tone-mid">
+    <p>When static isn't enough — the honest decision matrix:</p>
+    <ul>
+      <li><strong>Auth / personalization</strong>: static can't render per-user content at the CDN layer. Use Astro SSR for specific routes, or Next.js with route-level rendering decisions.</li>
+      <li><strong>Real-time data</strong>: static + client-side fetch on load (e.g., stock prices, live scores). The shell is static; the data is dynamic via API call in the browser.</li>
+      <li><strong>Frequent content updates</strong> (&gt;10/day): Incremental Static Regeneration (ISR) in Next.js or Astro's on-demand revalidation — pages rebuild automatically when content changes, without a full site rebuild.</li>
+    </ul>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Next.js ISR: revalidate every 60 seconds
+export async function generateStaticParams() { ... }
+export const revalidate = 60; // seconds
+
+// Astro on-demand: rebuild this page when called
+export const prerender = false; // specific route only</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>The hybrid middle ground — Incremental Static Regeneration (ISR) and on-demand revalidation — lets you treat static delivery as the default while adding server capability only where proven necessary. The production pattern: deploy to Vercel/Netlify with edge functions for the dynamic subset of routes. Measure the split: if &lt;5% of routes need server rendering, ISR covers the remaining 95% at CDN speed. The key architectural decision is route-level, not site-level — most teams overbuild to full SSR when only their dashboard and user-profile routes need it. Profile before deciding: add <code>x-vercel-cache</code> or <code>CF-Cache-Status</code> logging to understand your actual cache hit rate by route. Routes with &lt;1% cache hits are SSR candidates; routes with &gt;90% hit rate are ISR/static candidates. Operate from data, not assumption.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

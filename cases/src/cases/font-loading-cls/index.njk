@@ -67,12 +67,93 @@ body {
   </div>
 </section>
 
-{# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The price that moved at the worst moment</h2>
+  <div class="tone-junior">
+    <p>It was Black Friday. The e-commerce team had just launched a product page with a gorgeous new brand font. Traffic was high. Then support tickets started coming in: "I clicked Add to Cart but got the wrong item." After an hour of investigation, they found it on video — the price and button loaded in system font first, then the brand font arrived a half-second later. Everything shifted down 40 pixels. Users who clicked "Add to Cart" during that shift hit "Add to Wishlist" instead. Real orders. Real confusion. CLS score: 0.35.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The technical cause: the brand font was loaded with <code>font-display: swap</code> — meaning the browser showed system font immediately, then swapped to the brand font when it finished downloading. The brand font had a taller x-height than Arial. When it swapped in, the price element grew by 18px, pushing the buttons below the fold momentarily. The Lighthouse CLS score of 0.35 was caused entirely by this single font swap event on the above-the-fold content block.</p>
+  </div>
+  <div class="tone-staff">
+    <p>In CrUX data, this page had a 65th-percentile CLS of 0.28 — "needs improvement" territory. Chrome 108+ CLS attribution (via <code>PerformanceObserver</code> with <code>sources</code> array) pinpointed the layout shift element as the price container with shift fraction 0.7. The shift was correlated with first-contentful-paint timing on 3G connections — users on slower connections experienced it on every visit.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Matching the fallback so the swap is invisible</h2>
+  <div class="tone-junior">
+    <p>The fix wasn't to remove the custom font — that would hurt brand identity. Instead, the team made the fallback font look identical to the brand font in terms of size. When the brand font swapped in, there was nothing to reflow because the dimensions were already the same. CLS dropped from 0.35 to 0.02. The support tickets stopped.</p>
+  </div>
+  <div class="tone-mid">
+    <p>They used the metric-matched fallback technique: a synthetic <code>@font-face</code> declaration for "BrandFont-Fallback" that loaded <code>local('Arial')</code> but applied <code>size-adjust</code>, <code>ascent-override</code>, and <code>descent-override</code> to match the brand font's exact metrics. Values were generated from <a href="https://screenspan.net/fallback" rel="noopener noreferrer">screenspan.net/fallback</a>. They also added <code>&lt;link rel="preload"&gt;</code> for the font file to cut the swap time from 800ms to under 200ms on 3G.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>@font-face {
+  font-family: 'BrandFont-Fallback';
+  src: local('Arial');
+  size-adjust: 104%;
+  ascent-override: 88%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+}
+
+body {
+  font-family: 'BrandFont', 'BrandFont-Fallback', sans-serif;
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Post-fix CrUX measurement showed 75th-percentile CLS at 0.04 — "good." They added font metric matching to the design system's font token spec: every new typeface must ship with a calibrated fallback <code>@font-face</code> block before going to production. Lighthouse CI gates on CLS &lt; 0.1. The Black Friday incident became the internal case study that justified the tooling investment.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: font loading with and without metric-matched fallback</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ FONT SWAP WITHOUT METRIC MATCH</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* @font-face — bare swap */
+@font-face {
+  font-family: 'BrandFont';
+  src: url('/fonts/brand.woff2');
+  font-display: swap;
+}
+
+body {
+  font-family: 'BrandFont', Arial, sans-serif;
+}
+
+/* Result: Arial renders at ~14px line-height,
+   BrandFont renders at ~18px — layout shifts
+   on swap, CLS = 0.35 */</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Different fallback metrics — text reflows on swap</p>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ METRIC-MATCHED FALLBACK</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Synthetic fallback matching BrandFont metrics */
+@font-face {
+  font-family: 'BrandFont-Fallback';
+  src: local('Arial');
+  size-adjust: 104%;
+  ascent-override: 88%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+}
+
+body {
+  font-family: 'BrandFont',
+               'BrandFont-Fallback',
+               sans-serif;
+}
+
+/* Result: fallback occupies same space as
+   BrandFont — swap is invisible, CLS = 0.02 */</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Matched metrics — swap is imperceptible</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -96,6 +177,56 @@ body {
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Eliminating font-induced CLS: the full toolkit</h2>
+  <div class="tone-junior">
+    <p>Step 1: preload the font. Step 2: match the fallback metrics. These two changes handle 90% of font CLS.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>&lt;!-- In &lt;head&gt;: preload critical font file --&gt;
+&lt;link rel="preload" href="/fonts/brand.woff2"
+      as="font" type="font/woff2" crossorigin&gt;
+
+/* In CSS: metric-matched fallback */
+@font-face {
+  font-family: 'Brand-Fallback';
+  src: local('Arial');
+  size-adjust: 104%;      /* from screenspan.net/fallback */
+  ascent-override: 88%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+}
+
+body {
+  font-family: 'BrandFont', 'Brand-Fallback', sans-serif;
+}</code></pre>
+    <p>Key pitfall: <code>crossorigin</code> is required on the preload even for same-origin fonts — without it, the browser downloads the font twice (once for preload, once for the @font-face rule).</p>
+  </div>
+  <div class="tone-mid">
+    <p><code>font-display</code> value tradeoffs — pick based on how critical the font is:</p>
+    <ul>
+      <li><strong>swap</strong> — show fallback immediately, swap when loaded. Causes FOUT + CLS unless you use metric-matched fallback</li>
+      <li><strong>fallback</strong> — 100ms block period (invisible text), then swap if loaded fast enough, else keep fallback. Best middle ground</li>
+      <li><strong>optional</strong> — 100ms block, then skip if not loaded. Zero CLS guaranteed. Font may never render on slow connections</li>
+      <li><strong>block</strong> — hide text until font loads. Never use for body text — invisible content harms LCP and UX</li>
+    </ul>
+    <p>For non-critical decorative fonts (logos, display headings), <code>font-display: optional</code> is the safest choice. For body text where the custom font must render, use <code>swap</code> + metric-matched fallback.</p>
+    <p>Tools: <a href="https://screenspan.net/fallback" rel="noopener noreferrer">screenspan.net/fallback</a> for Google Fonts values; <code>fontpie</code> CLI for self-hosted fonts. In Chrome DevTools, Rendering panel has "Emulate CSS media type" — switch to "prefers-reduced-data" to simulate font-blocked state.</p>
+  </div>
+  <div class="tone-staff">
+    <p>CLS attribution in Chrome 108+: use <code>PerformanceObserver</code> with the <code>sources</code> array to identify the exact element causing shift:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>new PerformanceObserver((list) =&gt; {
+  for (const entry of list.getEntries()) {
+    if (!entry.hadRecentInput) {
+      for (const source of entry.sources) {
+        console.log('CLS source:', source.node, 'shift:', entry.value);
+      }
+    }
+  }
+}).observe({ type: 'layout-shift', buffered: true });</code></pre>
+    <p>At design system scale: encode metric-override values as design tokens. Ship a <code>fontpie</code>-generated fallback <code>@font-face</code> block alongside every typeface token. Gate font merges on a Lighthouse CI check with <code>--budget-path</code> enforcing CLS &lt; 0.1. In Next.js 13+, <code>next/font</code> generates metric-matched fallbacks automatically — it is the zero-config solution for Next.js apps. For non-Next apps, the manual approach above applies.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

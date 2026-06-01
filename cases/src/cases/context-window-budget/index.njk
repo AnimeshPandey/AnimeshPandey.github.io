@@ -95,12 +95,67 @@ function ProductList({ products }) {
   </div>
 </section>
 
-{# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>10,000 lines for a 5-line bug</h2>
+  <div class="tone-junior">
+    <p>Marcus had a bug: a React component was crashing on undefined data. He copied his entire 10,000-line codebase — every component, every utility, every config file — pasted it into a single AI prompt, and asked "what's wrong?" The model gave a generic answer about null checks. It wasn't wrong, exactly, but it wasn't specific to his component either. He tried adding more context. Still generic. The bug shipped to staging.</p>
+    <p>A colleague looked over his shoulder, selected the 15 lines of the broken function, the error message, and the hook that called it — and pasted just that. The model identified the exact issue (missing default on a destructured prop) in one sentence. Same model, three minutes later.</p>
+  </div>
+  <div class="tone-mid">
+    <p>What went wrong technically: the model's 10,000-line paste used most of the context window before the actual question even started. The relevant function was on line 4,847 — roughly in the middle of the context. The "lost in the middle" effect (Liu et al., 2023) shows that retrieval accuracy for facts placed in the middle of long contexts drops significantly compared to facts placed at the start or end. The bug was there — but positionally disadvantaged. The model's attention was spread across thousands of unrelated lines.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Systemic impact: in a team of 10, if every developer is habitually pasting full files into AI sessions, you are burning collective context budget on noise at scale. More practically: large context pastes push the actual task content toward the middle of the window, reduce chain-of-thought headroom, and increase latency (TTFT scales with input token count). The result is systematically worse answers that take longer to arrive — a compounding tax on every AI-assisted debugging session.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Surgical context, exact answer</h2>
+  <div class="tone-junior">
+    <p>After the staging incident, Marcus changed his approach. For the same class of bug, he now pastes: the exact error message and stack trace, the specific function that throws, the TypeScript types it depends on, and one example of how it's called. That's usually 15–30 lines and a type definition. The answers are specific, actionable, and correct. Response time dropped from 8 seconds to under 2.</p>
+    <p>The rule he tells his team: "If you can't explain why every line you're pasting is necessary to answer the question, remove it."</p>
+  </div>
+  <div class="tone-mid">
+    <p>The curated context for his bug report looked like this: error message (3 lines), the crashing component function (12 lines), the TypeScript interface for its props (6 lines), the one hook call that feeds it (4 lines), and the question. Total: ~180 tokens vs ~7,800 tokens for the full file dump. The model answered correctly on the first attempt. The delta wasn't model capability — it was signal clarity. Relevant information at the start of a short context outperforms the same information buried in the middle of a large one, every time.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Measurement angle: instrument your AI-assisted workflows with token counts (use <code>tiktoken</code> or the model API's usage response field). Track average input tokens per session and answer quality (proxied by "accepted first suggestion" rate). Teams that audit context discipline typically find a 5–10× difference in average input tokens between high-signal and low-signal prompters, with no corresponding quality improvement for larger inputs. Budget context as a first-class metric alongside latency and cost.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: prompting for a React bug</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ FULL FILE DUMP</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// [10,000 lines of codebase]
+// imports, configs, helpers,
+// unrelated components...
+// ... line 4847:
+function ProductList({ products }) {
+  return products.map(p =&gt; ...);
+}</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">~7,800 tokens — relevant function buried in middle; generic, non-specific answer</p>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ FOCUSED SNIPPET</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Error: Cannot read properties of
+// undefined (reading 'map')
+// Stack: ProductList.tsx:47
+
+function ProductList({ products }) {
+  return products.map(p =&gt; ...);
+}
+// Props type: { products: Product[] }
+// Caller: &lt;ProductList {...useProducts()}/&gt;</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">~180 tokens — error + function + types + caller; exact diagnosis on first attempt</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -124,6 +179,37 @@ function ProductList({ products }) {
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Counting tokens and chunking context programmatically</h2>
+  <div class="tone-junior">
+    <p>To count tokens before you send a prompt, use the <code>tiktoken</code> library (for OpenAI-family models) or the <code>anthropic.messages.count_tokens</code> API method. The key pitfall: whitespace and comments cost tokens too — stripping them from code snippets before pasting can reduce token count by 15–30% with no loss of meaning for the model.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Count tokens before sending (Node.js, tiktoken)
+import { encoding_for_model } from 'tiktoken';
+const enc = encoding_for_model('gpt-4o');
+const tokens = enc.encode(myPromptString).length;
+console.log(`Token count: ${tokens}`);</code></pre>
+  </div>
+  <div class="tone-mid">
+    <p>Three chunking strategies for larger codebases in AI workflows:</p>
+    <ul>
+      <li><strong>File-per-turn</strong> — send one file per message in a multi-turn conversation. The model builds understanding incrementally without window saturation.</li>
+      <li><strong>Semantic relevance chunking</strong> — embed all files, cosine-search against the task description, send only the top-N chunks. Works well for RAG-style code assistants.</li>
+      <li><strong>API surface only</strong> — for dependencies, send only exported function signatures and their JSDoc — not the full implementation. The model needs the contract, not the code.</li>
+    </ul>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Tool call pattern: incremental context in agentic loop
+const tools = [{
+  name: 'read_file',
+  description: 'Read a file by path. Call once per file needed.',
+  // Model requests only what it needs, on demand
+}];
+// Instead of: stuffing all files upfront</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>At scale, context assembly should be a pipeline stage, not a manual step. The production pattern: (1) embed all source files at build time, (2) on each task, semantic-search the index for relevant chunks, (3) re-rank with a cross-encoder or second LLM pass, (4) trim to a hard token budget (e.g. 8k for code context, reserving 4k for reasoning and output). Instrument <code>usage.input_tokens</code> from every API response to track actual spend vs budget. Track "accepted first suggestion" rate as a proxy for context quality — it should improve as context discipline improves. Tooling: LangSmith, Braintrust, or custom logging to a time-series store for per-session token metrics.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
