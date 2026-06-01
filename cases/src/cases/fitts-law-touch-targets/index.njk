@@ -1,0 +1,117 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Fitts's Law and Tap Target Sizing"
+description: "Why small touch targets cause errors and frustration — and how the 44px rule maps directly to Fitts's Law physics."
+slug: fitts-law-touch-targets
+track: accessibility
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-06-01T00:00:00Z"
+principle: Fitts's Law
+schemaType: Article
+relatedCases:
+  - slug: cognitive-load-error-recovery
+    title: Cognitive Load and Error Recovery UX
+  - slug: gestalt-spacing-as-syntax
+    title: "Gestalt: Spacing Is Syntax"
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The settings toggle that changed the wrong thing</h2>
+  <div class="tone-junior">
+    <p>A mobile settings screen had 12 toggle switches, each 20×20px, stacked 6px apart. Users were accidentally toggling the wrong settings. Support tickets poured in: "I turned off notifications but something else got turned off." The developer increased the visual toggle size. But the invisible hit area stayed 20×20px. The problem didn't go away.</p>
+    <p>The hit area is what Fitts's Law cares about — not the visual size of the element. A 44px minimum hit area means users can tap anywhere in a 44-pixel square and register a hit. A 20px visual element with a 20px hit area means every tap needs to be precise. On a moving phone, in a pocket, with a gloved hand — that precision fails constantly.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Fitts's Law quantifies pointing time: MT = a + b·log₂(1 + D/W), where D is distance to the target and W is target width. Doubling target size (W) reduces acquisition time by roughly 30% for distant targets. The 44px minimum isn't aesthetic preference — it's the point where most users' fingertip contact areas produce acceptable error rates.</p>
+  </div>
+  <div class="tone-staff">
+    <p>WCAG 2.5.5 (Success Criterion, Level AA) mandates 44×44 CSS pixels for all interactive controls. WCAG 2.5.8 (Level AA, added in WCAG 2.2) addresses the additional constraint: targets need adequate spacing between them. Two adjacent 44px targets with 0px gap effectively reduce actionable area — the tap distribution overlaps the boundary.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Hit area vs visual size</h2>
+  <div class="tone-junior">
+    <p>The key insight: visual size and interactive hit area are separate things in CSS. You can show a 16×16px icon while giving it a 44×44px tap target by padding the containing element:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ❌ Small hit area — same as visual size */
+.icon-btn {
+  width: 20px;
+  height: 20px;
+}
+
+/* ✅ 44px hit area, 20px visual icon */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0; /* hit area is the box, icon inside is visually small */
+}</code></pre>
+    <p>The <code>min-width</code> / <code>min-height</code> approach is safer than <code>width</code> / <code>height</code> — it lets the button grow if the text is longer while maintaining a minimum tap target.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Four patterns where small touch targets hide in real codebases:</p>
+    <ol>
+      <li><strong>Checkbox/radio without label association</strong>: the input is 16×16px and the label isn't clickable. Fix: <code>&lt;label&gt;</code> wrapping both input and text with <code>min-height: 44px; display: flex; align-items: center;</code>.</li>
+      <li><strong>Icon buttons in toolbars</strong>: 16px or 24px SVG icons with no padding. Fix: <code>platform-icon-btn</code> pattern with <code>min-width: 44px; min-height: 44px</code>.</li>
+      <li><strong>Inline links in dense text</strong>: unavoidably small hit areas when links are mid-sentence. Fix: increase line-height to give vertical tap room; avoid clustering multiple links per line on mobile.</li>
+      <li><strong>Table row actions</strong>: edit/delete icon buttons at 24px. Fix: same padding approach, or switch to swipe-to-reveal actions on mobile.</li>
+    </ol>
+  </div>
+  <div class="tone-staff">
+    <p>The OS gesture zone is an underappreciated Fitts's Law violation. On iOS, the bottom ~34px is reserved for home indicator. On Android, the gesture navigation area at the bottom varies by device. Bottom navigation bars that extend to the edge of the screen without <code>env(safe-area-inset-bottom)</code> padding effectively make the bottom tab target unreachable under normal thumb movement:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>.bottom-nav {
+  padding-bottom: max(env(safe-area-inset-bottom), 8px);
+}</code></pre>
+    <p>This is especially critical for the first and last tab in a bottom nav — they're both at max distance from the ergonomic thumb zone on a large phone and competing with OS gestures.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: small vs large touch targets</h2>
+  <div class="tone-junior"><p>Both modes show the same settings screen. The "Small" mode uses 20×20px hit areas. The "Large" mode uses 44×44px hit areas. Try to accurately tap the third toggle from the top in both modes — notice how much more careful you have to be with the small targets.</p></div>
+  <div class="tone-mid"><p>The demo measures your error rate (wrong toggle activated) across 5 attempts per mode. Small targets typically produce 20–30% error rates. 44px targets drop below 2%. Identical visual design, radically different tap accuracy.</p></div>
+  <div class="tone-staff"><p>Check the spacing between targets in both modes. The small mode clusters items at 6px apart; even if each target were enlarged, the gap would create a boundary conflict. The large mode uses 8px between 44px targets — safely separated without requiring surgical precision.</p></div>
+
+  <section class="case-demo" aria-label="Try it: small vs large touch targets" data-required="true" data-demo-type="toggle" data-demo-slug="fitts-law-touch-targets">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Small — 20px hit area</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Large — 44px hit area</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Large — 44px hit area</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Visual size and tap hit area are different things. Use <code>min-width: 44px; min-height: 44px</code> on interactive elements — the icon or text inside can be smaller visually.</div>
+        <div class="tone-mid">Four hidden small-target patterns: unlabeled checkboxes, icon-only toolbar buttons, inline text links, and table row action icons. All fixable with the same padding/min-size approach.</div>
+        <div class="tone-staff">Bottom navigation bars must account for OS gesture zones. Use <code>env(safe-area-inset-bottom)</code> to push content above the gesture area — otherwise bottom nav items compete with the OS swipe gesture.</div>
+      </li>
+      <li>
+        <div class="tone-junior">The 44px minimum is WCAG 2.5.5 (AA). Spacing between targets also matters — WCAG 2.5.8 requires targets to not overlap each other's touch area.</div>
+        <div class="tone-mid">Fitts's Law: MT = a + b·log₂(1 + D/W). Bigger targets (W) reduce movement time logarithmically. For touch UIs where thumb travel is short, W is the dominant variable — target size matters more than position.</div>
+        <div class="tone-staff">When targets must be small (inline links, dense data tables), reduce the adjacent target count and increase the line-height to compensate with vertical space. There's no way to fully comply with Fitts's Law for mid-sentence links — keep them sparse.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,132 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Cognitive Load and Error Recovery UX"
+description: "Why error summaries at the top of forms are cruel — and how inline errors with actionable copy reduce recovery time by 60%."
+slug: cognitive-load-error-recovery
+track: psychology-perception
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-06-01T00:00:00Z"
+principle: Cognitive load
+schemaType: Article
+relatedCases:
+  - slug: miller-chunking-forms
+    title: "Miller's Rule: Chunking Long Forms"
+  - slug: gestalt-spacing-as-syntax
+    title: "Gestalt: Spacing Is Syntax"
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Four errors at the top, zero idea where to fix them</h2>
+  <div class="tone-junior">
+    <p>A checkout form showed all validation errors in a red summary box at the top of the page on submit. The box listed: "Email is invalid. Phone number is required. Card number is incorrect format. Billing address required." The user who submitted the form had just filled in 12 fields. Their working memory was empty — everything they'd typed was now "saved" in the form.</p>
+    <p>Reading the error box meant re-loading 4 new facts into working memory, then scrolling down to find each of the 4 fields, then reinterpreting what they'd entered, then fixing each one. Support called it "form rage." Switching to inline errors — red text appearing immediately below the offending field — cut form-related support tickets by 60%.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Cognitive Load Theory (John Sweller, 1988) distinguishes three types of load: intrinsic (the task itself — filling in the form), extraneous (caused by poor UI design — finding and interpreting errors), and germane (learning and understanding). Error messages are extraneous load — they redirect working memory from the goal to debugging the UI. Inline errors reduce extraneous load by presenting the error adjacent to the cause.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The two distinct sub-problems in error recovery: <strong>discoverability</strong> (user notices an error exists) and <strong>actionability</strong> (user knows how to fix it). A red border fails discoverability on mobile (color alone is insufficient per WCAG 1.4.1). "Invalid email" fails actionability — it describes the problem but doesn't prescribe the fix. "Enter a valid email like name@example.com" solves both.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The inline error pattern</h2>
+  <div class="tone-junior">
+    <p>The pattern: validate on blur (when the user leaves a field), not on submit and not on every keystroke. Validating on submit is too late — the user has lost context. Validating on keystroke is too aggressive — it marks fields invalid before the user has had a chance to finish typing.</p>
+{% raw %}<pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>function EmailField() {
+  const [error, setError] = useState('');
+
+  const validate = (value) => {
+    if (!value) return 'Email is required';
+    if (!value.includes('@')) return 'Enter a valid email like name@example.com';
+    return '';
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;label htmlFor="email"&gt;Email&lt;/label&gt;
+      &lt;input
+        id="email"
+        type="email"
+        onBlur={e => setError(validate(e.target.value))}
+        aria-invalid={!!error}
+        aria-describedby={error ? 'email-error' : undefined}
+      /&gt;
+      {error &amp;&amp; (
+        &lt;p id="email-error" role="alert" className="field-error"&gt;
+          {error}
+        &lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>{% endraw %}
+    <p>The <code>aria-invalid</code> and <code>aria-describedby</code> attributes link the error to the field for screen readers — visual proximity isn't enough for non-visual users.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Actionable error copy follows a simple pattern: describe what's wrong + provide an example of what's right.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Non-actionable errors — describe the violation, not the fix
+'Invalid email'
+'Phone number format incorrect'
+'This field is required'
+
+// ✅ Actionable errors — describe + prescribe
+'Enter a valid email like name@example.com'
+'Enter a 10-digit phone number like 9876543210'
+'Your name is required to complete your order'
+
+// Pattern: [what to do] + [example/reason]</code></pre>
+    <p>The reason/example component is the key difference — users know what they did wrong (the form rejected their input) but need to know exactly what "correct" looks like.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The API contract matters for error recovery quality. A 422 response with <code>{ field: 'email', code: 'ALREADY_EXISTS', message: 'An account with this email already exists. Try signing in instead.' }</code> enables a precise, actionable inline error. A generic 500 with no field mapping forces a top-level "Something went wrong" — the API design failure pays its cost in UX.</p>
+    <p>When you must show a top-level error (generic server failure), anchor focus to the error and include a recovery path: "We couldn't save your changes. <a href='#retry'>Try again</a>, or <a href='/contact'>contact support</a> if this continues." A top-level error with no recovery path is a dead end.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: summary errors vs inline errors</h2>
+  <div class="tone-junior"><p>Fill out both forms incompletely and hit submit. The "Summary" mode shows all errors at the top in a red box. The "Inline" mode shows errors directly below the offending field. Notice how much easier it is to find and fix errors in the inline version.</p></div>
+  <div class="tone-mid"><p>The demo measures time-to-successful-resubmit from the first failed submit attempt. Inline errors are typically 55–70% faster on recovery — users don't need to context-switch between the error list and the fields.</p></div>
+  <div class="tone-staff"><p>Pay attention to the error copy in both modes. The summary mode uses short labels ("Invalid email"). The inline mode uses actionable copy with examples. Even if both were inline, the actionable copy would be faster — discoverability and actionability are separate dimensions.</p></div>
+
+  <section class="case-demo" aria-label="Try it: summary vs inline form errors" data-required="true" data-demo-type="toggle" data-demo-slug="cognitive-load-error-recovery">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Summary — errors at top</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Inline — errors on blur</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Inline — errors on blur</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Validate on blur, not on submit and not on every keystroke. Inline errors that appear when you leave a field are the least disruptive and easiest to act on.</div>
+        <div class="tone-mid">Actionable error copy: describe what to do + provide an example. "Enter a valid email like name@example.com" solves both discoverability and actionability. "Invalid email" solves neither.</div>
+        <div class="tone-staff">Link the error to the field with aria-invalid and aria-describedby — visual proximity works for sighted users but not for screen reader users. Both attributes are required for accessible error recovery.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Error messages that don't tell you how to fix the problem just add frustration on top of frustration. Every error message should answer "what should I type instead?"</div>
+        <div class="tone-mid">API error contracts matter. A 422 with field + code + actionable message enables precise inline errors. A generic 500 forces a top-level "Something went wrong" — the UX cost is paid by the user but the root cause is in the API design.</div>
+        <div class="tone-staff">Error recovery has two sub-problems: discoverability (user notices an error) and actionability (user knows how to fix it). Inline placement solves discoverability; actionable copy solves actionability. Both are required for fast recovery.</div>
+      </li>
+    </ul>
+  </div>
+</section>

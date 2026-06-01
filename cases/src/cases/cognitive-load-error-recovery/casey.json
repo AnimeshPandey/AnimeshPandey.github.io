@@ -1,0 +1,36 @@
+{
+  "slug": "cognitive-load-error-recovery",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "When a form fails validation, the user's working memory is already full — they just filled out 8 fields and hit submit. Showing a generic 'Something went wrong' at the top forces them to re-parse everything. Inline errors next to the specific field reduce that reload to a single piece of information.",
+      "mid": "Cognitive Load Theory (Sweller, 1988) distinguishes intrinsic load (the task itself), extraneous load (bad UI design), and germane load (learning). Error messages add extraneous load — the user's attention and working memory are redirected from their goal to debugging your UI. Inline, specific errors are the primary way to reduce extraneous load in form flows.",
+      "staff": "The schema/error mapping pattern: every API error response should map to a specific field or a specific, actionable message. A 422 with `{ field: 'email', code: 'ALREADY_EXISTS' }` enables a precise inline error. A generic 500 with no field mapping forces a summary error — this is an API design failure, not a UI failure, but the UX cost is paid by the user."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Submit the broken form with errors. Notice the error summary at the top — you have to read 4 error messages, then scroll down to find each field. Now try the fixed form. Errors appear immediately next to the offending field with a clear fix.",
+      "mid": "The demo logs your time-to-resubmit for both forms. The inline error form is typically 60–70% faster on resubmit, because users don't have to re-parse and re-locate — they can fix and move on.",
+      "staff": "Error recovery has two sub-problems: discoverability (user notices the error) and actionability (user knows how to fix it). Inline errors with specific, actionable copy solve both. 'Invalid email' solves neither — 'Enter a valid email like name@example.com' solves both."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I shipped a contact form that showed all validation errors in a red box at the top of the page. Support tickets for 'form doesn't work' increased 5x on mobile — users were submitting, seeing the error box scroll out of view, and thinking the page had broken. Inline errors eliminated all those tickets.",
+      "mid": "The pattern I see most: `catch (err) { setError('Something went wrong. Please try again.') }`. This is the worst error message possible. Always map errors to specific, actionable copy before they reach the UI. Even 'We couldn't save your changes — please check your connection and try again' is massively better.",
+      "staff": "Error boundaries in React are a different problem than form validation errors. Error boundaries catch rendering exceptions — they're a last resort for catastrophic failures. Form validation errors are expected flow states and should be part of the component's state machine, not caught by an error boundary."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about cognitive load during error recovery — why error summaries at the top of forms make things worse, and why inline errors fix them.",
+        "mid": "We're covering Cognitive Load Theory, extraneous vs intrinsic load in form flows, inline vs summary error patterns, and actionable error copy.",
+        "staff": "We're covering Sweller 1988, the schema/error mapping API contract, the two sub-problems of error recovery (discoverability and actionability), and React error boundary scope."
+      }
+    ]
+  }
+}

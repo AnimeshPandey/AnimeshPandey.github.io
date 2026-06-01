@@ -1,0 +1,36 @@
+{
+  "slug": "miller-chunking-forms",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A checkout form with 14 fields on one screen feels overwhelming even if you'd fill them all out anyway. The same 14 fields split across 3 steps — Name/Contact, Shipping, Payment — feel manageable. The work is identical; the perception is completely different.",
+      "mid": "Miller's 1956 paper established ~7±2 items as the working memory limit. For forms, the relevant chunk is fields visible simultaneously. Showing more than 5–7 fields at once regularly degrades completion rates, even controlling for total field count.",
+      "staff": "Miller's 'magical number' is often oversimplified — modern research (Cowan, 2001) suggests the actual limit is closer to 4 items in working memory, not 7. The 7±2 figure survives as a useful heuristic for UI design, but the underlying mechanism is short-term memory binding, not just counting."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The single-page form shows all fields at once. The chunked version shows 4–5 fields per step. Fill out both and notice the completion anxiety difference — the long form feels like it will never end.",
+      "mid": "Watch your error rate between the two versions. Chunked forms typically show 30–40% fewer validation errors because users can focus cognitive resources on a smaller set of fields at a time.",
+      "staff": "Progress indicators in multi-step forms reduce abandonment by anchoring the user's position in the task. The key: show progress as steps completed, not as a percentage — '2 of 3 steps' is better than '67%' because it sets a concrete, low ceiling."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I once added a phone number field to an existing 8-field sign-up form. Completion dropped 12%. The form was already above the cognitive threshold; one more field was the tipping point. Chunking the form into 2 steps recovered the completion rate and added the phone number field.",
+      "mid": "The pattern I see most: a 'simple' onboarding form that product expanded from 4 to 11 fields over 18 months. Split it into 3 steps — credentials (2 fields), profile (4 fields), preferences (5 fields). Completion increased 28% with the same total field count.",
+      "staff": "Smart defaults and pre-fill are more powerful than chunking for high-intent users (B2B signup). For low-intent or discovery flows (consumer apps), chunking is the primary tool. The two strategies compound: chunked forms with smart defaults show the highest completion rates."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about Miller's Rule — why long forms feel hard even when they're not, and how chunking makes them easy.",
+        "mid": "We're covering working memory limits, the 7±2 heuristic for form field counts, and multi-step form patterns that improve completion.",
+        "staff": "We're covering Miller 1956, Cowan 2001's update to 4-item working memory capacity, and how chunking interacts with pre-fill and smart defaults."
+      }
+    ]
+  }
+}

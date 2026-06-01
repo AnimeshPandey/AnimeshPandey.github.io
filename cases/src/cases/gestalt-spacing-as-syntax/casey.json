@@ -1,0 +1,36 @@
+{
+  "slug": "gestalt-spacing-as-syntax",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Spacing isn't decoration — it's a claim about which elements belong together. A label that's 4px above its input and 20px below the previous input group clearly belongs to this field, not the last one. Flip that spacing and users will fill in the wrong fields.",
+      "mid": "Gestalt proximity principle: elements closer together are perceived as belonging to the same group. In forms, the critical ratio is: distance between label and its field should be less than half the distance to the next field group. Violate this ratio and the label looks unanchored.",
+      "staff": "Proximity interacts with similarity — elements that are both close and visually similar group most strongly. For design systems, the spacing scale should encode grouping semantics: --space-1/2 for in-group, --space-4/5 for between-group, --space-6/7/8 for between-sections. Arbitrary spacing breaks the grammar."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The 'broken' version has equal spacing between all elements — label and field are the same distance apart as field and next-label. Your brain can't tell which label belongs to which field. The 'fixed' version tightens the label-to-field gap and widens the field-to-next-label gap. Instantly readable.",
+      "mid": "Try filling out the broken form. Notice you slow down to consciously parse the structure. The fixed form has no parsing step — the grouping is pre-attentive (perceived before conscious awareness). That pre-attentive parsing is the goal of well-applied spacing.",
+      "staff": "The proximity principle is most violated in data-dense UIs: settings panels, data tables, filter sidebars. The correction: audit spacing in terms of ratios, not absolute values. The label-field gap should be ≤50% of the field-group gap, regardless of your specific scale values."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I audited a settings page where every section had 16px between all elements. Users tested at 60% accuracy matching labels to fields. Adding 4px label-to-field / 24px field-to-nextlabel differentiation brought accuracy to 97% with no other changes.",
+      "mid": "The pattern I see most: a CSS reset or base stylesheet that applies `margin-bottom: 16px` to all form elements. This creates identical spacing for both in-group and between-group gaps. Always override with a form-specific layout that differentiates the two distances.",
+      "staff": "Typography creates a secondary spacing grammar alongside whitespace. A label in --text-xs bold + field in --text-base creates a visual hierarchy that partially compensates for poor spacing. But this compounds complexity — the reliable pattern is correct spacing + correct type scale, not one compensating for the other."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about Gestalt proximity — how spacing between elements tells users what belongs together, and how getting it wrong breaks comprehension.",
+        "mid": "We're covering the proximity principle, the label-field spacing ratio rule, and how spacing systems should encode grouping semantics.",
+        "staff": "We're covering Gestalt proximity, pre-attentive processing, the spacing ratio audit method, and how typography and whitespace interact in dense UIs."
+      }
+    ]
+  }
+}

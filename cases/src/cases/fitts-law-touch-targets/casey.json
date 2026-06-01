@@ -1,0 +1,36 @@
+{
+  "slug": "fitts-law-touch-targets",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The 44px minimum for touch targets isn't arbitrary — it maps to the average adult fingertip contact area. Anything smaller and users have to aim, which causes errors and frustration.",
+      "mid": "Fitts's Law quantifies this: MT = a + b·log2(1 + D/W). Bigger target (W) and shorter distance (D) both reduce movement time. In UI terms: large, nearby targets are fast; small, distant targets are slow and error-prone.",
+      "staff": "The WCAG 2.5.5 Success Criterion (AA, 44×44 CSS pixels) is derived from Fitts's Law research. Mobile browsers apply tap-target heuristics that can misfire on clustered small elements — the browser expands the hit area, often hitting the wrong target."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Try clicking the small targets precisely. Now try the large ones. Notice how much less mental effort the large targets require — you don't have to aim, you just tap.",
+      "mid": "The demo measures your tap accuracy rate. Small targets (<24px) typically show 15–30% error rates on mobile. Targets ≥44px drop below 2%. That 15x difference directly maps to user frustration.",
+      "staff": "The spacing between targets matters as much as target size — a cluster of 44px targets with 0px gap effectively reduces the actionable area. WCAG 2.5.8 (Level AA, WCAG 2.2) accounts for this with a spacing requirement."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I've shipped a settings screen with 10 toggle switches, each 20×20px, spaced 4px apart. Support tickets for accidental setting changes increased 3x after launch. Increasing each toggle to 44×44px with 8px gaps eliminated the complaints.",
+      "mid": "The pattern I see most: developers style the `<input type='checkbox'>` visually small, but the label doesn't extend the hit area. CSS `cursor: pointer` on the label helps visually but doesn't fix the touch target. The fix: `label { min-height: 44px; display: flex; align-items: center; }`",
+      "staff": "The most underappreciated Fitts's Law violation in frontend: bottom-of-screen navigation bars where the first item is 8px from the screen edge. The OS gesture zone on iOS and Android conflicts with those targets. Always add `env(safe-area-inset-bottom)` padding to bottom navbars."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Let's talk about Fitts's Law — why small touch targets cause errors, and the 44px rule that fixes it.",
+        "mid": "This case covers the math behind tap target sizing, how Fitts's Law translates to CSS pixels, and common patterns where developers get it wrong.",
+        "staff": "We're covering WCAG 2.5.5 and 2.5.8, Fitts's Law's MT formula applied to mobile UI, and the OS gesture zone conflict in bottom navigation."
+      }
+    ]
+  }
+}

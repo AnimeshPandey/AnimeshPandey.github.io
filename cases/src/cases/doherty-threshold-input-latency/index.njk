@@ -1,0 +1,135 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "The 400ms Rule: Doherty Threshold"
+description: "How a 600ms search debounce quietly destroys the feeling that your app is alive — and the optimistic update pattern that bypasses the problem."
+slug: doherty-threshold-input-latency
+track: psychology-perception
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-06-01T00:00:00Z"
+principle: Doherty Threshold
+schemaType: Article
+relatedCases:
+  - slug: fake-loading-progress
+    title: Fake Progress Bars and Trust
+  - slug: cognitive-load-error-recovery
+    title: Cognitive Load and Error Recovery UX
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The search that felt broken</h2>
+  <div class="tone-junior">
+    <p>A live-search input had a 500ms debounce and a server that took 400–600ms to respond. Total latency: 900–1100ms. Users typed a character, waited nearly a second, then saw results that no longer matched what they'd typed because they'd continued typing during the wait.</p>
+    <p>The developer thought 500ms debounce was being kind — "don't hammer the server with every keystroke." But the user experienced it as: "I type. Nothing happens. The app is slow." The app wasn't slow — the latency was engineered in. The fix was 200ms debounce + an optimistic "searching…" state at 50ms. Same API speed. Completely different perception.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The Doherty Threshold (Walter Doherty, IBM, 1982): when system response time falls below 400ms, users stay in a "flow" state — they feel like they're operating through the system, not waiting on it. Above 400ms, users shift mental modes. They look away, start a second task, or lose the thread of what they were doing.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Three distinct latency tiers from Nielsen's research: &lt;100ms feels instantaneous (the system responds as fast as you think), 100–400ms is noticeable but doesn't break flow (you see the gap but stay engaged), 400ms–1000ms breaks flow (the Doherty zone — this is where most modern SPAs accidentally live), &gt;1000ms requires explicit feedback (spinner, progress) or users conclude the action failed.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The three tools for staying below 400ms</h2>
+  <div class="tone-junior">
+    <p><strong>1. Tune your debounce.</strong> 500ms debounce made sense in 2014 on slow connections. Modern connections and servers can respond in 80–150ms. Match your debounce to your actual server round-trip time:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Aim: debounce + server RTT < 400ms
+// If server RTT is ~100ms, debounce to 200ms = 300ms total ✅
+// If server RTT is ~200ms, debounce to 150ms = 350ms total ✅
+// Old default of 500ms + 200ms RTT = 700ms total ❌
+
+const debouncedSearch = useMemo(
+  () => debounce(query => fetchResults(query), 200),
+  []
+);</code></pre>
+  </div>
+  <div class="tone-mid">
+    <p><strong>2. Optimistic updates.</strong> For mutations (save, toggle, delete), apply the state change immediately and roll back on failure. The user sees the result before the server responds:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Optimistic toggle — state change is immediate
+async function toggleFavorite(itemId) {
+  // Apply immediately (optimistic)
+  setItems(items => items.map(i =>
+    i.id === itemId ? { ...i, favorite: !i.favorite } : i
+  ));
+  try {
+    await api.toggleFavorite(itemId);
+    // Server confirmed — do nothing, state is already correct
+  } catch (err) {
+    // Rollback only on failure
+    setItems(items => items.map(i =>
+      i.id === itemId ? { ...i, favorite: !i.favorite } : i
+    ));
+    showError('Could not save. Please try again.');
+  }
+}</code></pre>
+    <p>Failure rates for toggle operations are typically under 0.1% on stable connections. The UX cost of waiting for server confirmation on every toggle is paid by 100% of users; the rollback cost is paid by 0.1%.</p>
+  </div>
+  <div class="tone-staff">
+    <p><strong>3. 50ms feedback threshold.</strong> Even when you can't respond under 400ms (large queries, complex computations), you can show a response under 50ms. Show "searching…", disable the button, or animate the input border at 50ms — these signals tell the brain "the system received your input" and reset the latency clock psychologically:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Show immediate feedback; actual response can take longer
+function SearchInput({ onSearch }) {
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleChange = (e) => {
+    setIsSearching(true); // immediate — resets perception clock
+    debouncedSearch(e.target.value, () => setIsSearching(false));
+  };
+
+  return (
+    &lt;div className={isSearching ? 'input-active' : ''}&gt;
+      &lt;input onChange={handleChange} /&gt;
+      {isSearching && &lt;span aria-live="polite"&gt;Searching…&lt;/span&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre>
+    <p>IME (Input Method Editor) composition events must gate debounce for CJK languages. Fire search only after <code>compositionend</code>, not on every <code>input</code> event during composition — otherwise you interrupt character assembly mid-composition.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: fast vs slow input response</h2>
+  <div class="tone-junior"><p>Both inputs accept the same typing. The "Slow" input has a 700ms artificial delay before showing any response. The "Fast" input shows immediate feedback at 50ms and results at ~200ms. Type a few words in each and notice the psychological difference — the slow one feels like something might be wrong.</p></div>
+  <div class="tone-mid"><p>The demo asks you to complete a quick lookup task in both modes and rates your perceived frustration. 700ms inputs score 2–3/10 on satisfaction; sub-200ms inputs score 8–9/10. Same task, same result — different latency.</p></div>
+  <div class="tone-staff"><p>Observe the "searching…" indicator in the fast input — it appears within 50ms of your first keystroke, before any API call completes. This immediate acknowledgement is why the fast input feels responsive even though the actual data arrives 150ms later.</p></div>
+
+  <section class="case-demo" aria-label="Try it: slow vs fast input response" data-required="true" data-demo-type="toggle" data-demo-slug="doherty-threshold-input-latency">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Slow — 700ms delay</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fast — 50ms feedback</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fast — 50ms feedback</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">400ms is the threshold between "feels alive" and "feels slow." Even if you can't get a full API response in 400ms, show some feedback within 50ms — it resets the perception clock.</div>
+        <div class="tone-mid">Match your debounce to your actual server RTT. If server RTT is 100ms, debounce to 200ms = 300ms total (under threshold). The old 500ms default was for slow connections — recalibrate for your stack.</div>
+        <div class="tone-staff">Optimistic updates bypass the Doherty Threshold for mutations by applying state changes immediately. Failure rates on stable connections are typically under 0.1% — the rollback cost is worth the universal latency improvement.</div>
+      </li>
+      <li>
+        <div class="tone-junior">The three latency tiers: &lt;100ms (instantaneous), 100–400ms (noticeable but fine), 400ms–1000ms (breaks flow), &gt;1000ms (requires explicit feedback). Most SPAs accidentally live in the 400–1000ms zone due to waterfall requests and generous debounce values.</div>
+        <div class="tone-mid">IME composition events: fire your search/debounce logic only after <code>compositionend</code>, not on every <code>input</code> event. CJK users compose multi-keystroke characters before submitting — debouncing during composition breaks character input.</div>
+        <div class="tone-staff">Combine all three strategies: immediate 50ms visual feedback + debounce tuned to RTT + optimistic updates for mutations. Each one independently keeps you below the Doherty Threshold; together they make interactions feel native-app responsive.</div>
+      </li>
+    </ul>
+  </div>
+</section>
