@@ -629,6 +629,37 @@
       return greetings(tier)[0];
     }
 
+    function readHubCases() {
+      var el = document.getElementById('hub-live-cases');
+      if (!el) return [];
+      try {
+        var d = JSON.parse(el.textContent);
+        return d.cases || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function suggestNextInTrack() {
+      var hubCases = readHubCases();
+      var last = state.lastSlug;
+      if (!last || !hubCases.length) return null;
+      var current = null;
+      for (var i = 0; i < hubCases.length; i++) {
+        if (hubCases[i].slug === last) {
+          current = hubCases[i];
+          break;
+        }
+      }
+      if (!current) return null;
+      var sameTrack = hubCases.filter(function (c) {
+        return c.track === current.track && c.slug !== last;
+      });
+      if (!sameTrack.length) return null;
+      var pick = sameTrack[0];
+      return { slug: pick.slug, title: pick.title };
+    }
+
     function renderHubActions() {
       if (!actionsEl) return;
       actionsEl.innerHTML = '';
@@ -647,11 +678,15 @@
           primary: true,
         });
       }
+      var nextTrack = suggestNextInTrack();
+      if (nextTrack) {
+        items.push({
+          href: pathPrefix + nextTrack.slug + '/',
+          label: 'Next in track: ' + (nextTrack.title.length > 28 ? nextTrack.title.slice(0, 26) + '…' : nextTrack.title),
+        });
+      }
       items.push({ href: pathPrefix + 'library/', label: 'Reading library' });
       items.push({ href: pathPrefix + 'about/', label: 'How this works' });
-      if (state.casesCompleted.length >= 1) {
-        items.push({ href: pathPrefix + 'library/', label: 'War stories library' });
-      }
 
       items.slice(0, 3).forEach(function (item) {
         var li = document.createElement('li');

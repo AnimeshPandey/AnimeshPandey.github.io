@@ -12,6 +12,18 @@
       "junior": "Start a request and cancel it in broken mode — it completes anyway. Fixed mode shows the cancelled request in the Network panel with an actual termination.",
       "mid": "The Network panel strikethrough is the proof: the browser actually dropped the TCP connection, not just ignored the response. That's real bandwidth saved.",
       "staff": "In production, cancelled search requests reduce server load significantly — especially for typeahead endpoints that fire 10+ requests per search session."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're learning how to cancel fetch requests — so they don't update state after you navigate away or start a new request.",
         "mid": "This case is the networking deep-dive on AbortController — the three-line pattern, AbortError handling, and composing signals across parallel requests.",
         "staff": "We're covering the full signal API, parallel abort patterns, framework integration (TanStack Query, SWR), and the production bandwidth case for cancellation."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Start a request and cancel it in broken mode — it completes anyway. Fixed mode shows the cancelled request in the Network panel with an actual termination.",
+        "mid": "The Network panel strikethrough is the proof: the browser actually dropped the TCP connection, not just ignored the response. That's real bandwidth saved.",
+        "staff": "In production, cancelled search requests reduce server load significantly — especially for typeahead endpoints that fire 10+ requests per search session."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for fetch-race-abort.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Ghost Updates and Race Conditions",
+          "href": "/cases/abort-controller-ghost-updates/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Ghost Updates and Race Conditions",
+          "href": "/cases/abort-controller-ghost-updates/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Ghost Updates and Race Conditions",
+          "href": "/cases/abort-controller-ghost-updates/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

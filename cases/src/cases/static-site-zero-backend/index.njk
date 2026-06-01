@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Static Site, Zero Backend (L0)"
@@ -16,6 +17,8 @@ relatedCases:
     title: "Secrets in the Client Bundle (Never)"
   - slug: lcp-not-hero-image
     title: LCP Is Often Not the Hero Image
+---
+ogImage: https://anmshpndy.com/brand/cases/static-site-zero-backend-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -81,6 +84,14 @@ netlify deploy --dir=dist --prod</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: server-rendered vs static delivery</h2>
   <div class="tone-junior"><p>"With Backend" shows a blog page making a server round-trip to fetch posts on every visit. "Static" shows the same page pre-built — the HTML is already there, no fetch needed. Open the Network tab and compare the timing.</p></div>
@@ -106,24 +117,25 @@ netlify deploy --dir=dist --prod</code></pre>
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://www.11ty.dev/docs/" rel="noopener noreferrer">Eleventy docs</a></li>
+      <li><a href="https://jamstack.org/" rel="noopener noreferrer">Jamstack.org</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://vercel.com/docs/frameworks" rel="noopener noreferrer">Vercel — Frameworks</a></li>
+      <li><a href="https://www.netlify.com/blog/2016/09/29/jamstack-modern-web-development/" rel="noopener noreferrer">Netlify — Jamstack intro</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://web.dev/articles/rendering-on-the-web" rel="noopener noreferrer">web.dev — Rendering on the web</a></li>
+      <li><a href="https://www.11ty.dev/docs/plugins/" rel="noopener noreferrer">Eleventy — Plugins</a></li>
     </ol>
   </div>
 </section>

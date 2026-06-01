@@ -1,0 +1,160 @@
+{
+  "version": 1,
+  "updated": "2026-06-01",
+  "cases": [
+    {
+      "slug": "skeleton-screens-perceived-speed",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "fake-loading-progress",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "cognitive-load-error-recovery",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "gestalt-spacing-as-syntax",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "miller-chunking-forms",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "fitts-law-touch-targets",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "focus-visible-not-outline-none",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "reduced-motion-respect",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "font-loading-cls",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "lcp-not-hero-image",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "key-prop-identity",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "hydration-two-trees",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "abort-controller-ghost-updates",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "fetch-race-abort",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "closure-stale-state",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "event-loop-one-thread",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "url-as-source-of-truth",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "event-delegation-one-listener",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "z-index-stacking-context",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "context-window-budget",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "streaming-tokens-ui-buffer",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "static-site-zero-backend",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": true,
+      "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    }
+  ]
+}

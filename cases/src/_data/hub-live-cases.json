@@ -1,0 +1,190 @@
+{
+  "cases": [
+    {
+      "slug": "focus-visible-not-outline-none",
+      "title": ":focus-visible vs outline: none",
+      "track": "accessibility",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "reduced-motion-respect",
+      "title": "prefers-reduced-motion Contracts",
+      "track": "accessibility",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "micro-frontend-boundary-drift",
+      "title": "When Micro-Frontends Stop Sharing a Design System",
+      "track": "advanced-frontend",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "mcp-host-client-server",
+      "title": "MCP: Host, Client, and Server Roles",
+      "track": "agent-architecture",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "context-window-budget",
+      "title": "Context Window Budget for FE Tasks",
+      "track": "agentic-ai",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "paste-error-without-learning",
+      "title": "Paste Error, Zero Learning (Anti-pattern)",
+      "track": "agentic-ai",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "streaming-tokens-ui-buffer",
+      "title": "Streaming Tokens Without Layout Thrash",
+      "track": "ai-frontend-integration",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "motion-safe-fallback",
+      "title": "@media (prefers-reduced-motion)",
+      "track": "animation-motion",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "event-delegation-one-listener",
+      "title": "One Listener, Thousand Rows",
+      "track": "browser-dom",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "static-site-zero-backend",
+      "title": "Static Site, Zero Backend (L0)",
+      "track": "build-tooling",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "horizontal-scroll-one-pixel",
+      "title": "The One Pixel That Broke the Layout",
+      "track": "css-layout",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "z-index-stacking-context",
+      "title": "Z-Index Is Not Magic",
+      "track": "css-layout",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "abort-controller-ghost-updates",
+      "title": "Ghost Updates and Race Conditions",
+      "track": "javascript",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "closure-stale-state",
+      "title": "Closures and Stale State in Handlers",
+      "track": "javascript",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "event-loop-one-thread",
+      "title": "The Event Loop: One Thread, Many Queues",
+      "track": "javascript",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "fetch-race-abort",
+      "title": "fetch + AbortController: Cancel Ghost Requests",
+      "track": "networking",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "skeleton-vs-spinner-choice",
+      "title": "When Skeletons Beat Spinners (Product)",
+      "track": "patterns-ux",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "font-loading-cls",
+      "title": "The Layout Shift You Forgot (Fonts)",
+      "track": "performance-cwv",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "lcp-not-hero-image",
+      "title": "LCP Is Often Text, Not Your Hero Image",
+      "track": "performance-cwv",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "fake-loading-progress",
+      "title": "Fake Progress Bars and Trust",
+      "track": "psychology-perception",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "skeleton-screens-perceived-speed",
+      "title": "Why Skeleton Screens Beat Spinners",
+      "track": "psychology-perception",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "hydration-two-trees",
+      "title": "Two Trees: Hydration Explained",
+      "track": "react",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "key-prop-identity",
+      "title": "Keys Are Identity, Not Index",
+      "track": "react",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "secrets-in-client-bundle",
+      "title": "Secrets in the Client Bundle (Never)",
+      "track": "security",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "url-as-source-of-truth",
+      "title": "URL as Source of Truth for Filters",
+      "track": "state-architecture",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "fitts-law-touch-targets",
+      "title": "Fitts's Law and Tap Target Sizing",
+      "track": "accessibility",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "hicks-law-navigation-count",
+      "title": "Hick's Law: Why More Nav Items Slow Users Down",
+      "track": "patterns-ux",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "miller-chunking-forms",
+      "title": "Miller's Rule: Chunking Long Forms",
+      "track": "patterns-ux",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "doherty-threshold-input-latency",
+      "title": "The 400ms Rule: Doherty Threshold",
+      "track": "psychology-perception",
+      "mvpLaunch": false
+    },
+    {
+      "slug": "gestalt-spacing-as-syntax",
+      "title": "Gestalt: Spacing Is Syntax",
+      "track": "patterns-ux",
+      "mvpLaunch": true
+    },
+    {
+      "slug": "cognitive-load-error-recovery",
+      "title": "Cognitive Load and Error Recovery UX",
+      "track": "psychology-perception",
+      "mvpLaunch": true
+    }
+  ]
+}

@@ -12,6 +12,18 @@
       "junior": "The broken demo simulates a page waiting for a font before the heading renders — that wait is measured as LCP time. The fixed version preloads the font so the heading renders immediately.",
       "mid": "The LCP score difference between the two modes is typically 1-2 seconds on Slow 3G — the difference between 'Good' and 'Needs Improvement' in CWV.",
       "staff": "The four-phase LCP breakdown (TTFB + load delay + load time + render delay) is in PageSpeed Insights under 'Diagnose performance issues'. Address the largest phase first."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're solving the mystery of LCP — why optimizing the hero image doesn't always help, and how to find the actual element that's slowing your score.",
         "mid": "This case covers LCP element identification — why it's often text, how to measure it with PerformanceObserver, and the right optimization for each element type.",
         "staff": "We're covering LCP attribution phases in CrUX, font-loading impact on text LCP, and SSR as the fastest path to low LCP for text elements."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "The broken demo simulates a page waiting for a font before the heading renders — that wait is measured as LCP time. The fixed version preloads the font so the heading renders immediately.",
+        "mid": "The LCP score difference between the two modes is typically 1-2 seconds on Slow 3G — the difference between 'Good' and 'Needs Improvement' in CWV.",
+        "staff": "The four-phase LCP breakdown (TTFB + load delay + load time + render delay) is in PageSpeed Insights under 'Diagnose performance issues'. Address the largest phase first."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for lcp-not-hero-image.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: The Layout Shift You Forgot (Fonts)",
+          "href": "/cases/font-loading-cls/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: The Layout Shift You Forgot (Fonts)",
+          "href": "/cases/font-loading-cls/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: The Layout Shift You Forgot (Fonts)",
+          "href": "/cases/font-loading-cls/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

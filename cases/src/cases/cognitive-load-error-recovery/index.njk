@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Cognitive Load and Error Recovery UX"
@@ -16,6 +17,8 @@ relatedCases:
     title: "Miller's Rule: Chunking Long Forms"
   - slug: gestalt-spacing-as-syntax
     title: "Gestalt: Spacing Is Syntax"
+---
+ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -89,6 +92,14 @@ relatedCases:
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: summary errors vs inline errors</h2>
   <div class="tone-junior"><p>Fill out both forms incompletely and hit submit. The "Summary" mode shows all errors at the top in a red box. The "Inline" mode shows errors directly below the offending field. Notice how much easier it is to find and fix errors in the inline version.</p></div>
@@ -114,24 +125,25 @@ relatedCases:
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://www.nngroup.com/articles/ten-usability-heuristics/" rel="noopener noreferrer">NN/g — Usability heuristics (error recovery)</a></li>
+      <li><a href="https://www.gov.uk/service-manual" rel="noopener noreferrer">GOV.UK Service Manual</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard — Form UX research</a></li>
+      <li><a href="https://designsystem.service.gov.uk/components/error-message/" rel="noopener noreferrer">GOV.UK — Error messages</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html" rel="noopener noreferrer">WCAG 2.2 — Error suggestion</a></li>
+      <li><a href="https://polaris.shopify.com/components/feedback-indicators/banner" rel="noopener noreferrer">Shopify Polaris — Banners</a></li>
     </ol>
   </div>
 </section>

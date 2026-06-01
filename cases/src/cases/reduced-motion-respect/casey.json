@@ -12,6 +12,18 @@
       "junior": "The broken version has full animation with no media query check. The fixed version uses the no-preference guard so animation only runs when reduce motion is not set.",
       "mid": "Notice that the fixed version keeps the loading state visible — just without the shimmer animation. Functional information is preserved; decorative motion is removed.",
       "staff": "In JavaScript-driven animation (GSAP, Framer Motion), check window.matchMedia('(prefers-reduced-motion: reduce)').matches before starting animations — not just CSS."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're honouring the OS 'reduce motion' setting in CSS. It's one media query that prevents real physical harm for users with vestibular conditions.",
         "mid": "This case covers prefers-reduced-motion — the two strategies for handling it, the safe-by-default animation pattern, and what to keep vs remove under reduce motion.",
         "staff": "We're covering WCAG motion requirements, the no-preference guard pattern, and JavaScript animation library integration for prefers-reduced-motion."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "The broken version has full animation with no media query check. The fixed version uses the no-preference guard so animation only runs when reduce motion is not set.",
+        "mid": "Notice that the fixed version keeps the loading state visible — just without the shimmer animation. Functional information is preserved; decorative motion is removed.",
+        "staff": "In JavaScript-driven animation (GSAP, Framer Motion), check window.matchMedia('(prefers-reduced-motion: reduce)').matches before starting animations — not just CSS."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for reduced-motion-respect.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \":focus-visible vs outline: none\"",
+          "href": "/cases/focus-visible-not-outline-none/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \":focus-visible vs outline: none\"",
+          "href": "/cases/focus-visible-not-outline-none/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \":focus-visible vs outline: none\"",
+          "href": "/cases/focus-visible-not-outline-none/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

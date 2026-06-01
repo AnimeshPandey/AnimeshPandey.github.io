@@ -7,6 +7,8 @@ import math
 import shutil
 from pathlib import Path
 
+import re
+
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -217,6 +219,58 @@ def write_lottie_idle() -> None:
         print(f"  {out.relative_to(ROOT)}")
 
 
+def write_case_og_images(slugs: list[str] | None = None) -> None:
+    """Per-case OG PNGs at portfolio brand/cases/{slug}-og.png."""
+    brand_cases = ROOT.parent / "brand" / "cases"
+    brand_cases.mkdir(parents=True, exist_ok=True)
+    cases_dir = ROOT / "src" / "cases"
+    if slugs is None:
+        slugs = [p.name for p in cases_dir.iterdir() if p.is_dir() and (p / "index.njk").is_file()]
+
+    try:
+        title_font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", 36)
+        sub_font = ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", 20)
+    except OSError:
+        title_font = ImageFont.load_default()
+        sub_font = title_font
+
+    for slug in slugs:
+        njk = cases_dir / slug / "index.njk"
+        if not njk.is_file():
+            continue
+        text = njk.read_text(encoding="utf-8")
+        title_m = re.search(r'^title:\s*["\']?(.+?)["\']?\s*$', text, re.M)
+        title = title_m.group(1) if title_m else slug.replace("-", " ")
+
+        w, h = 1200, 630
+        bg = Image.new("RGB", (w, h), "#0c1210")
+        draw = ImageDraw.Draw(bg)
+        for y in range(h):
+            t = y / h
+            draw.line([(0, y), (w, y)], fill=(int(12 + t * 8), int(18 + t * 28), int(16 + t * 20)))
+
+        mascot = CASEY / "junior" / "present.png"
+        if not mascot.is_file():
+            mascot = CASEY / "junior" / "idle.png"
+        if mascot.is_file():
+            m = ensure_rgba(Image.open(mascot))
+            th = 280
+            m = m.resize((int(m.width * th / m.height), th), Image.Resampling.LANCZOS)
+            bg_rgba = bg.convert("RGBA")
+            bg_rgba.paste(m, (48, (h - th) // 2), m)
+            bg = bg_rgba.convert("RGB")
+
+        draw = ImageDraw.Draw(bg)
+        draw.text((400, 220), "The Frontend Casebook", fill="#9BB5A8", font=sub_font)
+        # wrap long titles
+        draw.text((400, 260), title[:60], fill="#FAFAF8", font=title_font)
+        draw.rectangle([(400, 340), (1100, 344)], fill="#5E8F72")
+
+        out = brand_cases / f"{slug}-og.png"
+        bg.save(out, "PNG", optimize=True)
+        print(f"  {out.relative_to(ROOT.parent)}")
+
+
 def main() -> None:
     import sys
 
@@ -235,6 +289,15 @@ def main() -> None:
     if cmd in ("all", "lottie"):
         print("Lottie idle loops…")
         write_lottie_idle()
+    if cmd in ("all", "og-cases"):
+        print("Per-case OG images…")
+        mvp_path = ROOT / "src" / "_data" / "mvp-references.json"
+        slugs = None
+        if mvp_path.is_file():
+            import json
+
+            slugs = list(json.loads(mvp_path.read_text(encoding="utf-8")).keys())
+        write_case_og_images(slugs)
 
 
 if __name__ == "__main__":

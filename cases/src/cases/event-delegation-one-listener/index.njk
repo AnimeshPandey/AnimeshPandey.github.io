@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: One Listener, Thousand Rows
@@ -16,6 +17,8 @@ relatedCases:
     title: "The Event Loop: One Thread, Many Queues"
   - slug: abort-controller-ghost-updates
     title: Ghost Updates and Race Conditions
+---
+ogImage: https://anmshpndy.com/brand/cases/event-delegation-one-listener-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -71,6 +74,14 @@ container.addEventListener('click', (e) => {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: per-row vs delegated listener</h2>
   <div class="tone-junior"><p>Add 200 rows in "Broken" mode — notice the slowdown. Same action in "Fixed" mode is instant. The fixed version has exactly one listener regardless of row count.</p></div>
@@ -96,24 +107,24 @@ container.addEventListener('click', (e) => {
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events" rel="noopener noreferrer">MDN — Events</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://javascript.info/event-delegation" rel="noopener noreferrer">javascript.info — Event delegation</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener" rel="noopener noreferrer">MDN — addEventListener</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget" rel="noopener noreferrer">MDN — EventTarget</a></li>
+      <li><a href="https://react.dev/learn/responding-to-events" rel="noopener noreferrer">React — Synthetic events context</a></li>
     </ol>
   </div>
 </section>

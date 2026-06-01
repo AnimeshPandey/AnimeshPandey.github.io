@@ -18,6 +18,12 @@
       "junior": "isolation: isolate is the clean way to create a stacking context on purpose — it has zero visual effect unlike opacity or transform.",
       "mid": "A z-index token scale prevents the 9999 arms race. Define --z-modal, --z-tooltip, --z-dropdown once and reference them everywhere.",
       "staff": "Portal rendering is the architectural solution — it decouples component logical position from DOM physical position, which is the right mental model for overlay components."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     }
   ],
   "anecdotes": [
@@ -36,6 +42,24 @@
         "junior": "Hey! Today we're solving the 'z-index 9999 still doesn't work' mystery. It's about stacking contexts — they're not obvious, but once you understand them, modal bugs disappear.",
         "mid": "This case is about CSS stacking contexts — why z-index has no effect against them, what creates them accidentally, and the portal pattern that escapes them.",
         "staff": "We're covering the full stacking context trigger list, isolation: isolate as the semantic solution, and the design system z-index token scale pattern."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "See how the modal hides behind the colored box in broken mode? That box has a transform on it — creating a stacking context. Portal mode renders the modal outside that context.",
+        "mid": "Check the DOM in Elements panel. Fixed mode: modal is a direct body child. Broken mode: modal is nested inside the transform container.",
+        "staff": "DevTools Layers panel (3D view) is the fastest way to visualize the stacking context tree — each composited layer is its own context."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for z-index-stacking-context.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -98,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: The One Pixel That Broke the Layout",
+          "href": "/cases/horizontal-scroll-one-pixel/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -108,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: The One Pixel That Broke the Layout",
+          "href": "/cases/horizontal-scroll-one-pixel/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -117,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: The One Pixel That Broke the Layout",
+          "href": "/cases/horizontal-scroll-one-pixel/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

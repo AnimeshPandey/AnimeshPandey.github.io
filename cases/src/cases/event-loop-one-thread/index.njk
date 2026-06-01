@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "The Event Loop: One Thread, Many Queues"
@@ -16,6 +17,8 @@ relatedCases:
     title: Closures and Stale State in Handlers
   - slug: abort-controller-ghost-updates
     title: Ghost Updates and Race Conditions
+---
+ogImage: https://anmshpndy.com/brand/cases/event-loop-one-thread-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -365,24 +368,24 @@ observer.observe({ type: 'longtask', buffered: true });</code></pre>
 </section>
 
 {# ── Chapter: References ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
-
-  <div class="tone-mid">
+  <div class="tone-junior">
     <ol>
-      <li>Jake Archibald, <a href="https://www.youtube.com/watch?v=cCOL7MC4Pl0" rel="noopener noreferrer">In The Loop</a> — JSConf Asia 2018. The definitive visual walkthrough.</li>
-      <li>MDN, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop" rel="noopener noreferrer">The event loop</a>.</li>
-      <li>web.dev, <a href="https://web.dev/articles/optimize-long-tasks" rel="noopener noreferrer">Optimize long tasks</a>.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop" rel="noopener noreferrer">MDN — Event loop</a></li>
     </ol>
   </div>
-
+  <div class="tone-mid">
+    <ol>
+      <li><a href="https://javascript.info/event-loop" rel="noopener noreferrer">javascript.info — Event loop</a></li>
+      <li><a href="https://web.dev/articles/optimize-long-tasks" rel="noopener noreferrer">web.dev — Long tasks</a></li>
+    </ol>
+  </div>
   <div class="tone-staff">
     <ol>
-      <li>Jake Archibald, <em>In The Loop</em> — JSConf Asia 2018.</li>
-      <li>HTML Living Standard — <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loops" rel="noopener noreferrer">Event loops</a>.</li>
-      <li>web.dev — <a href="https://web.dev/articles/inp" rel="noopener noreferrer">Interaction to Next Paint (INP)</a>.</li>
-      <li>web.dev — <a href="https://web.dev/articles/scheduler-yield" rel="noopener noreferrer">scheduler.yield() explainer</a>.</li>
-      <li>Chrome DevTools — Long Animation Frames (LoAF) documentation.</li>
+      <li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loops" rel="noopener noreferrer">WHATWG — Event loops</a></li>
+      <li><a href="https://web.dev/articles/inp" rel="noopener noreferrer">web.dev — INP</a></li>
     </ol>
   </div>
 </section>

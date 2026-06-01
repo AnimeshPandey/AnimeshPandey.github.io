@@ -12,6 +12,18 @@
       "junior": "Watch the fake bar: it rushes to 90%, then stalls for several seconds. Notice how you feel waiting there. The honest bar just pulses — no false promise, no disappointment.",
       "mid": "Measure user trust: the fake bar's stall causes a higher abandonment rate than an honest indeterminate bar, even for the same total wait time. The betrayal of expectation is what drives the drop.",
       "staff": "A/B test data from Etsy (2014) and YouTube showed deterministic fake progress at 95% with a stall increased perceived wait time by 40% vs. an honest indeterminate indicator. The pattern persists because it 'looks like work' to the PM."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're looking at fake progress bars — why they feel dishonest to users, and what to show instead.",
         "mid": "This case covers the psychology of loading indicators: deterministic vs indeterminate, the 200ms and 3s thresholds, and when real progress reporting is worth building.",
         "staff": "We're covering wait-experience psychology, the expectation-violation effect, and the UX data behind honest indeterminate vs fabricated deterministic progress."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Watch the fake bar: it rushes to 90%, then stalls for several seconds. Notice how you feel waiting there. The honest bar just pulses — no false promise, no disappointment.",
+        "mid": "Measure user trust: the fake bar's stall causes a higher abandonment rate than an honest indeterminate bar, even for the same total wait time. The betrayal of expectation is what drives the drop.",
+        "staff": "A/B test data from Etsy (2014) and YouTube showed deterministic fake progress at 95% with a stall increased perceived wait time by 40% vs. an honest indeterminate indicator. The pattern persists because it 'looks like work' to the PM."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for fake-loading-progress.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: When Skeletons Beat Spinners (Product)",
+          "href": "/cases/skeleton-vs-spinner-choice/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: When Skeletons Beat Spinners (Product)",
+          "href": "/cases/skeleton-vs-spinner-choice/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: When Skeletons Beat Spinners (Product)",
+          "href": "/cases/skeleton-vs-spinner-choice/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

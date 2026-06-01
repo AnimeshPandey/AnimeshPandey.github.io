@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Closures and Stale State in Handlers
@@ -16,6 +17,8 @@ relatedCases:
     title: "The Event Loop: One Thread, Many Queues"
   - slug: key-prop-identity
     title: Keys Are Identity, Not Index
+---
+ogImage: https://anmshpndy.com/brand/cases/closure-stale-state-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -216,6 +219,14 @@ useEffect(() => {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: stale vs fresh counter</h2>
 
@@ -312,22 +323,25 @@ function ChatRoom({ roomId, theme }) {
 </section>
 
 {# ── Chapter: References ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
-
-  <div class="tone-mid">
+  <div class="tone-junior">
     <ol>
-      <li>Dan Abramov, <a href="https://overreacted.io/making-setinterval-declarative-with-react-hooks/" rel="noopener noreferrer">Making setInterval Declarative with React Hooks</a>.</li>
-      <li>React docs — <a href="https://react.dev/learn/separating-events-from-effects" rel="noopener noreferrer">Separating Events from Effects</a>.</li>
+      <li><a href="https://react.dev/reference/react/useState" rel="noopener noreferrer">React — useState</a></li>
+      <li><a href="https://javascript.info/closure" rel="noopener noreferrer">javascript.info — Closures</a></li>
     </ol>
   </div>
-
+  <div class="tone-mid">
+    <ol>
+      <li><a href="https://react.dev/reference/react/useRef" rel="noopener noreferrer">React — useRef</a></li>
+      <li><a href="https://overreacted.io/a-complete-guide-to-useeffect/" rel="noopener noreferrer">Overreacted — useEffect guide</a></li>
+    </ol>
+  </div>
   <div class="tone-staff">
     <ol>
-      <li>Dan Abramov, <em>Making setInterval Declarative with React Hooks</em>, Overreacted.</li>
-      <li>React RFC #220 — <code>useEvent</code> (became <code>useEffectEvent</code>).</li>
-      <li>React docs — <a href="https://react.dev/reference/react/experimental_useEffectEvent" rel="noopener noreferrer">experimental_useEffectEvent</a>.</li>
-      <li>MDN — <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures" rel="noopener noreferrer">Closures</a>.</li>
+      <li><a href="https://react.dev/reference/react/useCallback" rel="noopener noreferrer">React — useCallback</a></li>
+      <li><a href="https://react.dev/learn/removing-effect-dependencies" rel="noopener noreferrer">React — Effect dependencies</a></li>
     </ol>
   </div>
 </section>

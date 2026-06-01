@@ -18,6 +18,12 @@
       "junior": "Changing a key to reset a component is a useful trick! It's cleaner than using useEffect to clear form state when the user switches to a different profile.",
       "mid": "key-as-reset is idiomatic React — the React docs actually recommend it for profile-switching patterns. It gives you a clean mount/unmount without lifting state.",
       "staff": "The key contract is: same key = same instance. Anything attached to the instance — state, refs, DOM nodes, uncontrolled input values — follows the key, not the props."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     }
   ],
   "anecdotes": [
@@ -36,6 +42,24 @@
         "junior": "Hey! Today we're fixing that weird bug where to-do items lose their input text when you reorder the list. It's all about the key prop — promise it's simple once you see it.",
         "mid": "This case covers React reconciliation and key identity — why index keys cause input, checkbox, and animation bugs, and how to use stable IDs instead.",
         "staff": "We're covering the reconciliation algorithm's key contract, performance implications of unstable keys, and the key-as-reset escape hatch pattern."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Type your name in the first box before clicking 'Prepend item'. In broken mode your name stays at position 0. In fixed mode it moves with the item. That's the key difference.",
+        "mid": "Open Elements tab while clicking. In broken mode watch the DOM nodes get reused — same elements, updated props. In fixed mode watch the new node enter and existing ones shift.",
+        "staff": "The DOM reuse in broken mode is visible in the Elements panel — no mount animation fires on a node that's reused, even if it now represents a completely different list item."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for key-prop-identity.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -98,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \"Two Trees: Hydration Explained\"",
+          "href": "/cases/hydration-two-trees/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -108,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \"Two Trees: Hydration Explained\"",
+          "href": "/cases/hydration-two-trees/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -117,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \"Two Trees: Hydration Explained\"",
+          "href": "/cases/hydration-two-trees/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

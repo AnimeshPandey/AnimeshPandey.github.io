@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Streaming Tokens Without Layout Thrash"
@@ -16,6 +17,8 @@ relatedCases:
     title: The JavaScript Event Loop
   - slug: mcp-host-client-server
     title: "MCP: Host, Client, and Server Roles"
+---
+ogImage: https://anmshpndy.com/brand/cases/streaming-tokens-ui-buffer-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -92,6 +95,14 @@ if (wordBuffer) setContent(prev =&gt; prev + wordBuffer);</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Watch it: unbuffered vs buffered token streaming</h2>
   <div class="tone-junior"><p>The "Unbuffered" animation shows tokens arriving one at a time, each causing a visible reflow. Notice the jank. The "Buffered" animation shows the same token stream but flushes to the DOM once per animation frame — smooth, no jank.</p></div>
@@ -117,24 +128,24 @@ if (wordBuffer) setContent(prev =&gt; prev + wordBuffer);</code></pre>
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://platform.openai.com/docs/api-reference/streaming" rel="noopener noreferrer">OpenAI — Streaming</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API" rel="noopener noreferrer">MDN — Streams API</a></li>
+      <li><a href="https://web.dev/articles/optimize-inp" rel="noopener noreferrer">web.dev — INP</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://platform.openai.com/docs/guides/streaming-responses" rel="noopener noreferrer">OpenAI — Streaming responses</a></li>
+      <li><a href="https://react.dev/reference/react-dom/server/renderToReadableStream" rel="noopener noreferrer">React — renderToReadableStream</a></li>
     </ol>
   </div>
 </section>

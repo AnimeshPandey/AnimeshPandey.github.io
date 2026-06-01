@@ -18,6 +18,12 @@
       "junior": "The fix is just two lines: wrap the chunk in an async function and add await setTimeout(0). That's it.",
       "mid": "scheduler.yield() is the modern version — it's in Chrome 94+ and cooperates with the browser's built-in priority system.",
       "staff": "Reach for Web Workers when work is consistently >1s or involves binary data (WASM, ImageData). Chunk-yielding is for sporadic bursts of JS computation."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     }
   ],
   "anecdotes": [
@@ -36,6 +42,24 @@
         "junior": "Hey! Today we're solving that mystery where setTimeout zero doesn't actually run immediately. Once you see why, a whole category of bugs disappears.",
         "mid": "This case is about the JavaScript event loop — specifically why microtasks run before macrotasks, and how that affects rendering and input responsiveness.",
         "staff": "We're covering the event loop's three queues, the production observability toolchain, and when to reach for Web Workers versus yielding on the main thread."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Click Blocking first — count in your head. The counter freezes because JavaScript is busy. Then click Yielding and see the difference.",
+        "mid": "Watch the counter rate in yielding mode. Each chunk yield gives the renderer a chance to update — that's how smooth progress UIs stay smooth.",
+        "staff": "Open DevTools Performance → record while clicking Blocking. Look for a red Long Task bar. Click Yielding — many short green tasks instead."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for event-loop-one-thread.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -98,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Closures and Stale State in Handlers",
+          "href": "/cases/closure-stale-state/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -108,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Closures and Stale State in Handlers",
+          "href": "/cases/closure-stale-state/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -117,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Closures and Stale State in Handlers",
+          "href": "/cases/closure-stale-state/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

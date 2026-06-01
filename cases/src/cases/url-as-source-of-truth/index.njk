@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: URL as Source of Truth for Filters
@@ -16,6 +17,8 @@ relatedCases:
     title: Ghost Updates and Race Conditions
   - slug: closure-stale-state
     title: Closures and Stale State in Handlers
+---
+ogImage: https://anmshpndy.com/brand/cases/url-as-source-of-truth-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -90,6 +93,14 @@ function ProductFilters() {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: filter in state vs URL</h2>
   <div class="tone-junior"><p>Apply filters in "Broken" mode, then reload the page — filters are gone. Switch to "Fixed" and apply filters — the URL updates. Reload — filters persist.</p></div>
@@ -115,24 +126,24 @@ function ProductFilters() {
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/History" rel="noopener noreferrer">MDN — History API</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://reactrouter.com/en/main" rel="noopener noreferrer">React Router</a></li>
+      <li><a href="https://remix.run/docs/en/main/discussion/state-management" rel="noopener noreferrer">Remix — State in URL</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://www.nngroup.com/articles/url-as-ui/" rel="noopener noreferrer">NN/g — URL as UI</a></li>
+      <li><a href="https://nextjs.org/docs/app/building-your-application/routing" rel="noopener noreferrer">Next.js — Routing</a></li>
     </ol>
   </div>
 </section>

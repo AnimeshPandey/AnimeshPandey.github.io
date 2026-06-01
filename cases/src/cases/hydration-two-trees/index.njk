@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Two Trees: Hydration Explained"
@@ -16,6 +17,8 @@ relatedCases:
     title: Closures and Stale State in Handlers
   - slug: key-prop-identity
     title: Keys Are Identity, Not Index
+---
+ogImage: https://anmshpndy.com/brand/cases/hydration-two-trees-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -337,29 +340,24 @@ function FormField({ label }) {
 </section>
 
 {# ── Chapter: References ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
-
   <div class="tone-junior">
     <ol>
-      <li>React docs — <a href="https://react.dev/reference/react/useId" rel="noopener noreferrer">useId</a> (stable IDs).</li>
-      <li>React docs — <a href="https://react.dev/reference/react-dom/client/hydrateRoot" rel="noopener noreferrer">hydrateRoot</a>.</li>
+      <li><a href="https://react.dev/reference/react-dom/client/hydrateRoot" rel="noopener noreferrer">React — hydrateRoot</a></li>
     </ol>
   </div>
-
   <div class="tone-mid">
     <ol>
-      <li>React docs — <a href="https://react.dev/reference/react-dom/client/hydrateRoot" rel="noopener noreferrer">hydrateRoot</a>.</li>
-      <li>React docs — <a href="https://react.dev/reference/react/useId" rel="noopener noreferrer">useId</a>.</li>
+      <li><a href="https://www.joshwcomeau.com/react/server-components/" rel="noopener noreferrer">Josh Comeau — Server Components</a></li>
+      <li><a href="https://react.dev/reference/rsc/server-components" rel="noopener noreferrer">React — Server Components</a></li>
     </ol>
   </div>
-
   <div class="tone-staff">
     <ol>
-      <li>React docs — <a href="https://react.dev/reference/react-dom/client/hydrateRoot" rel="noopener noreferrer">hydrateRoot</a>.</li>
-      <li>React 18 Architecture — Selective Hydration.</li>
-      <li>Next.js docs — App Router and React Server Components.</li>
-      <li>web.dev — <a href="https://web.dev/articles/cls" rel="noopener noreferrer">Cumulative Layout Shift (CLS)</a>.</li>
+      <li><a href="https://www.bswanson.dev/blog/nextjs-hydration-payload/" rel="noopener noreferrer">RSC payload write-up</a></li>
+      <li><a href="https://nextjs.org/docs/app" rel="noopener noreferrer">Next.js App Router</a></li>
     </ol>
   </div>
 </section>
