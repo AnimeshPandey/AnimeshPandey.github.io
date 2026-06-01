@@ -168,8 +168,40 @@
 
   function initServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
+
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (refreshing || !navigator.serviceWorker.controller) return;
+      refreshing = true;
+      window.location.reload();
+    });
+
+    function promoteWaitingWorker(registration) {
+      if (!registration || !registration.waiting) return;
+      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    }
+
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(function (registration) {
+        promoteWaitingWorker(registration);
+        registration.addEventListener('updatefound', function () {
+          var worker = registration.installing;
+          if (!worker) return;
+          worker.addEventListener('statechange', function () {
+            if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+              promoteWaitingWorker(registration);
+            }
+          });
+        });
+        return registration.update();
+      }).catch(function () { /* offline or blocked */ });
+    });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState !== 'visible') return;
+      navigator.serviceWorker.getRegistration().then(function (reg) {
+        if (reg) return reg.update();
+      }).catch(function () { /* ignore */ });
     });
   }
 

@@ -25,6 +25,11 @@
       "mid": "No cases match that track. Clear filter or show upcoming.",
       "staff": "Zero matches. Widen the filter or enable upcoming cases."
     },
+    "lastCase": {
+      "junior": "You were on {title} — want to continue?",
+      "mid": "Last case: {title}. Pick up where you left off?",
+      "staff": "Incomplete: {title}. Continue or switch tracks."
+    },
     "toneSwitch": {
       "junior": "Going deeper — I'll skip some basics.",
       "mid": "Tone updated — hints and voice match your level now.",
@@ -58,6 +63,11 @@
       "junior": "Filtered — open a link that matches what you just read.",
       "mid": "Filter active — skim titles before deep-reading one article.",
       "staff": "Narrowed list — prefer primary sources in the summary column."
+    },
+    "filteredCount": {
+      "junior": "{n} article{nLabel} match your filters.",
+      "mid": "{n} war stor{nLabel} in this view.",
+      "staff": "{n} result{nLabel} — tighten or widen filters as needed."
     }
   },
   "about": {

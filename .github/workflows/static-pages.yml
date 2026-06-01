@@ -38,6 +38,10 @@ jobs:
         working-directory: cases
         run: npm run build
 
+      - name: Verify live case pages built
+        working-directory: cases
+        run: node scripts/assert-live-cases.mjs
+
       - name: Install portfolio site dependencies
         working-directory: site
         run: npm install

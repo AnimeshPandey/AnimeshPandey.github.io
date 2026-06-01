@@ -1,11 +1,29 @@
 /**
- * casey-lottie.js — lazy Lottie idle loops per tier (PRM-safe).
+ * casey-lottie.js — lazy Lottie idle loops on hub (desktop only, PRM + intensity safe).
  */
 (function initCaseyLottie() {
   'use strict';
 
-  var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prm) return;
+  function dotLottieEnabled() {
+    try {
+      if (document.documentElement.dataset.caseyDotlottie === '1') return true;
+      return new URLSearchParams(window.location.search).get('caseyDotlottie') === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function lottieAllowed() {
+    if (dotLottieEnabled()) return false; /* DotLottie spike uses separate player when enabled */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    if (window.matchMedia('(max-width: 767px)').matches) return false;
+    if (window.CaseyCompanion && window.CaseyCompanion.shouldShowCaseyBehavior) {
+      return window.CaseyCompanion.shouldShowCaseyBehavior('lottie');
+    }
+    return true;
+  }
+
+  if (!lottieAllowed()) return;
 
   var assetBase = (document.documentElement.dataset.assetBase || '/cases/assets/casey/').replace(
     /\/?$/,
@@ -41,6 +59,7 @@
 
   function mountForHost(host) {
     if (!window.lottie || !host) return;
+    if (!host.classList.contains('casey-lottie-host--hub')) return;
     var tier = host.dataset.caseyLottieTier || readTier();
     var path = assetBase + 'lottie/' + tier + '/idle.json';
     host.hidden = false;
@@ -59,7 +78,11 @@
   }
 
   function mountAll() {
-    document.querySelectorAll('.casey-lottie-host').forEach(mountForHost);
+    if (!lottieAllowed()) {
+      destroyAll();
+      return;
+    }
+    document.querySelectorAll('.casey-lottie-host--hub').forEach(mountForHost);
   }
 
   function ensureLottie(cb) {
@@ -82,8 +105,8 @@
   }
 
   function init() {
-    var hosts = document.querySelectorAll('.casey-lottie-host');
-    if (!hosts.length) return;
+    var hosts = document.querySelectorAll('.casey-lottie-host--hub');
+    if (!hosts.length || !lottieAllowed()) return;
     ensureLottie(mountAll);
   }
 
@@ -91,10 +114,17 @@
     var tier = e.detail && e.detail.tone;
     if (!tier) return;
     destroyAll();
-    document.querySelectorAll('.casey-lottie-host').forEach(function (host) {
+    document.querySelectorAll('.casey-lottie-host--hub').forEach(function (host) {
       host.dataset.caseyLottieTier = tier;
     });
-    ensureLottie(mountAll);
+    if (lottieAllowed()) ensureLottie(mountAll);
+  });
+
+  document.addEventListener('casey-companion-event', function (e) {
+    if (e.detail && e.detail.type === 'casey-intensity-change') {
+      destroyAll();
+      if (lottieAllowed()) ensureLottie(mountAll);
+    }
   });
 
   if (document.readyState === 'loading') {

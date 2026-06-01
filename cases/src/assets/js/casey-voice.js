@@ -36,8 +36,22 @@ function getVoiceProfile(tone) {
   return { rate: 0.95, pitch: 1.05 };
 }
 
+function canUseVoice() {
+  if (!('speechSynthesis' in window)) return false;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  if (window.CaseyCompanion && window.CaseyCompanion.shouldShowCaseyBehavior) {
+    return window.CaseyCompanion.shouldShowCaseyBehavior('voice');
+  }
+  return true;
+}
+
 function initCaseyVoice() {
-  if (!('speechSynthesis' in window)) return;
+  if (!canUseVoice()) {
+    document.querySelectorAll('.casey-coach__voice').forEach((btn) => {
+      btn.hidden = true;
+    });
+    return;
+  }
 
   const dataEl = document.getElementById('casey-data');
   if (!dataEl) return;
@@ -52,6 +66,8 @@ function initCaseyVoice() {
   const voiceBtns = document.querySelectorAll('.casey-coach__voice');
   if (!voiceBtns.length) return;
 
+  let speaking = false;
+
   function getChapterVoice(chapter, tone) {
     if (!caseyData?.voice?.sections) return null;
     const section =
@@ -60,18 +76,49 @@ function initCaseyVoice() {
     return section ? section[tone] || section.junior || null : null;
   }
 
+  function setSpeaking(active) {
+    speaking = active;
+    voiceBtns.forEach((btn) => {
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.setAttribute('aria-label', active ? 'Stop Casey voice' : 'Listen with Casey (text-to-speech)');
+      const hidden = btn.querySelector('.visually-hidden');
+      if (hidden) hidden.textContent = active ? 'Stop' : 'Listen with Casey';
+    });
+  }
+
+  function stop() {
+    window.speechSynthesis.cancel();
+    setSpeaking(false);
+    document.dispatchEvent(new CustomEvent('casey-voice-stop'));
+  }
+
   function speak(text, tone) {
     if (!text) return;
-    window.speechSynthesis.cancel();
+    stop();
     const profile = getVoiceProfile(tone);
     const utt = new SpeechSynthesisUtterance(text);
     utt.rate = profile.rate ?? 0.95;
     utt.pitch = profile.pitch ?? 1.05;
+    utt.onend = () => {
+      setSpeaking(false);
+      document.dispatchEvent(new CustomEvent('casey-voice-stop'));
+    };
+    utt.onerror = () => {
+      setSpeaking(false);
+      document.dispatchEvent(new CustomEvent('casey-voice-stop'));
+    };
+    setSpeaking(true);
+    document.dispatchEvent(new CustomEvent('casey-voice-start'));
     window.speechSynthesis.speak(utt);
   }
 
   voiceBtns.forEach((btn) => {
+    btn.hidden = false;
     btn.addEventListener('click', () => {
+      if (speaking) {
+        stop();
+        return;
+      }
       const tone = getStoredTone();
       const chapter = getVisibleChapter();
       const text = getChapterVoice(chapter, tone);
@@ -79,8 +126,11 @@ function initCaseyVoice() {
     });
   });
 
-  document.addEventListener('casebook-tone-change', () => window.speechSynthesis.cancel());
-  document.addEventListener('casebook-color-change', () => window.speechSynthesis.cancel());
+  document.addEventListener('casebook-tone-change', () => stop());
+  document.addEventListener('casebook-color-change', () => stop());
+  document.addEventListener('casey-companion-event', (e) => {
+    if (e.detail && e.detail.type === 'casey-intensity-change') stop();
+  });
 }
 
 if (document.readyState === 'loading') {

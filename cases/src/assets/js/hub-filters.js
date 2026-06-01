@@ -132,6 +132,9 @@ var LibraryFilters = (function () {
     var gridEl = getEl(_cfg.gridId);
     if (emptyEl) emptyEl.hidden = visible > 0;
     if (gridEl) gridEl.hidden = visible === 0;
+    document.dispatchEvent(
+      new CustomEvent('casey-library-filter', { detail: { count: visible } })
+    );
   }
 
   // ── Filter pills ──────────────────────────────────────────────────────────

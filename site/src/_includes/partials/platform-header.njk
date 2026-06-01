@@ -42,6 +42,17 @@
       <div class="nav-utilities">
         {% if product == 'casebook' %}
         {% include "partials/casebook-preferences.njk" %}
+        <div class="casebook-prefs">
+          <button type="button" class="casebook-prefs__trigger platform-icon-btn" id="casebook-prefs-btn"
+                  aria-expanded="false" aria-controls="casebook-prefs-menu"
+                  aria-label="Casebook display and Casey settings">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-more"/></svg>
+            <span class="casebook-prefs__trigger-label">Casey</span>
+          </button>
+          <div id="casebook-prefs-menu" class="casebook-prefs__menu prefs-menu" role="menu" hidden>
+            {% include "partials/casey-companion-prefs.njk" %}
+          </div>
+        </div>
         {% else %}
         <div class="theme-picker">
           <button type="button" class="theme-pick-btn platform-icon-btn" id="theme-pick-btn-header"

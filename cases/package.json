@@ -9,7 +9,8 @@
   "scripts": {
     "build": "eleventy",
     "start": "eleventy --serve --port 8080",
-    "debug": "DEBUG=Eleventy* eleventy"
+    "debug": "DEBUG=Eleventy* eleventy",
+    "verify:live": "npm run build && node scripts/assert-live-cases.mjs"
   },
   "dependencies": {
     "@11ty/eleventy": "^2.0.1"
