@@ -138,7 +138,8 @@ def process_file(path: Path, tol: int, trim: bool, sharpen: bool, normalize: boo
     if trim:
         im = trim_transparent(im, pad=10)
     if normalize and should_normalize(path):
-        im = normalize_canvas(im)
+        fill = 0.78 if "junior" in path.parts else 0.84
+        im = normalize_canvas(im, fill=fill)
     if sharpen:
         rgb = im.convert("RGB")
         alpha = im.split()[-1]

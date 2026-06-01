@@ -80,10 +80,23 @@
   var progress = document.getElementById('casebook-progress');
   if (progress) {
     var scrollable = document.documentElement;
+    var slug = window.location.pathname.split('/').filter(Boolean).pop();
+    var progressTimer = null;
     function updateProgress() {
       var total = scrollable.scrollHeight - window.innerHeight;
       var pct = total > 0 ? Math.min(window.scrollY / total, 1) : 0;
       progress.style.transform = 'scaleX(' + pct + ')';
+      if (window.CaseyCompanion && window.CaseyCompanion.recordProgress && slug) {
+        clearTimeout(progressTimer);
+        progressTimer = setTimeout(function () {
+          var ch = null;
+          document.querySelectorAll('.case-chapter[data-chapter]').forEach(function (el) {
+            var r = el.getBoundingClientRect();
+            if (r.top <= window.innerHeight * 0.35 && r.bottom > 80) ch = el.dataset.chapter;
+          });
+          window.CaseyCompanion.recordProgress(slug, ch || 'hook', pct);
+        }, 400);
+      }
     }
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();

@@ -1,4 +1,4 @@
-const CACHE = 'ap-v33';
+const CACHE = 'ap-v34';
 const ASSETS = [
   '/',
   /* Design system — load order: foundation → theme → shell → site */
@@ -58,14 +58,39 @@ self.addEventListener('activate', function (e) {
   self.clients.claim();
 });
 
+self.addEventListener('message', function (e) {
+  if (e.data && e.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 function networkFirst(request) {
   return fetch(request)
     .then(function (res) {
-      var clone = res.clone();
-      caches.open(CACHE).then(function (c) { c.put(request, clone); });
+      if (res && res.ok) {
+        var clone = res.clone();
+        caches.open(CACHE).then(function (c) { c.put(request, clone); });
+      }
       return res;
     })
     .catch(function () { return caches.match(request); });
+}
+
+/** Always prefer network for deployable text assets so reviewers never see stale UI. */
+function wantsNetworkFirst(url) {
+  var p = url.pathname;
+  if (p.indexOf('/cases/') === 0) return true;
+  if (p.indexOf('/assets/platform/') === 0) return true;
+  if (p === '/assets/contact.js') return true;
+  if (p === '/assets/theme.js' ||
+      p === '/assets/visuals.js' ||
+      p === '/assets/recruiter.js' ||
+      p === '/assets/i18n/i18n.js' ||
+      p.indexOf('/assets/i18n/locales/') === 0) {
+    return true;
+  }
+  if (/\.(css|js|json|mjs)$/.test(p)) return true;
+  return false;
 }
 
 self.addEventListener('fetch', function (e) {
@@ -80,37 +105,21 @@ self.addEventListener('fetch', function (e) {
     return;
   }
 
-  /* contact.js: network-first — deploy-injected Web3Forms key must not stay stale in cache */
-  if (url.pathname === '/assets/contact.js') {
+  /* CSS, JS, Casebook, platform chrome: network-first */
+  if (wantsNetworkFirst(url)) {
     e.respondWith(networkFirst(e.request));
     return;
   }
 
-  /* platform chrome: network-first so picker fixes deploy immediately */
-  if (url.pathname.indexOf('/assets/platform/') === 0) {
-    e.respondWith(networkFirst(e.request));
-    return;
-  }
-
-  /* prefs + orchestration JS: network-first (avoid stale picker/recruiter wiring) */
-  if (
-    url.pathname === '/assets/theme.js' ||
-    url.pathname === '/assets/i18n/i18n.js' ||
-    url.pathname.indexOf('/assets/i18n/locales/') === 0 ||
-    url.pathname === '/assets/visuals.js' ||
-    url.pathname === '/assets/recruiter.js'
-  ) {
-    e.respondWith(networkFirst(e.request));
-    return;
-  }
-
-  /* Assets: cache-first */
+  /* Images & fonts: cache-first (large, change rarely) */
   e.respondWith(
     caches.match(e.request).then(function (cached) {
       if (cached) return cached;
       return fetch(e.request).then(function (res) {
-        var clone = res.clone();
-        caches.open(CACHE).then(function (c) { c.put(e.request, clone); });
+        if (res && res.ok) {
+          var clone = res.clone();
+          caches.open(CACHE).then(function (c) { c.put(e.request, clone); });
+        }
         return res;
       });
     })

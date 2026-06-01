@@ -1,0 +1,14 @@
+{# Casey companion preferences — intensity + milestones (Casebook only) #}
+<div class="casebook-prefs casey-companion-prefs" data-casey-prefs-root>
+  <p class="casebook-prefs__label">Casey guide</p>
+  <div class="casebook-prefs__group" role="radiogroup" aria-label="Casey intensity">
+    <button type="button" class="casebook-prefs__menu" role="menuitemradio" data-casey-intensity="full" aria-checked="true">Full — hints, motion, voice</button>
+    <button type="button" class="casebook-prefs__menu" role="menuitemradio" data-casey-intensity="quiet" aria-checked="false">Quiet — no rotation or confetti</button>
+    <button type="button" class="casebook-prefs__menu" role="menuitemradio" data-casey-intensity="off" aria-checked="false">Off — avatar only</button>
+  </div>
+  <p class="casebook-prefs__label">Milestones</p>
+  <ul class="casey-prefs-milestones" data-casey-milestones aria-label="Your Casey milestones"></ul>
+  <p class="casebook-prefs__hint">
+    <a class="casebook-prefs__link" href="{{ '/?resetCompanion=1' | url }}">Reset Casey memory</a>
+  </p>
+</div>

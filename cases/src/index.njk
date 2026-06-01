@@ -100,7 +100,8 @@ permalink: /index.html
                   <span class="case-card__badge case-card__badge--flagship">★ Flagship</span>
                 {% endif %}
                 {% if case.mvpLaunch and isLive %}
-                  <span class="case-card__badge case-card__badge--mvp" title="MVP launch — references, demo, and Casey polish">MVP</span>
+                  <span id="mvp-badge-desc" class="visually-hidden">MVP launch case with references, interactive demo, and Casey coach polish.</span>
+                  <span class="case-card__badge case-card__badge--mvp" title="MVP launch — references, demo, and Casey polish" aria-describedby="mvp-badge-desc">MVP</span>
                 {% endif %}
                 {% if case.tier == 'pro' %}
                   <span class="case-card__badge case-card__badge--pro" title="Pro depth — full access coming soon">🔒 Pro</span>
@@ -127,10 +128,11 @@ permalink: /index.html
   {# Casey empty state — shown by track filter JS when 0 live cases match #}
   <div class="hub-empty" id="hub-grid-empty" hidden aria-live="polite">
     <img class="hub-empty__img"
-         src="{{ '/assets/casey/junior/support.png' | url }}"
+         src="{{ '/assets/casey/junior/curious.png' | url }}"
          alt="Casey — no cases match this filter"
          width="80" height="80"
-         loading="lazy" />
+         loading="lazy"
+         data-casey-empty-avatar="true" />
     <p class="hub-empty__msg">No cases match that filter.</p>
     <button type="button" class="casey-hub__action" onclick="document.getElementById('track-filter').value='';document.getElementById('track-filter').dispatchEvent(new Event('change'))">
       Clear filter
@@ -229,6 +231,12 @@ permalink: /index.html
 }());
 </script>
 
+<script id="manifest-slug-order" type="application/json">[{% for c in manifest.cases %}"{{ c.slug }}"{% if not loop.last %},{% endif %}{% endfor %}]</script>
+<script id="hub-case-titles" type="application/json">{
+{%- for c in manifest.cases -%}
+  "{{ c.slug }}": {{ c.title | dump }}{% if not loop.last %},{% endif %}
+{%- endfor -%}
+}</script>
 <script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casey-lottie.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casey-hub.js' | url }}" defer></script>
