@@ -67,16 +67,7 @@ jobs:
 
           echo "✓ Staged $(find _deploy -type f | wc -l) files"
 
-      - name: Static and unit tests on staged artifact
-        env:
-          DEPLOY_DIR: ${{ github.workspace }}/_deploy
-        run: |
-          cd tests
-          npm install
-          npm run test:static
-          npm run test:unit
-
-      # ── Inject secrets ─────────────────────────────────────────────────────
+      # ── Stamp must run before tests so HTML/JS have real BUILD_IDs ──────────
       - name: Stamp deploy build id for cache busting
         run: |
           set -euo pipefail
@@ -87,6 +78,25 @@ jobs:
           if grep -rq '__AP_BUILD_ID__' _deploy 2>/dev/null; then
             echo "::warning::Some __AP_BUILD_ID__ placeholders remain (non-html/js assets are OK)"
           fi
+
+      - name: Static and unit tests on staged artifact
+        env:
+          DEPLOY_DIR: ${{ github.workspace }}/_deploy
+        run: |
+          cd tests
+          npm install
+          npm run test:static
+          npm run test:unit
+
+      - name: Post-stamp deploy artifact checks
+        env:
+          DEPLOY_DIR: ${{ github.workspace }}/_deploy
+        run: |
+          cd tests
+          node static/assert-casey-fur-deploy.mjs
+          node static/assert-casey-html-bust.mjs
+
+      # ── Inject secrets ─────────────────────────────────────────────────────
 
       - name: Inject secrets into deployed files
         env:

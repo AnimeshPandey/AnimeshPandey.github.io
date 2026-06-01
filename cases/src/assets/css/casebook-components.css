@@ -465,6 +465,11 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   transition: opacity 0.22s ease;
 }
 
+/* Hub loading gate: hide avatar until pose bundle is preloaded (set by JS). */
+.casey-avatar-frame[data-casey-loading] .casey-avatar-frame__img {
+  opacity: 0;
+}
+
 .casey-coach__card .casey-avatar-frame.casey-breathing,
 .casey-coach--dock-bottom .casey-avatar-frame.casey-breathing {
   animation: casey-breathe var(--casey-breathe-duration, 4s) ease-in-out infinite;

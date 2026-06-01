@@ -22,6 +22,7 @@ const scripts = [
   'assert-deploy-routes.mjs',
   'assert-critical-assets.mjs',
   'assert-html-contracts.mjs',
+  'assert-seo-structured-data.mjs',
   'assert-case-continue.mjs',
   'assert-manifest-consistency.mjs',
   'assert-internal-links-sample.mjs',
