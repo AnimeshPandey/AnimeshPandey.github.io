@@ -923,6 +923,11 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   color: var(--casebook-ink-faint);
 }
 
+#hub-grid-empty.hub-empty[hidden],
+.hub-empty[hidden] {
+  display: none !important;
+}
+
 .hub-empty__avatar {
   width: 80px;
   height: 80px;
