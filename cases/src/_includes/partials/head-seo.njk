@@ -34,6 +34,18 @@
 
 {% include 'partials/platform-fonts.njk' %}
 
+{# ── Keywords (case pages only — built from principle + track + outcomes) ── #}
+{% if schemaType == 'Article' %}
+  {%- set _kw = [] -%}
+  {%- if principle %}{% set _kw = (_kw.push(principle), _kw) %}{% endif -%}
+  {%- if track %}{% set _kw = (_kw.push(track | replace('-', ' ')), _kw) %}{% endif -%}
+  {%- set _kw = (_kw.push('frontend engineering'), _kw) -%}
+  {%- set _kw = (_kw.push('case study'), _kw) -%}
+  {%- set _kw = (_kw.push('JavaScript'), _kw) -%}
+  {%- set _kw = (_kw.push(site.name), _kw) -%}
+  <meta name="keywords" content="{{ _kw | join(', ') }}" />
+{% endif %}
+
 {# ── Robots ── #}
 {% if noindex %}
   <meta name="robots" content="noindex, follow" />
@@ -54,10 +66,20 @@
   "name": "{{ site.name }}",
   "url": "{{ site.url }}",
   "description": "{{ site.tagline }}",
+  "inLanguage": "en",
   "author": {
     "@type": "Person",
     "name": "{{ site.author.name }}",
     "url": "{{ site.author.url }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ site.name }}",
+    "url": "{{ site.url }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ site.origin }}/brand/casebook-favicon.svg"
+    }
   },
   "potentialAction": {
     "@type": "SearchAction",
@@ -69,6 +91,26 @@
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{{ site.name }} — Interactive Cases",
+  "description": "{{ site.tagline }}",
+  "url": "{{ site.url }}",
+  "numberOfItems": {{ collections.liveCases | length }},
+  "itemListElement": [
+    {% for case in collections.liveCases %}
+    {
+      "@type": "ListItem",
+      "position": {{ loop.index }},
+      "name": "{{ case.title | escape }}",
+      "url": "{{ site.url }}{{ case.slug }}/"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
 {% elif schemaType == 'Article' %}
 <script type="application/ld+json">
 {
@@ -77,6 +119,16 @@
   "name": "{{ title }}",
   "description": "{{ pageDesc }}",
   "url": "{{ pageCanonical }}",
+  "learningResourceType": "Interactive case study",
+  "educationalLevel": "beginner to advanced",
+  "teaches": "{{ principle | default('') }}",
+  "about": {
+    "@type": "Thing",
+    "name": "{{ principle | default(title) }}"
+  },
+  "keywords": "{{ principle | default('') }}, {{ track | replace('-', ' ') if track else '' }}, frontend engineering, JavaScript",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
   "author": {
     "@type": "Person",
     "name": "{{ site.author.name }}",
@@ -85,11 +137,15 @@
   "publisher": {
     "@type": "Organization",
     "name": "{{ site.name }}",
-    "url": "{{ site.url }}"
+    "url": "{{ site.url }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ site.origin }}/brand/casebook-favicon.svg"
+    }
   },
   "datePublished": "{{ publishedAt | default('') }}",
-  "educationalLevel": "intermediate",
-  "teaches": "{{ principle | default('') }}"
+  "dateModified": "{{ publishedAt | default('') }}",
+  "image": "{{ pageOgImage }}"
 }
 </script>
 <script type="application/ld+json">
@@ -106,8 +162,8 @@
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "{{ track | replace('-', ' ') | title if track else 'Case study' }}",
-      "item": "{{ site.url }}{% if track %}?track={{ track }}{% endif %}"
+      "name": "{{ track | replace('-', ' ') | title if track else 'Case studies' }}",
+      "item": "{{ site.url }}"
     },
     {
       "@type": "ListItem",

@@ -4,5 +4,27 @@ eleventyExcludeFromCollections: true
 ---
 User-agent: *
 Allow: /
+Disallow: /account/
 
 Sitemap: {{ site.url }}sitemap.xml
+
+# AI crawlers — see llms.txt for structured site description
+User-agent: GPTBot
+Allow: /
+Disallow: /account/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /account/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /account/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /account/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /account/

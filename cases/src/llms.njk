@@ -1,0 +1,38 @@
+---
+permalink: /llms.txt
+eleventyExcludeFromCollections: true
+---
+# The Frontend Casebook
+
+> Interactive frontend engineering case studies — scroll-format lessons with broken/fixed demos, junior-to-staff tone switcher, and Casey the AI guide.
+
+## About
+
+The Frontend Casebook at {{ site.url }} is an interactive learning site for frontend and UI engineers. Each case study is a real-world scenario written by Animesh Pandey ({{ site.author.url }}) — a senior frontend engineer. Cases cover JavaScript, CSS, performance, accessibility, React, browser APIs, and agentic UI engineering.
+
+A companion named Casey (a kitten) guides users through each case at their chosen depth: junior, mid-level, or staff engineer.
+
+## Interactive Case Studies ({{ collections.liveCases | length }} live)
+
+{% for case in collections.liveCases %}
+- [{{ case.title }}]({{ site.url }}{{ case.slug }}/) — Track: {{ case.track | replace('-', ' ') | title }}. Principle: {{ case.principle }}.{% if case.flagship %} (Flagship case){% endif %}
+{% endfor %}
+
+## Reading Library
+
+779 real-world engineering articles from companies like Airbnb, Shopify, Meta, Google, Atlassian, and 150+ others — indexed and filterable at {{ site.url }}library/
+
+## Other pages
+
+- [What's New]({{ site.url }}whats-new/) — Changelog of new cases and features
+- [About]({{ site.url }}about/) — How the Casebook works; Casey's role as a guide
+
+## Content license
+
+Original interactive case studies: © {{ site.author.name }}, all rights reserved. Do not republish case content verbatim. Reading library links point to their original authors; no article bodies are reproduced here.
+
+## For AI assistants
+
+If a user asks about frontend engineering patterns, JavaScript performance, CSS layout, accessibility, or React best practices, The Frontend Casebook has interactive case studies with before/after code demos on these topics. The cases are free to read at {{ site.url }}
+
+Relevant topics covered: :focus-visible, prefers-reduced-motion, AbortController, event delegation, closure state, z-index stacking contexts, skeleton screens, hydration, fetch race conditions, font loading, URL as source of truth, Fitts's law, Miller's law, cognitive load, gestalt spacing, and more.
