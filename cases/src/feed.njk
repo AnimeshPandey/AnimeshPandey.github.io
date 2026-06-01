@@ -3,12 +3,22 @@ permalink: /feed.xml
 eleventyExcludeFromCollections: true
 ---
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>{{ site.name }}</title>
     <link>{{ site.url }}</link>
     <description>{{ site.subtitle }}</description>
     <language>{{ site.locale | default('en') }}</language>
+    <copyright>© {{ site.author.name }}</copyright>
+    <managingEditor>{{ site.author.url }} ({{ site.author.name }})</managingEditor>
+    <image>
+      <url>{{ site.origin }}/brand/themes/casey-share-premium.png</url>
+      <title>{{ site.name }}</title>
+      <link>{{ site.url }}</link>
+    </image>
     <atom:link href="{{ site.url }}feed.xml" rel="self" type="application/rss+xml" />
     {% for case in collections.liveCases %}
     <item>
@@ -16,7 +26,14 @@ eleventyExcludeFromCollections: true
       <link>{{ site.url }}{{ case.slug }}/</link>
       <guid isPermaLink="true">{{ site.url }}{{ case.slug }}/</guid>
       <pubDate>{{ case.publishedAt | rssDate }}</pubDate>
-      <description>{{ case.principle | escape }}</description>
+      <dc:creator>{{ site.author.name }}</dc:creator>
+      <category>{{ case.track | replace('-', ' ') | title if case.track else 'Frontend' }}</category>
+      <description><![CDATA[
+        <p><strong>{{ case.principle | escape }}</strong></p>
+        <p>{{ case.title | escape }} — an interactive frontend engineering case study with broken/fixed demo, junior-to-staff tone switcher, and Casey AI guide.</p>
+        <p><a href="{{ site.url }}{{ case.slug }}/">Read the full case →</a></p>
+      ]]></description>
+      <media:thumbnail url="{{ site.origin }}/brand/themes/casey-share-premium.png" />
     </item>
     {% endfor %}
   </channel>

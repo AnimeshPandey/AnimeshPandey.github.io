@@ -13,9 +13,15 @@
   if (!window.CaseyCompanion) return;
   window.CaseyCompanion.init({ surface: 'case', caseyData: caseyData });
 
-  // CaseyGuide: fire read-only events so other modules can react.
+  // CaseyGuide: set a smarter opening bubble based on the user's progress context.
   if (window.CaseyGuide) {
     CaseyGuide.recordEvent('case-started');
+    var startSuggestion = CaseyGuide.suggest('case-start');
+    if (startSuggestion && startSuggestion.line) {
+      document.querySelectorAll('.casey-coach__bubble').forEach(function (el) {
+        el.textContent = startSuggestion.line;
+      });
+    }
   }
 
   // Listen for case completion and forward to CaseyGuide.
