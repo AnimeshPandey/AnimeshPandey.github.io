@@ -11,7 +11,7 @@ Live at **[anmshpndy.com/cases/](https://anmshpndy.com/cases/)**.
 | CSS | Vanilla custom properties (casebook-tokens + casebook-layout + casebook-components) |
 | JS | Vanilla ES modules (no bundler, no framework) |
 | Progress | `localStorage` (`casebook-companion-v1`) + hub/case UI via `casebook-progression.js` |
-| Sign-in (beta) | `/account/` — email magic link (client-generated; wire email provider later) |
+| Sign-in (beta) | `/account/` — email magic-link flow; `casebook-auth.js` generates client-side link; transactional email provider not yet wired |
 | Deploy | GitHub Actions → GitHub Pages (built in CI, output merged at `/cases/`) |
 
 ## Local development
@@ -103,20 +103,45 @@ Key contracts:
 
 ## Current status (2026-06-01)
 
-**Shipped:** 31 live interactive cases with working demos · reading library (779 articles) · faceted filters · company pages · Pro tier stubs · SEO (sitemap, JSON-LD, Lighthouse script) · Casey hub/FSM/guide/breathe/blink
+**Shipped (D0–D7 complete):**
+- 31 live interactive cases with working demos (22 demo modules + `_demo-utils.js`)
+- Reading library — 779 English articles, faceted filters (category, company, year, sort)
+- Company pages — 187 company index pages (`/cases/companies/`)
+- Pro tier stubs — 81 Pro badges on hub, honor-system localStorage gate, `payments.enabled: false`
+- SEO — sitemap, JSON-LD, CSS/JS route-scoping, Lighthouse check script
+- Casey companion — FSM hub/case/library, hub hero motion (float/sparkles/glow), intensity prefs, coach peek, library bounce, confetti, voice v2
+- Casey library strip — `casey-library-strip.njk` + `read` pose on `/cases/library/`
+- Progression — `casebook-companion-v1` localStorage: case progress, confetti milestones, hub strip, case continue CTAs
+- Email sign-in beta — `/account/` with copy-magic-link UX (client-side only)
+- Regression tests — `tests/` static, unit, 69+ e2e including all 31 live slugs
 
-**In progress:** content polish on 22-case MVP set (story, fe-depth, references, images)
+**In progress:** content polish on 22-case MVP set (story chapters, UI strips, FE depth, references)
 
 ## Deferred (not yet built)
 
-- Casey style anchors + premium SVG art regen (SVG body colour has drift — see `frontendcs-corpus/prompt-casey-style-anchors.md`)
-- Casey hub hero WebP (currently uses `wave.svg` — see `frontendcs-corpus/prompt-casey-hub-hero.md`)
-- Casey memory system / localStorage progress tracking (see `frontendcs-corpus/prompt-casey-memory.md`)
-- Casey library strip on `/cases/library/` (see `frontendcs-corpus/prompt-casey-library-strip.md`)
+**Content**
+- Content polish — ~62 chapter additions across 19 cases (story, ui-strip, fe-depth, references) — see `frontendcs-corpus/NEXT-BUILD-PLAN.md` Task 1-2
+- `mvpLaunch: true` manifest gating on polished 22-case set — after content complete
+
+**Casey**
+- Casey smart guide / suggestion system (`casey-guide.js` — `suggest()`, `recordEvent()`, `getProgress()`) — distinct from basic progress already in `casebook-companion-v1`
+- Casey style anchors + premium art regen (SVG body colour has drift) — see `frontendcs-corpus/prompt-casey-style-anchors.md`
+- Casey hub hero WebP (currently uses `wave.svg`) — see `frontendcs-corpus/prompt-casey-hub-hero.md`
+
+**Auth**
+- Transactional email for real magic links (Resend / Postmark) — replaces copy-link beta UX
+- Server-side progress sync — attach `casebook-companion-v1` to signed-in user
+
+**Discovery & distribution**
 - `/whats-new/` changelog page
 - "New" badge on hub cards (< 14 days since `publishedAt`)
-- `case-share.njk` Web Share API
-- Track hub pages (`/cases/tracks/{id}/`)
+- Track hub pages (`/cases/tracks/{id}/`) — BreadcrumbList currently proxies `?track={id}`
 - Pagefind static search
 - Buttondown newsletter CI send on publish
+
+**Monetization**
 - `payments.enabled: true` → flip at 100 MAU
+
+**Future UX**
+- `case-share.njk` Web Share API (partial built, not wired)
+- DotLottie hub idle animations for Casey

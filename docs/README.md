@@ -5,6 +5,8 @@ Human-readable technical documentation for **anmshpndy.com** (`AnimeshPandey.git
 | File | Purpose |
 |------|---------|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Exhaustive reference — layers, files, load order, subsystems, deploy, SW, **alignment status** (doc vs code drift), maintainer workflows |
+| [PLATFORM-SHELL.md](PLATFORM-SHELL.md) | Stylesheet order, theme contract, features by surface — portfolio vs Casebook |
+| [CASEBOOK-ROADMAP.md](CASEBOOK-ROADMAP.md) | Forward roadmap — content polish, Casey smart guide, Pro payments, premium art, auth, discovery |
 
 ## Repo alignment
 
