@@ -2,7 +2,7 @@
 {% set pageTitle = title + ' · ' + site.name if title else site.name %}
 {% set pageDesc = description if description else site.subtitle %}
 {% set pageCanonical = site.url + (slug + '/' if slug else '') %}
-{% set pageOgImage = ogImage if ogImage else site.origin + '/assets/og-image.png' %}
+{% set pageOgImage = ogImage if ogImage else site.origin + '/brand/themes/share-high-contrast.png' %}
 
 <title>{{ pageTitle }}</title>
 <meta name="description" content="{{ pageDesc }}" />
@@ -27,7 +27,7 @@
 <meta name="twitter:image" content="{{ pageOgImage }}" />
 
 {# ── Icons & manifest: from portfolio root, not /cases/ ── #}
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/svg+xml" href="/brand/casebook-favicon.svg" />
 <link rel="manifest" href="/site.webmanifest" />
 
 {% include 'partials/platform-fonts.njk' %}

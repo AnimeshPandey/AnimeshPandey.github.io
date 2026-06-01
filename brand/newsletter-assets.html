@@ -3,333 +3,276 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Frontend Casebook — Newsletter Brand Assets</title>
+  <title>Frontend Casebook — Newsletter Brand Assets (All Themes)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ── Theme tokens (mirrors assets/theme.css) ── */
+    [data-theme="high-contrast"] {
+      --bg:#000000; --ink:#FFFFFF; --ink-2:#DDDDDD; --ink-3:#999999;
+      --accent:#FFD700; --sage:#44DD88; --border:#333333;
+    }
+    [data-theme="dark"] {
+      --bg:#141210; --ink:#F5F0E8; --ink-2:#C4B8AE; --ink-3:#7A6E68;
+      --accent:#E07A52; --sage:#7BAF98; --border:#2E2926;
+    }
+    [data-theme="light"] {
+      --bg:#FAF8F4; --ink:#1C1714; --ink-2:#5C4F47; --ink-3:#9B8C84;
+      --accent:#BF5A32; --sage:#4E7A68; --border:#DDD6C9;
+    }
+    [data-theme="sage"] {
+      --bg:#F4F7F4; --ink:#1A2218; --ink-2:#4A5C45; --ink-3:#8A9E84;
+      --accent:#2D7A4F; --sage:#2D7A4F; --border:#C8D9C4;
+    }
+    [data-theme="slate"] {
+      --bg:#141B22; --ink:#E4EEF4; --ink-2:#9BBACE; --ink-3:#5C7888;
+      --accent:#3BBFBF; --sage:#5BBFAA; --border:#23323E;
+    }
+    [data-theme="dusk"] {
+      --bg:#18131E; --ink:#F0EAF8; --ink-2:#BBA8CC; --ink-3:#7A6888;
+      --accent:#D4A840; --sage:#A87AC0; --border:#2E2438;
+    }
+
+    /* ── Page chrome ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      background: #1a1a1a;
+      background: #2a2a2a;
       font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-      padding: 48px 40px;
+      padding: 40px;
       display: flex;
       flex-direction: column;
-      gap: 56px;
-      min-height: 100vh;
+      gap: 64px;
     }
-
-    .section-label {
-      color: #666;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 16px;
+    .theme-row { display: flex; flex-direction: column; gap: 20px; }
+    .theme-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #666;
     }
+    .theme-assets { display: flex; align-items: flex-start; gap: 32px; flex-wrap: wrap; }
 
-    /* ── ICON 400×400 ── */
-    .icon-wrap {
-      display: flex;
-      align-items: flex-start;
-      gap: 32px;
-    }
-
+    /* ── Icon ── */
     .icon {
-      width: 400px;
-      height: 400px;
-      flex-shrink: 0;
-      background: #000000;
+      width: 400px; height: 400px; flex-shrink: 0;
+      background: var(--bg);
       border-radius: 56px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      position: relative;
-      overflow: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+      position: relative; overflow: hidden;
     }
-
     .icon::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background-image:
-        linear-gradient(rgba(255,215,0,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,215,0,.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-      border-radius: inherit;
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px; opacity: 0.25; border-radius: inherit;
     }
-
     .icon__mark {
       font-family: 'JetBrains Mono', 'Courier New', monospace;
-      font-size: 148px;
-      font-weight: 700;
-      color: #FFD700;
-      line-height: 1;
-      letter-spacing: -2px;
-      position: relative;
-      z-index: 1;
+      font-size: 148px; font-weight: 700; color: var(--accent);
+      line-height: 1; letter-spacing: -2px; position: relative; z-index: 1;
     }
-
     .icon__label {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      color: #444;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      position: relative;
-      z-index: 1;
+      font-size: 15px; font-weight: 600; color: var(--ink-3);
+      letter-spacing: 5px; text-transform: uppercase; position: relative; z-index: 1;
     }
 
-    .icon--200 {
-      width: 200px;
-      height: 200px;
-      border-radius: 28px;
-    }
-    .icon--200 .icon__mark { font-size: 74px; }
-    .icon--200 .icon__label { font-size: 7.5px; letter-spacing: 2.5px; }
-
-    .icon--64 {
-      width: 64px;
-      height: 64px;
-      border-radius: 10px;
-      gap: 4px;
-    }
-    .icon--64 .icon__mark { font-size: 22px; }
-    .icon--64 .icon__label { display: none; }
-
-    .icon-sizes {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      justify-content: center;
-    }
-    .icon-size-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .icon-size-row span {
-      color: #555;
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* ── SHARE IMAGE 1200×630 ── */
+    /* ── Share image ── */
     .share {
-      width: 1200px;
-      height: 630px;
-      background: #000000;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
+      width: 1200px; height: 630px; flex-shrink: 0;
+      background: var(--bg);
+      position: relative; overflow: hidden; display: flex; align-items: center;
     }
-
-    .share__bg-mark {
-      position: absolute;
-      left: -60px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      font-size: 580px;
-      line-height: 1;
-      color: rgba(255, 215, 0, 0.045);
-      pointer-events: none;
-      user-select: none;
-      white-space: nowrap;
-    }
-
     .share::before {
-      content: '';
-      position: absolute;
-      inset: 0;
+      content: ''; position: absolute; inset: 0;
       background-image:
-        linear-gradient(rgba(255,215,0,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,215,0,.025) 1px, transparent 1px);
-      background-size: 60px 60px;
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px; opacity: 0.15;
     }
-
+    .share__bg-mark {
+      position: absolute; left: -60px; top: 50%; transform: translateY(-50%);
+      font-family: 'JetBrains Mono', monospace; font-weight: 700;
+      font-size: 580px; line-height: 1; color: var(--accent); opacity: 0.055;
+      pointer-events: none; user-select: none; white-space: nowrap;
+    }
     .share__bar {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: linear-gradient(180deg, #FFD700 0%, #44DD88 100%);
+      position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: linear-gradient(180deg, var(--accent) 0%, var(--sage) 100%);
     }
-
     .share__content {
-      position: relative;
-      z-index: 2;
-      padding: 0 80px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
+      position: relative; z-index: 2;
+      padding: 0 80px; display: flex; flex-direction: column;
     }
-
     .share__eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
-      font-weight: 400;
-      color: #44DD88;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace; font-size: 14px;
+      color: var(--sage); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
     }
-
     .share__mark {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 60px;
-      font-weight: 700;
-      color: #FFD700;
-      line-height: 1;
-      margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace; font-size: 60px; font-weight: 700;
+      color: var(--accent); line-height: 1; margin-bottom: 20px;
     }
-
     .share__title {
-      font-family: 'DM Serif Display', Georgia, serif;
-      font-size: 80px;
-      font-weight: 400;
-      color: #FFFFFF;
-      line-height: 1.05;
-      letter-spacing: -1px;
-      margin-bottom: 32px;
+      font-family: 'DM Serif Display', Georgia, serif; font-size: 80px; font-weight: 400;
+      color: var(--ink); line-height: 1.05; letter-spacing: -1px; margin-bottom: 32px;
     }
-
-    .share__rule {
-      width: 80px;
-      height: 2px;
-      background: #FFD700;
-      margin-bottom: 28px;
-    }
-
+    .share__rule { width: 80px; height: 2px; background: var(--accent); margin-bottom: 28px; }
     .share__desc {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 20px;
-      font-weight: 400;
-      color: #999;
-      line-height: 1.5;
-      max-width: 560px;
-      margin-bottom: 48px;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px;
+      color: var(--ink-3); line-height: 1.5; max-width: 560px; margin-bottom: 48px;
     }
-
-    .share__meta {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
+    .share__meta { display: flex; align-items: center; gap: 20px; }
     .share__pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255,215,0,.10);
-      border: 1px solid rgba(255,215,0,.20);
-      border-radius: 100px;
-      padding: 6px 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      font-weight: 400;
-      color: #FFD700;
+      display: inline-flex; align-items: center; padding: 6px 14px;
+      border: 1px solid var(--accent); border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace; font-size: 12px;
+      color: var(--accent); opacity: 0.75;
     }
-
-    .share__pill--green {
-      background: rgba(68,221,136,.10);
-      border-color: rgba(68,221,136,.20);
-      color: #44DD88;
-    }
-
+    .share__pill--sage { border-color: var(--sage); color: var(--sage); }
     .share__url {
-      position: absolute;
-      bottom: 36px;
-      right: 60px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: #444;
-      letter-spacing: 0.5px;
-      z-index: 2;
-    }
-
-    .instructions {
-      background: #111;
-      border: 1px solid #333;
-      border-radius: 12px;
-      padding: 24px 28px;
-      color: #999;
-      font-size: 13px;
-      line-height: 1.7;
-      max-width: 800px;
-    }
-    .instructions strong { color: #ddd; }
-    .instructions code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      background: #1e1e1e;
-      padding: 1px 6px;
-      border-radius: 4px;
-      color: #FFD700;
+      position: absolute; bottom: 36px; right: 60px;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px;
+      color: var(--ink-3); opacity: 0.5; z-index: 2;
     }
   </style>
 </head>
 <body>
 
-  <div class="instructions">
-    <strong>How to export these as images</strong><br>
-    <strong>Icon (400×400):</strong> Right-click the icon below → Inspect → right-click the element → "Capture node screenshot" in Chrome DevTools. Or screenshot at exact pixel dimensions.<br>
-    <strong>Share image (1200×630):</strong> Same approach — or zoom browser to 100%, open DevTools, select <code>.share</code> element, capture node screenshot. Buttondown accepts PNG or JPG for the share image.
-  </div>
-
-  <!-- ── ICON ── -->
-  <div>
-    <div class="section-label">Icon — 400 × 400 px (Buttondown favicon + archive header)</div>
-    <div class="icon-wrap">
-      <div class="icon">
-        <div class="icon__mark">{ }</div>
-        <div class="icon__label">Casebook</div>
-      </div>
-      <div class="icon-sizes">
-        <div class="icon-size-row">
-          <div class="icon icon--200">
-            <div class="icon__mark">{ }</div>
-            <div class="icon__label">Casebook</div>
+  <div class="theme-row" data-theme="high-contrast">
+    <div class="theme-label">high-contrast — #000 · #FFD700 gold · #44DD88 sage</div>
+    <div class="theme-assets">
+      <div class="icon"><div class="icon__mark">{ }</div><div class="icon__label">Casebook</div></div>
+      <div class="share">
+        <div class="share__bg-mark">{ }</div><div class="share__bar"></div>
+        <div class="share__content">
+          <div class="share__eyebrow">Newsletter</div>
+          <div class="share__mark">{ }</div>
+          <div class="share__title">The Frontend<br>Casebook</div>
+          <div class="share__rule"></div>
+          <div class="share__desc">Scrollable case studies for frontend engineers —<br>skeleton screens, perceived performance, streaming UIs.</div>
+          <div class="share__meta">
+            <span class="share__pill">29 cases</span>
+            <span class="share__pill share__pill--sage">junior → staff</span>
+            <span class="share__pill">interactive demos</span>
           </div>
-          <span>200px</span>
         </div>
-        <div class="icon-size-row">
-          <div class="icon icon--64">
-            <div class="icon__mark">{ }</div>
-            <div class="icon__label">Casebook</div>
-          </div>
-          <span>64px (favicon preview)</span>
-        </div>
+        <div class="share__url">anmshpndy.com/cases/</div>
       </div>
     </div>
   </div>
 
-  <!-- ── SHARE IMAGE ── -->
-  <div>
-    <div class="section-label">Share Image — 1200 × 630 px (OG image for social previews)</div>
-    <div class="share">
-      <div class="share__bg-mark">{ }</div>
-      <div class="share__bar"></div>
-      <div class="share__content">
-        <div class="share__eyebrow">Newsletter</div>
-        <div class="share__mark">{ }</div>
-        <div class="share__title">The Frontend<br>Casebook</div>
-        <div class="share__rule"></div>
-        <div class="share__desc">Scrollable case studies for frontend engineers —<br>skeleton screens, perceived performance, streaming UIs.</div>
-        <div class="share__meta">
-          <span class="share__pill">29 cases</span>
-          <span class="share__pill--green share__pill">junior → staff</span>
-          <span class="share__pill">interactive demos</span>
+  <div class="theme-row" data-theme="dark">
+    <div class="theme-label">dark (charcoal) — #141210 · #E07A52 orange</div>
+    <div class="theme-assets">
+      <div class="icon"><div class="icon__mark">{ }</div><div class="icon__label">Casebook</div></div>
+      <div class="share">
+        <div class="share__bg-mark">{ }</div><div class="share__bar"></div>
+        <div class="share__content">
+          <div class="share__eyebrow">Newsletter</div>
+          <div class="share__mark">{ }</div>
+          <div class="share__title">The Frontend<br>Casebook</div>
+          <div class="share__rule"></div>
+          <div class="share__desc">Scrollable case studies for frontend engineers —<br>skeleton screens, perceived performance, streaming UIs.</div>
+          <div class="share__meta">
+            <span class="share__pill">29 cases</span>
+            <span class="share__pill share__pill--sage">junior → staff</span>
+            <span class="share__pill">interactive demos</span>
+          </div>
         </div>
+        <div class="share__url">anmshpndy.com/cases/</div>
       </div>
-      <div class="share__url">anmshpndy.com/cases/</div>
+    </div>
+  </div>
+
+  <div class="theme-row" data-theme="light">
+    <div class="theme-label">light (warm paper) — #FAF8F4 · #BF5A32 burnt orange</div>
+    <div class="theme-assets">
+      <div class="icon"><div class="icon__mark">{ }</div><div class="icon__label">Casebook</div></div>
+      <div class="share">
+        <div class="share__bg-mark">{ }</div><div class="share__bar"></div>
+        <div class="share__content">
+          <div class="share__eyebrow">Newsletter</div>
+          <div class="share__mark">{ }</div>
+          <div class="share__title">The Frontend<br>Casebook</div>
+          <div class="share__rule"></div>
+          <div class="share__desc">Scrollable case studies for frontend engineers —<br>skeleton screens, perceived performance, streaming UIs.</div>
+          <div class="share__meta">
+            <span class="share__pill">29 cases</span>
+            <span class="share__pill share__pill--sage">junior → staff</span>
+            <span class="share__pill">interactive demos</span>
+          </div>
+        </div>
+        <div class="share__url">anmshpndy.com/cases/</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-row" data-theme="sage">
+    <div class="theme-label">sage (sage mist) — #F4F7F4 · #2D7A4F forest green</div>
+    <div class="theme-assets">
+      <div class="icon"><div class="icon__mark">{ }</div><div class="icon__label">Casebook</div></div>
+      <div class="share">
+        <div class="share__bg-mark">{ }</div><div class="share__bar"></div>
+        <div class="share__content">
+          <div class="share__eyebrow">Newsletter</div>
+          <div class="share__mark">{ }</div>
+          <div class="share__title">The Frontend<br>Casebook</div>
+          <div class="share__rule"></div>
+          <div class="share__desc">Scrollable case studies for frontend engineers —<br>skeleton screens, perceived performance, streaming UIs.</div>
+          <div class="share__meta">
+            <span class="share__pill">29 cases</span>
+            <span class="share__pill share__pill--sage">junior → staff</span>
+            <span class="share__pill">interactive demos</span>
+          </div>
+        </div>
+        <div class="share__url">anmshpndy.com/cases/</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-row" data-theme="slate">
+    <div class="theme-label">slate (slate studio) — #141B22 · #3BBFBF cyan-teal</div>
+    <div class="theme-assets">
+      <div class="icon"><div class="icon__mark">{ }</div><div class="icon__label">Casebook</div></div>
+      <div class="share">
+        <div class="share__bg-mark">{ }</div><div class="share__bar"></div>
+        <div class="share__content">
+          <div class="share__eyebrow">Newsletter</div>
+          <div class="share__mark">{ }</div>
+          <div class="share__title">The Frontend<br>Casebook</div>
+          <div class="share__rule"></div>
+          <div class="share__desc">Scrollable case studies for frontend engineers —<br>skeleton screens, perceived performance, streaming UIs.</div>
+          <div class="share__meta">
+            <span class="share__pill">29 cases</span>
+            <span class="share__pill share__pill--sage">junior → staff</span>
+            <span class="share__pill">interactive demos</span>
+          </div>
+        </div>
+        <div class="share__url">anmshpndy.com/cases/</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-row" data-theme="dusk">
+    <div class="theme-label">dusk (dusk editorial) — #18131E · #D4A840 muted gold</div>
+    <div class="theme-assets">
+      <div class="icon"><div class="icon__mark">{ }</div><div class="icon__label">Casebook</div></div>
+      <div class="share">
+        <div class="share__bg-mark">{ }</div><div class="share__bar"></div>
+        <div class="share__content">
+          <div class="share__eyebrow">Newsletter</div>
+          <div class="share__mark">{ }</div>
+          <div class="share__title">The Frontend<br>Casebook</div>
+          <div class="share__rule"></div>
+          <div class="share__desc">Scrollable case studies for frontend engineers —<br>skeleton screens, perceived performance, streaming UIs.</div>
+          <div class="share__meta">
+            <span class="share__pill">29 cases</span>
+            <span class="share__pill share__pill--sage">junior → staff</span>
+            <span class="share__pill">interactive demos</span>
+          </div>
+        </div>
+        <div class="share__url">anmshpndy.com/cases/</div>
+      </div>
     </div>
   </div>
 
