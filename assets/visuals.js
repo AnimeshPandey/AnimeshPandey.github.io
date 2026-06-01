@@ -341,7 +341,7 @@
     document.querySelectorAll('.pc, .sv-card, .edu-card').forEach(function(card) {
       var lift = card.classList.contains('pc') ? -4 : -3;
       card.addEventListener('mouseenter', function() {
-        card.style.transitionProperty = 'border-color, box-shadow';
+        card.style.transitionProperty = 'border-color, transform';
       });
       card.addEventListener('mousemove', function(e) {
         var r  = card.getBoundingClientRect();

@@ -73,13 +73,17 @@
   <!-- Fonts: sync with site/src/_includes/partials/platform-fonts.njk -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- Non-blocking: display=swap means text renders with system font immediately -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
 
-  <!-- Styles — load order: foundation tokens → theme (color) → site (components) -->
+  <!-- Styles — critical path: foundation tokens → theme (color) → chrome/shell/buttons → site -->
   <link rel="stylesheet" href="/assets/styles/foundation.css" />
   <link rel="stylesheet" href="/assets/theme.css" />
   <link rel="stylesheet" href="/assets/platform/chrome.css" />
-  <link rel="stylesheet" href="/assets/platform/prefs-chrome.css" />
+  <!-- prefs-chrome.css is the hidden preference panel — non-critical for first paint -->
+  <link rel="preload" href="/assets/platform/prefs-chrome.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/assets/platform/prefs-chrome.css" /></noscript>
   <link rel="stylesheet" href="/assets/platform/shell.css" />
   <link rel="stylesheet" href="/assets/styles/components/button.css" />
   <link rel="stylesheet" href="/assets/site.css" />
@@ -1376,10 +1380,10 @@
 <script src="/assets/contact.js?v=ap24" defer></script>
 <!-- ── Cloudflare Web Analytics ──────────────────────────────────
      SETUP: Create a site at https://dash.cloudflare.com → Web Analytics
-     Replace YOUR_CF_BEACON_TOKEN with your site's beacon token.
-     Cookieless · no banner required · free.
+     Replace YOUR_CF_BEACON_TOKEN with your site's beacon token, then
+     uncomment the script tag below. Cookieless · no banner required · free.
 ─────────────────────────────────────────────────────────────── -->
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
-        data-cf-beacon='{"token": "YOUR_CF_BEACON_TOKEN"}'></script>
+<!-- <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "YOUR_CF_BEACON_TOKEN"}'></script> -->
 </body>
 </html>
