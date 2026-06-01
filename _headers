@@ -1,0 +1,15 @@
+# GitHub Pages / CDN hints — HTML always revalidate; hashed query strings on CSS/JS
+/*.html
+  Cache-Control: max-age=0, must-revalidate
+
+/cases/
+  Cache-Control: max-age=0, must-revalidate
+
+/assets/*
+  Cache-Control: public, max-age=600, must-revalidate
+
+/cases/assets/*
+  Cache-Control: public, max-age=600, must-revalidate
+
+/sw.js
+  Cache-Control: max-age=0, must-revalidate
