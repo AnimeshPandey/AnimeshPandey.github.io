@@ -38,13 +38,13 @@ In CI, the build runs automatically on push to `main`. The `_site/` output is me
 
 ## Casey mascot assets
 
-Regenerate harmonized SVGs (reference-inspired + character bible):
+Casey runtime uses **PNG poses** (`casey-coach.js` / `casey-hub.js`). After AI batch generation, install and resize:
 
 ```bash
-node scripts/generate-casey-svgs.mjs
+./scripts/install-casey-pngs.sh
 ```
 
-Outputs `src/assets/casey/{junior,mid,staff}/*.svg`, `style-anchor/`, and `hub/casey-empty.svg`. See `src/assets/casey/STYLE-GUIDE.md`.
+Legacy SVG regen (fallback): `node scripts/generate-casey-svgs.mjs`. See `src/assets/casey/STYLE-GUIDE.md`.
 
 ## Architecture decisions
 

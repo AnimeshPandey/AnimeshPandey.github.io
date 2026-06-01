@@ -14,11 +14,29 @@
   var html = document.documentElement;
   var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ── Asset base ── */
+  /* ── Asset base (raster poses; see style-anchor/ for tier fronts) ── */
   var assetBase = html.dataset.assetBase || '/cases/assets/casey/';
+  var assetExt = 'png';
+
+  var TONE_KEY = 'casebook-tone';
+
+  function readStoredTone() {
+    try {
+      var t = localStorage.getItem(TONE_KEY);
+      if (['junior', 'mid', 'staff'].indexOf(t) !== -1) return t;
+    } catch (e) {}
+    return 'junior';
+  }
+
+  function voiceLineForTone(tone) {
+    var voice = caseyData.voice;
+    if (!voice || !voice.sections || !voice.sections.length) return null;
+    var hook = voice.sections.filter(function (s) { return s.chapter === 'hook'; })[0];
+    return hook && (hook[tone] || hook.junior) ? hook[tone] || hook.junior : null;
+  }
 
   /* ── State ── */
-  var currentTone = 'junior';
+  var currentTone = readStoredTone();
   var currentChapter = null;
 
   /* ── All coach cards (desktop aside + mobile dock) ── */
@@ -28,11 +46,18 @@
 
   /* ── Avatar path ── */
   function avatarSrc(tier, pose) {
-    return assetBase + tier + '/' + (pose || 'idle') + '.svg';
+    return assetBase + tier + '/' + (pose || 'idle') + '.' + assetExt;
   }
 
-  function setAvatar(tier, pose) {
+  function setAvatar(tier, pose, opts) {
+    opts = opts || {};
     avatars.forEach(function (img) {
+      if (opts.tierFade && !prm) {
+        img.classList.remove('casey-tier-fade');
+        void img.offsetWidth;
+        img.classList.add('casey-tier-fade');
+        setTimeout(function () { img.classList.remove('casey-tier-fade'); }, 280);
+      }
       img.src = avatarSrc(tier, pose);
       img.alt = 'Casey, ' + tier + ' (' + pose + ')';
     });
@@ -103,8 +128,12 @@
   function onChapterEnter(chapterId) {
     currentChapter = chapterId;
     var hint = getHint(chapterId, currentTone);
-    var pose = chapterId === 'demo' ? 'point' : (hint ? 'perk' : 'idle');
-    if (prm) pose = 'idle';
+    var pose = 'idle';
+    if (!prm) {
+      if (chapterId === 'demo') pose = 'point';
+      else if (chapterId === 'takeaway') pose = 'proud';
+      else if (hint) pose = 'perk';
+    }
     setAvatar(currentTone, pose);
     if (hint) setBubble(hint);
     renderActionChips(chapterId, currentTone);
@@ -152,9 +181,9 @@
     var newTone = e.detail && e.detail.tone;
     if (!newTone) return;
     currentTone = newTone;
-    setAvatar(newTone, 'idle');
+    setAvatar(newTone, 'idle', { tierFade: true });
     var hint = currentChapter ? getHint(currentChapter, newTone) : null;
-    setBubble(hint || 'Switching to ' + newTone + ' mode.');
+    setBubble(hint || voiceLineForTone(newTone) || '');
     if (currentChapter) renderActionChips(currentChapter, newTone);
     if (interactionsCfg) applyMotionTokens(interactionsCfg, newTone);
   });
@@ -169,8 +198,10 @@
   var dock = document.getElementById('casey-dock');
   if (dock) dock.hidden = false;
 
-  /* Initial state — sleep pose when user prefers reduced motion */
+  /* Initial state — sync stored tone (case-scroll may have fired before this script) */
   setAvatar(currentTone, prm ? 'sleep' : 'idle');
+  var initHint = voiceLineForTone(currentTone);
+  if (initHint) setBubble(initHint);
 
   /* ── casey-interactions.json: tier labels, blink, motion tokens ── */
   var interactionsCfg = null;

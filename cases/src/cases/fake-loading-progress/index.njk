@@ -72,6 +72,57 @@ xhr.upload.addEventListener('progress', (e) =&gt; {
   </div>
 </section>
 
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story">
+  <h2>The checkout that lied about 90%</h2>
+
+  <div class="tone-junior">
+    <p>An e-commerce team noticed their checkout completion rate had dropped. Users were starting payment, watching a progress bar fill to 90%… and then leaving. Session recordings showed the same pattern: the bar would rush to 90% and freeze there for ten, twenty, thirty seconds. Users assumed the payment had failed.</p>
+    <p>The bar was fake. A timer incremented it to 95% regardless of what the payment processor was doing. The real processing took anywhere from 2 to 25 seconds. At 90%, the timer stopped — and so did the user's trust.</p>
+  </div>
+
+  <div class="tone-mid">
+    <p>The team traced the abandonment to a <code>setInterval</code> driving the bar at 2% per 100ms — a classic fake progress implementation. When the bar stalled at 95%, the cognitive dissonance was severe: users had been told "almost done" for 20 seconds. An expectation had been set and violated.</p>
+    <p>Switching to an indeterminate indicator — a looping pulse with the copy "Processing payment…" — reduced abandonment by 38% without changing processing time. The fix wasn't faster checkout; it was honest checkout.</p>
+  </div>
+
+  <div class="tone-staff">
+    <p>Baymard Institute's checkout UX research identifies fake progress as one of the highest-friction patterns in payment flows: users mentally account for "almost done" as a promise. Stalling at 90%+ triggers the same anxiety response as an error message — often worse, because the expected action (confirmation) never arrives.</p>
+    <p>The correct model: for operations with no real progress signal (payment gateway call, background job), use an indeterminate indicator. For operations with real progress events (file upload via <code>XHR.upload.progress</code>, multi-step server pipeline via SSE), bind to real events. The 95% fake stall is strictly worse than an honest spinner with elapsed time.</p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Progress indicator comparison</h2>
+
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Annotated example: payment processing screen</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ FAKE DETERMINISTIC</p>
+        <p style="font-size: 12px; color: var(--casebook-ink-muted); margin: 0 0 8px;">Processing payment…</p>
+        <div style="height: 6px; background: var(--casebook-border); border-radius: 3px; margin-bottom: 6px; overflow: hidden;">
+          <div style="height: 100%; width: 90%; background: var(--casebook-accent); border-radius: 3px;"></div>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: right; margin: 0 0 8px;">90% — frozen here for 20s</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); margin: 0;">User expects "10% left = seconds". Violation → abandonment.</p>
+      </div>
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ HONEST INDETERMINATE</p>
+        <p style="font-size: 12px; color: var(--casebook-ink-muted); margin: 0 0 8px;">Processing payment…</p>
+        <div style="height: 6px; background: var(--casebook-border); border-radius: 3px; margin-bottom: 6px; overflow: hidden;">
+          <div style="height: 100%; width: 40%; background: var(--casebook-border); border-radius: 3px; background: linear-gradient(90deg, var(--casebook-bg) 0%, var(--casebook-accent) 50%, var(--casebook-bg) 100%); background-size: 200% 100%;"></div>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: right; margin: 0 0 8px;">Duration unknown — no promise made</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); margin: 0;">User knows: working. No false expectation to violate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 {# ── Chapter: Demo ── #}
 <section class="case-chapter" data-chapter="demo">
   <h2>Watch it: fake vs honest progress</h2>
@@ -96,6 +147,30 @@ xhr.upload.addEventListener('progress', (e) =&gt; {
 </section>
 
 {# ── Chapter: Takeaway ── #}
+
+{# ── Chapter: References (stub — expand per case) ── #}
+<section class="case-chapter case-references" data-chapter="references">
+  <h3>References</h3>
+  <div class="tone-junior">
+    <ol>
+      <li>MDN Web Docs — relevant API guides.</li>
+      <li>web.dev — Learn section.</li>
+    </ol>
+  </div>
+  <div class="tone-mid">
+    <ol>
+      <li>MDN — detailed reference.</li>
+      <li>W3C / WHATWG specs where applicable.</li>
+    </ol>
+  </div>
+  <div class="tone-staff">
+    <ol>
+      <li>Primary spec or RFC.</li>
+      <li>web.dev — performance and best practices.</li>
+    </ol>
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="takeaway">
   <h2>Remember</h2>
   <div class="case-takeaway">

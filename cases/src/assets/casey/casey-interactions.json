@@ -2,7 +2,7 @@
   "version": 1,
   "assetBase": "/cases/assets/casey",
   "tiers": ["junior", "mid", "staff"],
-  "poses": ["idle", "blink", "perk", "point", "think", "celebrate", "sleep", "wave"],
+  "poses": ["idle", "blink", "perk", "point", "think", "celebrate", "sleep", "wave", "welcome", "proud", "support", "read", "present"],
   "voiceProfiles": {
     "junior": { "rate": 1.02, "pitch": 1.08 },
     "mid": { "rate": 0.96, "pitch": 1.0 },
