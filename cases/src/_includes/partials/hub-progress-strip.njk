@@ -1,0 +1,20 @@
+{# ── hub-progress-strip.njk — hub sense of progression ── #}
+<section class="hub-progress" aria-label="Your Casebook progress" data-casebook-hub-progress>
+  <div class="hub-progress__header">
+    <h2 class="hub-progress__title">Your path</h2>
+    <a href="{{ '/account/' | url }}" class="hub-progress__account-link">Sign in</a>
+  </div>
+  <div class="hub-progress__bar-wrap">
+    <div class="hub-progress__bar" role="progressbar"
+         aria-valuemin="0"
+         aria-valuemax="{{ liveCaseCount }}"
+         aria-valuenow="0"
+         data-casebook-progress-bar>
+      <span class="hub-progress__fill" data-casebook-progress-fill style="width: 0%"></span>
+    </div>
+    <p class="hub-progress__meta" data-casebook-progress-meta>
+      <span data-casebook-progress-count>0</span> of {{ liveCaseCount }} live cases completed
+    </p>
+  </div>
+  <p class="hub-progress__hint" data-casebook-progress-hint hidden></p>
+</section>

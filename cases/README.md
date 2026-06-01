@@ -10,6 +10,8 @@ Live at **[anmshpndy.com/cases/](https://anmshpndy.com/cases/)**.
 | SSG | Eleventy 11 (`@11ty/eleventy ^2.0.1`) |
 | CSS | Vanilla custom properties (casebook-tokens + casebook-layout + casebook-components) |
 | JS | Vanilla ES modules (no bundler, no framework) |
+| Progress | `localStorage` (`casebook-companion-v1`) + hub/case UI via `casebook-progression.js` |
+| Sign-in (beta) | `/account/` — email magic link (client-generated; wire email provider later) |
 | Deploy | GitHub Actions → GitHub Pages (built in CI, output merged at `/cases/`) |
 
 ## Local development

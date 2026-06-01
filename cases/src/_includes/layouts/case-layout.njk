@@ -34,6 +34,9 @@ layout: layouts/casebook-layout.njk
     {# ── Share ── #}
     {% include 'partials/case-share.njk' %}
 
+    {# ── Continue / next case + progression ── #}
+    {% include 'partials/case-continue.njk' %}
+
     {# ── Related cases ── #}
     {% include 'partials/case-related.njk' %}
 
@@ -61,6 +64,9 @@ layout: layouts/casebook-layout.njk
 
 {% include 'partials/casey-companion-lines.njk' %}
 <script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
+<script src="{{ '/assets/js/casebook-auth.js' | url }}" defer></script>
+<script src="{{ '/assets/js/casebook-progression.js' | url }}" defer></script>
+<script src="{{ '/assets/js/case-continue.js' | url }}" defer></script>
 <script src="{{ '/assets/js/case-scroll.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casey-coach.js' | url }}" defer></script>
 <script type="module" src="{{ '/assets/js/casey-voice.js' | url }}"></script>

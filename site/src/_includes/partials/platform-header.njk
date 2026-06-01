@@ -15,6 +15,7 @@
       <ul class="casebook-header__nav" role="list">
         <li><a href="{{ '/cases/' | url }}"{% if navActive == 'cases' %} aria-current="page"{% endif %}>Cases</a></li>
         <li><a href="{{ '/about/' | url }}"{% if navActive == 'about' %} aria-current="page"{% endif %}>About</a></li>
+        <li><a href="{{ '/account/' | url }}"{% if navActive == 'account' %} aria-current="page"{% endif %} data-casebook-auth-label>Sign in</a></li>
         <li><a href="/">Portfolio</a></li>
       </ul>
     </nav>

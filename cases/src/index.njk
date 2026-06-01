@@ -11,19 +11,22 @@ permalink: /index.html
 
 <div class="casebook-hub">
 
-  {# ── Hero ── #}
-  <header class="casebook-hub__hero">
-    <h1 class="casebook-hub__title">The Frontend Casebook</h1>
-    <p class="casebook-hub__subtitle">{{ site.tagline }}</p>
-    <p class="casebook-hub__stats">
-      {{ manifest.stats.total }} cases across 18 tracks ·
-      <a href="{{ '/library/' | url }}">{{ libraryEntries | length }} references</a> ·
-      <a href="{{ '/about/' | url }}">About</a>
-    </p>
-  </header>
+  {# ── Hero + Casey (side-by-side on wide screens) ── #}
+  <div class="casebook-hub__hero-stage">
+    <header class="casebook-hub__hero">
+      <h1 class="casebook-hub__title">The Frontend Casebook</h1>
+      <p class="casebook-hub__subtitle">{{ site.tagline }}</p>
+      <p class="casebook-hub__stats">
+        {{ liveCaseCount }} live · {{ manifest.stats.total }} planned across 18 tracks ·
+        <a href="{{ '/library/' | url }}">{{ libraryEntries | length }} references</a> ·
+        <a href="{{ '/about/' | url }}">About</a>
+      </p>
+    </header>
 
-  {# ── Casey hub welcome panel ── #}
-  {% include 'partials/casey-hub.njk' %}
+    {% include 'partials/casey-hub.njk' %}
+  </div>
+
+  {% include 'partials/hub-progress-strip.njk' %}
 
   {# ── Subscribe CTA ── #}
   {% include 'partials/subscribe-cta.njk' %}
@@ -294,4 +297,6 @@ permalink: /index.html
 {%- endfor -%}
 }</script>
 <script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
+<script src="{{ '/assets/js/casebook-auth.js' | url }}" defer></script>
+<script src="{{ '/assets/js/casebook-progression.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casey-hub.js' | url }}" defer></script>
