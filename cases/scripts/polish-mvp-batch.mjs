@@ -116,15 +116,25 @@ function parseFrontmatter(src) {
     });
   }
   fm.relatedCases = related;
-  return { fm, body: src.slice(m[0].length), rawFm: m[1], fmBlock: m[0] };
+  return { fm, body: src.slice(m[0].length), rawFm: m[1] };
 }
 
-function ensureOgImage(fmBlock, slug) {
+function ensureOgImage(rawFm, slug) {
   const og = `ogImage: https://anmshpndy.com/brand/cases/${slug}-og.png`;
-  if (fmBlock.includes('ogImage:')) {
-    return fmBlock.replace(/ogImage:.*/, og);
+  let inner = rawFm;
+  if (inner.includes('ogImage:')) {
+    inner = inner.replace(/ogImage:.*/, og);
+  } else {
+    inner = inner.trimEnd() + '\n' + og;
   }
-  return fmBlock.trimEnd() + '\n' + og + '\n';
+  return `---\n${inner}\n---`;
+}
+
+function stripOrphanFrontmatter(body) {
+  return body
+    .replace(/^(?:---\s*\n)+/m, '')
+    .replace(/^ogImage:\s*https?:\/\/[^\n]+\n(?:---\s*\n)?/m, '')
+    .trimStart();
 }
 
 function polishCasey(slug, related, track) {
@@ -185,26 +195,28 @@ function polishCasey(slug, related, track) {
 function polishIndex(slug) {
   const file = path.join(CASES, slug, 'index.njk');
   let src = fs.readFileSync(file, 'utf8');
-  const { fm, body, fmBlock } = parseFrontmatter(src);
+  const { fm, body, rawFm } = parseFrontmatter(src);
   const track = fm.track || 'patterns';
+  let workBody = stripOrphanFrontmatter(body);
 
   const refs = refsChapter(slug);
+  let content = workBody;
   if (refs) {
-    src = src.replace(
+    content = content.replace(
       /<section class="case-chapter case-references"[\s\S]*?<\/section>\s*\n/i,
       refs + '\n'
     );
   }
 
-  if (!src.includes('data-chapter="ui-strip"')) {
-    src = src.replace(
+  if (!content.includes('data-chapter="ui-strip"')) {
+    content = content.replace(
       /<section class="case-chapter" data-chapter="demo">/,
       uiStripBlock(track) + '<section class="case-chapter" data-chapter="demo">'
     );
   }
 
-  const newFm = ensureOgImage(fmBlock, slug);
-  src = src.replace(/^---\n[\s\S]*?\n---/, `---\n${newFm.trim()}\n---`);
+  const newFmBlock = ensureOgImage(rawFm, slug);
+  const src = `${newFmBlock}\n\n${content}`;
 
   fs.writeFileSync(file, src);
   polishCasey(slug, fm.relatedCases || [], track);

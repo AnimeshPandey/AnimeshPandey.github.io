@@ -257,12 +257,15 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 
 .casey-coach__avatar {
-  width: 48px; height: 48px;
+  width: 52px; height: 52px;
   border-radius: 50%;
   border: 2px solid var(--casebook-border);
   object-fit: contain;
+  object-position: center 92%;
   flex-shrink: 0;
-  background: var(--casebook-surface-2);
+  background: transparent;
+  padding: 2px;
+  box-sizing: border-box;
 }
 
 /* Breathe — duration set via JS from casey-interactions.json tierMotion */
@@ -565,7 +568,11 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   display: block;
   width: 80px; height: 80px;
   border-radius: 50%;
-  background: var(--casebook-surface-2);
+  background: transparent;
+  object-fit: contain;
+  object-position: center 92%;
+  padding: 4px;
+  box-sizing: border-box;
 }
 
 @media (min-width: 600px) {
@@ -668,7 +675,11 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: var(--casebook-surface-2);
+  background: transparent;
+  object-fit: contain;
+  object-position: center 92%;
+  padding: 3px;
+  box-sizing: border-box;
   flex-shrink: 0;
 }
 
@@ -858,6 +869,8 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   width: 64px;
   height: 64px;
   flex-shrink: 0;
+  object-fit: contain;
+  object-position: center 92%;
 }
 .casey-about-bubble__text {
   flex: 1;
@@ -892,6 +905,8 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 .casey-companies-mini__img {
   width: 48px;
   height: 48px;
+  object-fit: contain;
+  object-position: center 92%;
 }
 .casey-companies-mini__line {
   margin: 0;
