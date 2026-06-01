@@ -188,41 +188,13 @@
       });
   }
 
-  function initLangPicker(btn, menu) {
-    if (!window.PrefsChrome || !menu) return;
-    menu.setAttribute('data-popover-fixed', btn.closest('#mobile-nav') ? 'true' : 'false');
-    window.PrefsChrome.PopoverMenu(btn, menu, {
-      onSelect: function (e, ctx) {
-        var item = e.target.closest('.lang-menu-item[data-l]');
-        if (!item) return;
-        setLocale(item.dataset.l);
-        ctx.close();
-      },
-      onActivate: function (e, ctx) {
-        var active = document.activeElement;
-        if (active && active.classList && active.classList.contains('lang-menu-item') && active.dataset.l) {
-          setLocale(active.dataset.l);
-          ctx.close();
-        }
-      }
-    });
-  }
-
-  function bootLangPickers() {
-    if (!window.PrefsChrome) {
-      console.warn('[i18n] PrefsChrome not loaded — language picker disabled');
-    }
-    document.querySelectorAll('.lang-pick-btn').forEach(function (btn) {
-      var menuId = btn.getAttribute('aria-controls');
-      initLangPicker(btn, menuId ? document.getElementById(menuId) : null);
-    });
-    setLocale(detectLocale(), true);
-  }
-
+  // Apply stored/detected locale on boot.
+  // Menu binding is handled by prefs-chrome.js autoBootMenus() which uses a
+  // lazy reference to window.AP_I18N.setLocale — no PrefsChrome dependency here.
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootLangPickers);
+    document.addEventListener('DOMContentLoaded', function () { setLocale(detectLocale(), true); });
   } else {
-    bootLangPickers();
+    setLocale(detectLocale(), true);
   }
 
   window.AP_I18N = {

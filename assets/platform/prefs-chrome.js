@@ -1,6 +1,12 @@
 /**
  * prefs-chrome.js — shared popover menus (portfolio + casebook).
- * PopoverMenu.register(btn, menu, options)
+ *
+ * Owns the full lifecycle of all .theme-pick-btn and .lang-pick-btn buttons:
+ *   1. PopoverMenu()     — bind a single btn/menu pair (guard-protected, idempotent)
+ *   2. autoBootMenus()  — scan the DOM and bind every picker button on DOMContentLoaded
+ *
+ * Lazy callbacks: applyTheme / AP_I18N.setLocale are resolved at click-time,
+ * not at setup-time, so the order of defer-script execution doesn't matter.
  */
 (function (global) {
   'use strict';
@@ -154,5 +160,79 @@
     return api;
   }
 
-  global.PrefsChrome = { PopoverMenu: PopoverMenu, closeAll: closeAll };
+  /**
+   * autoBootMenus — scan the entire document for picker buttons and bind them.
+   *
+   * Callbacks are LAZY: window.applyTheme and window.AP_I18N are resolved at
+   * click-time so it doesn't matter if theme.js / i18n.js haven't run yet when
+   * autoBootMenus() executes.  The prefsPopoverBound guard makes this idempotent.
+   */
+  function autoBootMenus() {
+    // ── Theme pickers ────────────────────────────────────────────────────────
+    document.querySelectorAll('.theme-pick-btn').forEach(function (btn) {
+      if (btn.classList.contains('lang-pick-btn')) return;
+      var menuId = btn.getAttribute('aria-controls');
+      var menu = menuId ? document.getElementById(menuId) : null;
+      if (!menu) return;
+      PopoverMenu(btn, menu, {
+        onSelect: function (e, ctx) {
+          var item = e.target.closest('.theme-menu-item[data-t]');
+          if (!item) return;
+          if (typeof global.applyTheme === 'function') global.applyTheme(item.dataset.t);
+          ctx.close();
+        },
+        onActivate: function (e, ctx) {
+          var active = document.activeElement;
+          if (active && active.dataset && active.dataset.t) {
+            if (typeof global.applyTheme === 'function') global.applyTheme(active.dataset.t);
+            ctx.close();
+          }
+        }
+      });
+    });
+
+    // ── Language pickers ─────────────────────────────────────────────────────
+    document.querySelectorAll('.lang-pick-btn').forEach(function (btn) {
+      var menuId = btn.getAttribute('aria-controls');
+      var menu = menuId ? document.getElementById(menuId) : null;
+      if (!menu) return;
+      // Fixed positioning when inside the mobile drawer
+      if (btn.closest('#mobile-nav')) {
+        menu.setAttribute('data-popover-fixed', 'true');
+      }
+      PopoverMenu(btn, menu, {
+        onSelect: function (e, ctx) {
+          var item = e.target.closest('.lang-menu-item[data-l]');
+          if (!item) return;
+          if (global.AP_I18N && typeof global.AP_I18N.setLocale === 'function') {
+            global.AP_I18N.setLocale(item.dataset.l);
+          }
+          ctx.close();
+        },
+        onActivate: function (e, ctx) {
+          var active = document.activeElement;
+          if (active && active.dataset && active.dataset.l) {
+            if (global.AP_I18N && typeof global.AP_I18N.setLocale === 'function') {
+              global.AP_I18N.setLocale(active.dataset.l);
+            }
+            ctx.close();
+          }
+        }
+      });
+    });
+  }
+
+  // Run as soon as the DOM is parsed. With defer loading this fires immediately
+  // (readyState is 'interactive'); guard for any inline/early inclusion too.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoBootMenus);
+  } else {
+    autoBootMenus();
+  }
+
+  global.PrefsChrome = {
+    PopoverMenu: PopoverMenu,
+    closeAll: closeAll,
+    autoBootMenus: autoBootMenus
+  };
 })(typeof window !== 'undefined' ? window : this);

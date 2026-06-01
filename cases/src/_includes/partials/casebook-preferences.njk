@@ -1,37 +1,29 @@
-<div class="casebook-prefs theme-picker" id="casebook-prefs">
-  <button type="button"
-          class="casebook-prefs__trigger theme-pick-btn platform-icon-btn"
-          aria-haspopup="listbox"
-          aria-expanded="false"
-          aria-controls="casebook-prefs-menu"
-          id="casebook-prefs-btn"
-          aria-label="Theme: High contrast. Change">
+{# Theme + language pickers for Casebook — mirrors portfolio nav-utilities structure.
+   Binding is handled by prefs-chrome.js autoBootMenus() with lazy applyTheme /
+   AP_I18N callbacks, so no custom casebook-prefs wiring is needed. #}
+<div class="theme-picker">
+  <button type="button" class="theme-pick-btn platform-icon-btn" id="theme-pick-btn-header"
+          aria-label="Theme: High contrast. Change" aria-expanded="false" aria-controls="theme-menu-header">
     <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
-    <span class="visually-hidden">Choose theme</span>
   </button>
-
-  <ul id="casebook-prefs-menu"
-      class="casebook-prefs__menu theme-menu prefs-menu"
-      role="listbox"
-      aria-label="Choose theme"
-      hidden>
-    <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1">
-      <span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast
-    </li>
-    <li class="theme-menu-item" role="option" data-t="light" tabindex="-1">
-      <span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper
-    </li>
-    <li class="theme-menu-item" role="option" data-t="dark" tabindex="-1">
-      <span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal
-    </li>
-    <li class="theme-menu-item" role="option" data-t="sage" tabindex="-1">
-      <span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist
-    </li>
-    <li class="theme-menu-item" role="option" data-t="slate" tabindex="-1">
-      <span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio
-    </li>
-    <li class="theme-menu-item" role="option" data-t="dusk" tabindex="-1">
-      <span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial
-    </li>
+  <ul id="theme-menu-header" class="theme-menu prefs-menu" role="listbox" aria-label="Choose theme" hidden>
+    <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+    <li class="theme-menu-item" role="option" data-t="light" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+    <li class="theme-menu-item" role="option" data-t="dark" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
+    <li class="theme-menu-item" role="option" data-t="sage" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
+    <li class="theme-menu-item" role="option" data-t="slate" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
+    <li class="theme-menu-item" role="option" data-t="dusk" tabindex="-1"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial</li>
+  </ul>
+</div>
+<div class="theme-picker lang-picker">
+  <button type="button" class="lang-pick-btn platform-icon-btn" id="lang-pick-btn-header"
+          aria-label="Language: EN. Change" aria-expanded="false" aria-controls="lang-menu-header">
+    <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
+    <span class="lang-pick-label" aria-hidden="true">EN</span>
+  </button>
+  <ul id="lang-menu-header" class="theme-menu lang-menu prefs-menu" role="listbox" aria-label="Choose language" hidden>
+    <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true" tabindex="-1">English</li>
+    <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" tabindex="-1">हिन्दी</li>
+    <li class="theme-menu-item lang-menu-item" role="option" data-l="es" tabindex="-1">Español</li>
   </ul>
 </div>
