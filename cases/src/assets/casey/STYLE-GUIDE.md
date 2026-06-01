@@ -21,9 +21,21 @@
 
 ## Pose inventory
 
-`idle` · `blink` · `perk` · `point` · `think` · `celebrate` · `sleep` · `wave`
+**Core (coach FSM):** `idle` · `blink` · `perk` · `point` · `think` · `celebrate` · `sleep` · `wave`
 
-Primary poses: AI-generated PNGs installed via `scripts/install-casey-pngs.sh`. Fallback vector regen: `scripts/generate-casey-svgs.mjs`.
+**Guide (companion):** `welcome` · `present` · `proud` · `support` · `read`
+
+| Pose | Where |
+|------|--------|
+| `present` | Hub — first visit |
+| `welcome` | Hub — return visit |
+| `read` | `/library/` strip |
+| `proud` | Case takeaway chapter |
+| `support` | Demo broken toggle |
+
+Primary poses: AI-generated PNGs via `scripts/install-casey-pngs.sh`. Spec: `ideas/.../CASEY-AI-GENERATION.md`. Fallback SVG: `scripts/generate-casey-svgs.mjs`.
+
+Motion: `casey-breathing`, `casey-bounce-once`, `casey-tier-fade` in `casebook-components.css`.
 
 ## E8 quick check
 

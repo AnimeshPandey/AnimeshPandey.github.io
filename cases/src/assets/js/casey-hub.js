@@ -103,10 +103,12 @@
     if (rotateTimer) { clearInterval(rotateTimer); rotateTimer = null; }
   }
 
-  /* ── Initial render ── */
-  var firstVisit;
-  try { firstVisit = !localStorage.getItem('casebook-visited'); } catch (e) {}
-  setAvatar(currentTier, firstVisit && !prm ? 'welcome' : undefined);
+  /* ── Initial render: first visit = present, return = welcome ── */
+  var visited;
+  try { visited = !!localStorage.getItem('casebook-visited'); } catch (e) {}
+  var hubPose;
+  if (!prm) hubPose = visited ? 'welcome' : 'present';
+  setAvatar(currentTier, hubPose);
   setTierLabel(currentTier);
   setGreeting(currentTier);
   startRotation();

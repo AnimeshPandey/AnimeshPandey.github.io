@@ -75,8 +75,45 @@
       "trigger": "prefers-reduced-motion",
       "pose": "sleep",
       "animation": "none"
+    },
+    {
+      "id": "chapter-takeaway",
+      "trigger": "chapter-visible",
+      "chapter": "takeaway",
+      "pose": "proud",
+      "durationMs": 500,
+      "thenPose": "idle"
+    },
+    {
+      "id": "demo-broken",
+      "trigger": "demo-state-broken",
+      "pose": "support",
+      "durationMs": 1200,
+      "thenPose": "point"
+    },
+    {
+      "id": "library",
+      "trigger": "page-library",
+      "pose": "read",
+      "animation": "breathe",
+      "loop": true
+    },
+    {
+      "id": "hub-first-visit",
+      "trigger": "hub-first-visit",
+      "pose": "present",
+      "durationMs": 400,
+      "thenPose": "wave"
+    },
+    {
+      "id": "hub-return",
+      "trigger": "hub-return",
+      "pose": "welcome",
+      "animation": "breathe",
+      "loop": true
     }
   ],
+  "guidePoses": ["welcome", "proud", "support", "read", "present"],
   "hintChapters": ["hook", "concept", "story", "demo", "takeaway"],
   "tierLabels": {
     "junior": "Casey · Junior dev",

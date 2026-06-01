@@ -648,6 +648,71 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   color: var(--casebook-bg, #0a0a0a);
 }
 
+/* ══════════════════════════════════════════════════
+   CASEY LIBRARY — compact strip on /library/
+   ══════════════════════════════════════════════════ */
+
+.casey-library {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  margin: 0 0 24px;
+  background: var(--casebook-surface);
+  border: 1px solid var(--casebook-border);
+  border-radius: 12px;
+}
+
+.casey-library__img {
+  display: block;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--casebook-surface-2);
+  flex-shrink: 0;
+}
+
+.casey-library__panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.casey-library__label {
+  font-family: var(--mono, monospace);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--casebook-accent);
+  margin: 0 0 6px;
+}
+
+.casey-library__line {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--casebook-ink-2);
+  margin: 0 0 10px;
+}
+
+.casey-library__link {
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  color: var(--casebook-ink-faint);
+  text-decoration: none;
+}
+
+.casey-library__link:hover,
+.casey-library__link:focus-visible {
+  color: var(--casebook-accent);
+}
+
+.casey-library__img.casey-tier-fade {
+  animation: casey-tier-fade 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .casey-library__img.casey-tier-fade { animation: none; }
+}
+
 /* ── Hub empty state ── */
 .hub-empty {
   display: flex;
