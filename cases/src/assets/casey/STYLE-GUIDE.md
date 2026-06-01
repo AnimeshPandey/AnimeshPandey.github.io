@@ -25,6 +25,8 @@
 
 **Guide (companion):** `welcome` · `present` · `proud` · `support` · `read`
 
+**Micro (FSM):** `curious` (demo idle) · `nod` (hub filter) · `focus` (demo CTA) — compositor or AI PNG
+
 | Pose | Where |
 |------|--------|
 | `present` | Hub — first visit |
