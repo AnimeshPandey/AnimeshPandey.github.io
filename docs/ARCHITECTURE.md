@@ -4,7 +4,7 @@
 **Live:** https://anmshpndy.com  
 **Stack:** Static HTML · CSS custom properties · vanilla JS · GitHub Pages  
 **Build step:** Eleventy (`site/`, `cases/`) merged at deploy — see [PLATFORM-SHELL.md](./PLATFORM-SHELL.md)  
-**Last verified:** May 2026 · `sw.js` cache `ap-v30`
+**Last verified:** June 2026 · `sw.js` is pass-through (no asset caching)
 
 ---
 
@@ -293,7 +293,7 @@ AnimeshPandey.github.io/
 | `CNAME` | Custom domain `anmshpndy.com` for GitHub Pages |
 | `robots.txt` | `Allow: *`, points to `sitemap.xml` |
 | `sitemap.xml` | Canonical URLs for all pages |
-| `sw.js` | Service worker — `CACHE = 'ap-v21'` |
+| `sw.js` | Service worker — pass-through (no fetch handler); CI stamps `__AP_BUILD_ID__`; `sw-migrate.js` clears old `ap-v*` caches |
 
 ---
 
@@ -745,34 +745,29 @@ Missing secrets: deploy still succeeds; contact form shows a config-error messag
 
 ## Service worker
 
-**File:** `sw.js` · **Cache:** `ap-v21`
+**File:** `sw.js` · **Strategy:** Pass-through (no caching)
+
+The legacy `ap-v*` cache-first workers caused stale portfolio assets and unstyled Casebook pages. They were replaced with a deliberate **pass-through** SW that has no `fetch` handler — the browser's HTTP cache handles freshness normally.
 
 ```js
-// Bump CACHE version in sw.js whenever a precached asset changes.
-// Old caches are deleted on activate; clients.claim() takes immediate control.
+// sw.js — intentionally no fetch handler.
+// On activate: deletes all caches (clears legacy ap-v* entries).
+// CI replaces __AP_BUILD_ID__ so each deploy registers a new SW version.
+// sw-migrate.js runs on portfolio boot to unregister stale ap-v* workers.
+var SW_VERSION = '__AP_BUILD_ID__';
 ```
 
-**Precache list:**
+| Event | Behaviour |
+|-------|-----------|
+| `install` | `skipWaiting()` — takes control immediately |
+| `activate` | Deletes **all** caches; `clients.claim()` |
+| `fetch` | Not handled — browser HTTP cache applies |
 
-```
-/
-/assets/theme.css          /assets/site.css
-/assets/theme.js           /assets/nav.js
-/assets/visuals.js         /assets/contact.js
-/assets/profile-facts.js
-/assets/recruiter-data.js  /assets/recruiter.js  /assets/recruiter.css
-/assets/eggs.css           /assets/eggs-data.js
-/assets/eggs-mobile.js     /assets/eggs-tablet.js  /assets/eggs-desktop.js
-/favicon.svg               /assets/og-image.png
-```
-
-| Resource type | Strategy |
-|---------------|----------|
-| HTML (any `Accept: text/html`) | Network-first; cache updated on success; falls back to cache offline |
-| All other same-origin GET | Cache-first; fetched and cached on first miss |
-| Cross-origin | Pass-through (not intercepted) |
+**No precache list.** All asset freshness is managed by HTTP `Cache-Control` headers and GitHub Pages CDN.
 
 SW registers on homepage load only; articles and 404 do not register.
+
+**Anti-pattern (do not restore):** Re-adding a `fetch` handler or `CACHE` constant re-creates the stale-asset problem. If offline support is needed in the future, scope it carefully to avoid caching Casebook CSS across deploys.
 
 ---
 
@@ -793,7 +788,7 @@ When sources conflict, this is the resolution order:
 
 ## Alignment status
 
-The **documented** layer model is the target state. All known alignment gaps are resolved as of May 2026.
+The **documented** layer model is the target state. All known alignment gaps are resolved as of June 2026.
 
 | ID | Status | Issue | Notes |
 |----|--------|-------|-------|
@@ -809,6 +804,7 @@ The **documented** layer model is the target state. All known alignment gaps are
 | A10 | ok | Progress bar in `nav.js` with DOM guard | Homepage-only element |
 | A11 | ok | `initTagStagger()` in `visuals.js` sets `--tag-i` on project tags | — |
 | A12 | **fixed** | LOC table vs `wc -l` after refactors | LOC counts recounted and updated in this doc — May 2026 |
+| A13 | **fixed** | SW section documented legacy cache strategy (`ap-v21`) that no longer exists | SW is now pass-through; service worker section fully rewritten — June 2026 |
 
 When a new drift is found, add a row and set status to **open**. Close it with a one-line note and date when fixed.
 
@@ -886,15 +882,11 @@ open http://localhost:8181
 
 No build step. Changes to HTML/CSS/JS are effective on browser reload.
 
-### Bump the service worker cache
+### Service worker
 
-Edit `sw.js` first line:
+The SW is pass-through — there is no cache version to bump. CI automatically stamps `__AP_BUILD_ID__` in `sw.js` on each deploy, which registers a fresh SW version and triggers the old-cache cleanup on `activate`.
 
-```js
-const CACHE = 'ap-v21';   // increment every time a precached asset changes
-```
-
-Also add/remove any asset URLs in `ASSETS` before bumping.
+Nothing to do manually when assets change. If you see stale assets locally, hard-refresh (Cmd+Shift+R) or open DevTools → Application → Service Workers → Unregister.
 
 ---
 
@@ -921,8 +913,8 @@ Also add/remove any asset URLs in `ASSETS` before bumping.
 | Contact submit | `data.success` → in-page message only; **no mail client opens** |
 | Copy email | `#copyEmailBtn` → toast; clipboard has address |
 | Resume download | Header link downloads `resume.pdf` |
-| SW installed | Application tab → `ap-v21` (or current) in Storage |
-| Offline | SW serves cached assets without network |
+| SW installed | Application tab → SW active; no `ap-v*` cache entries in Storage |
+| No stale cache | Hard refresh after deploy; no unstyled Casebook or stale portfolio JS |
 
 ### Accessibility
 
