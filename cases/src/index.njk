@@ -28,48 +28,55 @@ permalink: /index.html
   {# ── Subscribe CTA ── #}
   {% include 'partials/subscribe-cta.njk' %}
 
-  {# ── Content type nav ── #}
-  <div class="hub-content-type-nav" role="group" aria-label="Content type">
-    <a href="{{ '/index.html' | url }}"
-       class="seg-btn seg-btn--active"
-       aria-current="page">
-      Interactive
-    </a>
-    <a href="{{ '/library/' | url }}"
-       class="seg-btn">
-      Reading library
-      <span class="seg-btn__count" aria-label="{{ libraryEntries | length }} articles">{{ libraryEntries | length }}</span>
-    </a>
-  </div>
+  {# ── Browse toolbar: content type + track filter ── #}
+  <section class="hub-toolbar" aria-label="Browse cases">
+    <div class="hub-toolbar__type" role="group" aria-label="Content type">
+      <a href="{{ '/index.html' | url }}"
+         class="seg-btn seg-btn--active"
+         aria-current="page">
+        Interactive cases
+      </a>
+      <a href="{{ '/library/' | url }}"
+         class="seg-btn">
+        Reading library
+        <span class="seg-btn__count" aria-label="{{ libraryEntries | length }} articles">{{ libraryEntries | length }}</span>
+      </a>
+    </div>
 
-  {# ── Track filter ── #}
-  <div class="casebook-hub__filter">
-    <label for="track-filter">Filter by track</label>
-    <select id="track-filter" aria-controls="hub-grid">
-      <option value="">All tracks</option>
-      {% set tracks = [] %}
-      {% for c in manifest.cases %}
-        {% if c.track not in tracks %}
-          {% set tracks = (tracks.push(c.track), tracks) %}
-          <option value="{{ c.track }}">{{ c.track | replace("-", " ") | title }}</option>
-        {% endif %}
-      {% endfor %}
-    </select>
-    <span class="casebook-hub__filter-count"
-          id="hub-filter-count"
-          aria-live="polite"
-          aria-atomic="true"></span>
-  </div>
+    <div class="hub-toolbar__card">
+      <div class="hub-toolbar__main">
+        <div class="hub-toolbar__field">
+          <label for="track-filter" class="hub-toolbar__label">Track</label>
+          <select id="track-filter" class="hub-select hub-toolbar__select"
+                  aria-controls="hub-grid hub-grid-empty">
+            <option value="">All tracks — live cases</option>
+            {% set tracks = [] %}
+            {% for c in manifest.cases %}
+              {% if c.track not in tracks %}
+                {% set tracks = (tracks.push(c.track), tracks) %}
+                <option value="{{ c.track }}">{{ c.track | replace("-", " ") | title }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+        <div class="hub-toolbar__status" aria-live="polite" aria-atomic="true">
+          <span class="hub-toolbar__count" id="hub-filter-count"></span>
+          <button type="button" class="hub-toolbar__clear" id="hub-clear-filter" hidden>
+            Clear filter
+          </button>
+        </div>
+      </div>
+      <div class="hub-toolbar__footer" id="hub-upcoming-toggle" hidden>
+        <button type="button" class="hub-toolbar__upcoming" id="hub-show-upcoming" aria-expanded="false">
+          <span class="hub-toolbar__upcoming-label">Show upcoming cases</span>
+          <span class="hub-toolbar__upcoming-count" id="hub-upcoming-count"></span>
+        </button>
+      </div>
+    </div>
+  </section>
 
-  {# ── Upcoming toggle (shown by JS only) ── #}
-  <div id="hub-upcoming-toggle" hidden>
-    <button class="hub-upcoming-btn" id="hub-show-upcoming" aria-expanded="false">
-      Show upcoming cases
-      <span class="hub-upcoming-btn__count" id="hub-upcoming-count"></span>
-    </button>
-  </div>
-
-  {# ── Case grid ── #}
+  {# ── Case catalog (grid or empty state, never both) ── #}
+  <div class="hub-catalog" id="hub-catalog">
   <ul class="casebook-hub__grid" id="hub-grid" role="list">
     {% for case in manifest.cases %}
       {% set isLive = case.status == 'live' %}
@@ -125,7 +132,6 @@ permalink: /index.html
     {% endfor %}
   </ul>
 
-  {# Casey empty state — shown by track filter JS when 0 live cases match #}
   <div class="hub-empty" id="hub-grid-empty" hidden aria-live="polite">
     <div class="casey-avatar-frame hub-empty__avatar" data-casey-tier="junior">
       <img class="hub-empty__img casey-avatar-frame__img"
@@ -136,10 +142,11 @@ permalink: /index.html
            data-casey-empty-avatar="true"
            data-casey-frame-ready="1" />
     </div>
-    <p class="hub-empty__msg">No cases match that filter.</p>
-    <button type="button" class="casey-hub__action" onclick="document.getElementById('track-filter').value='';document.getElementById('track-filter').dispatchEvent(new Event('change'))">
-      Clear filter
+    <p class="hub-empty__msg">No live cases in this track yet.</p>
+    <button type="button" class="casey-hub__action hub-empty__clear" id="hub-empty-clear">
+      Clear track filter
     </button>
+  </div>
   </div>
 
 </div>
@@ -148,65 +155,111 @@ permalink: /index.html
 (function () {
   var sel = document.getElementById('track-filter');
   var grid = document.getElementById('hub-grid');
-  var count = document.getElementById('hub-filter-count');
+  var catalog = document.getElementById('hub-catalog');
+  var countEl = document.getElementById('hub-filter-count');
+  var clearBtn = document.getElementById('hub-clear-filter');
+  var emptyClearBtn = document.getElementById('hub-empty-clear');
+  var emptyEl = document.getElementById('hub-grid-empty');
 
-  // ── Hide non-live cards by default; show toggle ───────────────
   var upcomingToggle = document.getElementById('hub-upcoming-toggle');
   var showUpcomingBtn = document.getElementById('hub-show-upcoming');
   var upcomingCountEl = document.getElementById('hub-upcoming-count');
   var upcomingVisible = false;
+  var upcomingItems = [];
+
+  function clearTrackFilter() {
+    if (!sel) return;
+    sel.value = '';
+    filter();
+  }
+
+  if (clearBtn) clearBtn.addEventListener('click', clearTrackFilter);
+  if (emptyClearBtn) emptyClearBtn.addEventListener('click', clearTrackFilter);
 
   if (grid) {
-    var nonLiveItems = Array.from(grid.querySelectorAll('[data-status]:not([data-status="live"]):not([data-status="scheduled"])'));
+    var nonLiveItems = Array.from(
+      grid.querySelectorAll('[data-status]:not([data-status="live"]):not([data-status="scheduled"])')
+    );
     var scheduledItems = Array.from(grid.querySelectorAll('[data-status="scheduled"]'));
-    var upcomingItems = nonLiveItems.concat(scheduledItems);
+    upcomingItems = nonLiveItems.concat(scheduledItems);
 
     if (upcomingItems.length > 0) {
       upcomingItems.forEach(function (item) { item.hidden = true; });
       if (upcomingToggle) {
         upcomingToggle.hidden = false;
-        if (upcomingCountEl) upcomingCountEl.textContent = '(' + upcomingItems.length + ')';
+        if (upcomingCountEl) upcomingCountEl.textContent = String(upcomingItems.length);
       }
       if (showUpcomingBtn) {
         showUpcomingBtn.addEventListener('click', function () {
           upcomingVisible = !upcomingVisible;
           upcomingItems.forEach(function (item) { item.hidden = !upcomingVisible; });
           showUpcomingBtn.setAttribute('aria-expanded', String(upcomingVisible));
-          showUpcomingBtn.querySelector('.hub-upcoming-btn__count').textContent =
-            upcomingVisible ? '' : '(' + upcomingItems.length + ')';
-          showUpcomingBtn.firstChild.nodeValue = upcomingVisible
-            ? 'Hide upcoming cases '
-            : 'Show upcoming cases ';
-          // Re-apply track filter
-          if (sel) filter();
+          var label = showUpcomingBtn.querySelector('.hub-toolbar__upcoming-label');
+          if (label) {
+            label.textContent = upcomingVisible ? 'Hide upcoming cases' : 'Show upcoming cases';
+          }
+          if (upcomingCountEl) {
+            upcomingCountEl.hidden = upcomingVisible;
+          }
+          filter();
         });
       }
     }
   }
 
-  // ── Track filter ──────────────────────────────────────────────
-  var emptyEl = document.getElementById('hub-grid-empty');
+  function annotateTrackOptions() {
+    if (!sel || !grid) return;
+    var liveByTrack = {};
+    grid.querySelectorAll('[data-status="live"]').forEach(function (item) {
+      var t = item.dataset.track;
+      if (t) liveByTrack[t] = (liveByTrack[t] || 0) + 1;
+    });
+    Array.from(sel.options).forEach(function (opt) {
+      if (!opt.value) return;
+      var n = liveByTrack[opt.value] || 0;
+      var base = opt.textContent.replace(/\s*\(\d+\)\s*$/, '');
+      opt.textContent = base + ' (' + n + ')';
+    });
+  }
 
   function filter() {
     if (!sel || !grid) return;
     var track = sel.value;
     var items = grid.querySelectorAll('[data-track]');
     var visible = 0;
+    var liveVisible = 0;
     items.forEach(function (item) {
       var trackMatch = !track || item.dataset.track === track;
       var statusMatch = item.dataset.status === 'live' || upcomingVisible;
       var show = trackMatch && statusMatch;
       item.hidden = !show;
-      if (show) visible++;
+      if (show) {
+        visible++;
+        if (item.dataset.status === 'live') liveVisible++;
+      }
     });
-    count.textContent = track ? visible + ' case' + (visible !== 1 ? 's' : '') : '';
-    if (emptyEl) emptyEl.hidden = visible > 0 || !track;
+
+    var showEmpty = !!track && liveVisible === 0;
+    if (emptyEl) emptyEl.hidden = !showEmpty;
+    if (grid) grid.hidden = showEmpty;
+    if (catalog) catalog.classList.toggle('hub-catalog--empty', showEmpty);
+
+    if (countEl) {
+      if (!track) {
+        countEl.textContent = liveVisible + ' live';
+      } else {
+        countEl.textContent = liveVisible + ' in this track';
+      }
+    }
+    if (clearBtn) clearBtn.hidden = !track;
+
     document.dispatchEvent(new CustomEvent('casey-hub-filter', {
-      detail: { count: visible, track: track || null }
+      detail: { count: liveVisible, track: track || null }
     }));
   }
 
   if (sel) {
+    annotateTrackOptions();
     sel.addEventListener('change', filter);
     filter();
   }
