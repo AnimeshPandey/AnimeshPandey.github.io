@@ -127,12 +127,15 @@ permalink: /index.html
 
   {# Casey empty state — shown by track filter JS when 0 live cases match #}
   <div class="hub-empty" id="hub-grid-empty" hidden aria-live="polite">
-    <img class="hub-empty__img"
-         src="{{ '/assets/casey/junior/curious.png' | url }}"
-         alt="Casey — no cases match this filter"
-         width="80" height="80"
-         loading="lazy"
-         data-casey-empty-avatar="true" />
+    <div class="casey-avatar-frame hub-empty__avatar" data-casey-tier="junior">
+      <img class="hub-empty__img casey-avatar-frame__img"
+           src="{{ '/assets/casey/junior/curious.png' | url }}"
+           alt="Casey — no cases match this filter"
+           width="80" height="80"
+           loading="lazy"
+           data-casey-empty-avatar="true"
+           data-casey-frame-ready="1" />
+    </div>
     <p class="hub-empty__msg">No cases match that filter.</p>
     <button type="button" class="casey-hub__action" onclick="document.getElementById('track-filter').value='';document.getElementById('track-filter').dispatchEvent(new Event('change'))">
       Clear filter

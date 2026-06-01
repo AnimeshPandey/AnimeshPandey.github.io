@@ -183,6 +183,8 @@
     }
     var frame = document.createElement('div');
     frame.className = 'casey-avatar-frame';
+    if (img.classList.contains('casey-hub__img')) frame.classList.add('casey-hub__avatar-frame');
+    if (img.classList.contains('hub-empty__img')) frame.classList.add('hub-empty__avatar');
     var out = document.createElement('img');
     out.className = img.className + ' casey-avatar-frame__img';
     out.width = img.width || 52;
@@ -191,12 +193,22 @@
     out.dataset.caseyAvatar = img.dataset.caseyAvatar || 'true';
     if (img.dataset.caseyHubAvatar) out.dataset.caseyHubAvatar = 'true';
     if (img.dataset.caseyLibraryAvatar) out.dataset.caseyLibraryAvatar = 'true';
+    if (img.dataset.caseyEmptyAvatar) out.dataset.caseyEmptyAvatar = 'true';
     if (img.dataset.caseyLottieFallback) out.dataset.caseyLottieFallback = 'true';
     out.src = img.src;
     frame.appendChild(out);
-    if (img.parentNode) img.parentNode.replaceChild(frame, img);
+    var picture = img.closest('picture');
+    var mountTarget = picture || img;
+    if (mountTarget.parentNode) mountTarget.parentNode.replaceChild(frame, mountTarget);
     out.dataset.caseyFrameReady = '1';
     return out;
+  }
+
+  function clearFrameGhosts(frame) {
+    if (!frame) return;
+    frame.querySelectorAll('.casey-avatar-frame__img--out').forEach(function (g) {
+      g.remove();
+    });
   }
 
   function setImgPose(img, assetBase, ext, tier, pose, opts) {
@@ -210,28 +222,28 @@
 
     function apply() {
       var prev = img.getAttribute('src');
+      var hubAvatar = img.dataset.caseyHubAvatar === 'true' || img.dataset.caseyEmptyAvatar === 'true';
+      clearFrameGhosts(frame);
+
       if (opts.tierFade && !prm) {
         img.classList.remove('casey-tier-fade', 'casey-pose-enter');
         void img.offsetWidth;
         img.classList.add('casey-tier-fade');
         setTimeout(function () { img.classList.remove('casey-tier-fade'); }, 280);
         img.src = url;
-      } else if (!prm && prev && prev !== url && frame) {
-        var ghost = document.createElement('img');
-        ghost.className = 'casey-avatar-frame__img casey-avatar-frame__img--out';
-        ghost.src = prev;
-        ghost.alt = '';
-        ghost.setAttribute('aria-hidden', 'true');
-        frame.appendChild(ghost);
-        img.classList.add('casey-avatar-frame__img--in');
+      } else if (!prm && prev && prev !== url && frame && !hubAvatar) {
+        img.classList.add('casey-avatar-fade-swap');
+        img.style.opacity = '0';
+        var done = function () {
+          img.style.opacity = '1';
+          img.classList.remove('casey-avatar-fade-swap');
+        };
+        img.onload = done;
         img.src = url;
-        requestAnimationFrame(function () {
-          img.classList.add('casey-avatar-frame__img--visible');
-        });
-        setTimeout(function () {
-          ghost.remove();
-          img.classList.remove('casey-avatar-frame__img--in', 'casey-avatar-frame__img--visible');
-        }, 280);
+        if (img.complete) done();
+        setTimeout(done, 320);
+      } else if (!prm && prev && prev !== url && hubAvatar) {
+        img.src = url;
       } else if (!prm && prev && prev !== url) {
         img.classList.remove('casey-pose-enter');
         void img.offsetWidth;
@@ -240,6 +252,7 @@
         img.src = url;
       } else {
         img.src = url;
+        img.style.opacity = '';
       }
       if (opts.alt) img.alt = opts.alt;
     }
@@ -1026,7 +1039,11 @@
       if (tierLabelEl && cfg && cfg.tierLabels) {
         tierLabelEl.textContent = cfg.tierLabels[currentTier];
       }
-      if (avatar && !prm) avatar.classList.add('casey-breathing');
+      if (avatar && !prm) {
+        var hubFrame = avatar.closest('.casey-avatar-frame');
+        if (hubFrame) hubFrame.classList.add('casey-breathing');
+        else avatar.classList.add('casey-breathing');
+      }
     });
 
     return {};

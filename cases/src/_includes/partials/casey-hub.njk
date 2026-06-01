@@ -15,19 +15,18 @@
          data-casey-lottie-tier="junior"
          hidden
          aria-hidden="true"></div>
-    <picture>
-      <source type="image/webp"
-              srcset="{{ '/assets/casey/hub/casey-companion-hero.webp' | url }} 1x,
-                      {{ '/assets/casey/hub/casey-companion-hero@2x.webp' | url }} 2x" />
-      <img class="casey-hub__img"
+    {# Single PNG stack only — WebP hero removed to avoid double exposure with pose swaps #}
+    <div class="casey-avatar-frame casey-hub__avatar-frame" data-casey-tier="junior">
+      <img class="casey-hub__img casey-avatar-frame__img"
            src="{{ '/assets/casey/junior/present.png' | url }}"
            alt="Casey, junior developer kitten, welcoming you"
            width="160" height="160"
            loading="eager"
            fetchpriority="high"
            data-casey-hub-avatar="true"
-           data-casey-lottie-fallback="true" />
-    </picture>
+           data-casey-lottie-fallback="true"
+           data-casey-frame-ready="1" />
+    </div>
   </div>
 
   <div class="casey-hub__panel">
