@@ -90,11 +90,69 @@ await server.connect(transport);</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The tool that generated JSON but never ran</h2>
+  <div class="tone-junior">
+    <p>A developer was building a local AI coding assistant and wanted to add file-write capabilities. They added a tool description to the system prompt: "You have a write_file tool. Call it with path and content parameters." The model dutifully generated JSON like <code>{"tool": "write_file", "path": "src/index.ts", "content": "..."}</code>. The developer pasted the output into their terminal and ran the write manually.</p>
+    <p>When they tried to automate this — have the agent actually write files as part of a loop — nothing happened. The model generated the right JSON, the system prompt said the tool existed, but there was no executor on the other side. The write_file "tool" was a fiction written in English. No server was listening for the JSON the model emitted.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The confusion was understandable. The model can describe tools, and it can generate tool call JSON when instructed. But generating JSON is not executing a tool. Without an MCP Server — a running process that receives the JSON-RPC call and performs the actual filesystem write — the tool call is a description of intent, not an action. The missing layer was the Server: the process that turns model-generated JSON into real system effects.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Separating the description from the execution</h2>
+  <div class="tone-junior">
+    <p>The fix was to properly separate the three MCP roles. The Host (in this case, the developer's custom agent runner) manages the conversation and sends messages to the model. The Client (provided by the MCP SDK, embedded in the Host) translates between the model's tool_use format and JSON-RPC calls the Server expects. The Server — a new process they wrote — listens on stdio, receives the write_file call, validates the path, and performs the actual write.</p>
+    <p>Once all three layers existed, the agent loop worked as expected: model emits tool_use, Client routes it to Server, Server writes the file and returns a result, Client passes the tool_result back to the model, the model continues. The key insight was that the model is only responsible for deciding which tool to call and with what arguments — the Server is responsible for execution.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The correct mental model: the system prompt describes what tools are available (their names, schemas, and descriptions). The MCP Server is what makes those descriptions true. Without the Server, the system prompt is making promises the system cannot keep. An MCP tool is not real until there is a running Server process that implements it — and the Client is what connects the model's intent to the Server's execution.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <figure>
+      <figcaption>Before — tool "implemented" in system prompt only, no executor</figcaption>
+      <pre><code>// ❌ Tool described in prompt — model generates JSON but nothing runs
+const systemPrompt = `
+You have access to a write_file tool.
+Call it with: {"tool": "write_file", "path": "...", "content": "..."}
+`;
+
+// No MCP Server running. Model emits JSON.
+// Developer manually pastes it into terminal.
+// No automation possible.</code></pre>
+    </figure>
+    <figure>
+      <figcaption>After — Host + Client + Server: proper three-layer separation</figcaption>
+      <pre><code>// ✅ MCP Server process — implements the tool with real execution
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { writeFile } from "node:fs/promises";
+
+const server = new Server(
+  { name: "file-server", version: "1.0.0" },
+  { capabilities: { tools: {} } }
+);
+
+server.setRequestHandler(CallToolRequestSchema, async (req) =&gt; {
+  if (req.params.name === "write_file") {
+    const { path, content } = req.params.arguments;
+    await writeFile(path, content, "utf-8");
+    return { content: [{ type: "text", text: `Written: ${path}` }] };
+  }
+});
+
+// Host launches this as subprocess; Client handles JSON-RPC routing
+await server.connect(new StdioServerTransport());</code></pre>
+    </figure>
   </div>
 </section>
 
@@ -118,6 +176,44 @@ await server.connect(transport);</code></pre>
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementation depth</h2>
+  <div class="tone-mid">
+    <p>MCP uses JSON-RPC 2.0 as its wire format. Every tool call from the Client to the Server is a JSON-RPC request with <code>method: "tools/call"</code> and params containing the tool name and arguments. The Server responds with a JSON-RPC result containing the tool output. The schema for both is defined in the MCP spec — mismatches between the tool definition schema and the actual arguments the model sends are the most common source of silent failures.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Tool definition — what the model sees (via ListTools)
+{
+  name: "write_file",
+  description: "Write content to a file at the specified path",
+  inputSchema: {
+    type: "object",
+    properties: {
+      path: { type: "string", description: "File path relative to workspace" },
+      content: { type: "string", description: "UTF-8 content to write" }
+    },
+    required: ["path", "content"]
+  }
+}
+
+// What the Client sends to the Server (JSON-RPC)
+{
+  jsonrpc: "2.0",
+  method: "tools/call",
+  params: { name: "write_file", arguments: { path: "src/a.ts", content: "..." } },
+  id: 1
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Common pitfalls when building MCP Servers:</p>
+    <ul>
+      <li><strong>Mixing stdio and HTTP transports</strong> — stdio servers are launched as subprocesses by the Host; HTTP+SSE servers run independently and the Host connects to them by URL. Do not attempt to use both transports in the same server process.</li>
+      <li><strong>Forgetting the initialize handshake</strong> — the Host sends an <code>initialize</code> request before any tool calls. If your server doesn't implement the initialize handler, the Client will hang waiting for capability negotiation to complete.</li>
+      <li><strong>Tool definition vs tool execution drift</strong> — if you add a new tool to the ListTools response but forget the corresponding handler in CallTool, the model will call it and your server returns an error. Keep definitions and handlers co-located.</li>
+      <li><strong>Error propagation</strong> — return JSON-RPC error objects (not thrown exceptions) for tool-level errors. Thrown exceptions in the handler may crash the server process rather than returning a graceful error result to the Client.</li>
+    </ul>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

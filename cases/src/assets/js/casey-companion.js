@@ -158,9 +158,15 @@
     return POSE_ALIAS[pose] || pose || 'idle';
   }
 
+  function assetVersion() {
+    return document.documentElement.dataset.apBuildId || '';
+  }
+
   function avatarSrc(assetBase, ext, tier, pose) {
     var base = assetBase.replace(/\/?$/, '/');
-    return base + tier + '/' + resolvePose(pose) + '.' + ext;
+    var url = base + tier + '/' + resolvePose(pose) + '.' + ext;
+    var v = assetVersion();
+    return v ? url + '?v=' + v : url;
   }
 
   function preloadPose(assetBase, ext, tier, pose) {
@@ -237,6 +243,7 @@
     function commit() {
       if (frameSwapToken[frameId] !== token) return;
       img.src = url;
+      if (img.decode) img.decode().catch(function () {});
       img.style.opacity = '';
       img.classList.remove(
         'casey-avatar-fade-swap',
@@ -1042,10 +1049,10 @@
           return;
         }
         setHubBreathing(false);
-        setImgPose(avatar, assetBase, assetExt, currentTier, pose, { preload: false });
+        setImgPose(avatar, assetBase, assetExt, currentTier, pose, {});
         if (pose === 'nod' && Math.random() < 0.35) burstHubSparkles(hubEl);
         hubIdleTimer = setTimeout(function () {
-          setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+          setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), {});
           setHubBreathing(true);
           hubIdleTimer = setTimeout(tick, 4500 + Math.random() * 5500);
         }, hold);
@@ -1168,6 +1175,9 @@
     }
     setGreetingText(pickInitialGreeting(currentTier));
     renderHubActions();
+    ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose()].forEach(function (p) {
+      preloadPose(assetBase, assetExt, currentTier, p);
+    });
     playHubEntrance();
     bindHubPlay();
 

@@ -67,11 +67,70 @@ component wait for isLoading before rendering?"</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The agent that burned its own context window</h2>
+  <div class="tone-junior">
+    <p>An agentic coding loop was tasked with migrating a TypeScript codebase to strict mode. On its third iteration, it hit a compilation error. The agent's next turn included the full raw output of <code>tsc --strict</code> — 214 lines of interleaved diagnostics from 19 different files. The model read all 214 lines, identified two errors, attempted fixes, and ran tsc again. The new output was 198 lines. It pasted all 198 lines into the next turn.</p>
+    <p>Four turns later, the context window was 78% consumed by raw compiler output. The agent had fixed 3 of the 19 errors. At turn six, it began confabulating fixes for errors it could no longer see in full, introducing new type errors while patching old ones. The loop had to be restarted from scratch.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The failure mode was not that the agent used AI — it was that the agent's error-handling strategy was "include everything and let the model sort it out." For a 214-line compiler output, that strategy consumed roughly 4,000 tokens per turn, 24,000 tokens across six turns, just in error text. A structured parser that extracted the first diagnostic per file (file path, line, error code, message) would have produced a 19-line summary: around 400 tokens, leaving the context window for actual code fixes.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>The error digest pattern</h2>
+  <div class="tone-junior">
+    <p>The fix was a structured error parser inserted between the compilation step and the agent's next turn. Rather than passing the raw output, the parser extracted: error code, file path, line number, and the single-sentence diagnostic message — one entry per unique error. If the same error code appeared multiple times in the same file, it was grouped as "TS2345 at src/api.ts (3 occurrences)" rather than listed three times.</p>
+    <p>The agent's context now received a clean digest: "19 errors across 8 files. Priority: TS2345 at src/api.ts:42 — Argument of type string not assignable to number. TS7006 at src/utils.ts:18 — Parameter implicitly has any type." The model immediately identified the correct fix for each, applied them in priority order, and completed the migration in two turns.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The structural principle: an AI agent's effectiveness is bounded by the signal-to-noise ratio of its inputs. Raw tool outputs — compiler errors, test failures, linter results, stack traces — are high-noise. The agent's job is not to parse noise; it is to reason about signal. The pipeline stage that runs the tool should also produce a structured summary of the result. This is not a limitation of AI — it is good engineering practice for any automated system that processes tool output.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <figure>
+      <figcaption>Before — raw compiler output pasted directly into agent turn</figcaption>
+      <pre><code>// ❌ 214 lines of raw tsc output as agent input
+const agentInput = `
+src/api.ts(42,14): error TS2345: Argument of type 'string' is not
+  assignable to parameter of type 'number'.
+src/api.ts(43,8): error TS2345: Argument of type 'string | undefined'
+  is not assignable to parameter of type 'string'.
+src/utils.ts(18,11): error TS7006: Parameter 'x' implicitly has an
+  'any' type.
+... [211 more lines]
+`;
+// Context budget: ~4,000 tokens for errors alone, per turn</code></pre>
+    </figure>
+    <figure>
+      <figcaption>After — structured error digest: file, line, code, message</figcaption>
+      <pre><code>// ✅ Structured digest — ~400 tokens for the same 19 errors
+function parseTscOutput(rawOutput) {
+  const lines = rawOutput.split('\n');
+  const seen = new Set();
+  const digest = [];
+
+  for (const line of lines) {
+    const m = line.match(/^(.+)\((\d+),\d+\): error (TS\d+): (.+)$/);
+    if (!m) continue;
+    const key = `${m[3]}:${m[1]}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    digest.push(`${m[3]} at ${m[1]}:${m[2]} — ${m[4]}`);
+  }
+
+  return `${digest.length} errors:\n${digest.join('\n')}`;
+}
+
+// Agent input: "19 errors:\nTS2345 at src/api.ts:42 — ..."</code></pre>
+    </figure>
   </div>
 </section>
 
@@ -95,6 +154,41 @@ component wait for isLoading before rendering?"</code></pre>
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementation depth</h2>
+  <div class="tone-mid">
+    <p>Error summarisation in agentic loops should be a first-class pipeline stage, not an afterthought. For TypeScript specifically, <code>tsc --noEmit --pretty false</code> produces machine-parseable output without ANSI escape codes. Pipe it through a digest function before the output reaches the agent's next prompt. For test runners, most support <code>--reporter json</code> or <code>--reporter tap</code> — structured output that can be summarised without regex.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Agentic loop: run tool, summarise, pass digest to model
+async function runWithDigest(command) {
+  const { stdout, stderr } = await exec(command);
+  const raw = stdout + stderr;
+
+  if (command.startsWith('tsc')) {
+    return parseTscOutput(raw);      // ~400 tokens
+  }
+  if (command.startsWith('jest') || command.startsWith('vitest')) {
+    return parseTestOutput(raw);     // failed tests only, summary counts
+  }
+  // Fallback: first 50 lines + line count
+  const lines = raw.split('\n');
+  const head = lines.slice(0, 50).join('\n');
+  return lines.length &gt; 50
+    ? `${head}\n... (${lines.length - 50} more lines truncated)`
+    : head;
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Context budget management principles for agentic loops:</p>
+    <ul>
+      <li><strong>Budget tool outputs explicitly</strong> — define a maximum token budget per tool result (e.g., 500 tokens). Any output exceeding this must be summarised before inclusion. Enforce this at the pipeline level, not the model level.</li>
+      <li><strong>Deduplicate repeated errors</strong> — the same error code at the same location appearing in multiple output lines should be counted, not repeated. One entry with an occurrence count is clearer and cheaper.</li>
+      <li><strong>Prioritise by error code</strong> — TS errors with "implicit any" (TS7006) or "type mismatch" (TS2345) are actionable; "module not found" (TS2307) may indicate a missing dependency that blocks all downstream errors. Show blocking errors first.</li>
+      <li><strong>Retry strategy</strong> — if the same error appears across three consecutive turns without progress, surface it to the operator rather than continuing to loop. Infinite retry on an unresolvable error is a common failure mode in agentic systems.</li>
+    </ul>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

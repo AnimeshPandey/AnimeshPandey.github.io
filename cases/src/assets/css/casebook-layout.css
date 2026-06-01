@@ -31,13 +31,28 @@ body {
 
 /* ── Hub ── */
 .casebook-hub {
-  max-width: 1100px; margin: 0 auto;
-  padding: 48px max(16px, env(safe-area-inset-left));
+  max-width: var(--casebook-max, 1100px); margin: 0 auto;
+  padding: 40px max(var(--casebook-page-pad, 16px), env(safe-area-inset-left));
 }
-.casebook-hub__hero { margin-bottom: 40px; }
+.casebook-hub__hero {
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dot-grid texture — matches portfolio #hero::before */
+.casebook-hub__hero::before {
+  content: '';
+  position: absolute; inset: -20px; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(var(--casebook-border, #e5e5e5) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+  opacity: 0.35;
+}
+.casebook-hub__hero > * { position: relative; z-index: 1; }
+
 .casebook-hub__title {
   font-family: var(--serif, 'DM Serif Display', Georgia, serif);
-  font-size: var(--text-h2, clamp(1.75rem, 5vw, 2.5rem));
+  font-size: clamp(1.4rem, 4.5vw, 2.5rem);
   font-weight: 400;
   line-height: var(--leading-tight, 1.2);
   color: var(--casebook-ink);
@@ -47,8 +62,8 @@ body {
   font-size: var(--text-md, 1.05rem);
   line-height: var(--leading-body, 1.7);
   color: var(--casebook-ink-muted);
-  max-width: 60ch;
-  margin: 0 0 var(--space-5, 24px);
+  max-width: 48ch;
+  margin: 0 0 var(--space-4, 16px);
 }
 .casebook-hub__stats {
   font-family: var(--mono, monospace);
@@ -83,19 +98,34 @@ body {
 /* Hub grid */
 .casebook-hub__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
 }
+@media (min-width: 640px)  { .casebook-hub__grid { gap: 18px; } }
+@media (min-width: 1024px) { .casebook-hub__grid { gap: 22px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
 
 /* Case cards */
 .case-card {
   border: 1px solid var(--casebook-border);
   border-radius: 12px;
   background: var(--casebook-surface);
-  padding: 20px;
-  display: flex; flex-direction: column; gap: 10px;
-  transition: border-color 0.2s, transform 0.15s ease, box-shadow 0.15s ease;
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s, transform 0.18s ease, box-shadow 0.18s ease;
 }
+@media (min-width: 640px) { .case-card { padding: 20px; gap: 10px; } }
+
+/* Shimmer top-accent bar — scales in on hover (mirrors .pc::after in portfolio) */
+.case-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--casebook-accent), color-mix(in srgb, var(--casebook-accent) 70%, #fff));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.22s ease;
+}
+
 .case-card a { text-decoration: none; color: inherit; }
 .case-card__link {
   display: block;
@@ -103,19 +133,25 @@ body {
   text-decoration: none;
   color: inherit;
 }
-.case-card__link:hover .case-card {
-  border-color: var(--casebook-accent);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(28,23,20,.10);
-}
-.case-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-@media (prefers-reduced-motion: reduce) {
-  .case-card:hover {
-    transform: none;
+
+/* Hover — fine pointer only */
+@media (hover: hover) and (pointer: fine) {
+  .case-card__link:hover .case-card {
+    border-color: var(--casebook-accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(28,23,20,.10);
   }
+  .case-card__link:hover .case-card::after { transform: scaleX(1); }
+  .case-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,.10);
+  }
+  .case-card:hover::after { transform: scaleX(1); }
+}
+
+/* Touch press feedback */
+@media (pointer: coarse) {
+  .case-card__link:active .case-card { transform: scale(.98); transition: transform .1s; }
 }
 .case-card__link:focus-visible { outline-offset: 4px; }
 .case-card--soon { opacity: 0.7; cursor: default; }
@@ -160,20 +196,23 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0;
-  max-width: 1100px; margin: 0 auto;
-  padding: 32px max(16px, env(safe-area-inset-left)) 80px;
+  max-width: var(--casebook-max, 1100px); margin: 0 auto;
+  padding: 32px max(var(--casebook-page-pad, 16px), env(safe-area-inset-left)) 80px;
 }
 
 .case-scroll {
-  max-width: 68ch;
+  max-width: 100%;
   min-width: 0;
 }
+@media (min-width: 640px)  { .case-scroll { max-width: 62ch; } }
+@media (min-width: 820px)  { .case-scroll { max-width: 68ch; } }
+@media (min-width: 1024px) { .case-scroll { max-width: 72ch; } }
 
 /* ── Progress bar ── */
 .casebook-progress {
-  position: fixed; top: 56px; left: 0; right: 0; z-index: 90;
+  position: fixed; top: var(--nav-h, 56px); left: 0; right: 0; z-index: 90;
   height: 3px;
-  background: var(--casebook-progress);
+  background: linear-gradient(90deg, var(--casebook-accent), color-mix(in srgb, var(--casebook-accent) 60%, var(--casebook-progress, #4E7A68)));
   transform-origin: left;
   transform: scaleX(0);
   transition: transform 0.1s linear;
@@ -184,7 +223,8 @@ html.casebook--reduce-motion .casebook-progress { transition: none; }
 .casebook-footer {
   border-top: 1px solid var(--casebook-border);
   margin-top: 64px;
-  padding: 28px max(16px, env(safe-area-inset-left));
+  padding: 28px max(var(--casebook-page-pad, 16px), env(safe-area-inset-left));
+  padding-bottom: max(28px, env(safe-area-inset-bottom));
   font-family: var(--mono, monospace);
   font-size: 11px; color: var(--casebook-ink-faint);
   text-align: center;
@@ -204,16 +244,19 @@ html.casebook--reduce-motion .casebook-progress { transition: none; }
 .case-breadcrumb a:hover { text-decoration: underline; }
 .case-breadcrumb__sep { color: var(--casebook-border-2); }
 
-/* ── Responsive: ≥768px two-column with aside ── */
-@media (min-width: 768px) {
+/* ── Responsive: two-column with aside ── */
+@media (min-width: 820px) {
   .casebook-case {
-    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-columns: minmax(0, 1fr) 260px;
     gap: 40px;
     align-items: start;
   }
 }
 @media (min-width: 1024px) {
   .casebook-case { grid-template-columns: minmax(0, 1fr) 300px; gap: 56px; }
+}
+@media (min-width: 1280px) {
+  .casebook-case { grid-template-columns: minmax(0, 1fr) 320px; gap: 64px; }
 }
 
 /* ── What's New page ── */
@@ -341,4 +384,56 @@ html.casebook--reduce-motion .casebook-progress { transition: none; }
   letter-spacing: 0.08em;
   padding: 2px 6px;
   border-radius: 100px;
+}
+
+/* ── Scroll-reveal for hub cards ── */
+.case-card-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.case-card-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Back-to-top button ── */
+.casebook-back-top {
+  position: fixed;
+  bottom: max(80px, calc(env(safe-area-inset-bottom, 0px) + 20px));
+  right: max(16px, env(safe-area-inset-right, 16px));
+  z-index: 150;
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--casebook-surface);
+  border: 1px solid var(--casebook-border-2, var(--casebook-border));
+  color: var(--casebook-ink-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transform: translateY(10px);
+  transition: opacity 0.25s, transform 0.25s, background 0.2s, color 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,.12);
+}
+.casebook-back-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.casebook-back-top:active  { transform: scale(.92); }
+@media (hover: hover) and (pointer: fine) {
+  .casebook-back-top:hover { background: var(--casebook-accent); color: #fff; border-color: var(--casebook-accent); }
+}
+
+/* ── Forced colors (Windows HCM) ── */
+@media (forced-colors: active) {
+  .case-card { border: 1px solid ButtonText; }
+  .case-card::after { forced-color-adjust: none; background: Highlight; }
+  .case-card__badge { border: 1px solid ButtonText; }
+  .casebook-progress { forced-color-adjust: none; background: Highlight; }
+  .chapter-progress__dot--active { forced-color-adjust: none; background: Highlight; }
+  .casebook-back-top { border: 1px solid ButtonText; }
+  :focus-visible { outline: 3px solid Highlight; }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .case-card, .case-card::after,
+  .casebook-back-top { transition: none !important; }
+  .case-card-reveal { opacity: 1; transform: none; transition: none !important; }
+  html { scroll-behavior: auto; }
 }

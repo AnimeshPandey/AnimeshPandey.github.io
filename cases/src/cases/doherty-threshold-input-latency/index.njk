@@ -93,11 +93,74 @@ function SearchInput({ onSearch }) {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The search that users abandoned after three keystrokes</h2>
+  <div class="tone-junior">
+    <p>A documentation site added a search-as-you-type component. The developer set a 600ms debounce — "conservative, to avoid server load" — and the search API averaged 300ms response time. Total latency from keystroke to results: 900ms. On fast connections, which most users had, 900ms felt like a full second of nothing happening after each word. Users saw the cursor blinking in an empty input while results they had already typed ahead of appeared.</p>
+    <p>Session analytics showed that 23% of search sessions ended after 1–3 keystrokes with no click — far higher than comparable documentation sites. Exit rate on the search page was 41% within 10 seconds. The team had attributed this to poor content relevance. A latency analysis revealed the real cause: users gave up because the search felt broken, not because results were irrelevant.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The 600ms debounce was a copy-paste from a tutorial written in 2016 for slow mobile connections and servers with 400ms+ response times. Modern documentation stacks on fast CDN infrastructure have API response times of 50–150ms. A 600ms debounce on a 100ms API means the user waits 700ms by design — well above the 400ms Doherty Threshold — because of a configuration value that was never revisited. The server was not slow; the client was engineered to feel slow.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Optimistic local index: instant first, accurate last</h2>
+  <div class="tone-junior">
+    <p>The fix had two parts. First, the debounce was reduced to 200ms — matching the actual server RTT plus a buffer. Second, and more impactfully, a lightweight local index was built at page load using <code>requestIdleCallback</code>. The local index held the titles, headings, and short descriptions of the top 200 most-visited docs pages. When a user typed, local results appeared in under 10ms. The API call with full-text search results overlaid them 250ms later.</p>
+    <p>Users saw results immediately on every keystroke — local results, clearly labelled as "Quick results." When the API results arrived, they replaced the local results smoothly. Abandonment rate on search dropped from 23% to 8%. Exit rate within 10 seconds dropped from 41% to 19%. Perceived response was immediate even though the full-fidelity results still took 250ms — because the first visible response happened in under 50ms.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The architectural insight: the Doherty Threshold applies to the first perceptible response, not the final response. A user who sees partial results in 10ms and accurate results in 250ms experiences 10ms latency psychologically — their attention is engaged from the first keystroke. A user who sees nothing for 600ms and then sees results experiences 600ms latency — a full stop, a moment of wondering if the input registered. Same final results; completely different perception of responsiveness.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <figure>
+      <figcaption>Before — 600ms debounce + API only; 900ms total before any result</figcaption>
+      <pre><code>// ❌ Debounce 600ms + 300ms API = 900ms total latency
+// Users experience: type → 900ms silence → results (or wrong results)
+const debouncedSearch = debounce(async (query) =&gt; {
+  const results = await searchAPI(query); // ~300ms RTT
+  setResults(results);
+}, 600); // 600ms debounce — too slow for modern servers
+
+function SearchInput() {
+  return (
+    &lt;input
+      onChange={e =&gt; debouncedSearch(e.target.value)}
+      placeholder="Search docs…"
+    /&gt;
+  );
+}</code></pre>
+    </figure>
+    <figure>
+      <figcaption>After — local index for instant first results; API for full results</figcaption>
+      <pre><code>// ✅ Local index (10ms) + debounce 200ms + API 300ms = 200ms perceived
+// Users see instant local results; accurate API results follow smoothly
+const localIndex = buildLocalIndex(TOP_200_DOCS); // built at idle time
+
+const debouncedAPISearch = debounce(async (query) =&gt; {
+  const results = await searchAPI(query);
+  setResults(results); // replaces local results with accurate results
+}, 200); // 200ms debounce — matches actual server RTT
+
+function SearchInput() {
+  const handleChange = (e) =&gt; {
+    const q = e.target.value;
+    // Instant local results — under 10ms
+    setResults(localIndex.search(q));
+    // Full API results follow — 200ms + 300ms = 500ms
+    debouncedAPISearch(q);
+  };
+  return &lt;input onChange={handleChange} placeholder="Search docs…" /&gt;;
+}</code></pre>
+    </figure>
   </div>
 </section>
 
@@ -121,6 +184,42 @@ function SearchInput({ onSearch }) {
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementation depth</h2>
+  <div class="tone-mid">
+    <p>Building a local search index at idle time with <code>requestIdleCallback</code> ensures the index build does not compete with the initial page render or user interaction. The index should be capped in size — 200–500 documents is enough for instant-feeling results without noticeable memory cost. Libraries like <code>lunr.js</code> (small, no dependencies) or <code>Pagefind</code> (WASM-based, pre-built at static site generation time) are the two most practical choices for documentation sites.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Build local index at idle — does not block interaction
+let localIndex = null;
+
+requestIdleCallback(() =&gt; {
+  // lunr.js — lightweight, synchronous indexing
+  localIndex = lunr(function () {
+    this.ref('id');
+    this.field('title', { boost: 10 });
+    this.field('headings', { boost: 5 });
+    this.field('description');
+    TOP_200_DOCS.forEach(doc =&gt; this.add(doc));
+  });
+}, { timeout: 2000 }); // build within 2s even if never idle
+
+function searchLocal(query) {
+  if (!localIndex || query.length &lt; 2) return [];
+  return localIndex.search(query).slice(0, 8);
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Debounce and search latency implementation pitfalls:</p>
+    <ul>
+      <li><strong>Debounce value must be measured, not guessed</strong> — measure your actual API p50 and p95 response times. Set debounce to roughly 2x p50 RTT. If p50 RTT is 80ms, debounce at 150–200ms. Recalibrate when your infrastructure changes.</li>
+      <li><strong>Cancel in-flight requests on new input</strong> — debounce prevents sending too many requests, but if a user types slowly, you may have multiple requests in flight. Use <code>AbortController</code> to cancel the previous request when a new debounced call fires.</li>
+      <li><strong>IME composition for CJK languages</strong> — debounce and local search must gate on <code>compositionend</code>, not <code>input</code> event. During CJK character composition, <code>input</code> fires for each intermediate keystroke before the character is assembled. Triggering search on each fires on partial characters.</li>
+      <li><strong>Stale results from out-of-order API responses</strong> — if the 200ms debounce fires twice in quick succession, two API requests are in flight. The second request may resolve before the first. Use a request ID or abort controller to ensure only the most recent result is shown.</li>
+      <li><strong><code>requestIdleCallback</code> fallback</strong> — Safari did not support <code>requestIdleCallback</code> until 2023. Use <code>setTimeout(fn, 200)</code> as a fallback: <code>const schedule = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : (fn) =&gt; setTimeout(fn, 200)</code>.</li>
+    </ul>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

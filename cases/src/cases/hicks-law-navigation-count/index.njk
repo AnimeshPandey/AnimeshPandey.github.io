@@ -63,11 +63,78 @@ ogImage: https://anmshpndy.com/brand/cases/hicks-law-navigation-count-og.png
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The nav that grew to match the org chart</h2>
+  <div class="tone-junior">
+    <p>A SaaS product had a top navigation with 11 items after three years of feature expansion. Each item had been added when a feature team launched: Campaigns, Audiences, Reports, Integrations, Templates, Analytics, Billing, Settings, Help, API Docs, and What's New. The pattern was consistent — each team wanted visible top-level access for their feature. Nobody ever removed anything because removing an item felt like deprioritising a team's work.</p>
+    <p>User testing revealed the hidden cost. Session recordings showed users hovering over the navigation for 4–6 seconds before clicking, frequently pausing mid-nav to scan back to the left. Heat maps showed near-equal hover density across all 11 items even for features users never used — the visual weight of a 11-item nav forced users to evaluate every item on every visit. Time-on-nav correlated with early session churn: sessions where users spent over 3 seconds on the nav in the first 30 seconds had a 34% higher churn rate.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The org-chart nav is a predictable failure mode in product companies. Each team's feature deserves top-level placement from the team's perspective. The user's perspective is different: they have a task, they want the fastest path to it, and every additional item increases their decision cost. The product team's job is to reconcile these two views — and the correct answer is almost always to reduce visible items based on usage data, not perceived importance.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Grouping by user mental model, not product taxonomy</h2>
+  <div class="tone-junior">
+    <p>The team ran a card-sorting exercise with 12 existing users and 8 prospective users. The results were clear: users grouped the 11 items into four natural categories — "Do my work" (Campaigns, Audiences, Templates), "See results" (Reports, Analytics), "Manage my account" (Billing, Settings, API Docs), and "Get help" (Help, What's New, Integrations). The 11-item flat nav became 4 top-level items with grouped dropdowns.</p>
+    <p>An A/B test over three weeks measured time-to-first-click on target navigation items. The 4-item grouped nav was 58% faster on first-visit sessions and 31% faster on return sessions. Churn correlated with time-on-nav dropped from 34% to 18%. The key finding from user interviews: users described the old nav as "exhausting" and the new nav as "obvious" — even though all 11 features were still accessible, just one click deeper.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The card-sorting insight is transferable. Users do not organise navigation items the way product teams do. Product teams organise by feature ownership; users organise by their intent and workflow. The gap between these two mental models is where navigation friction lives. Closing it requires listening to users rather than defaulting to the org chart, and accepting that secondary placement does not mean deprioritisation — it means appropriate placement.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <figure>
+      <figcaption>Before — 11 flat nav items; n=11 decision cost on every visit</figcaption>
+      <pre><code>&lt;!-- ❌ 11-item flat nav: Hick's Law cost paid on every interaction --&gt;
+&lt;nav aria-label="Main"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="/campaigns"&gt;Campaigns&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/audiences"&gt;Audiences&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/reports"&gt;Reports&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/analytics"&gt;Analytics&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/integrations"&gt;Integrations&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/templates"&gt;Templates&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/settings"&gt;Settings&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/billing"&gt;Billing&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/api"&gt;API Docs&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/help"&gt;Help&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/whats-new"&gt;What's New&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+    </figure>
+    <figure>
+      <figcaption>After — 4 grouped items; n=4 at top level, sub-items on demand</figcaption>
+      <pre><code>&lt;!-- ✅ 4 top-level items: n=4 decision cost. Sub-items on expand --&gt;
+&lt;nav aria-label="Main"&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;a href="/campaigns"&gt;Work&lt;/a&gt;
+      &lt;ul class="dropdown"&gt;
+        &lt;li&gt;&lt;a href="/campaigns"&gt;Campaigns&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/audiences"&gt;Audiences&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/templates"&gt;Templates&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;a href="/reports"&gt;Results&lt;/a&gt;
+      &lt;ul class="dropdown"&gt;
+        &lt;li&gt;&lt;a href="/reports"&gt;Reports&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="/analytics"&gt;Analytics&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;a href="/settings"&gt;Account&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="/help"&gt;Help&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;</code></pre>
+    </figure>
   </div>
 </section>
 
@@ -91,6 +158,34 @@ ogImage: https://anmshpndy.com/brand/cases/hicks-law-navigation-count-og.png
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementation depth</h2>
+  <div class="tone-mid">
+    <p>Hick's Law gives a quantitative prediction: <code>RT = b · log₂(n + 1)</code> where <em>b</em> is an empirically measured constant (~150ms for visual scanning tasks) and <em>n</em> is the number of equally probable choices. For an 11-item nav, predicted scan time is <code>150 · log₂(12) ≈ 537ms</code>. For a 4-item nav: <code>150 · log₂(5) ≈ 348ms</code>. That 189ms difference compounds across every navigation action in a session. For a user who navigates 20 times per session, the 11-item nav costs ~3.8 seconds more per session in decision time alone.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Hick's Law decision time estimate (b = 150ms empirical)
+function hicksRT(n, b = 150) {
+  return b * Math.log2(n + 1);
+}
+
+hicksRT(11); // 537ms — 11-item flat nav
+hicksRT(4);  // 348ms — 4-item grouped nav
+hicksRT(5);  // 387ms — 5-item + overflow pattern
+
+// Decision time saved per navigation action: ~189ms
+// Across 20 nav actions per session: ~3.8s saved per session</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Navigation architecture pitfalls:</p>
+    <ul>
+      <li><strong>Groupings that match the org chart, not user intent</strong> — the most common failure mode. "Our data team owns Analytics and Reports" is not a user-facing category. "See how things are performing" is. Card sorting with 20 users before grouping items is the minimum viable validation.</li>
+      <li><strong>Dropdown hover delay</strong> — navigation dropdowns must use a 100–200ms hover delay before opening to prevent accidental trigger when the cursor passes over the nav item. CSS-only dropdowns on <code>:hover</code> with no delay cause constant unintended openings.</li>
+      <li><strong>Keyboard accessibility of grouped nav</strong> — dropdown items must be reachable via keyboard (<code>Tab</code> and arrow keys). Use <code>aria-haspopup="true"</code>, <code>aria-expanded</code>, and ensure focus management opens/closes dropdowns correctly. An inaccessible grouped nav trades accessibility for visual simplicity.</li>
+      <li><strong>Progressive disclosure vs burial</strong> — moving items to a dropdown must be validated against actual usage data. If an item moves to secondary and usage drops 80%, you have buried it, not organised it. Monitor click volume on secondary items after any navigation restructure.</li>
+    </ul>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

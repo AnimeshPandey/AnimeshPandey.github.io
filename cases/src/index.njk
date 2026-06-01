@@ -16,20 +16,10 @@ permalink: /index.html
     <header class="casebook-hub__hero">
       <h1 class="casebook-hub__title">The Frontend Casebook</h1>
       <p class="casebook-hub__subtitle">{{ site.tagline }}</p>
-      <p class="casebook-hub__stats">
-        {{ liveCaseCount }} live · {{ manifest.stats.total }} planned across 18 tracks ·
-        <a href="{{ '/library/' | url }}">{{ libraryEntries | length }} references</a> ·
-        <a href="{{ '/about/' | url }}">About</a>
-      </p>
     </header>
 
     {% include 'partials/casey-hub.njk' %}
   </div>
-
-  {% include 'partials/hub-progress-strip.njk' %}
-
-  {# ── Subscribe CTA ── #}
-  {% include 'partials/subscribe-cta.njk' %}
 
   {# ── Browse toolbar: content type + track filter ── #}
   <section class="hub-toolbar" aria-label="Browse cases">
@@ -77,6 +67,9 @@ permalink: /index.html
       </div>
     </div>
   </section>
+
+  {# ── Progress strip — between toolbar and grid ── #}
+  {% include 'partials/hub-progress-strip.njk' %}
 
   {# ── Case catalog (grid or empty state, never both) ── #}
   <div class="hub-catalog" id="hub-catalog">
@@ -138,7 +131,7 @@ permalink: /index.html
   <div class="hub-empty" id="hub-grid-empty" hidden aria-live="polite">
     <div class="casey-avatar-frame hub-empty__avatar" data-casey-tier="junior">
       <img class="hub-empty__img casey-avatar-frame__img"
-           src="{{ '/assets/casey/junior/curious.png' | url }}"
+           src="{{ '/assets/casey/junior/curious.png' | url }}?v=__AP_BUILD_ID__"
            alt="Casey — no cases match this filter"
            width="80" height="80"
            loading="lazy"
@@ -151,6 +144,9 @@ permalink: /index.html
     </button>
   </div>
   </div>
+
+  {# ── Subscribe CTA — after grid so user has context ── #}
+  {% include 'partials/subscribe-cta.njk' %}
 
 </div>
 

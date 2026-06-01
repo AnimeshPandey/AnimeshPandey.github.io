@@ -87,11 +87,63 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Three arrows, no sequence</h2>
+  <div class="tone-junior">
+    <p>A design team built an onboarding flow for a productivity app. Three animated arrows guided users through the steps: arrow 1 pointed to "Create a workspace," arrow 2 faded in to point to "Invite your team," arrow 3 appeared last to point to "Import your data." The sequence was clear, engaging, and well-tested. Before launch, a developer added <code>@media (prefers-reduced-motion: reduce) { animation: none }</code> — a one-line fix that seemed to handle accessibility.</p>
+    <p>What users with Reduce Motion enabled actually saw: all three arrows visible simultaneously, stacked in the same position, all pointing to the same UI area at once. The CSS had removed the animation timing — which was the only mechanism that gave each arrow its separate moment. Without the animation, all three rendered at full opacity in their final positions, overlapping and illegible. The "accessible" version was less usable than having no fallback at all.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The root problem was that the animation was not an enhancement — it was the content. The sequence information lived entirely in the animation timing. Removing the animation without replacing it with a static representation of the same information left users with decorative elements and no instructional content. The fix is not to remove the animation; it is to provide a static alternative that communicates the same sequence through visual hierarchy rather than time.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>Static numbered list as the canonical fallback</h2>
+  <div class="tone-junior">
+    <p>The correct reduced-motion version replaced the three animated arrows with a static numbered list: "1. Create a workspace, 2. Invite your team, 3. Import your data." The animated version became the enhancement; the static list became the base layer. Users with Reduce Motion enabled received a clear, sequential, fully comprehensible onboarding experience without motion of any kind.</p>
+    <p>The implementation used the no-preference guard strategy: the animated elements only rendered inside <code>@media (prefers-reduced-motion: no-preference)</code>. The static list was always in the DOM, hidden by CSS only when motion was permitted. This meant the animated version was an enhancement layered on top of working content — the correct architecture for any progressive enhancement.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broader principle: before adding an animation, ask what information it conveys and whether that information exists somewhere without the animation. Animations that convey sequence, state change, relationship, or spatial context must have a static equivalent. Animations that convey energy or delight — a bouncy button, a satisfying toggle — have a lower bar because removing them leaves a still-functional element, not an information gap.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <figure>
+      <figcaption>Before — animation removed, broken overlap (sequence information lost)</figcaption>
+      <pre><code>/* ❌ Only removes animation — content relies on timing for sequence */
+.step-arrow { animation: fadeInPoint 0.6s ease forwards; }
+.step-arrow:nth-child(2) { animation-delay: 1.2s; }
+.step-arrow:nth-child(3) { animation-delay: 2.4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .step-arrow { animation: none; }
+  /* All 3 arrows render at once, overlapping — unusable */
+}</code></pre>
+    </figure>
+    <figure>
+      <figcaption>After — static list always present; animation is an enhancement only</figcaption>
+      <pre><code>/* ✅ Static fallback always in DOM; animation wraps enhanced version */
+
+/* Static numbered list — always visible */
+.onboarding-steps-list { display: block; }
+.onboarding-arrows { display: none; }
+
+/* Animated arrows only when motion is OK */
+@media (prefers-reduced-motion: no-preference) {
+  .onboarding-steps-list { display: none; }
+  .onboarding-arrows { display: block; }
+  .step-arrow { animation: fadeInPoint 0.6s ease forwards; }
+  .step-arrow:nth-child(2) { animation-delay: 1.2s; }
+  .step-arrow:nth-child(3) { animation-delay: 2.4s; }
+}</code></pre>
+    </figure>
   </div>
 </section>
 
@@ -115,6 +167,38 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementation depth</h2>
+  <div class="tone-mid">
+    <p>The <code>prefers-reduced-motion</code> media query can be read in JavaScript using <code>window.matchMedia</code>. Add a <code>change</code> listener to respond to users toggling the setting mid-session — this matters for accessibility users who may adjust OS settings while using the app. The listener fires synchronously when the OS preference changes, so you can immediately swap states.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// JS check for motion preference — use for JS-driven animations
+const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function applyMotionPreference() {
+  if (mq.matches) {
+    // Stop or skip JS animations
+    gsapTimeline.pause();
+    gsapTimeline.seek(gsapTimeline.duration()); // jump to end state
+  } else {
+    gsapTimeline.play();
+  }
+}
+
+applyMotionPreference(); // on load
+mq.addEventListener('change', applyMotionPreference); // on change</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Vestibular disorder context and design principles for reduced-motion fallbacks:</p>
+    <ul>
+      <li><strong>Classify animations by vestibular risk</strong> — parallax, spinning, zooming, and large-area translates are high-risk; opacity crossfades and color transitions are low-risk. High-risk animations need a full static fallback; low-risk animations can run in reduced-motion mode.</li>
+      <li><strong>Jump-to-end state</strong> — when removing animation, always show the end state of the animation, not the start state. A collapsed menu should appear fully open; a fade-in element should appear fully visible. The start state is often invisible or partial.</li>
+      <li><strong>Test with DevTools emulation</strong> — Chrome DevTools → Rendering panel → "Emulate CSS media feature prefers-reduced-motion" lets you test without changing OS settings. Add this to your visual regression test matrix.</li>
+      <li><strong>WCAG 2.1 SC 2.3.3 (AAA)</strong> requires animations triggered by interaction to be disableable. If your animation plays on scroll, click, or hover, Reduce Motion must stop it. Decorative background animations (not interaction-triggered) fall under the AAA criterion and are strongly recommended to respect but not strictly required at AA.</li>
+    </ul>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

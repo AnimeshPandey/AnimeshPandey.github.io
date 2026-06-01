@@ -194,6 +194,81 @@ es.addEventListener('done', () =&gt; {
   </div>
 </section>
 
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The upload bar that froze at 90%</h2>
+
+  <div class="tone-junior">
+    <p>A team building a file-upload dashboard wanted to show users that something was happening. They added a progress bar animation — a CSS keyframe that ran from 0% to 90% over three seconds, regardless of how fast the actual upload was moving. It felt snappy in demos on the office Wi-Fi. In production, on a slow mobile connection, it fell apart.</p>
+    <p>On a slow connection the real upload hadn't finished when the CSS animation hit 90%. The bar froze. Users stared at "90% done" for 45 seconds. Then the server responded, and the bar jumped instantly to 100%. Support tickets started arriving within a week: "Is it stuck?" "Did my file upload?" "Should I try again?"</p>
+  </div>
+
+  <div class="tone-mid">
+    <p>The implementation was a single CSS rule: <code>animation: progress-bar 3s ease-out forwards</code> with a keyframe that stopped at <code>width: 90%</code>. The 90% ceiling was intentional — the team left 10% headroom for the server to "catch up." What they didn't account for was that on a 1 Mbps connection, a 10 MB file takes about 80 seconds, not 3. The animation finished more than a minute before the upload did.</p>
+    <p>The freeze wasn't a bug in the usual sense — the code did exactly what it was written to do. The bug was the assumption: that a CSS timer could stand in for real upload state. It couldn't, and the gap between the timer's confidence and reality's pace is exactly where user trust erodes.</p>
+  </div>
+
+  <div class="tone-staff">
+    <p>This is a textbook expectation-violation failure. The animation set a precise numerical promise (90% in 3 seconds), then held that promise frozen while reality diverged. The longer the stall, the larger the violation. A 45-second freeze at "90%" is worse than showing nothing — the user has been told they are almost done for the majority of the actual wait time, so any remaining wait is experienced as broken. The correct fix is not to tune the animation timing; it is to remove the decoupling between the visual and the actual state.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>When real upload progress still isn't enough</h2>
+
+  <div class="tone-junior">
+    <p>After the support tickets, the team switched to real upload progress events. They wired up <code>XMLHttpRequest.upload.onprogress</code> and drove the bar from actual bytes sent versus total bytes. It worked — the bar moved at the real upload speed, and the freeze at 90% was gone. Then they noticed a new problem.</p>
+    <p>Their pipeline had a second step: after the file landed on the server, a resizing job ran on it — typically 8 to 15 seconds. The upload progress bar hit 100% the moment the last byte arrived. But the resizing hadn't finished. A spinner appeared below the completed bar to signal the processing step. Users now saw two things at once: a progress bar at 100% and a spinner still running. The two states contradicted each other.</p>
+  </div>
+
+  <div class="tone-mid">
+    <p><code>XMLHttpRequest.upload.onprogress</code> only fires for the upload phase — bytes leaving the browser. It has no visibility into what the server does after receiving the file. The bar reaching 100% told the user "done," but the server wasn't done. The spinner was added as a patch, but it competes with the completed bar rather than replacing it. Two simultaneous loading states create ambiguity: which one should the user watch? Which one signals completion?</p>
+    <p>The underlying issue is that the team modeled progress as a single dimension (upload bytes) when the actual operation had two dimensions (upload + server processing). A single bar cannot honestly represent both without a redesign of what the bar is tracking.</p>
+  </div>
+
+  <div class="tone-staff">
+    <p>The correct architecture segments the operation into named stages that each correspond to a real server event. Upload completion fires one event; server-side processing completion fires another — via Server-Sent Events, WebSocket, or polling. The UI maps these events to distinct visual states: "Uploading," "Processing," "Complete." No stage claims completion before its corresponding server event arrives. The competing-states failure (bar at 100%, spinner still running) is a symptom of a single indicator trying to represent multi-phase work it has no signal for past phase one.</p>
+  </div>
+</section>
+
+{# ── Chapter: UI Strip (upload) ── #}
+<section class="case-chapter" data-chapter="ui-strip-upload">
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Before — fake animation decoupled from reality</p>
+    <figure>
+      <pre><code>&lt;!-- CSS-animated bar: always finishes in 3s regardless of actual upload --&gt;
+&lt;div class="progress-bar"&gt;
+  &lt;div class="progress-bar__fill
+              progress-bar__fill--animating"&gt;&lt;/div&gt;
+&lt;/div&gt;
+/* CSS */
+.progress-bar__fill--animating {
+  animation: fake-progress 3s ease-out forwards;
+}
+@keyframes fake-progress {
+  from { width: 0%; }
+  to   { width: 90%; }  /* freezes here until server responds */
+}</code></pre>
+      <figcaption>Bar freezes at 90% — user has no idea if the upload is working.</figcaption>
+    </figure>
+    <p class="case-ui-strip__label">After — segmented stages reflect actual server state</p>
+    <figure>
+      <pre><code>&lt;!-- Segmented progress: each stage maps to a real event --&gt;
+&lt;div class="progress-stages" aria-label="Upload progress"&gt;
+  &lt;div class="stage" data-stage="upload"   aria-label="Uploading"&gt;&lt;/div&gt;
+  &lt;div class="stage" data-stage="process"  aria-label="Processing"&gt;&lt;/div&gt;
+  &lt;div class="stage" data-stage="complete" aria-label="Complete"&gt;&lt;/div&gt;
+&lt;/div&gt;
+// JS: advance stage on real events
+xhr.upload.onprogress = () =&gt; activate('upload');
+xhr.onload = () =&gt; activate('process');
+serverPoll.onComplete = () =&gt; activate('complete');</code></pre>
+      <figcaption>Each dot maps to a real event — no frozen state, no competing spinner.</figcaption>
+    </figure>
+  </div>
+</section>
+
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
