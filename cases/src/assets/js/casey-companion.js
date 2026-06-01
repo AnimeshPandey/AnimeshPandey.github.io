@@ -240,8 +240,15 @@
     var token = (frameSwapToken[frameId] || 0) + 1;
     frameSwapToken[frameId] = token;
 
+    function sameUrl(a, b) {
+      try { return new URL(a, location.href).pathname + new URL(a, location.href).search
+                === new URL(b, location.href).pathname + new URL(b, location.href).search; }
+      catch (_) { return false; }
+    }
+
     function commit() {
       if (frameSwapToken[frameId] !== token) return;
+      if (img.src && sameUrl(img.src, url)) return; // already showing this pose
       img.src = url;
       if (img.decode) img.decode().catch(function () {});
       img.style.opacity = '';
@@ -1079,9 +1086,9 @@
       if (!visited) {
         setImgPose(avatar, assetBase, assetExt, currentTier, 'present', { alt: alt });
         setTimeout(function () {
-          setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', { preload: false });
+          setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', {});
           setTimeout(function () {
-            setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+            setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), {});
             startHubIdleLoop();
             enableHubFloat();
           }, 650);
@@ -1175,10 +1182,25 @@
     }
     setGreetingText(pickInitialGreeting(currentTier));
     renderHubActions();
-    ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose()].forEach(function (p) {
-      preloadPose(assetBase, assetExt, currentTier, p);
+    var hubPreloads = ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose()].map(function (p) {
+      return preloadPose(assetBase, assetExt, currentTier, p);
     });
-    playHubEntrance();
+    var entranceFired = false;
+    function fireEntrance() {
+      if (entranceFired) return;
+      entranceFired = true;
+      if (avatar) {
+        var f = avatar.closest('.casey-avatar-frame');
+        if (f) delete f.dataset.caseyLoading;
+      }
+      playHubEntrance();
+    }
+    if (avatar) {
+      var loadFrame = avatar.closest('.casey-avatar-frame');
+      if (loadFrame) loadFrame.dataset.caseyLoading = '1';
+    }
+    setTimeout(fireEntrance, 1800); // fallback: show avatar even if network is slow
+    Promise.all(hubPreloads).then(fireEntrance);
     bindHubPlay();
 
     function rotateGreeting() {

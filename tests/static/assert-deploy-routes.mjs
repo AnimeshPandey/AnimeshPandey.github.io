@@ -17,6 +17,7 @@ const REQUIRED = [
   'cases/whats-new/index.html',
   'cases/feed.xml',
   'cases/sitemap.xml',
+  'cases/llms.txt',
   'cases/companies/index.html',
 ];
 

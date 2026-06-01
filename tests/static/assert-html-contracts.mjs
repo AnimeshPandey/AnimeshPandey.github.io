@@ -36,6 +36,7 @@ assertContains(
   path.join(DEPLOY, 'cases/index.html'),
   [
     'data-casey-hub',
+    'data-casey-greeting',
     'id="track-filter"',
     'id="hub-grid"',
     'id="hub-grid-empty"',
@@ -79,6 +80,7 @@ for (const slug of sampleSlugs) {
       'data-case-continue-next',
       'casey-data',
       'case-scroll.js',
+      'data-pagefind-body',
     ],
     `case-${slug}`
   );
