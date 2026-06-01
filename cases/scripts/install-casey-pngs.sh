@@ -87,6 +87,8 @@ for tier in "${TIERS[@]}"; do
   done
 done
 python3 "$ROOT/scripts/casey-images.py" poses
+echo "Matte removal + RGBA export…"
+python3 "$ROOT/scripts/fix-casey-transparency.py"
 python3 "$ROOT/scripts/casey-images.py" webp
 python3 "$ROOT/scripts/casey-images.py" lottie
 
