@@ -63,8 +63,18 @@ jobs:
           rsync -a cases/_site/ _deploy/cases/
 
           if [ -f _headers ]; then cp _headers _deploy/_headers; fi
+          if [ -f sw.js ]; then cp sw.js _deploy/sw.js; fi
 
           echo "✓ Staged $(find _deploy -type f | wc -l) files"
+
+      - name: Static and unit tests on staged artifact
+        env:
+          DEPLOY_DIR: ${{ github.workspace }}/_deploy
+        run: |
+          cd tests
+          npm install
+          npm run test:static
+          npm run test:unit
 
       # ── Inject secrets ─────────────────────────────────────────────────────
       - name: Stamp deploy build id for cache busting

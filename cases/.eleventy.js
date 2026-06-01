@@ -28,6 +28,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.setLibrary('njk', nunjucksEnvironment);
   /* ── Passthrough ── */
   eleventyConfig.addPassthroughCopy('src/assets');
+  eleventyConfig.addPassthroughCopy({ 'lib/casebook-auth-core.js': 'assets/js/casebook-auth-core.js' });
   eleventyConfig.addPassthroughCopy({ 'src/cases/**/images': 'cases' });
   eleventyConfig.addPassthroughCopy('src/cases/**/casey.json');
 
@@ -42,6 +43,13 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addGlobalData('mvpQuality', mvpQuality);
   eleventyConfig.addGlobalData('liveCases', liveCases);
   eleventyConfig.addGlobalData('liveCaseCount', liveCaseCount);
+  eleventyConfig.addGlobalData('hubCaseTitles', () => {
+    const titles = {};
+    manifest.cases.forEach((c) => {
+      titles[c.slug] = c.title;
+    });
+    return titles;
+  });
 
   eleventyConfig.addFilter('caseNav', caseNav);
 
