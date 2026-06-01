@@ -260,7 +260,7 @@ h2 em { font-style: italic; color: var(--ink-2); }
 .badge-dot {
   width: 7px; height: 7px; background: var(--sage);
   border-radius: 50%; animation: pulse 2.2s ease-in-out infinite;
-  flex-shrink: 0;
+  flex-shrink: 0; will-change: transform, opacity;
 }
 @keyframes pulse {
   0%,100% { opacity:1; transform:scale(1); }
@@ -386,6 +386,7 @@ h2 em { font-style: italic; color: var(--ink-2); }
   transform: translateX(-160%) skewX(-8deg);
   animation: card-shimmer 6s ease-in-out 2s infinite;
   pointer-events: none; z-index: 2;
+  will-change: transform;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -399,8 +400,8 @@ h2 em { font-style: italic; color: var(--ink-2); }
   text-transform: uppercase; color: rgba(155,140,132,.6); margin-bottom: 6px;
 }
 .hc-val { font-family: var(--mono); font-size: 13px; color: rgba(250,248,244,.82); line-height: 1.5; }
-.hc-link { color: var(--accent); text-decoration: none; }
-.hc-link:hover { text-decoration: underline; }
+.hc-link { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.hc-link:hover { text-decoration-thickness: 2px; }
 .hc-divider { border: none; border-top: 1px solid rgba(255,255,255,.07); margin: 16px 0; }
 .hc-stack { display: flex; flex-wrap: wrap; gap: 5px; }
 .hc-stack span {
@@ -415,6 +416,7 @@ h2 em { font-style: italic; color: var(--ink-2); }
 .hc-pulse {
   width: 7px; height: 7px; background: #6db899; border-radius: 50%;
   flex-shrink: 0; animation: pulse 2.2s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 .hc-dl {
   display: flex; align-items: center; justify-content: center; gap: 7px;
@@ -871,6 +873,7 @@ button.social-btn { background: transparent; border: none; cursor: pointer; font
 .hero-ticker-track {
   display: flex; gap: 8px; width: max-content;
   animation: ticker-scroll 42s linear infinite;
+  will-change: transform;
 }
 .hero-ticker:hover .hero-ticker-track,
 .hero-ticker:focus-within .hero-ticker-track { animation-play-state: paused; }
@@ -1034,13 +1037,14 @@ button.social-btn { background: transparent; border: none; cursor: pointer; font
 }
 
 /* ── Impact metric chip: pulse hint on touch devices ── */
+/* filter: drop-shadow is GPU-composited; box-shadow would trigger paint */
 @keyframes chip-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(90,160,130,.55); }
-  60%  { box-shadow: 0 0 0 7px rgba(90,160,130,0); }
-  100% { box-shadow: 0 0 0 0 rgba(90,160,130,0); }
+  0%   { filter: drop-shadow(0 0 0px rgba(90,160,130,.55)); }
+  60%  { filter: drop-shadow(0 0 5px rgba(90,160,130,0)); }
+  100% { filter: drop-shadow(0 0 0px rgba(90,160,130,0)); }
 }
 @media (pointer: coarse) {
-  .pc-metric { animation: chip-pulse 2.2s ease-out 1.2s 2; }
+  .pc-metric { animation: chip-pulse 2.2s ease-out 1.2s 2; will-change: filter; }
 }
 
 /* ── Project tag stagger on hover ── */
