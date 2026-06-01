@@ -423,10 +423,6 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   border-radius: 50%;
 }
 
-.casey-hub__avatar-frame[data-casey-tier="junior"] .casey-avatar-frame__img {
-  transform: scale(0.78);
-  transform-origin: center bottom;
-}
 
 @media (min-width: 600px) {
   .casey-hub__avatar-wrap .casey-avatar-frame { width: 100px; height: 100px; }
@@ -465,10 +461,6 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   transition: opacity 0.22s ease;
 }
 
-/* Hub loading gate: hide avatar until pose bundle is preloaded (set by JS). */
-.casey-avatar-frame[data-casey-loading] .casey-avatar-frame__img {
-  opacity: 0;
-}
 
 .casey-coach__card .casey-avatar-frame.casey-breathing,
 .casey-coach--dock-bottom .casey-avatar-frame.casey-breathing {
@@ -480,21 +472,12 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   animation: casey-breathe var(--casey-breathe-duration, 4s) ease-in-out infinite;
 }
 
-/* Junior breathe must preserve scale(0.78) — generic translateY-only keyframe drops it */
-@keyframes casey-hub-breathe-junior {
-  0%, 100% { transform: scale(0.78) translateY(0); }
-  50%       { transform: scale(0.78) translateY(-2px); }
-}
-.casey-hub__avatar-frame[data-casey-tier="junior"].casey-breathing .casey-avatar-frame__img {
-  animation: casey-hub-breathe-junior var(--casey-breathe-duration, 4s) ease-in-out infinite;
-}
 
 @media (prefers-reduced-motion: reduce) {
   .casey-avatar-frame__img { transition: none; }
   .casey-coach__card .casey-avatar-frame.casey-breathing,
   .casey-coach--dock-bottom .casey-avatar-frame.casey-breathing,
-  .casey-hub__avatar-frame.casey-breathing .casey-avatar-frame__img,
-  .casey-hub__avatar-frame[data-casey-tier="junior"].casey-breathing .casey-avatar-frame__img {
+  .casey-hub__avatar-frame.casey-breathing .casey-avatar-frame__img {
     animation: none;
   }
 }

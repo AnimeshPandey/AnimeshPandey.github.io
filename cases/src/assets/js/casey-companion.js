@@ -763,12 +763,14 @@
       var newTone = e.detail && e.detail.tone;
       if (!newTone) return;
       currentTone = newTone;
+      cards.forEach(function (card) { card.dataset.caseyTier = newTone; });
       setPose('idle', { tierFade: true, force: true });
       var hint = currentChapter ? getHint(caseyData, currentChapter, newTone) : null;
       var toneLine = lineAt('case.toneSwitch', newTone);
       setBubble(hint || toneLine || voiceLineForChapter(caseyData, currentChapter || 'hook', newTone) || '');
       if (currentChapter) renderActionChips(caseyData, currentChapter, newTone, actionContainers);
       if (interactionsCfg) applyMotionTokens(interactionsCfg, newTone, cards);
+      if (interactionsCfg) applyTierLabels(interactionsCfg);
     });
 
     document.addEventListener('casebook-color-change', function () {
@@ -1182,25 +1184,10 @@
     }
     setGreetingText(pickInitialGreeting(currentTier));
     renderHubActions();
-    var hubPreloads = ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose()].map(function (p) {
-      return preloadPose(assetBase, assetExt, currentTier, p);
+    ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose()].forEach(function (p) {
+      preloadPose(assetBase, assetExt, currentTier, p);
     });
-    var entranceFired = false;
-    function fireEntrance() {
-      if (entranceFired) return;
-      entranceFired = true;
-      if (avatar) {
-        var f = avatar.closest('.casey-avatar-frame');
-        if (f) delete f.dataset.caseyLoading;
-      }
-      playHubEntrance();
-    }
-    if (avatar) {
-      var loadFrame = avatar.closest('.casey-avatar-frame');
-      if (loadFrame) loadFrame.dataset.caseyLoading = '1';
-    }
-    setTimeout(fireEntrance, 1800); // fallback: show avatar even if network is slow
-    Promise.all(hubPreloads).then(fireEntrance);
+    playHubEntrance();
     bindHubPlay();
 
     function rotateGreeting() {
