@@ -174,16 +174,21 @@
     return preloaded[url];
   }
 
+  var frameSwapToken = {};
+
   function ensureAvatarFrame(img) {
-    if (!img || img.dataset.caseyFrameReady === '1') return img;
+    if (!img) return img;
     var parent = img.parentElement;
     if (parent && parent.classList.contains('casey-avatar-frame')) {
+      img.classList.add('casey-avatar-frame__img');
       img.dataset.caseyFrameReady = '1';
       return img;
     }
     var frame = document.createElement('div');
     frame.className = 'casey-avatar-frame';
     if (img.classList.contains('casey-hub__img')) frame.classList.add('casey-hub__avatar-frame');
+    if (img.classList.contains('casey-coach__avatar')) frame.classList.add('casey-coach__avatar-frame');
+    if (img.classList.contains('casey-library__img')) frame.classList.add('casey-library__avatar-frame');
     if (img.classList.contains('hub-empty__img')) frame.classList.add('hub-empty__avatar');
     var out = document.createElement('img');
     out.className = img.className + ' casey-avatar-frame__img';
@@ -194,7 +199,6 @@
     if (img.dataset.caseyHubAvatar) out.dataset.caseyHubAvatar = 'true';
     if (img.dataset.caseyLibraryAvatar) out.dataset.caseyLibraryAvatar = 'true';
     if (img.dataset.caseyEmptyAvatar) out.dataset.caseyEmptyAvatar = 'true';
-    if (img.dataset.caseyLottieFallback) out.dataset.caseyLottieFallback = 'true';
     out.src = img.src;
     frame.appendChild(out);
     var picture = img.closest('picture');
@@ -204,64 +208,60 @@
     return out;
   }
 
-  function clearFrameGhosts(frame) {
-    if (!frame) return;
-    frame.querySelectorAll('.casey-avatar-frame__img--out').forEach(function (g) {
-      g.remove();
-    });
+  function singleImgInFrame(frame) {
+    if (!frame) return null;
+    var imgs = frame.querySelectorAll('img');
+    if (!imgs.length) return null;
+    var primary = imgs[0];
+    for (var i = 1; i < imgs.length; i++) imgs[i].remove();
+    primary.classList.add('casey-avatar-frame__img');
+    return primary;
   }
 
   function setImgPose(img, assetBase, ext, tier, pose, opts) {
     if (!img) return;
     img = ensureAvatarFrame(img);
     opts = opts || {};
-    var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var url = avatarSrc(assetBase, ext, tier, pose);
     var frame = img.closest('.casey-avatar-frame');
+    img = singleImgInFrame(frame) || img;
     if (frame && tier) frame.dataset.caseyTier = tier;
 
-    function apply() {
-      var prev = img.getAttribute('src');
-      var hubAvatar = img.dataset.caseyHubAvatar === 'true' || img.dataset.caseyEmptyAvatar === 'true';
-      clearFrameGhosts(frame);
+    if (!frame.dataset.caseyFrameId) {
+      frame.dataset.caseyFrameId = 'cf-' + String(Math.random()).slice(2, 10);
+    }
+    var frameId = frame.dataset.caseyFrameId;
+    var url = avatarSrc(assetBase, ext, tier, pose);
+    var token = (frameSwapToken[frameId] || 0) + 1;
+    frameSwapToken[frameId] = token;
 
-      if (opts.tierFade && !prm) {
-        img.classList.remove('casey-tier-fade', 'casey-pose-enter');
+    function commit() {
+      if (frameSwapToken[frameId] !== token) return;
+      img.src = url;
+      img.style.opacity = '';
+      img.classList.remove(
+        'casey-avatar-fade-swap',
+        'casey-pose-enter',
+        'casey-avatar-frame__img--in',
+        'casey-avatar-frame__img--out',
+        'casey-avatar-frame__img--visible'
+      );
+      if (opts.alt) img.alt = opts.alt;
+      if (opts.tierFade && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        img.classList.remove('casey-tier-fade');
         void img.offsetWidth;
         img.classList.add('casey-tier-fade');
         setTimeout(function () { img.classList.remove('casey-tier-fade'); }, 280);
-        img.src = url;
-      } else if (!prm && prev && prev !== url && frame && !hubAvatar) {
-        img.classList.add('casey-avatar-fade-swap');
-        img.style.opacity = '0';
-        var done = function () {
-          img.style.opacity = '1';
-          img.classList.remove('casey-avatar-fade-swap');
-        };
-        img.onload = done;
-        img.src = url;
-        if (img.complete) done();
-        setTimeout(done, 320);
-      } else if (!prm && prev && prev !== url && hubAvatar) {
-        img.src = url;
-      } else if (!prm && prev && prev !== url) {
-        img.classList.remove('casey-pose-enter');
-        void img.offsetWidth;
-        img.classList.add('casey-pose-enter');
-        setTimeout(function () { img.classList.remove('casey-pose-enter'); }, 320);
-        img.src = url;
-      } else {
-        img.src = url;
-        img.style.opacity = '';
       }
-      if (opts.alt) img.alt = opts.alt;
     }
 
-    if (opts.preload !== false && !prm) {
-      preloadPose(assetBase, ext, tier, pose).then(apply);
-    } else {
-      apply();
+    if (opts.preload === false) {
+      commit();
+      return;
     }
+    var probe = new Image();
+    probe.onload = commit;
+    probe.onerror = commit;
+    probe.src = url;
   }
 
   function setManyPoses(imgs, assetBase, ext, tier, pose, opts) {
@@ -993,13 +993,11 @@
         }
         var roll = Math.random();
         var pose = null;
-        var hold = 400;
-        if (roll < 0.38) pose = 'blink';
-        else if (roll < 0.58) pose = 'nod';
-        else if (roll < 0.72) pose = 'perk';
-        else if (roll < 0.8) pose = 'curious';
+        var hold = 380;
+        if (roll < 0.55) pose = 'blink';
+        else if (roll < 0.75) pose = 'nod';
         if (!pose) {
-          hubIdleTimer = setTimeout(tick, 4000 + Math.random() * 5000);
+          hubIdleTimer = setTimeout(tick, 5000 + Math.random() * 4000);
           return;
         }
         setHubBreathing(false);
@@ -1045,8 +1043,6 @@
       function waveAtCasey() {
         if (filterActive || prm || getIntensity() === 'off') return;
         stopHubIdleLoop();
-        hubPlayEl.classList.add('casey-hub__avatar-wrap--wave');
-        setTimeout(function () { hubPlayEl.classList.remove('casey-hub__avatar-wrap--wave'); }, 520);
         setHubBreathing(false);
         setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', { preload: false });
         var quip = lineAt('hub.clickHi', currentTier);
