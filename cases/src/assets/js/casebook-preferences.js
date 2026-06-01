@@ -1,8 +1,13 @@
 /**
- * casebook-preferences.js — wires the casebook palette button to portfolio's
- * shared applyTheme() function. Motion preference is handled independently.
+ * casebook-preferences.js — casebook-specific preferences only.
+ *
+ * Theme + language menu binding is now handled by prefs-chrome.js
+ * autoBootMenus(), which auto-discovers all .theme-pick-btn and .lang-pick-btn
+ * elements with lazy callbacks. Nothing to do here for pickers.
+ *
+ * This file handles the casebook-specific motion preference class only.
  */
-(function initCasebookPreferences() {
+(function () {
   var mqMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function applyPRM() {
@@ -10,33 +15,4 @@
   }
   applyPRM();
   mqMotion.addEventListener('change', applyPRM);
-
-  function bind() {
-    var btn = document.getElementById('casebook-prefs-btn');
-    var menu = document.getElementById('casebook-prefs-menu');
-    if (!btn || !menu || !window.PrefsChrome || !window.applyTheme) return;
-
-    menu.setAttribute('data-popover-fixed', 'false');
-    window.PrefsChrome.PopoverMenu(btn, menu, {
-      onSelect: function (e, ctx) {
-        var item = e.target.closest('.theme-menu-item[data-t]');
-        if (!item) return;
-        window.applyTheme(item.dataset.t);
-        ctx.close();
-      },
-      onActivate: function (e, ctx) {
-        var active = document.activeElement;
-        if (active && active.dataset && active.dataset.t) {
-          window.applyTheme(active.dataset.t);
-          ctx.close();
-        }
-      }
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bind);
-  } else {
-    bind();
-  }
 }());
