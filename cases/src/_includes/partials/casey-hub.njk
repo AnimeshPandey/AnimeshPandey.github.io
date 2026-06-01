@@ -15,20 +15,15 @@
        tabindex="0"
        role="button"
        aria-label="Wave at Casey, your guide">
-    <div class="casey-lottie-host casey-lottie-host--hub"
-         data-casey-lottie-tier="junior"
-         hidden
-         aria-hidden="true"></div>
-    {# Single PNG stack only — WebP hero removed to avoid double exposure with pose swaps #}
+  {# One PNG in a fixed frame — no Lottie overlay (was causing double-face with pose PNGs) #}
     <div class="casey-avatar-frame casey-hub__avatar-frame" data-casey-tier="junior">
       <img class="casey-hub__img casey-avatar-frame__img"
            src="{{ '/assets/casey/junior/present.png' | url }}"
            alt="Casey, junior developer kitten, welcoming you"
-           width="160" height="160"
+           width="120" height="120"
            loading="eager"
            fetchpriority="high"
            data-casey-hub-avatar="true"
-           data-casey-lottie-fallback="true"
            data-casey-frame-ready="1" />
     </div>
   </div>

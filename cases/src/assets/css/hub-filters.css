@@ -479,14 +479,19 @@
 
 /* ── Zero result state ───────────────────────────────────────────────────── */
 
-.hub-empty {
+#hub-grid-empty.hub-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   padding: 3rem 1rem;
   text-align: center;
   color: var(--casebook-ink-muted);
 }
 
-.hub-empty p {
-  margin-block-end: 1rem;
+.hub-empty p,
+.hub-empty__msg {
+  margin-block-end: 0;
 }
 
 /* ── Pagination ──────────────────────────────────────────────────────────── */

@@ -1,12 +1,15 @@
 {# ── Casey on /library/ — read pose, tone-aware copy ── #}
 <section class="casey-library" aria-label="Casey, reading library guide" data-casey-library>
   <div class="casey-library__avatar-wrap">
-    <img class="casey-library__img"
-         src="{{ '/assets/casey/junior/read.png' | url }}"
-         alt="Casey with a book, ready to help you browse"
-         width="72" height="72"
-         loading="lazy"
-         data-casey-library-avatar="true" />
+    <div class="casey-avatar-frame casey-library__avatar-frame" data-casey-tier="junior">
+      <img class="casey-library__img casey-avatar-frame__img"
+           src="{{ '/assets/casey/junior/read.png' | url }}"
+           alt="Casey with a book, ready to help you browse"
+           width="72" height="72"
+           loading="lazy"
+           data-casey-library-avatar="true"
+           data-casey-frame-ready="1" />
+    </div>
   </div>
   <div class="casey-library__panel">
     <p class="casey-library__label" data-casey-library-tier-label>Casey · Junior dev</p>
