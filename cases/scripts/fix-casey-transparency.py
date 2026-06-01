@@ -91,6 +91,30 @@ def flood_background_to_alpha(im: Image.Image, tol: int = 20) -> Image.Image:
     return im
 
 
+def normalize_canvas(im: Image.Image, size: int = 512, fill: float = 0.84) -> Image.Image:
+    """Square canvas, consistent scale, feet anchored near bottom (tier/pose swap won't jump)."""
+    im = trim_transparent(im, pad=10)
+    w, h = im.size
+    if w < 1 or h < 1:
+        return im
+    side = max(w, h)
+    scale = (size * fill) / side
+    nw, nh = max(1, int(w * scale)), max(1, int(h * scale))
+    im = im.resize((nw, nh), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    x = (size - nw) // 2
+    y = size - nh - int(size * 0.05)
+    canvas.paste(im, (x, y), im)
+    return canvas
+
+
+def should_normalize(path: Path) -> bool:
+    parts = path.parts
+    if "style-anchor" in parts or "hub" in parts:
+        return False
+    return any(t in parts for t in ("junior", "mid", "staff")) and path.suffix == ".png"
+
+
 def trim_transparent(im: Image.Image, pad: int = 8) -> Image.Image:
     bbox = im.getbbox()
     if not bbox:
@@ -108,11 +132,13 @@ def polish(im: Image.Image) -> Image.Image:
     return im.filter(ImageFilter.UnsharpMask(radius=1.2, percent=90, threshold=3))
 
 
-def process_file(path: Path, tol: int, trim: bool, sharpen: bool) -> dict:
+def process_file(path: Path, tol: int, trim: bool, sharpen: bool, normalize: bool) -> dict:
     before = Image.open(path)
     im = flood_background_to_alpha(before, tol=tol)
     if trim:
         im = trim_transparent(im, pad=10)
+    if normalize and should_normalize(path):
+        im = normalize_canvas(im)
     if sharpen:
         rgb = im.convert("RGB")
         alpha = im.split()[-1]
@@ -150,7 +176,7 @@ def main() -> None:
     print(f"Processing {len(paths)} PNGs (tol={tol})…")
     bad = []
     for p in paths:
-        stats = process_file(p, tol, do_trim, do_sharpen)
+        stats = process_file(p, tol, do_trim, do_sharpen, normalize=True)
         ok = stats["alpha"][0] == 0 and stats["transparent_pct"] > 8
         mark = "OK" if ok else "WARN"
         print(f"  [{mark}] {stats['path']} {stats['size']} α{stats['alpha']} {stats['transparent_pct']}% transparent")
