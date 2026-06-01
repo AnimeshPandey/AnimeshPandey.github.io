@@ -52,8 +52,8 @@
       el.innerHTML = '';
       el.hidden = true;
     });
-    document.querySelectorAll('[data-casey-lottie-fallback]').forEach(function (img) {
-      img.hidden = false;
+    document.querySelectorAll('.casey-hub__avatar-frame').forEach(function (frame) {
+      frame.style.visibility = '';
     });
   }
 
@@ -73,8 +73,11 @@
       rendererSettings: { preserveAspectRatio: 'xMidYMid meet' },
     });
     instances.push(anim);
-    var fallback = host.parentElement && host.parentElement.querySelector('[data-casey-lottie-fallback]');
-    if (fallback) fallback.hidden = true;
+    var wrap = host.closest('.casey-hub__avatar-wrap');
+    var frame = wrap && wrap.querySelector('.casey-hub__avatar-frame');
+    if (frame) frame.style.visibility = 'hidden';
+    var fallback = wrap && wrap.querySelector('[data-casey-lottie-fallback]');
+    if (fallback) fallback.setAttribute('aria-hidden', 'true');
   }
 
   function mountAll() {

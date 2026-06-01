@@ -351,19 +351,20 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 
 /* Junior poses are taller in the square canvas — scale inside frame */
 .casey-avatar-frame[data-casey-tier="junior"] .casey-avatar-frame__img {
-  transform: scale(0.86);
-  transform-origin: center 90%;
+  transform: scale(0.84);
+  transform-origin: center bottom;
 }
 
-.casey-hub__avatar-wrap .casey-avatar-frame {
+.casey-hub__avatar-wrap .casey-avatar-frame,
+.casey-hub__avatar-frame {
   width: 80px;
   height: 80px;
   border-radius: 50%;
 }
 
 .casey-hub__avatar-wrap .casey-avatar-frame[data-casey-tier="junior"] .casey-avatar-frame__img {
-  transform: scale(0.8);
-  transform-origin: center 92%;
+  transform: scale(0.76);
+  transform-origin: center bottom;
 }
 
 @media (min-width: 600px) {
@@ -399,32 +400,17 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   padding: 0;
 }
 
-.casey-avatar-frame__img--out {
-  opacity: 1;
-  z-index: 1;
-  transition: opacity 0.28s ease;
+.casey-avatar-frame__img.casey-avatar-fade-swap {
+  transition: opacity 0.22s ease;
 }
 
-.casey-avatar-frame__img--in {
-  opacity: 0;
-  z-index: 2;
-}
-
-.casey-avatar-frame__img--in.casey-avatar-frame__img--visible {
-  opacity: 1;
-}
-
-.casey-avatar-frame__img--out {
-  animation: casey-avatar-fade-out 0.28s ease forwards;
-}
-
-@keyframes casey-avatar-fade-out {
-  to { opacity: 0; }
+.casey-avatar-frame.casey-breathing {
+  animation: casey-breathe var(--casey-breathe-duration, 4s) ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .casey-avatar-frame__img,
-  .casey-avatar-frame__img--out { transition: none; animation: none; }
+  .casey-avatar-frame__img { transition: none; }
+  .casey-avatar-frame.casey-breathing { animation: none; }
 }
 .casey-coach__voice {
   font-family: var(--mono, monospace); font-size: 11px;
@@ -693,22 +679,12 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 
 .casey-hub__img {
   display: block;
-  width: 80px; height: 80px;
-  border-radius: 50%;
   background: transparent;
-  object-fit: contain;
-  object-position: center 92%;
-  padding: 4px;
   box-sizing: border-box;
-}
-
-@media (min-width: 600px) {
-  .casey-hub__img { width: 100px; height: 100px; }
 }
 
 @media (min-width: 900px) {
   .casey-hub { gap: 28px; padding: 28px 32px; }
-  .casey-hub__img { width: 120px; height: 120px; }
 }
 
 .casey-hub__panel {
@@ -862,9 +838,21 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   color: var(--casebook-ink-faint);
 }
 
+.hub-empty__avatar {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  opacity: 0.95;
+}
+
+.hub-empty__avatar[data-casey-tier="junior"] .casey-avatar-frame__img {
+  transform: scale(0.78);
+  transform-origin: center bottom;
+}
+
 .hub-empty__img {
-  width: 80px; height: 80px;
-  opacity: .85;
+  width: 100%;
+  height: 100%;
 }
 
 .hub-empty__msg {
@@ -955,24 +943,25 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   animation: casey-milestone-flash 0.7s ease;
 }
 
-.casey-hub__avatar-wrap picture {
-  display: block;
-  line-height: 0;
-}
-
 .casey-lottie-host {
   width: 48px;
   height: 48px;
   flex-shrink: 0;
 }
 .casey-lottie-host--hub {
-  width: 160px;
-  height: 160px;
+  width: 100%;
+  height: 100%;
   position: absolute;
   inset: 0;
+  z-index: 2;
+  pointer-events: none;
 }
 .casey-hub__avatar-wrap {
   position: relative;
+  flex-shrink: 0;
+}
+.casey-hub__avatar-wrap:has(.casey-lottie-host:not([hidden])) .casey-hub__avatar-frame {
+  visibility: hidden;
 }
 .casey-coach__avatar-wrap {
   position: relative;
