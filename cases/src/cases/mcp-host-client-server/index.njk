@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "MCP: Host, Client, and Server Roles"
@@ -16,6 +17,8 @@ relatedCases:
     title: Streaming Tokens Without Layout Thrash
   - slug: context-window-budget
     title: Context Window Budget for FE Tasks
+---
+ogImage: https://anmshpndy.com/brand/cases/mcp-host-client-server-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -89,6 +92,14 @@ await server.connect(transport);</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Watch it: a tool call through all three roles</h2>
   <div class="tone-junior"><p>The animation shows a single tool call flowing through all three roles: the Host sends the user's message to the model → the model emits a tool_use block → the Client routes it to your Server → your Server returns results → the Client passes them back → the model continues.</p></div>
@@ -114,24 +125,25 @@ await server.connect(transport);</code></pre>
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://modelcontextprotocol.io/introduction" rel="noopener noreferrer">MCP — Introduction</a></li>
+      <li><a href="https://modelcontextprotocol.io/docs/concepts/architecture" rel="noopener noreferrer">MCP — Architecture</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://modelcontextprotocol.io/docs/concepts/tools" rel="noopener noreferrer">MCP — Tools</a></li>
+      <li><a href="https://spec.modelcontextprotocol.io/" rel="noopener noreferrer">MCP specification</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://modelcontextprotocol.io/docs/concepts/transports" rel="noopener noreferrer">MCP — Transports</a></li>
+      <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="noopener noreferrer">OWASP LLM Top 10</a></li>
     </ol>
   </div>
 </section>

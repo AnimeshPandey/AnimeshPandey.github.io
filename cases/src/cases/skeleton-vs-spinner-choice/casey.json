@@ -12,6 +12,18 @@
       "junior": "Toggle between the same content loading with a spinner vs a skeleton. Notice how the skeleton feels faster even when both have the same 1.2s load time.",
       "mid": "The skeleton version eliminates the 'blank void' phase — the brain sees structure and starts processing. The spinner version is pure waiting. This is why skeleton improves perceived performance without changing real performance.",
       "staff": "The effect is strongest for content-heavy layouts (feeds, cards, tables). For single-element loads (a modal, a button state), a spinner is more honest — no structure to predict. Match the indicator to the loading shape."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -81,6 +93,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Fake Progress Bars and Trust",
+          "href": "/cases/fake-loading-progress/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -91,6 +107,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Fake Progress Bars and Trust",
+          "href": "/cases/fake-loading-progress/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -100,6 +120,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Fake Progress Bars and Trust",
+          "href": "/cases/fake-loading-progress/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"
@@ -119,6 +143,24 @@
         "junior": "Hey! Today we're figuring out when to use skeleton screens vs spinners — and why the wrong choice makes loading feel worse.",
         "mid": "This case covers the skeleton vs spinner decision matrix, the 200ms threshold rule, and how the 'predicted shape' is what makes skeletons work.",
         "staff": "We're covering the psychology of predictive loading, the known-shape vs unknown-shape heuristic, and the failure modes of mismatched skeletons."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Toggle between the same content loading with a spinner vs a skeleton. Notice how the skeleton feels faster even when both have the same 1.2s load time.",
+        "mid": "The skeleton version eliminates the 'blank void' phase — the brain sees structure and starts processing. The spinner version is pure waiting. This is why skeleton improves perceived performance without changing real performance.",
+        "staff": "The effect is strongest for content-heavy layouts (feeds, cards, tables). For single-element loads (a modal, a button state), a spinner is more honest — no structure to predict. Match the indicator to the loading shape."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for skeleton-vs-spinner-choice.",
+        "mid": "",
+        "staff": ""
       }
     ]
   }

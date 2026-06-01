@@ -12,6 +12,18 @@
       "junior": "Broken mode: paste a raw stack trace — watch the model give a generic fix. Fixed mode: add a one-sentence hypothesis — watch the answer become specific and correct.",
       "mid": "The model in fixed mode asks a follow-up question. That's the signal you gave enough context to enter a diagnostic conversation rather than a copy-paste loop.",
       "staff": "Notice the broken fix introduces a subtle regression — the model patched the symptom, not the root cause. That's the core failure mode: AI optimizes for the visible error, not for system correctness."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're looking at the most common bad habit with AI coding assistants — pasting errors without actually understanding them.",
         "mid": "This case covers the diagnosis-first pattern for AI-assisted debugging: how to ask better questions, read error messages intentionally, and avoid the paste-fix-repeat loop.",
         "staff": "We're covering the cognitive dependency risk, the hypothesis-validation loop, and how to use AI as an amplifier of understanding rather than a replacement for it."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Broken mode: paste a raw stack trace — watch the model give a generic fix. Fixed mode: add a one-sentence hypothesis — watch the answer become specific and correct.",
+        "mid": "The model in fixed mode asks a follow-up question. That's the signal you gave enough context to enter a diagnostic conversation rather than a copy-paste loop.",
+        "staff": "Notice the broken fix introduces a subtle regression — the model patched the symptom, not the root cause. That's the core failure mode: AI optimizes for the visible error, not for system correctness."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for paste-error-without-learning.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Context Window Budget for FE Tasks",
+          "href": "/cases/context-window-budget/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Context Window Budget for FE Tasks",
+          "href": "/cases/context-window-budget/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Context Window Budget for FE Tasks",
+          "href": "/cases/context-window-budget/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

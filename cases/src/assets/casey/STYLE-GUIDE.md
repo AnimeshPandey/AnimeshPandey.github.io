@@ -25,7 +25,7 @@
 
 **Guide (companion):** `welcome` · `present` · `proud` · `support` · `read`
 
-**Micro (FSM):** `curious` (demo idle) · `nod` (hub filter) · `focus` (demo CTA) — compositor or AI PNG
+**Micro (FSM):** `curious` (demo idle) · `nod` (hub filter) · `focus` (demo CTA) — AI PNG via `CASEY_SRC` + `install-casey-pngs.sh` (compositor fallback only with `--force`)
 
 | Pose | Where |
 |------|--------|

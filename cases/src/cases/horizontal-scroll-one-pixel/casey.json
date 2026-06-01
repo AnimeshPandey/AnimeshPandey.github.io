@@ -12,6 +12,18 @@
       "junior": "See how one wide element creates a horizontal scrollbar for the whole page? That's why finding the culprit is more important than hiding the overflow.",
       "mid": "min-width: 0 is the fix for flex children that overflow. The default min-width: auto prevents flex items from shrinking below their content width.",
       "staff": "The fixed demo uses both max-width: 100% and min-width: 0 — these two properties address the two most common overflow mechanisms."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're hunting down that annoying horizontal scrollbar that shows up on mobile. One JS snippet will find the culprit in seconds.",
         "mid": "This case covers horizontal overflow — the console debugging snippet, why overflow-x: hidden on body breaks sticky, and the CSS defaults that prevent this.",
         "staff": "We're covering the full overflow debugging toolkit: getBoundingClientRect audit, min-width: 0 for flex, and CI integration to catch this before it ships."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "See how one wide element creates a horizontal scrollbar for the whole page? That's why finding the culprit is more important than hiding the overflow.",
+        "mid": "min-width: 0 is the fix for flex children that overflow. The default min-width: auto prevents flex items from shrinking below their content width.",
+        "staff": "The fixed demo uses both max-width: 100% and min-width: 0 — these two properties address the two most common overflow mechanisms."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for horizontal-scroll-one-pixel.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Z-Index Is Not Magic",
+          "href": "/cases/z-index-stacking-context/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Z-Index Is Not Magic",
+          "href": "/cases/z-index-stacking-context/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Z-Index Is Not Magic",
+          "href": "/cases/z-index-stacking-context/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

@@ -99,6 +99,9 @@ permalink: /index.html
                 {% if case.flagship %}
                   <span class="case-card__badge case-card__badge--flagship">★ Flagship</span>
                 {% endif %}
+                {% if case.mvpLaunch and isLive %}
+                  <span class="case-card__badge case-card__badge--mvp" title="MVP launch — references, demo, and Casey polish">MVP</span>
+                {% endif %}
                 {% if case.tier == 'pro' %}
                   <span class="case-card__badge case-card__badge--pro" title="Pro depth — full access coming soon">🔒 Pro</span>
                 {% endif %}

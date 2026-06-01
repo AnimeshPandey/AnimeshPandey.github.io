@@ -297,5 +297,131 @@
       "<a href=\"https://web.dev/articles/rendering-on-the-web\" rel=\"noopener noreferrer\">web.dev — Rendering on the web</a>",
       "<a href=\"https://www.11ty.dev/docs/plugins/\" rel=\"noopener noreferrer\">Eleventy — Plugins</a>"
     ]
+  },
+  "skeleton-vs-spinner-choice": {
+    "junior": [
+      "<a href=\"https://www.lukew.com/ff/entry.asp?1797\" rel=\"noopener noreferrer\">Luke Wroblewski — Skeleton screens</a>",
+      "<a href=\"https://www.nngroup.com/articles/progress-indicators/\" rel=\"noopener noreferrer\">NN/g — Progress indicators</a>"
+    ],
+    "mid": [
+      "<a href=\"https://ux.shopify.com/skeleton-screens-a-design-problem-b5fc9dc2c55c\" rel=\"noopener noreferrer\">Shopify UX — Skeleton screens</a>",
+      "<a href=\"https://web.dev/articles/cls\" rel=\"noopener noreferrer\">web.dev — Cumulative Layout Shift</a>"
+    ],
+    "staff": [
+      "<a href=\"https://growth.design/case-studies/labor-perception-bias\" rel=\"noopener noreferrer\">Growth.Design — Labor perception</a>",
+      "<a href=\"https://react.dev/reference/react/Suspense\" rel=\"noopener noreferrer\">React — Suspense</a>"
+    ]
+  },
+  "secrets-in-client-bundle": {
+    "junior": [
+      "<a href=\"https://owasp.org/www-project-top-ten/\" rel=\"noopener noreferrer\">OWASP Top 10</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/Security\" rel=\"noopener noreferrer\">MDN — Web security</a>"
+    ],
+    "mid": [
+      "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — HTML5 security</a>",
+      "<a href=\"https://webpack.js.org/guides/production/\" rel=\"noopener noreferrer\">webpack — Production</a>"
+    ],
+    "staff": [
+      "<a href=\"https://owasp.org/www-project-api-security/\" rel=\"noopener noreferrer\">OWASP API Security Top 10</a>",
+      "<a href=\"https://web.dev/articles/secure-app-with-audits\" rel=\"noopener noreferrer\">web.dev — Security audits</a>"
+    ]
+  },
+  "paste-error-without-learning": {
+    "junior": [
+      "<a href=\"https://www.nngroup.com/articles/error-message-guidelines/\" rel=\"noopener noreferrer\">NN/g — Error message guidelines</a>",
+      "<a href=\"https://designsystem.service.gov.uk/components/error-message/\" rel=\"noopener noreferrer\">GOV.UK — Error messages</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html\" rel=\"noopener noreferrer\">WCAG 2.2 — Error suggestion</a>",
+      "<a href=\"https://polaris.shopify.com/components/feedback-indicators/banner\" rel=\"noopener noreferrer\">Shopify Polaris — Banners</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.nngroup.com/articles/ten-usability-heuristics/\" rel=\"noopener noreferrer\">NN/g — Usability heuristics</a>",
+      "<a href=\"https://baymard.com/blog/checkout-flow-average-form-fields\" rel=\"noopener noreferrer\">Baymard — Form UX</a>"
+    ]
+  },
+  "motion-safe-fallback": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion\" rel=\"noopener noreferrer\">MDN — prefers-reduced-motion</a>",
+      "<a href=\"https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html\" rel=\"noopener noreferrer\">WCAG 2.2 — Animation</a>"
+    ],
+    "mid": [
+      "<a href=\"https://web.dev/articles/prefers-reduced-motion\" rel=\"noopener noreferrer\">web.dev — Reduced motion</a>",
+      "<a href=\"https://www.framer.com/motion/guide-accessibility/\" rel=\"noopener noreferrer\">Motion — Accessibility</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/TR/WCAG22/#reduced-motion\" rel=\"noopener noreferrer\">WCAG 2.2 — Reduced motion (normative)</a>",
+      "<a href=\"https://css-tricks.com/revisiting-prefers-reduced-motion/\" rel=\"noopener noreferrer\">CSS-Tricks — prefers-reduced-motion</a>"
+    ]
+  },
+  "micro-frontend-boundary-drift": {
+    "junior": [
+      "<a href=\"https://micro-frontends.org/\" rel=\"noopener noreferrer\">micro-frontends.org</a>",
+      "<a href=\"https://webpack.js.org/concepts/module-federation/\" rel=\"noopener noreferrer\">webpack — Module Federation</a>"
+    ],
+    "mid": [
+      "<a href=\"https://single-spa.js.org/docs/getting-started-overview\" rel=\"noopener noreferrer\">single-spa — Overview</a>",
+      "<a href=\"https://martinfowler.com/articles/micro-frontends.html\" rel=\"noopener noreferrer\">Martin Fowler — Micro frontends</a>"
+    ],
+    "staff": [
+      "<a href=\"https://nx.dev/concepts/module-federation/micro-frontend-architecture\" rel=\"noopener noreferrer\">Nx — Module federation architecture</a>",
+      "<a href=\"https://web.dev/articles/rendering-on-the-web\" rel=\"noopener noreferrer\">web.dev — Rendering on the web</a>"
+    ]
+  },
+  "mcp-host-client-server": {
+    "junior": [
+      "<a href=\"https://modelcontextprotocol.io/introduction\" rel=\"noopener noreferrer\">MCP — Introduction</a>",
+      "<a href=\"https://modelcontextprotocol.io/docs/concepts/architecture\" rel=\"noopener noreferrer\">MCP — Architecture</a>"
+    ],
+    "mid": [
+      "<a href=\"https://modelcontextprotocol.io/docs/concepts/tools\" rel=\"noopener noreferrer\">MCP — Tools</a>",
+      "<a href=\"https://spec.modelcontextprotocol.io/\" rel=\"noopener noreferrer\">MCP specification</a>"
+    ],
+    "staff": [
+      "<a href=\"https://modelcontextprotocol.io/docs/concepts/transports\" rel=\"noopener noreferrer\">MCP — Transports</a>",
+      "<a href=\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\" rel=\"noopener noreferrer\">OWASP LLM Top 10</a>"
+    ]
+  },
+  "horizontal-scroll-one-pixel": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/overflow\" rel=\"noopener noreferrer\">MDN — overflow</a>",
+      "<a href=\"https://web.dev/articles/cls\" rel=\"noopener noreferrer\">web.dev — CLS</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x\" rel=\"noopener noreferrer\">MDN — overflow-x</a>",
+      "<a href=\"https://css-tricks.com/findingfixing-unintended-body-overflow/\" rel=\"noopener noreferrer\">CSS-Tricks — Body overflow</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/vitals\" rel=\"noopener noreferrer\">web.dev — Core Web Vitals</a>",
+      "<a href=\"https://www.w3.org/TR/css-overflow-3/\" rel=\"noopener noreferrer\">CSS Overflow Module Level 3</a>"
+    ]
+  },
+  "hicks-law-navigation-count": {
+    "junior": [
+      "<a href=\"https://lawsofux.com/hicks-law/\" rel=\"noopener noreferrer\">Laws of UX — Hick's Law</a>",
+      "<a href=\"https://www.nngroup.com/articles/menu-design/\" rel=\"noopener noreferrer\">NN/g — Menu design</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.nngroup.com/articles/choice-overload/\" rel=\"noopener noreferrer\">NN/g — Choice overload</a>",
+      "<a href=\"https://material.io/design/navigation/understanding-navigation.html\" rel=\"noopener noreferrer\">Material — Navigation</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.nngroup.com/articles/response-time-limits/\" rel=\"noopener noreferrer\">NN/g — Response time limits</a>",
+      "<a href=\"https://www.interaction-design.org/literature/article/hick-s-law-making-the-choice-easier-for-users\" rel=\"noopener noreferrer\">IxDF — Hick's Law</a>"
+    ]
+  },
+  "doherty-threshold-input-latency": {
+    "junior": [
+      "<a href=\"https://www.nngroup.com/articles/response-time-limits/\" rel=\"noopener noreferrer\">NN/g — Response time limits</a>",
+      "<a href=\"https://lawsofux.com/doherty-threshold/\" rel=\"noopener noreferrer\">Laws of UX — Doherty threshold</a>"
+    ],
+    "mid": [
+      "<a href=\"https://web.dev/articles/rail\" rel=\"noopener noreferrer\">web.dev — RAIL model</a>",
+      "<a href=\"https://web.dev/articles/inp\" rel=\"noopener noreferrer\">web.dev — INP</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/vitals\" rel=\"noopener noreferrer\">web.dev — Core Web Vitals</a>",
+      "<a href=\"https://www.w3.org/TR/input-events/\" rel=\"noopener noreferrer\">W3C — Input Events</a>"
+    ]
   }
 }

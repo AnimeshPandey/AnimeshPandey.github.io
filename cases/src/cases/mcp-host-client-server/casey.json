@@ -12,6 +12,18 @@
       "junior": "The animation shows a tool call flowing: Host sends the message to the model → model emits a tool_use block → Client routes to the right Server → Server returns the result → Client passes result back to Host → Host sends to model.",
       "mid": "Focus on the Client layer in the animation. It's doing protocol translation: model's tool_use format → JSON-RPC request to server → JSON-RPC response → model's tool_result format. You rarely write Client code; frameworks provide it.",
       "staff": "The sampling flow (host → client → server → client → host) is the bidirectional case. For resource subscriptions, servers can push updates to clients. This is where MCP diverges from a simple REST API: servers have agency to initiate communication."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're mapping out MCP — the Model Context Protocol — and its three roles: Host, Client, and Server. Knowing which is which tells you what you need to build.",
         "mid": "This case covers the MCP architecture: how the three roles separate concerns, the JSON-RPC transport, capability negotiation, and where you as a developer typically operate.",
         "staff": "We're covering the full MCP role model, the initialize handshake, bidirectional communication via sampling and resource subscriptions, the security isolation model, and the tooling ecosystem."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "The animation shows a tool call flowing: Host sends the message to the model → model emits a tool_use block → Client routes to the right Server → Server returns the result → Client passes result back to Host → Host sends to model.",
+        "mid": "Focus on the Client layer in the animation. It's doing protocol translation: model's tool_use format → JSON-RPC request to server → JSON-RPC response → model's tool_result format. You rarely write Client code; frameworks provide it.",
+        "staff": "The sampling flow (host → client → server → client → host) is the bidirectional case. For resource subscriptions, servers can push updates to clients. This is where MCP diverges from a simple REST API: servers have agency to initiate communication."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for mcp-host-client-server.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Streaming Tokens Without Layout Thrash",
+          "href": "/cases/streaming-tokens-ui-buffer/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Streaming Tokens Without Layout Thrash",
+          "href": "/cases/streaming-tokens-ui-buffer/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Streaming Tokens Without Layout Thrash",
+          "href": "/cases/streaming-tokens-ui-buffer/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

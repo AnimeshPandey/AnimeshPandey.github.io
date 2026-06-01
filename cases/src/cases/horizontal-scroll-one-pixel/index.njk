@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: The One Pixel That Broke the Layout
@@ -16,6 +17,8 @@ relatedCases:
     title: Z-Index Is Not Magic
   - slug: font-loading-cls
     title: The Layout Shift You Forgot (Fonts)
+---
+ogImage: https://anmshpndy.com/brand/cases/horizontal-scroll-one-pixel-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -96,6 +99,14 @@ img, video, canvas { max-width: 100%; }</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: overflow culprit finder</h2>
   <div class="tone-junior"><p>Toggle between "Broken" (an element wider than its container) and "Fixed" (with max-width: 100% and box-sizing applied correctly).</p></div>
@@ -121,24 +132,25 @@ img, video, canvas { max-width: 100%; }</code></pre>
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow" rel="noopener noreferrer">MDN — overflow</a></li>
+      <li><a href="https://web.dev/articles/cls" rel="noopener noreferrer">web.dev — CLS</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x" rel="noopener noreferrer">MDN — overflow-x</a></li>
+      <li><a href="https://css-tricks.com/findingfixing-unintended-body-overflow/" rel="noopener noreferrer">CSS-Tricks — Body overflow</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev — Core Web Vitals</a></li>
+      <li><a href="https://www.w3.org/TR/css-overflow-3/" rel="noopener noreferrer">CSS Overflow Module Level 3</a></li>
     </ol>
   </div>
 </section>

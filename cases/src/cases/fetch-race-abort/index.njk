@@ -1,5 +1,6 @@
 ---
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "fetch + AbortController: Cancel Ghost Requests"
@@ -17,6 +18,8 @@ relatedCases:
     title: Ghost Updates and Race Conditions
   - slug: event-loop-one-thread
     title: "The Event Loop: One Thread, Many Queues"
+---
+ogImage: https://anmshpndy.com/brand/cases/fetch-race-abort-og.png
 ---
 ogImage: https://anmshpndy.com/brand/cases/fetch-race-abort-og.png
 ---
@@ -119,6 +122,7 @@ const [user, posts, comments] = await Promise.all([
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>

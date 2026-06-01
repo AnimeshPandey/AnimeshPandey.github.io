@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "When Micro-Frontends Stop Sharing a Design System"
@@ -16,6 +17,8 @@ relatedCases:
     title: z-index and the Stacking Context
   - slug: hydration-two-trees
     title: Hydration and the Two-Tree Problem
+---
+ogImage: https://anmshpndy.com/brand/cases/micro-frontend-boundary-drift-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -83,6 +86,14 @@ new ModuleFederationPlugin({
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: drifted vs aligned design system</h2>
   <div class="tone-junior"><p>"Drifted" shows two micro-frontends side-by-side with different design system versions — notice the button border radius, spacing, and color token differences. "Aligned" shows the same two micro-frontends sharing a singleton — visually consistent across the boundary.</p></div>
@@ -108,24 +119,25 @@ new ModuleFederationPlugin({
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://micro-frontends.org/" rel="noopener noreferrer">micro-frontends.org</a></li>
+      <li><a href="https://webpack.js.org/concepts/module-federation/" rel="noopener noreferrer">webpack — Module Federation</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://single-spa.js.org/docs/getting-started-overview" rel="noopener noreferrer">single-spa — Overview</a></li>
+      <li><a href="https://martinfowler.com/articles/micro-frontends.html" rel="noopener noreferrer">Martin Fowler — Micro frontends</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://nx.dev/concepts/module-federation/micro-frontend-architecture" rel="noopener noreferrer">Nx — Module federation architecture</a></li>
+      <li><a href="https://web.dev/articles/rendering-on-the-web" rel="noopener noreferrer">web.dev — Rendering on the web</a></li>
     </ol>
   </div>
 </section>

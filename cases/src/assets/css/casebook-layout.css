@@ -134,6 +134,13 @@ body {
   border: 1px solid currentColor; letter-spacing: .06em;
 }
 .case-card__badge--flagship { color: var(--casebook-accent); }
+.case-card__badge--mvp {
+  color: var(--casebook-ink);
+  background: color-mix(in srgb, var(--casebook-accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--casebook-accent) 45%, var(--casebook-border));
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
 .case-card__badge--soon { color: var(--casebook-ink-faint); border-style: dashed; }
 .case-card__badge--scheduled { color: var(--casebook-accent); border-style: dashed; }
 .case-card__badge--new { color: var(--casebook-accent); background: var(--casebook-surface-2); }

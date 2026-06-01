@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Paste Error, Zero Learning (Anti-pattern)"
@@ -16,6 +17,8 @@ relatedCases:
     title: Context Window Budget for FE Tasks
   - slug: abort-controller-ghost-updates
     title: Ghost Updates and Race Conditions
+---
+ogImage: https://anmshpndy.com/brand/cases/paste-error-without-learning-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -66,6 +69,14 @@ component wait for isLoading before rendering?"</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: paste vs diagnose</h2>
   <div class="tone-junior"><p>"Paste" mode shows a raw error being sent to AI — watch the generic fix it gets back. "Diagnose" mode shows the same error with a one-sentence hypothesis — watch the teaching answer that explains root cause and prevention.</p></div>
@@ -91,24 +102,25 @@ component wait for isLoading before rendering?"</code></pre>
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://www.nngroup.com/articles/error-message-guidelines/" rel="noopener noreferrer">NN/g — Error message guidelines</a></li>
+      <li><a href="https://designsystem.service.gov.uk/components/error-message/" rel="noopener noreferrer">GOV.UK — Error messages</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html" rel="noopener noreferrer">WCAG 2.2 — Error suggestion</a></li>
+      <li><a href="https://polaris.shopify.com/components/feedback-indicators/banner" rel="noopener noreferrer">Shopify Polaris — Banners</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://www.nngroup.com/articles/ten-usability-heuristics/" rel="noopener noreferrer">NN/g — Usability heuristics</a></li>
+      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard — Form UX</a></li>
     </ol>
   </div>
 </section>
