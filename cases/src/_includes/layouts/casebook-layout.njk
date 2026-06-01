@@ -22,7 +22,7 @@
 
   {# ── Styles: portfolio foundation tokens → casebook ── #}
   {# foundation.css, theme.css, chrome.css live at the portfolio root (/assets/) #}
-  {% set productStylesheet = '/assets/css/casebook.css' | url %}
+  {% set productStylesheet = '/assets/css/casebook.css?v=__AP_BUILD_ID__' | url %}
   {% include 'partials/platform-shell-styles.njk' %}
 
   {# ── Hub-only styles (hub, library, companies pages) ── #}

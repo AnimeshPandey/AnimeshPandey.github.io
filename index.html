@@ -77,16 +77,18 @@
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
 
+  <!-- Legacy SW cleanup + cache bust (see assets/sw-migrate.js, sw.js) -->
+  <script src="/assets/sw-migrate.js?v=__AP_BUILD_ID__"></script>
   <!-- Styles — critical path: foundation tokens → theme (color) → chrome/shell/buttons → site -->
-  <link rel="stylesheet" href="/assets/styles/foundation.css" />
-  <link rel="stylesheet" href="/assets/theme.css" />
-  <link rel="stylesheet" href="/assets/platform/chrome.css" />
+  <link rel="stylesheet" href="/assets/styles/foundation.css?v=__AP_BUILD_ID__" />
+  <link rel="stylesheet" href="/assets/theme.css?v=__AP_BUILD_ID__" />
+  <link rel="stylesheet" href="/assets/platform/chrome.css?v=__AP_BUILD_ID__" />
   <!-- prefs-chrome.css is the hidden preference panel — non-critical for first paint -->
-  <link rel="preload" href="/assets/platform/prefs-chrome.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="/assets/platform/prefs-chrome.css" /></noscript>
-  <link rel="stylesheet" href="/assets/platform/shell.css" />
-  <link rel="stylesheet" href="/assets/styles/components/button.css" />
-  <link rel="stylesheet" href="/assets/site.css" />
+  <link rel="preload" href="/assets/platform/prefs-chrome.css?v=__AP_BUILD_ID__" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/assets/platform/prefs-chrome.css?v=__AP_BUILD_ID__" /></noscript>
+  <link rel="stylesheet" href="/assets/platform/shell.css?v=__AP_BUILD_ID__" />
+  <link rel="stylesheet" href="/assets/styles/components/button.css?v=__AP_BUILD_ID__" />
+  <link rel="stylesheet" href="/assets/site.css?v=__AP_BUILD_ID__" />
 
   <!-- Structured Data -->
   <script type="application/ld+json">
