@@ -7,6 +7,7 @@ const hubFacets = require('./src/_data/hub-facets.json');
 const hubIndex = require('./src/_data/hub-index.json');
 const caseyHub = require('./src/_data/casey-hub.json');
 const caseyLibrary = require('./src/_data/casey-library.json');
+const companionLines = require('./src/_data/companion-lines.json');
 
 module.exports = function (eleventyConfig) {
   const nunjucksEnvironment = nunjucks.configure(
@@ -33,6 +34,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addGlobalData('hubIndex', hubIndex);
   eleventyConfig.addGlobalData('caseyHub', caseyHub);
   eleventyConfig.addGlobalData('caseyLibrary', caseyLibrary);
+  eleventyConfig.addGlobalData('companionLines', companionLines);
 
   /* ── Collections ── */
   eleventyConfig.addCollection('liveCases', () =>

@@ -1,7 +1,5 @@
 {# ── casey-hub.njk ── Casey welcome panel on the hub homepage ── #}
-{# Rendered once on index.njk. casey-hub.js handles greeting rotation + tone sync. #}
 
-{# Resolve flagship slug at build time — do not hardcode #}
 {% set flagshipCase = null %}
 {% for c in manifest.cases %}
   {% if c.flagship and c.status == 'live' %}
@@ -9,15 +7,22 @@
   {% endif %}
 {% endfor %}
 
-<section class="casey-hub" aria-label="Casey, your Casebook guide" data-casey-hub>
+<section class="casey-hub" aria-label="Casey, your Casebook guide" data-casey-hub
+  {% if flagshipCase %}data-flagship-slug="{{ flagshipCase.slug }}"{% endif %}>
 
   <div class="casey-hub__avatar-wrap">
-    <img class="casey-hub__img"
-         src="{{ '/assets/casey/junior/wave.png' | url }}"
-         alt="Casey, junior developer kitten, waving hello"
-         width="160" height="160"
-         loading="lazy"
-         data-casey-hub-avatar="true" />
+    <picture>
+      <source type="image/webp"
+              srcset="{{ '/assets/casey/hub/casey-companion-hero.webp' | url }} 1x,
+                      {{ '/assets/casey/hub/casey-companion-hero@2x.webp' | url }} 2x" />
+      <img class="casey-hub__img"
+           src="{{ '/assets/casey/junior/present.png' | url }}"
+           alt="Casey, junior developer kitten, welcoming you"
+           width="160" height="160"
+           loading="eager"
+           fetchpriority="high"
+           data-casey-hub-avatar="true" />
+    </picture>
   </div>
 
   <div class="casey-hub__panel">
@@ -29,39 +34,13 @@
       Hey — pick a case below or start with the flagship. I'll hint as you scroll.
     </p>
 
-    <ul class="casey-hub__actions" role="list">
+    <ul class="casey-hub__actions" id="casey-hub-actions" role="list">
+      {# Populated by casey-companion.js from progress + flagship slug #}
       {% if flagshipCase %}
       <li>
         <a href="{{ ('/' ~ flagshipCase.slug ~ '/') | url }}"
-           class="casey-hub__action casey-hub__action--primary"
-           data-action-id="flagship">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-          </svg>
-          {{ flagshipCase.title }}
-        </a>
-      </li>
-      {% endif %}
-      <li>
-        <a href="{{ '/library/' | url }}"
-           class="casey-hub__action"
-           data-action-id="library">
-          Reading library
-        </a>
-      </li>
-      <li>
-        <a href="{{ '/about/' | url }}"
-           class="casey-hub__action"
-           data-action-id="about">
-          How this works
-        </a>
-      </li>
-      {% if site.newsletter.enabled %}
-      <li>
-        <a href="#subscribe"
-           class="casey-hub__action"
-           data-action-id="subscribe">
-          Get new cases by email
+           class="casey-hub__action casey-hub__action--primary">
+          Start flagship case
         </a>
       </li>
       {% endif %}
@@ -70,7 +49,7 @@
 
 </section>
 
-{# Inject hub greeting data for casey-hub.js — build-time serialisation #}
+{% include 'partials/casey-companion-lines.njk' %}
 <script id="casey-hub-data" type="application/json">
 {{ caseyHub | dump | safe }}
 </script>

@@ -77,12 +77,33 @@
       "animation": "none"
     },
     {
+      "id": "chapter-fe-depth",
+      "trigger": "chapter-visible",
+      "chapter": "fe-depth",
+      "pose": "think",
+      "durationMs": 500,
+      "thenPose": "idle"
+    },
+    {
+      "id": "chapter-references",
+      "trigger": "chapter-visible",
+      "chapter": "references",
+      "pose": "read",
+      "holdWhileVisible": true
+    },
+    {
       "id": "chapter-takeaway",
       "trigger": "chapter-visible",
       "chapter": "takeaway",
       "pose": "proud",
       "durationMs": 500,
       "thenPose": "idle"
+    },
+    {
+      "id": "demo-idle",
+      "trigger": "demo-idle-30s",
+      "pose": "think",
+      "aliasPose": "curious"
     },
     {
       "id": "demo-broken",

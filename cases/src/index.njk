@@ -176,6 +176,8 @@ permalink: /index.html
   }
 
   // ── Track filter ──────────────────────────────────────────────
+  var emptyEl = document.getElementById('hub-grid-empty');
+
   function filter() {
     if (!sel || !grid) return;
     var track = sel.value;
@@ -189,6 +191,10 @@ permalink: /index.html
       if (show) visible++;
     });
     count.textContent = track ? visible + ' case' + (visible !== 1 ? 's' : '') : '';
+    if (emptyEl) emptyEl.hidden = visible > 0 || !track;
+    document.dispatchEvent(new CustomEvent('casey-hub-filter', {
+      detail: { count: visible, track: track || null }
+    }));
   }
 
   if (sel) {
@@ -219,4 +225,5 @@ permalink: /index.html
 }());
 </script>
 
+<script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casey-hub.js' | url }}" defer></script>
