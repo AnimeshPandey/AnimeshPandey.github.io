@@ -200,7 +200,42 @@ function Modal({ children }) {
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: modal z-index — trapped in stacking context vs portal</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ TRAPPED Z-INDEX</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>/* parent creates stacking context */
+.sidebar {
+  opacity: 0.99; /* &lt; 1 triggers new context */
+  /* or: transform: translateZ(0) */
+}
+
+/* child z-index is now scoped to .sidebar */
+.modal {
+  position: fixed;
+  z-index: 9999; /* can't escape .sidebar */
+}</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">New stacking context on parent traps child's z-index</p>
+      </div>
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ PORTAL TO DOCUMENT ROOT</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>// React: render outside all ancestor contexts
+import { createPortal } from 'react-dom';
+
+function Modal({ children }) {
+  return createPortal(
+    &lt;div className="modal"&gt;
+      {children}
+    &lt;/div&gt;,
+    document.body // no ancestor stacking context
+  );
+}</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Remove stacking context trigger or portal to document root</p>
+      </div>
+
+    </div>
   </div>
 </section>
 

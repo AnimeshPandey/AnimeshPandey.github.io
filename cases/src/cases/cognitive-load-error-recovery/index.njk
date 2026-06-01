@@ -91,10 +91,63 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
 
 {# ── Chapter: Demo ── #}
 {# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The checkout that just said "Error 422"</h2>
+  <div class="tone-junior">
+    <p>Priya spent ten minutes filling out a checkout form — name, address, card number, everything. She hit "Place Order." The page reloaded and a red box at the top read: <strong>Error 422.</strong> That's all. No field highlighted. No explanation. No suggestion for what to do next.</p>
+    <p>She scrolled up and down looking for something wrong. Nothing looked wrong to her. She tried submitting again. Same message. She closed the tab and bought from a competitor. The session recording showed 23 other users doing exactly the same thing that week.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The technical cause: a server-side 422 Unprocessable Entity fired because the card number failed a Luhn check. But the frontend swallowed the API error body and displayed only the HTTP status code. No field was marked invalid, no message was rendered inline, and no action was offered. The error was correct at the API layer — the failure was purely in the UI's error-handling contract.</p>
+  </div>
+  <div class="tone-staff">
+    <p>In production analytics, "Error 422" checkout abandonment had been logged as "payment failure" — masking the UX root cause in the data. The real failure rate was 18% of checkout attempts. Because no error-specific funnel existed, the team had spent two quarters investigating payment provider issues instead of the display layer. The systemic lesson: vague error messages corrupt your analytics as much as they frustrate your users.</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="story-2">
+  <h2>The message that showed exactly what to do</h2>
+  <div class="tone-junior">
+    <p>After the redesign, the same card failure scenario showed a message directly below the card number field: <strong>"Your card was declined. Try a different card or contact your bank."</strong> Below the message, a button: "Try a different card." The field was highlighted with a red border and an error icon — not just color alone.</p>
+    <p>Priya's scenario now resolved in under 30 seconds. She saw the message, understood what happened, switched to her other card, and completed the purchase. Support tickets for checkout errors dropped 60% in the first month.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The fix involved two changes: (1) the API contract was updated to return structured errors — <code>{ field: "cardNumber", code: "CARD_DECLINED", message: "Your card was declined. Try a different card or contact your bank." }</code>; (2) the frontend error handler mapped field codes to inline error placement with ARIA attributes. Neither change alone would have worked — the UX fix required both the API signal and the rendering logic.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Post-fix measurement: median error-to-resubmit time fell from 94 seconds to 18 seconds. The funnel now had an "error recovery" step tracked separately from "payment failure." The analytics improvement was as valuable as the UX improvement — teams could now distinguish card-declined-recovered from card-declined-abandoned, enabling targeted recovery flows like "try saved card" suggestions on repeat declines.</p>
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: form error message pattern</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ VAGUE ERROR</p>
+        <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 6px; padding: 10px 12px; margin-bottom: 12px;">
+          <p style="color: #dc2626; font-size: 13px; font-weight: 600; margin: 0;">Error 422</p>
+        </div>
+        <div style="margin-bottom: 8px;">
+          <label style="display: block; font-size: 12px; color: var(--casebook-ink-muted); margin-bottom: 4px;">Card number</label>
+          <div style="border: 1px solid var(--casebook-border); border-radius: 4px; padding: 8px 10px; font-size: 13px; color: var(--casebook-ink-faint);">4111 1111 1111 1111</div>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">User sees a code, not a cause or a fix</p>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ ACTIONABLE ERROR</p>
+        <div style="margin-bottom: 8px;">
+          <label style="display: block; font-size: 12px; color: var(--casebook-ink-muted); margin-bottom: 4px;">Card number</label>
+          <div style="border: 2px solid #dc2626; border-radius: 4px; padding: 8px 10px; font-size: 13px; color: var(--casebook-ink-faint);">4111 1111 1111 1111</div>
+          <p style="color: #dc2626; font-size: 11px; margin: 4px 0 0 0;">&#9888; Your card was declined. Try a different card or contact your bank.</p>
+        </div>
+        <div style="margin-top: 10px;">
+          <button style="background: var(--casebook-accent); color: #fff; border: none; border-radius: 4px; padding: 7px 14px; font-size: 12px; cursor: pointer; width: 100%;">Try a different card</button>
+        </div>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Error inline, cause clear, action offered</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -118,6 +171,53 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
       </div>
     </div>
   </section>
+</section>
+
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementing accessible inline error messages</h2>
+  <div class="tone-junior">
+    <p>The minimal pattern: a field wrapper that shows an error message below the input on blur, with the error text linked to the input via ARIA.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>function Field({ id, label, validate }) {
+  const [error, setError] = React.useState('');
+
+  return (
+    &lt;div className="field"&gt;
+      &lt;label htmlFor={id}&gt;{label}&lt;/label&gt;
+      &lt;input
+        id={id}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${id}-error` : undefined}
+        onBlur={e =&gt; setError(validate(e.target.value))}
+      /&gt;
+      {error &amp;&amp; (
+        &lt;p id={`${id}-error`} role="alert" className="field-error"&gt;
+          {error}
+        &lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+    <p>Key pitfall: omitting <code>role="alert"</code> means screen readers won't announce the error when it appears. Without it, the error text exists in the DOM but is silent to assistive technology.</p>
+  </div>
+  <div class="tone-mid">
+    <p>In React Hook Form, wire inline errors through the <code>errors</code> object from <code>useFormState</code> and display them in a consistent <code>&lt;FieldError&gt;</code> component. Four implementation rules:</p>
+    <ol>
+      <li><strong>Validate on blur, not change.</strong> Use <code>mode: 'onBlur'</code> in <code>useForm</code>. <code>mode: 'onChange'</code> marks fields invalid before the user finishes typing.</li>
+      <li><strong>Revalidate on change after first blur.</strong> Use <code>reValidateMode: 'onChange'</code> so the error clears as soon as the user fixes it — don't wait for another blur.</li>
+      <li><strong>Keep error IDs stable.</strong> Use <code>id={`${fieldName}-error`}</code> consistently — <code>aria-describedby</code> must match the exact error element ID.</li>
+      <li><strong>Server errors need manual setError.</strong> Call <code>setError('cardNumber', { message: data.message })</code> from your API error handler — React Hook Form doesn't automatically handle server-returned field errors.</li>
+    </ol>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const { register, formState: { errors }, setError } = useForm({
+  mode: 'onBlur',
+  reValidateMode: 'onChange',
+});
+
+// On API error response:
+// setError('cardNumber', { message: apiError.message });</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>At design system scale, error messages need a typed contract between API and UI. The API should return a structured error schema: <code>{ errors: [{ field: string, code: string, message: string }] }</code>. The UI maps <code>field</code> to a form field name and renders <code>message</code> inline. This contract prevents the "something went wrong" fallback from being the only error state. Enforce the contract with a shared TypeScript type in a monorepo package, and write a Zod schema for runtime validation at the API boundary. For lint tooling, add an ESLint rule (or Biome custom rule) that warns when <code>aria-describedby</code> is set without a corresponding element ID — this catches the most common ARIA wiring mistake at authoring time.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

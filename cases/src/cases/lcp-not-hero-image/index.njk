@@ -91,6 +91,29 @@ ogImage: https://anmshpndy.com/brand/cases/lcp-not-hero-image-og.png
   </div>
 </section>
 
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>The fix was a font preload, not an image</h2>
+  <div class="tone-junior">
+    <p>The dev opened Chrome DevTools, went to the Performance tab, and recorded a page load. In the Web Vitals section of the filmstrip, the LCP marker appeared at 3.2 seconds. She hovered over it. The highlighted element was not the hero image — it was the large <code>&lt;h1&gt;</code> headline at the top of the page, set in a custom typeface called "Canela Display."</p>
+    <p>The font was loading from a CDN with no preload hint. The browser only discovered it when the CSS was parsed, which was after the HTML finished loading. The heading text was invisible (FOIT — Flash of Invisible Text) for 800ms while the font downloaded. That 800ms delay was the entire LCP problem. Adding one line to the <code>&lt;head&gt;</code> fixed it.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>&lt;link rel="preload" as="font"
+  href="/fonts/canela-display.woff2"
+  type="font/woff2" crossorigin&gt;</code></pre>
+  </div>
+  <div class="tone-mid">
+    <p>Adding <code>font-display: swap</code> to the <code>@font-face</code> rule let the browser render the heading immediately in a fallback system font, then swap to Canela Display when it loaded. This eliminated FOIT entirely. Combined with the preload hint (which moved font discovery from "after CSS parse" to "alongside HTML parse"), LCP dropped from 3.2s to 2.4s — an 800ms improvement with two changes, neither of which touched the hero image they'd been optimizing for two sprints.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>@font-face {
+  font-family: 'Canela Display';
+  src: url('/fonts/canela-display.woff2') format('woff2');
+  font-display: swap; /* render in fallback immediately */
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>The postmortem measurement: CrUX data for the page showed "resource load delay" as the dominant LCP phase — the interval between navigation start and when the browser began loading the LCP resource. For text LCP, this phase is the font discovery gap (time from navigation start to when the browser encounters the font reference). Preloading collapsed this phase from ~1.4s to ~0.1s. The "render delay" phase (time from resource load complete to LCP paint) was reduced by <code>font-display: swap</code>. Together, they addressed the two largest phases in the LCP attribution breakdown without touching image assets, CDN config, or any of the other optimizations the team had been working on.</p>
+  </div>
+</section>
+
 {# ── Chapter: Demo ── #}
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
@@ -120,6 +143,36 @@ ogImage: https://anmshpndy.com/brand/cases/lcp-not-hero-image-og.png
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Identifying your LCP element and fixing it</h2>
+  <div class="tone-junior">
+    <p>Step 1: find your LCP element. Open Chrome DevTools → Performance tab → click Record → reload the page → stop recording. In the "Web Vitals" lane, find the LCP marker. Click it. The element is highlighted in the filmstrip and named in the details panel. That element — not the hero image, not what you think it is — is your LCP target.</p>
+    <p>Two common fixes by element type:</p>
+    <ul>
+      <li><strong>Text LCP (heading, paragraph)</strong>: add <code>&lt;link rel="preload" as="font"&gt;</code> for the font used, and <code>font-display: swap</code> or <code>font-display: optional</code> on the <code>@font-face</code> rule.</li>
+      <li><strong>Image LCP</strong>: add <code>fetchpriority="high"</code> to the <code>&lt;img&gt;</code> tag, remove any <code>loading="lazy"</code>, and add <code>&lt;link rel="preload" as="image"&gt;</code> if the image is in CSS rather than HTML.</li>
+    </ul>
+  </div>
+  <div class="tone-mid">
+    <p>The <code>as</code> attribute on <code>&lt;link rel="preload"&gt;</code> determines priority and matching — get it wrong and the browser fetches the resource twice:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>&lt;!-- Font preload: requires crossorigin even same-origin --&gt;
+&lt;link rel="preload" as="font"
+  href="/fonts/display.woff2" crossorigin&gt;
+
+&lt;!-- Image preload: use for CSS background-image LCP --&gt;
+&lt;link rel="preload" as="image" href="/hero.webp"&gt;
+
+&lt;!-- fetchpriority: signals priority to the browser's
+     preload scanner for &lt;img&gt; elements in HTML --&gt;
+&lt;img src="hero.webp" fetchpriority="high" alt="..."&gt;</code></pre>
+    <p>Critical distinction: <code>&lt;link rel="preload" as="font"&gt;</code> always requires <code>crossorigin</code>, even for same-origin fonts — without it, the browser fetches the font twice (once from the preload, once from the CSS). <code>fetchpriority="high"</code> on an <code>&lt;img&gt;</code> is different from preloading — it boosts priority within the browser's resource scheduler but doesn't move discovery earlier. Use both together for image LCP.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The interaction between LCP and <code>font-display</code> is nuanced. <code>font-display: swap</code> eliminates FOIT (invisible text) but introduces FOUT (flash of unstyled text when the custom font swaps in). For LCP, <code>swap</code> is usually correct — the fallback text paints immediately, satisfying LCP. <code>font-display: optional</code> is stricter: if the font doesn't load within a very short window (~100ms), it's abandoned for that page load entirely — no swap, no FOUT, but the custom font may not appear. This makes <code>optional</code> the best choice when visual consistency matters less than LCP time. Use CrUX LCP attribution data (PageSpeed Insights → "Diagnose performance issues" → LCP breakdown) to see the four phases for your real users: TTFB, resource load delay, resource load time, and render delay. Address the largest phase. Font preload primarily attacks "resource load delay." <code>font-display</code> primarily attacks "render delay." They target different phases and compound when combined.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

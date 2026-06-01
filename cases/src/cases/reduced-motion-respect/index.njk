@@ -70,12 +70,90 @@ ogImage: https://anmshpndy.com/brand/cases/reduced-motion-respect-og.png
   </div>
 </section>
 
-{# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The hero that made her sick</h2>
+  <div class="tone-junior">
+    <p>Maya opens the marketing page for a new fitness app. The hero section is stunning — a full-viewport parallax that shifts background layers as she scrolls, with a large animated logo that spins and bounces into place. Within 30 seconds, she closes the tab. She has a vestibular disorder. The constant motion triggered dizziness and nausea. She had turned on "Reduce Motion" in macOS system preferences months ago, but the site never checked. She won't be back.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Technically, the parallax effect used a <code>scroll</code> event listener updating <code>transform: translateY()</code> on three background layers, plus a CSS <code>@keyframes</code> animation on the logo running on page load. Neither was wrapped in a <code>prefers-reduced-motion</code> check. The OS setting was set; the site simply ignored it.</p>
+    <p>This is a WCAG 2.1 SC 2.3.3 (Animation from Interactions, AAA) violation. The standard requires that motion triggered by interaction can be disabled — and "interaction" includes scrolling.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The business impact goes beyond one user. Apple reported ~25% of iPhone users have enabled "Reduce Motion" in Accessibility settings. That's a quarter of your iOS audience exposed to unchecked animations. For a high-traffic marketing page, ignoring this preference means a measurable fraction of visitors leave due to physically uncomfortable experiences — a retention problem that never shows in bounce rate attribution, because no one knows the real reason.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>One media query, zero harm</h2>
+  <div class="tone-junior">
+    <p>The fix was simpler than anyone expected. The team wrapped every animation in <code>@media (prefers-reduced-motion: no-preference)</code> — meaning animations only run for users who haven't set the OS preference. Users with "Reduce Motion" enabled see the logo appear instantly and the hero stays static. The page still looks great. They just don't move.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Two changes were made. First, the CSS <code>@keyframes</code> animation on the logo was moved inside a <code>no-preference</code> guard. Second, the JavaScript scroll handler was gated: it reads <code>window.matchMedia('(prefers-reduced-motion: no-preference)').matches</code> before applying any transform. The fallback for reduced-motion users: a subtle opacity fade on scroll instead — communicates the same layered depth without vestibular risk.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Before: always animates */
+.hero-logo { animation: bounce-in 0.6s ease; }
+
+/* After: opt-in for non-reduced users */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-logo { animation: bounce-in 0.6s ease; }
+}
+
+/* Reduced-motion alternative */
+@media (prefers-reduced-motion: reduce) {
+  .hero-logo { opacity: 0; animation: fade-in 0.2s ease forwards; }
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>The team added a Lighthouse CI check and a custom Playwright assertion that queries <code>animation-duration</code> on known animated elements under a simulated reduced-motion media query. Zero-duration (or none) is the pass criterion. This runs on every PR. The cost of the fix was two hours; the cost of the original bug was unknown but real. Post-fix, they added prefers-reduced-motion coverage to the design system token spec so new animated components are guarded by default.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: CSS animation with and without prefers-reduced-motion guard</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ ALWAYS ANIMATES</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>@keyframes slide-in {
+  from {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.hero {
+  animation: slide-in 0.8s ease;
+}</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Runs for every user — motion-sensitive users harmed</p>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ MOTION OPT-IN</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Static by default */
+.hero { opacity: 1; }
+
+/* Motion only for users who want it */
+@media (prefers-reduced-motion: no-preference) {
+  .hero {
+    animation: slide-in 0.8s ease;
+  }
+}
+
+/* Gentle fade for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .hero { transition: opacity 0.2s; }
+}</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Motion is opt-in — reduced-motion users see a safe fade</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -99,6 +177,81 @@ ogImage: https://anmshpndy.com/brand/cases/reduced-motion-respect-og.png
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementing prefers-reduced-motion correctly</h2>
+  <div class="tone-junior">
+    <p>Two approaches — pick based on context:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Approach A: reduce override (common but opt-out) */
+.card { animation: pop-in 0.3s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .card { animation: none; }
+}
+
+/* Approach B: no-preference guard (safer, opt-in) */
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: pop-in 0.3s ease; }
+}</code></pre>
+    <p>Key pitfall: approach A still shows a flash of the animation start before disabling it in some browsers. Approach B never starts the animation for reduced-motion users.</p>
+  </div>
+  <div class="tone-mid">
+    <p>For JavaScript-driven animations, read the preference at runtime:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Vanilla JS — check before animating
+const prefersReduced = window.matchMedia(
+  '(prefers-reduced-motion: reduce)'
+).matches;
+
+if (!prefersReduced) {
+  element.animate([
+    { transform: 'translateY(-20px)', opacity: 0 },
+    { transform: 'translateY(0)', opacity: 1 }
+  ], { duration: 300, easing: 'ease' });
+}
+
+// React hook pattern
+function useReducedMotion() {
+  const [reduced, setReduced] = React.useState(
+    () =&gt; window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+  React.useEffect(() =&gt; {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handler = (e) =&gt; setReduced(e.matches);
+    mq.addEventListener('change', handler);
+    return () =&gt; mq.removeEventListener('change', handler);
+  }, []);
+  return reduced;
+}</code></pre>
+    <p>Implementation notes:</p>
+    <ul>
+      <li>The <code>change</code> event fires if the user changes OS settings while the page is open — listen and react</li>
+      <li>Framer Motion's <code>useReducedMotion()</code> does this for you in React</li>
+      <li>Test in macOS: System Settings → Accessibility → Display → Reduce Motion</li>
+      <li>WCAG 2.3.3 is AAA — but motion-related harm is real at any compliance level; treat it as AA in practice</li>
+    </ul>
+  </div>
+  <div class="tone-staff">
+    <p>At design system scale, the right contract is: animated components accept a <code>motion</code> prop or read from a theme token. The token is set by a provider that reads <code>prefers-reduced-motion</code> once at app root. This prevents 40 different components each doing their own media query check.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// DS provider pattern
+const MotionContext = React.createContext({ reduced: false });
+
+function MotionProvider({ children }) {
+  const reduced = useReducedMotion(); // custom hook above
+  return (
+    &lt;MotionContext.Provider value={{ reduced }}&gt;
+      {children}
+    &lt;/MotionContext.Provider&gt;
+  );
+}
+
+// Component consumes — no media query inside
+function AnimatedCard() {
+  const { reduced } = React.useContext(MotionContext);
+  return &lt;div className={reduced ? 'card--static' : 'card--animated'} /&gt;;
+}</code></pre>
+    <p>Tooling: add a custom axe-core rule or a Playwright fixture that emulates <code>prefers-reduced-motion: reduce</code> and asserts <code>animation-duration</code> is <code>0s</code> or <code>0.001ms</code> on every animated element. Framer Motion and React Spring both have built-in reduced-motion support — prefer those over raw WAAPI for complex animations.</p>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

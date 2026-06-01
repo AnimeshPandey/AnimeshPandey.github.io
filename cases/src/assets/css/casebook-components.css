@@ -102,6 +102,49 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   border-radius: 4px; padding: 1px 5px;
 }
 
+/* === Chapter progress dots === */
+.chapter-progress {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 0 8px;
+  position: sticky;
+  top: 56px; /* below platform header */
+  z-index: 10;
+  background: var(--casebook-bg, #fff);
+  border-bottom: 1px solid var(--casebook-border, #e5e7eb);
+  margin-bottom: 24px;
+}
+
+.chapter-progress__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--casebook-surface-2, #e5e7eb);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.chapter-progress__dot--active {
+  background: var(--casebook-accent, #4E7A68);
+  transform: scale(1.4);
+}
+
+.chapter-progress__dot:hover:not(.chapter-progress__dot--active) {
+  background: var(--casebook-ink-muted, #6b7280);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-progress__dot,
+  .chapter-progress__dot--active {
+    transition: none;
+    transform: none;
+  }
+}
+
 /* ── UI strip (annotated mock) ── */
 .case-ui-strip {
   margin: 24px 0;
@@ -1120,4 +1163,13 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   .casebook-case.casey-milestone-flash {
     animation: none;
   }
+}
+
+/* === Hub filter skeleton === */
+.hub-grid--filtering .case-card {
+  opacity: 0.4;
+  transition: opacity 0.15s ease;
+}
+.hub-grid--filtering .case-card[hidden] {
+  display: none; /* still hide filtered-out cards */
 }

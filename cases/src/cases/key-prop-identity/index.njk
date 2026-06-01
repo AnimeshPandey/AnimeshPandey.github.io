@@ -188,7 +188,26 @@ function createTodo(text) {
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Annotated example: React list key prop — index vs stable ID</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ INDEX AS KEY</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>{todos.map((todo, index) =&gt; (
+  &lt;TodoItem key={index} todo={todo} /&gt;
+))}</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Index key: item identity tied to position, not data</p>
+      </div>
+
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ STABLE ID AS KEY</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>{todos.map(todo =&gt; (
+  &lt;TodoItem key={todo.id} todo={todo} /&gt;
+))}</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Stable ID key: item identity follows the data</p>
+      </div>
+
+    </div>
   </div>
 </section>
 

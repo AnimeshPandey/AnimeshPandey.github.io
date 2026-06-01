@@ -37,6 +37,9 @@
 
   {# ── meta theme-color (updated by theme.js) ── #}
   <meta name="theme-color" content="#000000" id="casebook-theme-color" />
+
+  {# ── CaseyGuide: make line data available to casey-guide.js ── #}
+  <script>window.__GUIDE_LINES = {{ guideLines | dump | safe }};</script>
 </head>
 <body class="platform-body platform-body--casebook">
   {% include 'partials/icon-sprite-nav.njk' %}
@@ -70,6 +73,7 @@
   </footer>
 
   {# ── Deferred scripts ── #}
+  <script src="{{ '/assets/js/casey-guide.js' | url }}" defer></script>
   <script src="/assets/platform/chrome.js" defer></script>
   <script src="/assets/platform/prefs-chrome.js" defer></script>
   <script src="/assets/nav.js" defer></script>

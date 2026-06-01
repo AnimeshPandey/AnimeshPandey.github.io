@@ -12,4 +12,16 @@
   }
   if (!window.CaseyCompanion) return;
   window.CaseyCompanion.init({ surface: 'case', caseyData: caseyData });
+
+  // CaseyGuide: fire read-only events so other modules can react.
+  if (window.CaseyGuide) {
+    CaseyGuide.recordEvent('case-started');
+  }
+
+  // Listen for case completion and forward to CaseyGuide.
+  document.addEventListener('case-case-completed', function () {
+    if (window.CaseyGuide) {
+      CaseyGuide.recordEvent('case-completed');
+    }
+  });
 }());

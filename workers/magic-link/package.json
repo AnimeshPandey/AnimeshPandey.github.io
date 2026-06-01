@@ -1,0 +1,13 @@
+{
+  "name": "casebook-magic-link-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for Casebook email magic link auth",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

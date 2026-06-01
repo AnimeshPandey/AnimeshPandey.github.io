@@ -1,0 +1,40 @@
+{
+  "hub": {
+    "first_visit": [
+      { "pose": "present", "line": "Hey! I'm Casey — your frontend learning guide. Pick any case to start." },
+      { "pose": "wave", "line": "Welcome to The Frontend Casebook. No fluff, just real patterns." }
+    ],
+    "return_low": [
+      { "pose": "welcome", "line": "Good to see you back. {completed} down, more to explore." },
+      { "pose": "perk", "line": "Pick up where you left off — or try something new." }
+    ],
+    "return_streak": [
+      { "pose": "celebrate", "line": "{streak} cases in a row — you're on a streak!" },
+      { "pose": "proud", "line": "Look at you go — {streak} cases completed." }
+    ],
+    "return_high": [
+      { "pose": "proud", "line": "You've completed {completed} cases. Impressive." },
+      { "pose": "think", "line": "{completed} cases done. The advanced ones are waiting." }
+    ],
+    "zero_results": [
+      { "pose": "curious", "line": "Nothing in that track yet — try removing the filter." },
+      { "pose": "think", "line": "Hmm, no matches. Try a different category?" }
+    ]
+  },
+  "case": {
+    "start": [
+      { "pose": "perk", "line": "Let's dig into this one. Read through the story first." },
+      { "pose": "present", "line": "Start with the hook — then try the demo yourself." }
+    ],
+    "completed": [
+      { "pose": "celebrate", "line": "Nice — you finished this one. On to the next?" },
+      { "pose": "proud", "line": "Takeaway captured. {completed} cases and counting." }
+    ]
+  },
+  "library": {
+    "visit": [
+      { "pose": "read", "line": "779 real-world engineering articles. Filter by topic or company." },
+      { "pose": "read", "line": "Reading list mode. {filtered} articles matching your filter." }
+    ]
+  }
+}

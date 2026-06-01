@@ -334,3 +334,15 @@
   gap: 0.5rem;
   align-items: center;
 }
+
+.account-form__success {
+  font-size: 0.9rem;
+  color: #16a34a;
+  margin: 0.75rem 0 0;
+}
+
+.account-form__error {
+  font-size: 0.9rem;
+  color: #dc2626;
+  margin: 0.75rem 0 0;
+}

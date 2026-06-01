@@ -1,9 +1,14 @@
 /**
  * casebook-auth.js — client-only email sign-in (magic link in URL).
  * Core token logic: casebook-auth-core.js (also unit-tested).
+ *
+ * Form submission POSTs to a Cloudflare Worker which sends the magic link
+ * via Resend. Update MAGIC_LINK_WORKER_URL after deploying the worker.
  */
 (function initCasebookAuth() {
   'use strict';
+
+  var MAGIC_LINK_WORKER_URL = 'https://casebook-magic-link.animeshpandey.workers.dev'; // update after deploy
 
   var core = window.CasebookAuthCore;
   if (!core) {
@@ -45,16 +50,6 @@
     document.dispatchEvent(new CustomEvent('casebook-auth-change', { detail: null }));
   }
 
-  function accountBaseUrl() {
-    var prefix = document.documentElement.dataset.pathPrefix || '/cases/';
-    return new URL(prefix + 'account/', window.location.origin).href;
-  }
-
-  function magicLinkFor(email) {
-    var token = makeToken(email);
-    return accountBaseUrl() + '?token=' + encodeURIComponent(token);
-  }
-
   function applyTokenFromQuery() {
     var params = new URLSearchParams(window.location.search);
     var token = params.get('token');
@@ -76,11 +71,30 @@
     var signedOut = document.getElementById('account-signed-out');
     var linkSent = document.getElementById('account-link-sent');
     var signedIn = document.getElementById('account-signed-in');
-    var emailDisplay = document.getElementById('account-email-display');
-    var magicInput = document.getElementById('account-magic-url');
     var signedInEmail = document.getElementById('account-signed-in-email');
     var signOutBtn = document.getElementById('account-sign-out');
-    var copyBtn = document.getElementById('account-copy-link');
+
+    var emailInput = document.getElementById('account-email');
+    var submitBtn = form.querySelector('button[type="submit"]');
+
+    // Create success and error elements programmatically within the form section
+    var successEl = document.getElementById('casebook-auth-success');
+    if (!successEl) {
+      successEl = document.createElement('p');
+      successEl.id = 'casebook-auth-success';
+      successEl.className = 'account-form__success';
+      successEl.hidden = true;
+      form.parentNode.insertBefore(successEl, form.nextSibling);
+    }
+
+    var errorEl = document.getElementById('casebook-auth-error');
+    if (!errorEl) {
+      errorEl = document.createElement('p');
+      errorEl.id = 'casebook-auth-error';
+      errorEl.className = 'account-form__error';
+      errorEl.hidden = true;
+      form.parentNode.insertBefore(errorEl, form.nextSibling);
+    }
 
     function showPanel(panel) {
       [signedOut, linkSent, signedIn].forEach(function (el) {
@@ -103,30 +117,49 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var input = document.getElementById('account-email');
-      var email = normalizeEmail(input && input.value);
+      var email = normalizeEmail(emailInput && emailInput.value);
       if (!email || email.indexOf('@') === -1) {
-        if (input) input.focus();
+        if (emailInput) emailInput.focus();
         return;
       }
-      var url = magicLinkFor(email);
-      if (emailDisplay) emailDisplay.textContent = email;
-      if (magicInput) magicInput.value = url;
-      showPanel(linkSent);
-    });
 
-    if (copyBtn && magicInput) {
-      copyBtn.addEventListener('click', function () {
-        magicInput.select();
-        try {
-          navigator.clipboard.writeText(magicInput.value);
-          copyBtn.textContent = 'Copied';
-          setTimeout(function () { copyBtn.textContent = 'Copy'; }, 2000);
-        } catch (err) {
-          document.execCommand('copy');
-        }
-      });
-    }
+      // Reset state
+      successEl.hidden = true;
+      errorEl.hidden = true;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending…';
+      }
+
+      fetch(MAGIC_LINK_WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email }),
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.success) {
+            form.hidden = true;
+            successEl.hidden = false;
+            successEl.textContent = 'Check your email — link sent to ' + email;
+          } else {
+            errorEl.hidden = false;
+            errorEl.textContent = data.error || 'Something went wrong. Try again.';
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Send sign-in link';
+            }
+          }
+        })
+        .catch(function () {
+          errorEl.hidden = false;
+          errorEl.textContent = 'Network error. Try again.';
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send sign-in link';
+          }
+        });
+    });
 
     if (signOutBtn) {
       signOutBtn.addEventListener('click', function () {
@@ -165,7 +198,6 @@
     load: loadAuth,
     save: saveAuth,
     clear: clearAuth,
-    magicLinkFor: magicLinkFor,
     makeToken: makeToken,
     parseToken: parseToken,
   };
