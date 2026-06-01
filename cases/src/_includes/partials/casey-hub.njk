@@ -1,0 +1,76 @@
+{# ── casey-hub.njk ── Casey welcome panel on the hub homepage ── #}
+{# Rendered once on index.njk. casey-hub.js handles greeting rotation + tone sync. #}
+
+{# Resolve flagship slug at build time — do not hardcode #}
+{% set flagshipCase = null %}
+{% for c in manifest.cases %}
+  {% if c.flagship and c.status == 'live' %}
+    {% if not flagshipCase %}{% set flagshipCase = c %}{% endif %}
+  {% endif %}
+{% endfor %}
+
+<section class="casey-hub" aria-label="Casey, your Casebook guide" data-casey-hub>
+
+  <div class="casey-hub__avatar-wrap">
+    <img class="casey-hub__img"
+         src="{{ '/assets/casey/junior/wave.svg' | url }}"
+         alt="Casey, junior developer kitten, waving hello"
+         width="160" height="160"
+         loading="lazy"
+         data-casey-hub-avatar="true" />
+  </div>
+
+  <div class="casey-hub__panel">
+    <p class="casey-hub__label" aria-hidden="true">
+      <span data-casey-hub-tier-label>Casey · Junior dev</span>
+    </p>
+
+    <p class="casey-hub__greeting" aria-live="polite" id="casey-hub-greeting">
+      Hey — pick a case below or start with the flagship. I'll hint as you scroll.
+    </p>
+
+    <ul class="casey-hub__actions" role="list">
+      {% if flagshipCase %}
+      <li>
+        <a href="{{ ('/' ~ flagshipCase.slug ~ '/') | url }}"
+           class="casey-hub__action casey-hub__action--primary"
+           data-action-id="flagship">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          {{ flagshipCase.title }}
+        </a>
+      </li>
+      {% endif %}
+      <li>
+        <a href="{{ '/library/' | url }}"
+           class="casey-hub__action"
+           data-action-id="library">
+          Reading library
+        </a>
+      </li>
+      <li>
+        <a href="{{ '/about/' | url }}"
+           class="casey-hub__action"
+           data-action-id="about">
+          How this works
+        </a>
+      </li>
+      {% if site.newsletter.enabled %}
+      <li>
+        <a href="#subscribe"
+           class="casey-hub__action"
+           data-action-id="subscribe">
+          Get new cases by email
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+
+</section>
+
+{# Inject hub greeting data for casey-hub.js — build-time serialisation #}
+<script id="casey-hub-data" type="application/json">
+{{ caseyHub | dump | safe }}
+</script>
