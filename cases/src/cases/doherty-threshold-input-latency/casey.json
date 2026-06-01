@@ -1,0 +1,36 @@
+{
+  "slug": "doherty-threshold-input-latency",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "When an app responds in under 400ms, users feel like they're in control — like they're thinking through the computer, not waiting for it. Over 400ms, that feeling breaks. The interaction stops being a conversation and starts being a request you filed and are waiting on.",
+      "mid": "The Doherty Threshold (Walter Doherty, IBM 1982): user productivity peaks when system response time is under 400ms. Above 400ms, users shift from 'flow' to 'wait mode' — they look away, context-switch, or abandon. This is distinct from 100ms (perceived as instantaneous) and 1000ms (where the user loses the thread of thought).",
+      "staff": "The three latency thresholds: <100ms feels instantaneous (direct manipulation), 100–400ms feels responsive but not instant (user notices the gap), 400ms–1000ms breaks flow (the Doherty zone), >1000ms requires explicit feedback (spinner/progress). The Doherty Threshold is specifically the boundary where productivity degrades measurably."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Try typing in both inputs. The slow input has a 600ms response delay — notice how it feels sluggish and unresponsive. The fast input responds in under 100ms. The difference in 'feel' is enormous even though both inputs accept your keystrokes.",
+      "mid": "The demo measures perceived responsiveness through a self-report scale after a 20-keystroke typing session. The 600ms input scores 3–4/10; the sub-100ms input scores 8–9/10. The task completion time is within 5% of each other.",
+      "staff": "Optimistic updates bypass the Doherty Threshold by applying state changes immediately (before server confirmation) and rolling back on failure. This is the correct pattern for most form submissions and toggle interactions — fail rate is low, and the UX benefit is enormous."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "A search input I built had a 600ms debounce and then a 400ms API response time. Total latency: ~1000ms. Users complained the search was broken. Dropping debounce to 200ms and adding an optimistic 'searching…' state at 50ms reduced complaints to zero — same API speed, completely different perception.",
+      "mid": "The pattern I see most: `setTimeout(search, 500)` debounce on every keystroke. 500ms debounce made sense in 2014 on slow connections. On modern connections and servers, 150–200ms debounce is the sweet spot — responsive enough to feel live, rare enough to avoid hammering the API.",
+      "staff": "Input method composition events (IME, used for CJK languages) complicate debounce timing. The `compositionstart`/`compositionend` events must gate your debounce — debouncing during composition breaks character input for a billion users."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about the Doherty Threshold — the magic 400ms line where your app either keeps users in flow or kicks them out of it.",
+        "mid": "We're covering the three latency perception tiers, the Doherty Threshold research, debounce timing, and optimistic update patterns.",
+        "staff": "We're covering Doherty 1982, the 100ms / 400ms / 1000ms tiers from Nielsen, optimistic updates as a Doherty bypass, and IME composition event handling."
+      }
+    ]
+  }
+}

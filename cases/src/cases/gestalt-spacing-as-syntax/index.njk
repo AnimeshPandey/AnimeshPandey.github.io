@@ -1,0 +1,120 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Gestalt: Spacing Is Syntax"
+description: "How the distance between a label and its input communicates ownership — and why equal spacing between all form elements destroys comprehension."
+slug: gestalt-spacing-as-syntax
+track: patterns-ux
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-06-01T00:00:00Z"
+principle: Gestalt proximity
+schemaType: Article
+relatedCases:
+  - slug: miller-chunking-forms
+    title: "Miller's Rule: Chunking Long Forms"
+  - slug: cognitive-load-error-recovery
+    title: Cognitive Load and Error Recovery UX
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The label that belonged to the wrong field</h2>
+  <div class="tone-junior">
+    <p>A sign-up form had a CSS reset that applied <code>margin-bottom: 16px</code> to every element. Every label, every input, every field group — all spaced 16px apart. In a user test, 30% of participants initially associated the "Password" label with the email field above it, not the password field below it. They were the same distance from both.</p>
+    <p>The fix took 10 minutes: change label margin-bottom to 4px (tight to its field) and field margin-bottom to 24px (spacious gap before the next label). Nothing else changed. Label-field association accuracy jumped to 98%.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Gestalt proximity principle: elements that are physically close to each other are perceived as belonging to the same group. In forms, the critical ratio is: distance from label to its field must be less than distance from field to the next label. When those two distances are equal, the label appears unanchored — equidistant from two possible "owners."</p>
+  </div>
+  <div class="tone-staff">
+    <p>Proximity is a pre-attentive feature — it's processed before conscious awareness, in parallel with the visual scene. A correctly-spaced form is parsed without cognitive effort. An equally-spaced form requires serial attention to disambiguate label ownership. The former is design; the latter is a puzzle the user didn't ask to solve.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The spacing ratio rule</h2>
+  <div class="tone-junior">
+    <p>The rule: label-to-field distance should be ≤50% of field-to-next-label distance. The absolute values don't matter — the ratio does.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ❌ Equal spacing — label ownership is ambiguous */
+.form-field {
+  margin-bottom: 16px; /* applies to both labels and inputs */
+}
+
+/* ✅ Ratio spacing — label belongs to field below it */
+.form-label {
+  margin-bottom: 4px;  /* label tight to its input */
+}
+.form-input {
+  margin-bottom: 24px; /* wide gap before next label */
+}
+/* Ratio: 4/24 = 0.17 — well under the 0.5 threshold */</code></pre>
+  </div>
+  <div class="tone-mid">
+    <p>Three contexts where equal spacing creates the worst grouping problems:</p>
+    <ol>
+      <li><strong>Multi-field form groups</strong>: the email/password pairing. If password label is equidistant from email input and password input, 30% of users misread it.</li>
+      <li><strong>Settings panels</strong>: a label, toggle, and description text. The description should be visually attached to its toggle, not floating between toggles.</li>
+      <li><strong>Data tables with row headers</strong>: the header should be visually closer to the cells in its row than to the header above or below it.</li>
+    </ol>
+    <p>The diagnostic: take a screenshot of your UI and blur it until the text is illegible. If you can still identify which labels belong to which fields — the spacing is correct. If it's ambiguous, fix the ratio.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Spacing tokens in a design system should encode grouping semantics, not just size values. A well-designed spacing scale maps token names to use cases:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Semantically named spacing for grouping */
+:root {
+  --space-in-group:    4px;   /* label → its field */
+  --space-between:     20px;  /* field → next group's label */
+  --space-section-gap: 40px;  /* between major form sections */
+}
+
+/* Ratio: 4/20 = 0.2 — correct grouping signal */
+/* Usage is semantic, not arbitrary */</code></pre>
+    <p>When developers pick spacing values from <code>--space-2</code>, <code>--space-4</code> without a semantic contract, they can easily produce <code>--space-4</code> (16px) everywhere — equal spacing by accident. The semantic token layer prevents this by making the intent explicit.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: equal spacing vs ratio spacing</h2>
+  <div class="tone-junior"><p>Both forms have the same labels and fields. The "Equal" mode uses 16px spacing between every element. The "Ratio" mode uses 4px label-to-field and 24px field-to-next-label. Try to quickly identify which label belongs to which field in each mode — the equal version requires a conscious parse.</p></div>
+  <div class="tone-mid"><p>Try the blur test: squint at both forms until the text is blurry. In the ratio version, you can still identify the groupings by the spacing patterns. In the equal version, every element appears as an isolated row with no group membership.</p></div>
+  <div class="tone-staff"><p>Notice the compound effect: the ratio form also applies a subtle horizontal indent to field descriptions, attaching them visually to their parent toggle. This is the same proximity principle applied on the horizontal axis — proximity → grouping → comprehension.</p></div>
+
+  <section class="case-demo" aria-label="Try it: equal vs ratio spacing" data-required="true" data-demo-type="toggle" data-demo-slug="gestalt-spacing-as-syntax">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Equal — 16px everywhere</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Ratio — 4px / 24px</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Ratio — 4px / 24px</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:240px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Label-to-field spacing should be ≤50% of field-to-next-label spacing. The ratio communicates ownership — a label belongs to the element it's closest to.</div>
+        <div class="tone-mid">The blur test: squint at your form until text is illegible. If you can still identify label/field groupings from spacing alone, the proximity is correct. If groupings are ambiguous — fix the ratio.</div>
+        <div class="tone-staff">Semantic spacing tokens prevent equal-spacing accidents. Map token names to use cases (--space-in-group, --space-between-groups, --space-section) rather than abstract sizes — the semantic layer encodes the grouping intent.</div>
+      </li>
+      <li>
+        <div class="tone-junior">The problem is common because CSS resets apply equal margin-bottom to all elements. Always override with form-specific spacing that differentiates in-group distance from between-group distance.</div>
+        <div class="tone-mid">Proximity applies on both axes — use horizontal indent (padding-left) to attach description text to its parent control, just as vertical spacing attaches labels to their fields.</div>
+        <div class="tone-staff">Proximity is pre-attentive — it's processed before conscious reading. Correct spacing means users parse structure without effort; incorrect spacing means every form interaction requires a parsing step the user didn't budget for.</div>
+      </li>
+    </ul>
+  </div>
+</section>

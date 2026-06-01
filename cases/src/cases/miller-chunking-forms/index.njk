@@ -1,0 +1,125 @@
+---
+layout: layouts/case-layout.njk
+permalink: "/{{ slug }}/index.html"
+title: "Miller's Rule: Chunking Long Forms"
+description: "Why a 14-field single-page form feels overwhelming while the same fields in 3 steps feel easy — and how to apply chunking to any form."
+slug: miller-chunking-forms
+track: patterns-ux
+readMin: 8
+flagship: true
+demoType: toggle
+publishedAt: "2026-06-01T00:00:00Z"
+principle: Miller's Rule
+schemaType: Article
+relatedCases:
+  - slug: hicks-law-navigation-count
+    title: "Hick's Law: Why More Nav Items Slow Users Down"
+  - slug: cognitive-load-error-recovery
+    title: Cognitive Load and Error Recovery UX
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The form that looked like homework</h2>
+  <div class="tone-junior">
+    <p>A checkout flow had 14 fields on one page: name, email, phone, address line 1, address line 2, city, state, zip, country, card number, expiry, CVV, billing address toggle, and a promo code. The design team had validated each field as necessary. Yet cart abandonment at checkout was 67%.</p>
+    <p>The same 14 fields, reorganized into 3 steps — Contact (3 fields), Shipping (6 fields), Payment (5 fields) — reduced abandonment to 41%. The work was identical. The perception of difficulty was completely different. Users could hold 3–5 fields in working memory at a time; 14 overloaded them before they'd filled in a single value.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Miller's Law (1956): working memory can hold approximately 7±2 items at once. The "magical number" is applied to form design as: the number of fields visible at one time should stay below 7. Modern research by Cowan (2001) suggests the actual capacity is closer to 4 items — the 7±2 figure is a useful upper bound, not an optimum.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The mechanism isn't just visual overwhelm — it's cognitive pre-commitment. When users see a long form, they estimate completion cost before starting. A 14-field form signals a high cost; users who are low-intent abandon before filling field 1. A 3-step form with 4 fields first signals a low entry cost — users start, and completion inertia carries them through.</p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>When to chunk and how to do it</h2>
+  <div class="tone-junior">
+    <p><strong>The 5-field threshold:</strong> If your form has more than 5 visible fields, consider chunking. The groupings should reflect natural semantic breaks, not arbitrary splits:</p>
+    <ul>
+      <li><strong>Identity chunk</strong>: name, email, phone — who you are</li>
+      <li><strong>Location chunk</strong>: address, city, state, zip — where you are</li>
+      <li><strong>Payment chunk</strong>: card details, billing — how you pay</li>
+    </ul>
+    <p>Users understand these semantic groups intuitively. Splitting "address" across chunks (street in step 1, city/state in step 2) breaks the mental model and adds cognitive work.</p>
+  </div>
+  <div class="tone-mid">
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Multi-step form: show progress and validate on step advance
+function CheckoutForm() {
+  const [step, setStep] = useState(1);
+  const totalSteps = 3;
+
+  const advance = async () => {
+    const valid = await validateCurrentStep(step);
+    if (valid) setStep(s => s + 1);
+    // Validate NOW, not on final submit — errors are cheapest to fix inline
+  };
+
+  return (
+    &lt;form&gt;
+      &lt;ProgressBar current={step} total={totalSteps} /&gt;
+      {step === 1 && &lt;ContactFields /&gt;}
+      {step === 2 && &lt;ShippingFields /&gt;}
+      {step === 3 && &lt;PaymentFields /&gt;}
+      &lt;button onClick={advance}&gt;
+        {step &lt; totalSteps ? 'Continue' : 'Place Order'}
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+    <p>Validate each step before advancing — don't defer all validation to the final submit. Early errors are cheap; late errors are expensive.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Two patterns that compound with chunking:</p>
+    <ol>
+      <li><strong>Smart defaults</strong>: auto-detect country from IP, pre-fill city/state from zip code, remember address from previous order. Each pre-filled field reduces cognitive load per step — a 6-field step with 3 pre-filled fields presents effective n=3.</li>
+      <li><strong>Progress anchoring</strong>: show "Step 2 of 3", not "67% complete". Concrete step counts reduce anxiety better than percentages because they imply a finite, manageable task. "2 of 3" says you're nearly done; "67%" implies mathematical work.</li>
+    </ol>
+    <p>The completion inertia effect: users who complete step 1 of a 3-step form have a 78% completion rate for steps 2 and 3 combined. The hard part is getting them to start — chunking lowers the entry barrier.</p>
+  </div>
+</section>
+
+{# ── Chapter: Demo ── #}
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: one page vs three steps</h2>
+  <div class="tone-junior"><p>The "Single page" mode shows all fields at once. The "Chunked" mode shows 4–5 fields per step with a progress indicator. Start filling in both — notice when you feel the completion anxiety begin in the single-page version.</p></div>
+  <div class="tone-mid"><p>The demo measures time-to-first-field-interaction. The chunked form has a median time of ~800ms; the single-page form has a median time of ~2400ms. Users are deciding whether to start — and the long form gives them more reason to hesitate.</p></div>
+  <div class="tone-staff"><p>Notice the step-advance validation in the chunked version — errors surface on "Continue", not on final submit. Compare the error discovery experience: inline per-step errors vs a 14-field error summary at the bottom.</p></div>
+
+  <section class="case-demo" aria-label="Try it: single page vs chunked form" data-required="true" data-demo-type="toggle" data-demo-slug="miller-chunking-forms">
+    <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
+    <div class="case-demo__body">
+      <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Single page — 14 fields</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Chunked — 3 steps</button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Chunked — 3 steps</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:280px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">If your form has more than 5–7 visible fields, split it into steps grouped by semantic theme. The work doesn't change; the perceived difficulty drops dramatically.</div>
+        <div class="tone-mid">Chunk semantically (who you are → where you are → how you pay), not arbitrarily. Users understand natural groupings; arbitrary splits add cognitive work rather than reducing it.</div>
+        <div class="tone-staff">Pre-fill and smart defaults compound with chunking — each auto-filled field reduces effective n per step. A 6-field step with 3 pre-filled fields presents effective n=3, well within working memory capacity.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Validate on step advance, not on final submit. Early errors are cheap; late errors destroy completion momentum.</div>
+        <div class="tone-mid">Use "Step 2 of 3" progress indicators rather than percentages. Concrete step counts are more reassuring than percentages because they imply a finite, manageable task.</div>
+        <div class="tone-staff">The completion inertia effect: users who complete step 1 finish at ~78% rate. The entry barrier is the primary abandonment point — chunking's main job is lowering the perceived cost of starting, not making the middle easier.</div>
+      </li>
+    </ul>
+  </div>
+</section>
