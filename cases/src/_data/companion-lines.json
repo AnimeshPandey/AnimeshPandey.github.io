@@ -1,0 +1,91 @@
+{
+  "hub": {
+    "returning": {
+      "junior": "Welcome back — pick up where you left off or try a new case.",
+      "mid": "Welcome back. Your tone and progress are saved locally.",
+      "staff": "Welcome back. Skip to demos or takeaways if you already know the pattern."
+    },
+    "progress1": {
+      "junior": "You finished a case — nice. Want to try another in the same track?",
+      "mid": "One case down. Pattern memory beats one-off reading.",
+      "staff": "First completion logged. Takeaway chapters are the retention anchor."
+    },
+    "progress5": {
+      "junior": "Five cases — you're building real muscle memory now.",
+      "mid": "Five cases complete. You're past tourist mode.",
+      "staff": "Five completions. Time to cross-link patterns in the library."
+    },
+    "filterMatch": {
+      "junior": "Good filter — {n} case{nLabel} match.",
+      "mid": "{n} case{nLabel} in this track.",
+      "staff": "{n} live case{nLabel} — filter is doing its job."
+    },
+    "filterEmpty": {
+      "junior": "Nothing matches — try clearing the filter.",
+      "mid": "No cases match that track. Clear filter or show upcoming.",
+      "staff": "Zero matches. Widen the filter or enable upcoming cases."
+    },
+    "toneSwitch": {
+      "junior": "Going deeper — I'll skip some basics.",
+      "mid": "Tone updated — hints and voice match your level now.",
+      "staff": "Staff mode — trade-offs and production notes ahead."
+    }
+  },
+  "case": {
+    "completed": {
+      "junior": "You reached the takeaway — that's what to remember.",
+      "mid": "Case complete. The takeaway is your shipping checklist.",
+      "staff": "Takeaway logged. Measure in RUM what you validated in the demo."
+    },
+    "demoIdle": {
+      "junior": "Still there? Tap Broken, then Fixed — feel the difference.",
+      "mid": "Demo idle — toggle broken vs fixed and watch layout stability.",
+      "staff": "30s on demo — attribute perceived wait vs actual TTFB."
+    },
+    "toneSwitch": {
+      "junior": "New tone — I'll explain things at this level now.",
+      "mid": "Tone switched — scroll back if you want the other depth.",
+      "staff": "Staff depth — skipping hand-holding on fundamentals."
+    }
+  },
+  "library": {
+    "firstVisit": {
+      "junior": "900+ war stories catalogued — filter by company or topic.",
+      "mid": "External reading library — pair with cases for pattern + war story.",
+      "staff": "Curated links for post-mortems and benchmarks — not a replacement for demos."
+    },
+    "filtered": {
+      "junior": "Filtered — open a link that matches what you just read.",
+      "mid": "Filter active — skim titles before deep-reading one article.",
+      "staff": "Narrowed list — prefer primary sources in the summary column."
+    }
+  },
+  "about": {
+    "once": {
+      "junior": "I'm Casey — switch Junior → Staff inside any case to see me grow up.",
+      "mid": "Casey here. Tone changes my depth, not just labels.",
+      "staff": "Casey in Staff mode surfaces production gotchas and measurement notes."
+    }
+  },
+  "companies": {
+    "mini": {
+      "junior": "Pick a company you admire — then find a case that uses their patterns.",
+      "mid": "Company index — cross-reference with interactive cases on the hub.",
+      "staff": "Org context first; patterns in cases are vendor-agnostic."
+    }
+  },
+  "milestones": {
+    "firstCaseCompleted": {
+      "pose": "proud",
+      "junior": "First case done — proud of you.",
+      "mid": "First completion — keep the takeaway in your PR checklist.",
+      "staff": "First case completed — log the pattern in your team wiki."
+    },
+    "fiveCases": {
+      "pose": "celebrate",
+      "junior": "Five cases — high five!",
+      "mid": "Five cases — you're in the top cohort of readers.",
+      "staff": "Five cases — time to teach this pattern to someone else."
+    }
+  }
+}
