@@ -33,19 +33,50 @@ BG_SWATCHES = [
     (192, 192, 192),
 ]
 
+# Casey character fills — never flood to transparent (see style-anchor/PALETTE.md)
+CHARACTER_SWATCHES = [
+    (250, 250, 248),  # fur #FAFAF8
+    (237, 232, 223),  # fur shadow #EDE8DF
+    (242, 196, 196),  # blush / inner ear #F2C4C4
+    (240, 160, 160),  # nose #F0A0A0
+    (91, 175, 240),   # eye iris #5BADF0
+    (26, 111, 196),   # limbus #1A6FC4
+    (26, 26, 46),     # pupil #1A1A2E
+    (124, 168, 151),  # collar / mid hoodie #7CA897
+    (139, 175, 159),  # junior hoodie #8BAF9F
+    (212, 197, 176),  # sweater #D4C5B0
+    (232, 213, 176),  # tag #E8D5B0
+    (94, 143, 114),   # tag text #5E8F72
+    (90, 90, 110),    # headphones #5A5A6E
+    (139, 115, 85),   # glasses #8B7355
+    (200, 191, 181),  # whisker #C8BFB5
+    (45, 42, 62),     # outline #2D2A3E
+]
+
 
 def color_close(r: int, g: int, b: int, ref: tuple[int, int, int], tol: int) -> bool:
     return abs(r - ref[0]) <= tol and abs(g - ref[1]) <= tol and abs(b - ref[2]) <= tol
 
 
+def is_character_pixel(r: int, g: int, b: int, tol: int = 22) -> bool:
+    """Protect fur, garments, and face fills from matte removal."""
+    for ref in CHARACTER_SWATCHES:
+        if color_close(r, g, b, ref, tol):
+            return True
+    # Warm off-white fur (AI export may drift slightly from #FAFAF8)
+    if r >= 244 and g >= 244 and b >= 238 and abs(r - g) <= 6 and abs(g - b) <= 10:
+        return True
+    return False
+
+
 def is_background_pixel(r: int, g: int, b: int, refs: list[tuple[int, int, int]], tol: int) -> bool:
+    if is_character_pixel(r, g, b, tol):
+        return False
     for ref in refs:
         if color_close(r, g, b, ref, tol):
             return True
-    # Near-neutral light greys (checkerboard tiles)
-    if abs(r - g) <= 14 and abs(g - b) <= 14 and r >= 190 and r <= 252:
-        return True
-    if r >= 248 and g >= 248 and b >= 248:
+    # Checkerboard neutrals only — not warm fur (#FAFAF8)
+    if abs(r - g) <= 10 and abs(g - b) <= 10 and 190 <= r <= 246:
         return True
     return False
 
@@ -57,7 +88,7 @@ def flood_background_to_alpha(im: Image.Image, tol: int = 20) -> Image.Image:
     refs = list(BG_SWATCHES)
     for corner in [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)]:
         c = px[corner][:3]
-        if c not in refs:
+        if is_background_pixel(c[0], c[1], c[2], refs, tol) and c not in refs:
             refs.append(c)
 
     q: deque[tuple[int, int]] = deque()
