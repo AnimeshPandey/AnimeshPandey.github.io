@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: prefers-reduced-motion Contracts
@@ -16,6 +17,8 @@ relatedCases:
     title: ":focus-visible vs outline: none"
   - slug: motion-safe-fallback
     title: "@media (prefers-reduced-motion)"
+---
+ogImage: https://anmshpndy.com/brand/cases/reduced-motion-respect-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -70,6 +73,14 @@ relatedCases:
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: animated vs motion-safe</h2>
   <div class="tone-junior"><p>Toggle between broken (full animation ignoring the OS setting) and fixed (honours prefers-reduced-motion). If you have "Reduce Motion" enabled on your OS, the fixed version will be static.</p></div>
@@ -95,24 +106,25 @@ relatedCases:
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" rel="noopener noreferrer">MDN — prefers-reduced-motion</a></li>
+      <li><a href="https://www.a11yproject.com/posts/understanding-vestibular-disorders/" rel="noopener noreferrer">A11y Project — Vestibular disorders</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://web.dev/articles/prefers-reduced-motion" rel="noopener noreferrer">web.dev — prefers-reduced-motion</a></li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html" rel="noopener noreferrer">WCAG — Animation from interactions</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" rel="noopener noreferrer">MDN — PRM media query</a></li>
     </ol>
   </div>
 </section>

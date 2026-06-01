@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Fake Progress Bars and Trust"
@@ -16,6 +17,8 @@ relatedCases:
     title: When Skeletons Beat Spinners (Product)
   - slug: reduced-motion-respect
     title: "Respecting prefers-reduced-motion"
+---
+ogImage: https://anmshpndy.com/brand/cases/fake-loading-progress-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -149,24 +152,25 @@ xhr.upload.addEventListener('progress', (e) =&gt; {
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://growth.design/case-studies/labor-perception-bias" rel="noopener noreferrer">Growth.Design — Labor perception</a></li>
+      <li><a href="https://www.nngroup.com/articles/progress-indicators/" rel="noopener noreferrer">NN/g — Progress indicators</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://www.nngroup.com/articles/response-time-limits/" rel="noopener noreferrer">NN/g — Response time limits</a></li>
+      <li><a href="https://web.dev/articles/rail" rel="noopener noreferrer">web.dev — RAIL model</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev — CWV overview</a></li>
+      <li><a href="https://www.nngroup.com/articles/response-time-limits/" rel="noopener noreferrer">NN/g — Doherty threshold context</a></li>
     </ol>
   </div>
 </section>

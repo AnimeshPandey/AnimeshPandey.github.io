@@ -12,6 +12,18 @@
       "junior": "Watch the 'Unbuffered' animation: each token causes a visible layout shift. The 'Buffered' animation streams smoothly — same token rate, different DOM update strategy.",
       "mid": "Open the Performance panel on the unbuffered demo. You'll see a wall of purple 'Recalculate Style' tasks. The buffered demo shows clean 16ms frame blocks with one layout per frame.",
       "staff": "The buffer accumulates tokens in a module-level string. requestAnimationFrame reads from the string and flushes to the DOM, then schedules the next frame. On idle (stream end), cancel the animation frame handle. This is the minimal correct implementation."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're fixing a performance problem with AI streaming UIs — why appending every token to the DOM is slow, and how to buffer for smooth rendering.",
         "mid": "This case covers the requestAnimationFrame buffering pattern for token streams, the mismatch between LLM emission rate and browser paint rate, and word-boundary flush strategies.",
         "staff": "We're covering the I/O vs CPU budget mismatch, rAF loop implementation, word-boundary buffering, and how Vercel AI SDK and Langchain streaming iterables interact with the render layer."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Watch the 'Unbuffered' animation: each token causes a visible layout shift. The 'Buffered' animation streams smoothly — same token rate, different DOM update strategy.",
+        "mid": "Open the Performance panel on the unbuffered demo. You'll see a wall of purple 'Recalculate Style' tasks. The buffered demo shows clean 16ms frame blocks with one layout per frame.",
+        "staff": "The buffer accumulates tokens in a module-level string. requestAnimationFrame reads from the string and flushes to the DOM, then schedules the next frame. On idle (stream end), cancel the animation frame handle. This is the minimal correct implementation."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for streaming-tokens-ui-buffer.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: The JavaScript Event Loop",
+          "href": "/cases/event-loop-one-thread/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: The JavaScript Event Loop",
+          "href": "/cases/event-loop-one-thread/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: The JavaScript Event Loop",
+          "href": "/cases/event-loop-one-thread/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

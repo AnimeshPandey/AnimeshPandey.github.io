@@ -772,6 +772,23 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   outline-offset: 2px;
 }
 
+/* ── Case illustrations (ui-strip) ── */
+.case-illustration {
+  margin: 0;
+}
+.case-illustration__img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--casebook-border);
+}
+.case-illustration__caption {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--casebook-ink-faint);
+  font-family: var(--mono, monospace);
+}
+
 /* ── Casey premium motion & surfaces ── */
 @keyframes casey-pose-enter {
   0%   { opacity: 0.7; transform: scale(0.96); }

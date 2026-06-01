@@ -18,6 +18,12 @@
       "junior": "The CSS is surprisingly simple — a few divs with a shimmer animation. No special library needed.",
       "mid": "React Suspense boundaries make skeleton placement declarative — fallback prop takes your skeleton.",
       "staff": "Coordinate skeleton geometry with your design tokens. Mismatched sizes cause micro-CLS on swap."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     }
   ],
   "anecdotes": [
@@ -87,6 +93,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Why Font Loading Breaks Your Layout",
+          "href": "/cases/font-loading-cls/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -97,6 +107,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Why Font Loading Breaks Your Layout",
+          "href": "/cases/font-loading-cls/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -106,6 +120,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Why Font Loading Breaks Your Layout",
+          "href": "/cases/font-loading-cls/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"
@@ -125,6 +143,24 @@
         "junior": "Hey! Today we're fixing how waiting feels — not just how fast the server is. You'll be surprised how much of 'slow' is in our heads.",
         "mid": "This case is about labour perception: why skeleton screens often beat spinners, even at identical load times.",
         "staff": "We separate perceived performance from lab metrics, and look at what to measure in production RUM."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Tap Broken first — count the seconds in your head. Then tap Fixed. Same wait, different feel.",
+        "mid": "Toggle and notice layout stability. The spinner causes CLS when content pops in; skeleton doesn't.",
+        "staff": "Filmstrip: did paint wait on network or skeleton construction? That's your actual perf budget."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for skeleton-screens-perceived-speed.",
+        "mid": "",
+        "staff": ""
       }
     ]
   }

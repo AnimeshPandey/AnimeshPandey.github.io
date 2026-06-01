@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Ghost Updates and Race Conditions
@@ -16,6 +17,8 @@ relatedCases:
     title: "The Event Loop: One Thread, Many Queues"
   - slug: fetch-race-abort
     title: "fetch + AbortController: Cancel Ghost Requests"
+---
+ogImage: https://anmshpndy.com/brand/cases/abort-controller-ghost-updates-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -227,6 +230,14 @@ const { data } = useQuery({
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: race condition vs abort</h2>
 
@@ -325,22 +336,24 @@ await fetch('/api/upload', { signal });</code></pre>
 </section>
 
 {# ── Chapter: References ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
-
-  <div class="tone-mid">
+  <div class="tone-junior">
     <ol>
-      <li>MDN — <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">AbortController</a>.</li>
-      <li>web.dev — <a href="https://web.dev/articles/fetch-api-error-handling" rel="noopener noreferrer">Fetch API error handling</a>.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">MDN — AbortController</a></li>
     </ol>
   </div>
-
+  <div class="tone-mid">
+    <ol>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal" rel="noopener noreferrer">MDN — AbortSignal</a></li>
+      <li><a href="https://react.dev/reference/react/useEffect" rel="noopener noreferrer">React — useEffect cleanup</a></li>
+    </ol>
+  </div>
   <div class="tone-staff">
     <ol>
-      <li>MDN — <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">AbortController</a>.</li>
-      <li>MDN — <a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/any_static" rel="noopener noreferrer">AbortSignal.any()</a>.</li>
-      <li>TanStack Query docs — <a href="https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation" rel="noopener noreferrer">Query Cancellation</a>.</li>
-      <li>whatwg fetch spec — Aborting a fetch.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">AbortController spec (MDN)</a></li>
+      <li><a href="https://react.dev/learn/synchronizing-with-effects" rel="noopener noreferrer">React — Sync with effects</a></li>
     </ol>
   </div>
 </section>

@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Miller's Rule: Chunking Long Forms"
@@ -16,6 +17,8 @@ relatedCases:
     title: "Hick's Law: Why More Nav Items Slow Users Down"
   - slug: cognitive-load-error-recovery
     title: Cognitive Load and Error Recovery UX
+---
+ogImage: https://anmshpndy.com/brand/cases/miller-chunking-forms-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -82,6 +85,14 @@ function CheckoutForm() {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: one page vs three steps</h2>
   <div class="tone-junior"><p>The "Single page" mode shows all fields at once. The "Chunked" mode shows 4–5 fields per step with a progress indicator. Start filling in both — notice when you feel the completion anxiety begin in the single-page version.</p></div>
@@ -107,24 +118,25 @@ function CheckoutForm() {
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://lawsofux.com/millers-law/" rel="noopener noreferrer">Laws of UX — Miller's Law</a></li>
+      <li><a href="https://www.nngroup.com/articles/progressive-disclosure/" rel="noopener noreferrer">NN/g — Progressive disclosure</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard — Checkout fields study</a></li>
+      <li><a href="https://designsystem.service.gov.uk/patterns/" rel="noopener noreferrer">GOV.UK — Form patterns</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/" rel="noopener noreferrer">WAI-ARIA APG — Patterns</a></li>
+      <li><a href="https://www.smashingmagazine.com/2017/06/designing-efficient-web-forms/" rel="noopener noreferrer">Smashing — Efficient web forms</a></li>
     </ol>
   </div>
 </section>

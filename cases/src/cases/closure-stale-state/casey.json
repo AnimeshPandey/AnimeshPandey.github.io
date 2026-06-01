@@ -18,6 +18,12 @@
       "junior": "Install eslint-plugin-react-hooks if you don't have it. It will catch these before they hit production.",
       "mid": "Think of useRef as a shared notebook everyone writes to — closures read from the notebook, not their private copy.",
       "staff": "useEffectEvent is worth tracking in React 19 — it's the principled resolution to the exhaustive-deps vs. stable-callback tension."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     }
   ],
   "anecdotes": [
@@ -36,6 +42,24 @@
         "junior": "Hey! Today we're fixing a sneaky bug where your click counter always shows 1 even when you click 5 times. It's about closures — I promise it'll make sense.",
         "mid": "This case is about stale closures in React hooks — why event handlers and intervals read old state, and three clean patterns to fix it.",
         "staff": "We're covering the closure capture model, why React's exhaustive-deps rule exists, and the upcoming useEffectEvent primitive for stable callbacks."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Click the broken button 5 times fast. See? Always 1. Now try fixed — same fast clicking, correct count. That's the functional updater doing its job.",
+        "mid": "The broken version batches 5 calls of setCount(0 + 1). The fixed version queues setCount(prev => prev + 1) 5 times — each sees the result of the last.",
+        "staff": "React 18 automatic batching makes this worse in concurrent mode — multiple state updates in a batch all read the same stale closure value."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for closure-stale-state.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -98,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \"The Event Loop: One Thread, Many Queues\"",
+          "href": "/cases/event-loop-one-thread/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -108,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \"The Event Loop: One Thread, Many Queues\"",
+          "href": "/cases/event-loop-one-thread/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -117,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \"The Event Loop: One Thread, Many Queues\"",
+          "href": "/cases/event-loop-one-thread/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

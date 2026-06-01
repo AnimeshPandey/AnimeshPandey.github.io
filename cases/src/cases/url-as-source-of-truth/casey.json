@@ -12,6 +12,18 @@
       "junior": "Apply filters in broken mode, reload the page — they're gone. Fixed mode: apply filters, reload, they're back. The URL is the persistence layer.",
       "mid": "Copy the URL from the fixed demo after applying filters and paste into a new tab. The filters are applied from the URL before any React state is set.",
       "staff": "The popstate event is the back/forward hook. Without it, browser navigation doesn't sync the URL state back to your UI. Always handle it in URL state patterns."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're fixing filters that disappear on page refresh. The solution is putting filter state in the URL — it's bookmarkable, shareable, and just works.",
         "mid": "This case covers URL as state — URLSearchParams, history.pushState, popstate, and the React Router useSearchParams pattern.",
         "staff": "We're covering the full state placement matrix, URL state for SEO implications, and when to use URL vs component vs global store for different state types."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Apply filters in broken mode, reload the page — they're gone. Fixed mode: apply filters, reload, they're back. The URL is the persistence layer.",
+        "mid": "Copy the URL from the fixed demo after applying filters and paste into a new tab. The filters are applied from the URL before any React state is set.",
+        "staff": "The popstate event is the back/forward hook. Without it, browser navigation doesn't sync the URL state back to your UI. Always handle it in URL state patterns."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for url-as-source-of-truth.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Ghost Updates and Race Conditions",
+          "href": "/cases/abort-controller-ghost-updates/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Ghost Updates and Race Conditions",
+          "href": "/cases/abort-controller-ghost-updates/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Ghost Updates and Race Conditions",
+          "href": "/cases/abort-controller-ghost-updates/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

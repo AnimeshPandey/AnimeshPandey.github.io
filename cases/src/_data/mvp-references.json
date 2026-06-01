@@ -1,0 +1,301 @@
+{
+  "skeleton-screens-perceived-speed": {
+    "junior": [
+      "<a href=\"https://growth.design/case-studies/labor-perception-bias\" rel=\"noopener noreferrer\">Growth.Design — Labor perception bias</a>",
+      "<a href=\"https://www.lukew.com/ff/entry.asp?1797\" rel=\"noopener noreferrer\">Luke Wroblewski — Skeleton screens</a>"
+    ],
+    "mid": [
+      "<a href=\"https://ux.shopify.com/skeleton-screens-a-design-problem-b5fc9dc2c55c\" rel=\"noopener noreferrer\">Shopify UX — Skeleton screens</a>",
+      "<a href=\"https://web.dev/articles/cls\" rel=\"noopener noreferrer\">web.dev — Cumulative Layout Shift</a>"
+    ],
+    "staff": [
+      "Buell & Norton (2011) — Labor illusion, <em>Management Science</em>",
+      "<a href=\"https://web.dev/articles/vitals\" rel=\"noopener noreferrer\">web.dev — Core Web Vitals</a>",
+      "<a href=\"https://react.dev/reference/react/Suspense\" rel=\"noopener noreferrer\">React — Suspense</a>"
+    ]
+  },
+  "fake-loading-progress": {
+    "junior": [
+      "<a href=\"https://growth.design/case-studies/labor-perception-bias\" rel=\"noopener noreferrer\">Growth.Design — Labor perception</a>",
+      "<a href=\"https://www.nngroup.com/articles/progress-indicators/\" rel=\"noopener noreferrer\">NN/g — Progress indicators</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.nngroup.com/articles/response-time-limits/\" rel=\"noopener noreferrer\">NN/g — Response time limits</a>",
+      "<a href=\"https://web.dev/articles/rail\" rel=\"noopener noreferrer\">web.dev — RAIL model</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/vitals\" rel=\"noopener noreferrer\">web.dev — CWV overview</a>",
+      "<a href=\"https://www.nngroup.com/articles/response-time-limits/\" rel=\"noopener noreferrer\">NN/g — Doherty threshold context</a>"
+    ]
+  },
+  "cognitive-load-error-recovery": {
+    "junior": [
+      "<a href=\"https://www.nngroup.com/articles/ten-usability-heuristics/\" rel=\"noopener noreferrer\">NN/g — Usability heuristics (error recovery)</a>",
+      "<a href=\"https://www.gov.uk/service-manual\" rel=\"noopener noreferrer\">GOV.UK Service Manual</a>"
+    ],
+    "mid": [
+      "<a href=\"https://baymard.com/blog/checkout-flow-average-form-fields\" rel=\"noopener noreferrer\">Baymard — Form UX research</a>",
+      "<a href=\"https://designsystem.service.gov.uk/components/error-message/\" rel=\"noopener noreferrer\">GOV.UK — Error messages</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html\" rel=\"noopener noreferrer\">WCAG 2.2 — Error suggestion</a>",
+      "<a href=\"https://polaris.shopify.com/components/feedback-indicators/banner\" rel=\"noopener noreferrer\">Shopify Polaris — Banners</a>"
+    ]
+  },
+  "gestalt-spacing-as-syntax": {
+    "junior": [
+      "<a href=\"https://lawsofux.com/\" rel=\"noopener noreferrer\">Laws of UX — Gestalt principles</a>",
+      "<a href=\"https://material.io/design/layout/spacing-methods.html\" rel=\"noopener noreferrer\">Material — Spacing methods</a>"
+    ],
+    "mid": [
+      "<a href=\"https://m3.material.io/styles/layout/overview\" rel=\"noopener noreferrer\">Material 3 — Layout</a>",
+      "<a href=\"https://atlassian.design/foundations/spacing\" rel=\"noopener noreferrer\">Atlassian — Spacing tokens</a>"
+    ],
+    "staff": [
+      "<a href=\"https://polaris.shopify.com/design/space\" rel=\"noopener noreferrer\">Shopify Polaris — Space scale</a>",
+      "<a href=\"https://spectrum.adobe.com/page/spacing/\" rel=\"noopener noreferrer\">Adobe Spectrum — Spacing</a>"
+    ]
+  },
+  "miller-chunking-forms": {
+    "junior": [
+      "<a href=\"https://lawsofux.com/millers-law/\" rel=\"noopener noreferrer\">Laws of UX — Miller's Law</a>",
+      "<a href=\"https://www.nngroup.com/articles/progressive-disclosure/\" rel=\"noopener noreferrer\">NN/g — Progressive disclosure</a>"
+    ],
+    "mid": [
+      "<a href=\"https://baymard.com/blog/checkout-flow-average-form-fields\" rel=\"noopener noreferrer\">Baymard — Checkout fields study</a>",
+      "<a href=\"https://designsystem.service.gov.uk/patterns/\" rel=\"noopener noreferrer\">GOV.UK — Form patterns</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Patterns</a>",
+      "<a href=\"https://www.smashingmagazine.com/2017/06/designing-efficient-web-forms/\" rel=\"noopener noreferrer\">Smashing — Efficient web forms</a>"
+    ]
+  },
+  "fitts-law-touch-targets": {
+    "junior": [
+      "<a href=\"https://lawsofux.com/fittss-law/\" rel=\"noopener noreferrer\">Laws of UX — Fitts's Law</a>",
+      "<a href=\"https://developer.apple.com/design/human-interface-guidelines/\" rel=\"noopener noreferrer\">Apple HIG</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html\" rel=\"noopener noreferrer\">WCAG 2.2 — Target size</a>",
+      "<a href=\"https://m3.material.io/components/buttons/specs\" rel=\"noopener noreferrer\">Material 3 — Button specs</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/TR/WCAG22/\" rel=\"noopener noreferrer\">WCAG 2.2 spec</a>",
+      "<a href=\"https://web.dev/articles/accessible-tap-targets\" rel=\"noopener noreferrer\">web.dev — Accessible tap targets</a>"
+    ]
+  },
+  "focus-visible-not-outline-none": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible\" rel=\"noopener noreferrer\">MDN — :focus-visible</a>",
+      "<a href=\"https://www.a11yproject.com/posts/never-remove-css-outlines/\" rel=\"noopener noreferrer\">A11y Project — Never remove outlines</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html\" rel=\"noopener noreferrer\">WCAG 2.2 — Focus appearance</a>",
+      "<a href=\"https://web.dev/articles/designing-focus-states\" rel=\"noopener noreferrer\">web.dev — Designing focus states</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/TR/WCAG22/\" rel=\"noopener noreferrer\">WCAG 2.2</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible\" rel=\"noopener noreferrer\">MDN — :focus-visible</a>",
+      "<a href=\"https://dequeuniversity.com/rules/axe/4.9/\" rel=\"noopener noreferrer\">axe-core rules</a>"
+    ]
+  },
+  "reduced-motion-respect": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion\" rel=\"noopener noreferrer\">MDN — prefers-reduced-motion</a>",
+      "<a href=\"https://www.a11yproject.com/posts/understanding-vestibular-disorders/\" rel=\"noopener noreferrer\">A11y Project — Vestibular disorders</a>"
+    ],
+    "mid": [
+      "<a href=\"https://web.dev/articles/prefers-reduced-motion\" rel=\"noopener noreferrer\">web.dev — prefers-reduced-motion</a>",
+      "<a href=\"https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html\" rel=\"noopener noreferrer\">WCAG — Animation from interactions</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/TR/WCAG22/\" rel=\"noopener noreferrer\">WCAG 2.2</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion\" rel=\"noopener noreferrer\">MDN — PRM media query</a>"
+    ]
+  },
+  "font-loading-cls": {
+    "junior": [
+      "<a href=\"https://web.dev/articles/cls\" rel=\"noopener noreferrer\">web.dev — CLS</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face\" rel=\"noopener noreferrer\">MDN — @font-face</a>"
+    ],
+    "mid": [
+      "<a href=\"https://web.dev/articles/font-best-practices\" rel=\"noopener noreferrer\">web.dev — Font best practices</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/font-display\" rel=\"noopener noreferrer\">MDN — font-display</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/vitals\" rel=\"noopener noreferrer\">web.dev — CWV</a>",
+      "<a href=\"https://github.com/GoogleChrome/lighthouse\" rel=\"noopener noreferrer\">Lighthouse</a>"
+    ]
+  },
+  "lcp-not-hero-image": {
+    "junior": [
+      "<a href=\"https://web.dev/articles/lcp\" rel=\"noopener noreferrer\">web.dev — LCP</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint\" rel=\"noopener noreferrer\">MDN — LCP API</a>"
+    ],
+    "mid": [
+      "<a href=\"https://web.dev/articles/optimize-lcp\" rel=\"noopener noreferrer\">web.dev — Optimize LCP</a>",
+      "<a href=\"https://github.com/GoogleChrome/web-vitals\" rel=\"noopener noreferrer\">web-vitals library</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developers.google.com/search/docs/appearance/core-web-vitals\" rel=\"noopener noreferrer\">Google Search — CWV</a>",
+      "<a href=\"https://web.dev/articles/lcp\" rel=\"noopener noreferrer\">web.dev — LCP deep dive</a>"
+    ]
+  },
+  "key-prop-identity": {
+    "junior": [
+      "<a href=\"https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key\" rel=\"noopener noreferrer\">React — Keys in lists</a>"
+    ],
+    "mid": [
+      "<a href=\"https://react.dev/reference/react/useId\" rel=\"noopener noreferrer\">React — useId</a>",
+      "<a href=\"https://react.dev/learn/preserving-and-resetting-state\" rel=\"noopener noreferrer\">React — Preserving state</a>"
+    ],
+    "staff": [
+      "<a href=\"https://react.dev/learn/reconciliation\" rel=\"noopener noreferrer\">React — Reconciliation</a>",
+      "<a href=\"https://overreacted.io/why-do-react-elements-have-type/\" rel=\"noopener noreferrer\">Dan Abramov — Element types</a>"
+    ]
+  },
+  "hydration-two-trees": {
+    "junior": [
+      "<a href=\"https://react.dev/reference/react-dom/client/hydrateRoot\" rel=\"noopener noreferrer\">React — hydrateRoot</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.joshwcomeau.com/react/server-components/\" rel=\"noopener noreferrer\">Josh Comeau — Server Components</a>",
+      "<a href=\"https://react.dev/reference/rsc/server-components\" rel=\"noopener noreferrer\">React — Server Components</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.bswanson.dev/blog/nextjs-hydration-payload/\" rel=\"noopener noreferrer\">RSC payload write-up</a>",
+      "<a href=\"https://nextjs.org/docs/app\" rel=\"noopener noreferrer\">Next.js App Router</a>"
+    ]
+  },
+  "abort-controller-ghost-updates": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/AbortController\" rel=\"noopener noreferrer\">MDN — AbortController</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal\" rel=\"noopener noreferrer\">MDN — AbortSignal</a>",
+      "<a href=\"https://react.dev/reference/react/useEffect\" rel=\"noopener noreferrer\">React — useEffect cleanup</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/AbortController\" rel=\"noopener noreferrer\">AbortController spec (MDN)</a>",
+      "<a href=\"https://react.dev/learn/synchronizing-with-effects\" rel=\"noopener noreferrer\">React — Sync with effects</a>"
+    ]
+  },
+  "fetch-race-abort": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/fetch\" rel=\"noopener noreferrer\">MDN — fetch()</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/AbortController\" rel=\"noopener noreferrer\">MDN — AbortController</a>"
+    ],
+    "mid": [
+      "<a href=\"https://web.dev/articles/optimizing-web-workers\" rel=\"noopener noreferrer\">web.dev — Async patterns</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/AbortController\" rel=\"noopener noreferrer\">AbortController</a>",
+      "<a href=\"https://stripe.com/blog/idempotent-requests\" rel=\"noopener noreferrer\">Stripe — Idempotent requests</a>"
+    ]
+  },
+  "closure-stale-state": {
+    "junior": [
+      "<a href=\"https://react.dev/reference/react/useState\" rel=\"noopener noreferrer\">React — useState</a>",
+      "<a href=\"https://javascript.info/closure\" rel=\"noopener noreferrer\">javascript.info — Closures</a>"
+    ],
+    "mid": [
+      "<a href=\"https://react.dev/reference/react/useRef\" rel=\"noopener noreferrer\">React — useRef</a>",
+      "<a href=\"https://overreacted.io/a-complete-guide-to-useeffect/\" rel=\"noopener noreferrer\">Overreacted — useEffect guide</a>"
+    ],
+    "staff": [
+      "<a href=\"https://react.dev/reference/react/useCallback\" rel=\"noopener noreferrer\">React — useCallback</a>",
+      "<a href=\"https://react.dev/learn/removing-effect-dependencies\" rel=\"noopener noreferrer\">React — Effect dependencies</a>"
+    ]
+  },
+  "event-loop-one-thread": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop\" rel=\"noopener noreferrer\">MDN — Event loop</a>"
+    ],
+    "mid": [
+      "<a href=\"https://javascript.info/event-loop\" rel=\"noopener noreferrer\">javascript.info — Event loop</a>",
+      "<a href=\"https://web.dev/articles/optimize-long-tasks\" rel=\"noopener noreferrer\">web.dev — Long tasks</a>"
+    ],
+    "staff": [
+      "<a href=\"https://html.spec.whatwg.org/multipage/webappapis.html#event-loops\" rel=\"noopener noreferrer\">WHATWG — Event loops</a>",
+      "<a href=\"https://web.dev/articles/inp\" rel=\"noopener noreferrer\">web.dev — INP</a>"
+    ]
+  },
+  "url-as-source-of-truth": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/History\" rel=\"noopener noreferrer\">MDN — History API</a>"
+    ],
+    "mid": [
+      "<a href=\"https://reactrouter.com/en/main\" rel=\"noopener noreferrer\">React Router</a>",
+      "<a href=\"https://remix.run/docs/en/main/discussion/state-management\" rel=\"noopener noreferrer\">Remix — State in URL</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.nngroup.com/articles/url-as-ui/\" rel=\"noopener noreferrer\">NN/g — URL as UI</a>",
+      "<a href=\"https://nextjs.org/docs/app/building-your-application/routing\" rel=\"noopener noreferrer\">Next.js — Routing</a>"
+    ]
+  },
+  "event-delegation-one-listener": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events\" rel=\"noopener noreferrer\">MDN — Events</a>"
+    ],
+    "mid": [
+      "<a href=\"https://javascript.info/event-delegation\" rel=\"noopener noreferrer\">javascript.info — Event delegation</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener\" rel=\"noopener noreferrer\">MDN — addEventListener</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/EventTarget\" rel=\"noopener noreferrer\">MDN — EventTarget</a>",
+      "<a href=\"https://react.dev/learn/responding-to-events\" rel=\"noopener noreferrer\">React — Synthetic events context</a>"
+    ]
+  },
+  "z-index-stacking-context": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context\" rel=\"noopener noreferrer\">MDN — Stacking context</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/z-index\" rel=\"noopener noreferrer\">MDN — z-index</a>",
+      "<a href=\"https://www.joshwcomeau.com/css/stacking-contexts/\" rel=\"noopener noreferrer\">Josh Comeau — Stacking contexts</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index\" rel=\"noopener noreferrer\">MDN — Understanding z-index</a>"
+    ]
+  },
+  "context-window-budget": {
+    "junior": [
+      "<a href=\"https://platform.openai.com/docs/guides/text-generation\" rel=\"noopener noreferrer\">OpenAI — Text generation</a>"
+    ],
+    "mid": [
+      "<a href=\"https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching\" rel=\"noopener noreferrer\">Anthropic — Prompt caching</a>",
+      "<a href=\"https://modelcontextprotocol.io/\" rel=\"noopener noreferrer\">Model Context Protocol</a>"
+    ],
+    "staff": [
+      "<a href=\"https://platform.openai.com/docs/guides/production-best-practices\" rel=\"noopener noreferrer\">OpenAI — Production best practices</a>",
+      "<a href=\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\" rel=\"noopener noreferrer\">OWASP LLM Top 10</a>"
+    ]
+  },
+  "streaming-tokens-ui-buffer": {
+    "junior": [
+      "<a href=\"https://platform.openai.com/docs/api-reference/streaming\" rel=\"noopener noreferrer\">OpenAI — Streaming</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Streams_API\" rel=\"noopener noreferrer\">MDN — Streams API</a>",
+      "<a href=\"https://web.dev/articles/optimize-inp\" rel=\"noopener noreferrer\">web.dev — INP</a>"
+    ],
+    "staff": [
+      "<a href=\"https://platform.openai.com/docs/guides/streaming-responses\" rel=\"noopener noreferrer\">OpenAI — Streaming responses</a>",
+      "<a href=\"https://react.dev/reference/react-dom/server/renderToReadableStream\" rel=\"noopener noreferrer\">React — renderToReadableStream</a>"
+    ]
+  },
+  "static-site-zero-backend": {
+    "junior": [
+      "<a href=\"https://www.11ty.dev/docs/\" rel=\"noopener noreferrer\">Eleventy docs</a>",
+      "<a href=\"https://jamstack.org/\" rel=\"noopener noreferrer\">Jamstack.org</a>"
+    ],
+    "mid": [
+      "<a href=\"https://vercel.com/docs/frameworks\" rel=\"noopener noreferrer\">Vercel — Frameworks</a>",
+      "<a href=\"https://www.netlify.com/blog/2016/09/29/jamstack-modern-web-development/\" rel=\"noopener noreferrer\">Netlify — Jamstack intro</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/rendering-on-the-web\" rel=\"noopener noreferrer\">web.dev — Rendering on the web</a>",
+      "<a href=\"https://www.11ty.dev/docs/plugins/\" rel=\"noopener noreferrer\">Eleventy — Plugins</a>"
+    ]
+  }
+}

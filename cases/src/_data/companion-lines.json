@@ -33,9 +33,9 @@
   },
   "case": {
     "completed": {
-      "junior": "You reached the takeaway — that's what to remember.",
-      "mid": "Case complete. The takeaway is your shipping checklist.",
-      "staff": "Takeaway logged. Measure in RUM what you validated in the demo."
+      "junior": "You reached the takeaway — that's what to remember. Skim the reading library for a war story on this pattern.",
+      "mid": "Case complete. The takeaway is your shipping checklist — pair it with an article in the library.",
+      "staff": "Takeaway logged. Measure in RUM what you validated in the demo; cross-check the library for post-mortems."
     },
     "demoIdle": {
       "junior": "Still there? Tap Broken, then Fixed — feel the difference.",

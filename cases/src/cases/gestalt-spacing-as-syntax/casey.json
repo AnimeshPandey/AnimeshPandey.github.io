@@ -12,6 +12,18 @@
       "junior": "The 'broken' version has equal spacing between all elements — label and field are the same distance apart as field and next-label. Your brain can't tell which label belongs to which field. The 'fixed' version tightens the label-to-field gap and widens the field-to-next-label gap. Instantly readable.",
       "mid": "Try filling out the broken form. Notice you slow down to consciously parse the structure. The fixed form has no parsing step — the grouping is pre-attentive (perceived before conscious awareness). That pre-attentive parsing is the goal of well-applied spacing.",
       "staff": "The proximity principle is most violated in data-dense UIs: settings panels, data tables, filter sidebars. The correction: audit spacing in terms of ratios, not absolute values. The label-field gap should be ≤50% of the field-group gap, regardless of your specific scale values."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "This case is about Gestalt proximity — how spacing between elements tells users what belongs together, and how getting it wrong breaks comprehension.",
         "mid": "We're covering the proximity principle, the label-field spacing ratio rule, and how spacing systems should encode grouping semantics.",
         "staff": "We're covering Gestalt proximity, pre-attentive processing, the spacing ratio audit method, and how typography and whitespace interact in dense UIs."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "The 'broken' version has equal spacing between all elements — label and field are the same distance apart as field and next-label. Your brain can't tell which label belongs to which field. The 'fixed' version tightens the label-to-field gap and widens the field-to-next-label gap. Instantly readable.",
+        "mid": "Try filling out the broken form. Notice you slow down to consciously parse the structure. The fixed form has no parsing step — the grouping is pre-attentive (perceived before conscious awareness). That pre-attentive parsing is the goal of well-applied spacing.",
+        "staff": "The proximity principle is most violated in data-dense UIs: settings panels, data tables, filter sidebars. The correction: audit spacing in terms of ratios, not absolute values. The label-field gap should be ≤50% of the field-group gap, regardless of your specific scale values."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for gestalt-spacing-as-syntax.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

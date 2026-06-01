@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Z-Index Is Not Magic
@@ -16,6 +17,8 @@ relatedCases:
     title: The One Pixel That Broke the Layout
   - slug: focus-visible-not-outline-none
     title: ":focus-visible vs outline: none"
+---
+ogImage: https://anmshpndy.com/brand/cases/z-index-stacking-context-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -195,6 +198,14 @@ function Modal({ children }) {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: z-index trapped vs portal</h2>
 
@@ -281,21 +292,23 @@ function Modal({ children }) {
 </section>
 
 {# ── Chapter: References ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
-
-  <div class="tone-mid">
+  <div class="tone-junior">
     <ol>
-      <li>MDN — <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context" rel="noopener noreferrer">The stacking context</a>.</li>
-      <li>Josh Comeau — <a href="https://www.joshwcomeau.com/css/stacking-contexts/" rel="noopener noreferrer">What the Heck, z-index??</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context" rel="noopener noreferrer">MDN — Stacking context</a></li>
     </ol>
   </div>
-
+  <div class="tone-mid">
+    <ol>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/z-index" rel="noopener noreferrer">MDN — z-index</a></li>
+      <li><a href="https://www.joshwcomeau.com/css/stacking-contexts/" rel="noopener noreferrer">Josh Comeau — Stacking contexts</a></li>
+    </ol>
+  </div>
   <div class="tone-staff">
     <ol>
-      <li>MDN — <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context" rel="noopener noreferrer">The stacking context</a>.</li>
-      <li>CSS Specification — Painting Order.</li>
-      <li>Josh Comeau — <em>What the Heck, z-index??</em></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index" rel="noopener noreferrer">MDN — Understanding z-index</a></li>
     </ol>
   </div>
 </section>

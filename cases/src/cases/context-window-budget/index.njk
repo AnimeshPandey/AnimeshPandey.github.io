@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Context Window Budget for FE Tasks"
@@ -16,6 +17,8 @@ relatedCases:
     title: Paste Error, Zero Learning (Anti-pattern)
   - slug: mcp-host-client-server
     title: "MCP: Host, Client, and Server Roles"
+---
+ogImage: https://anmshpndy.com/brand/cases/context-window-budget-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -95,6 +98,14 @@ function ProductList({ products }) {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: overloaded vs curated context</h2>
   <div class="tone-junior"><p>The "Overloaded" mode pastes a full 300-line component to ask about a 5-line bug. Watch the model's answer quality. The "Curated" mode sends the same question with just the relevant excerpt. Compare the specificity of the answers.</p></div>
@@ -120,24 +131,24 @@ function ProductList({ products }) {
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://platform.openai.com/docs/guides/text-generation" rel="noopener noreferrer">OpenAI — Text generation</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching" rel="noopener noreferrer">Anthropic — Prompt caching</a></li>
+      <li><a href="https://modelcontextprotocol.io/" rel="noopener noreferrer">Model Context Protocol</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://platform.openai.com/docs/guides/production-best-practices" rel="noopener noreferrer">OpenAI — Production best practices</a></li>
+      <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="noopener noreferrer">OWASP LLM Top 10</a></li>
     </ol>
   </div>
 </section>

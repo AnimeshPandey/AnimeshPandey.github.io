@@ -46,7 +46,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "aria-live-polite-errors",
@@ -81,7 +82,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "autocomplete-attributes",
@@ -116,7 +118,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "color-contrast-not-alone",
@@ -151,7 +154,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "focus-visible-not-outline-none",
@@ -187,7 +191,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "heading-hierarchy-one-h1",
@@ -222,7 +227,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "keyboard-trap-escape",
@@ -257,7 +263,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "reduced-motion-respect",
@@ -293,7 +300,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "screen-reader-only-class",
@@ -328,7 +336,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "skip-link-first-tab",
@@ -363,7 +372,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "table-headers-scope",
@@ -398,7 +408,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "touch-target-44px",
@@ -433,7 +444,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "bundle-budget-ci-gate",
@@ -471,7 +483,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "csv-export-main-thread",
@@ -509,7 +522,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "design-system-major-version",
@@ -547,7 +561,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "edge-ssr-cold-start",
@@ -585,7 +600,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "feature-flag-ui-flicker",
@@ -622,7 +638,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "i18n-rtl-regression",
@@ -660,7 +677,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "micro-frontend-boundary-drift",
@@ -699,7 +717,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "monorepo-shared-chunk",
@@ -737,7 +756,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "oauth-pkce-spa-session",
@@ -775,7 +795,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "observability-rum-dashboard",
@@ -813,7 +834,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "partial-hydration-islands",
@@ -851,7 +873,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "real-time-dashboard-backpressure",
@@ -889,7 +912,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "a2a-agent-card-discovery",
@@ -926,7 +950,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "a2ui-streaming-panels",
@@ -964,11 +989,12 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "agent-loop-plan-act-observe",
-      "title": "Plan \u2192 Act \u2192 Observe Loops",
+      "title": "Plan → Act → Observe Loops",
       "track": "agent-architecture",
       "tier": "pro",
       "wave": 3,
@@ -1001,7 +1027,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "cost-cap-token-budget",
@@ -1038,7 +1065,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "evals-regression-golden",
@@ -1075,7 +1103,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "human-approval-gate-deploy",
@@ -1112,7 +1141,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "local-mcp-stdio-security",
@@ -1150,7 +1180,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "mcp-host-client-server",
@@ -1189,7 +1220,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "memory-window-summarize",
@@ -1226,7 +1258,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "multi-agent-handoff-ui",
@@ -1263,7 +1296,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "observability-trace-span-ui",
@@ -1301,7 +1335,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "sandboxed-tool-iframe",
@@ -1339,7 +1374,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "subagent-parallel-race",
@@ -1376,7 +1412,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "tool-schema-validation-zod",
@@ -1414,7 +1451,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "agent-loop-plan-act",
@@ -1449,7 +1487,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "context-window-budget",
@@ -1485,7 +1524,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "debug-coach-socratic",
@@ -1520,7 +1560,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "evals-for-ui-diffs",
@@ -1555,7 +1596,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "fe-mastery-agent-l2",
@@ -1590,7 +1632,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "human-in-the-loop-deploy",
@@ -1625,7 +1668,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "mcp-tools-vs-prompt",
@@ -1660,7 +1704,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "paste-error-without-learning",
@@ -1696,7 +1741,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "prompt-injection-xss",
@@ -1731,7 +1777,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "rag-on-your-design-system",
@@ -1766,7 +1813,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "skills-vs-rules-cursor",
@@ -1801,7 +1849,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "structured-output-json",
@@ -1836,7 +1885,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "subagent-parallel-tasks",
@@ -1871,7 +1921,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "ai-suggestion-diff-review",
@@ -1908,7 +1959,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "ai-widget-third-party-dpa",
@@ -1946,7 +1998,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "confidence-threshold-ui",
@@ -1983,7 +2036,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "embedding-search-sidebar",
@@ -2021,7 +2075,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "fallback-model-degraded",
@@ -2058,7 +2113,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "markdown-render-sanitize",
@@ -2096,7 +2152,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "multimodal-upload-preview",
@@ -2134,7 +2191,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "prompt-injection-ui-input",
@@ -2171,7 +2229,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "rate-limit-ui-cooldown",
@@ -2209,7 +2268,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "streaming-tokens-ui-buffer",
@@ -2248,11 +2308,12 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "structured-output-form-fill",
-      "title": "JSON Schema \u2192 Form Fields (Structured Output)",
+      "title": "JSON Schema → Form Fields (Structured Output)",
       "track": "ai-frontend-integration",
       "tier": "pro",
       "wave": 4,
@@ -2285,7 +2346,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "token-budget-ui-meter",
@@ -2322,7 +2384,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "tool-call-panel-transparency",
@@ -2360,7 +2423,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "voice-ui-push-to-talk",
@@ -2397,7 +2461,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "css-transition-gpu",
@@ -2432,7 +2497,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "gsap-when-necessary",
@@ -2467,7 +2533,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "layout-animation-flip",
@@ -2502,7 +2569,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "lottie-weight-budget",
@@ -2537,7 +2605,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "motion-safe-fallback",
@@ -2573,7 +2642,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "parallax-accessibility",
@@ -2608,7 +2678,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "raf-throttle-scroll",
@@ -2643,7 +2714,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "scroll-driven-animation",
@@ -2678,7 +2750,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "spring-vs-ease-ui",
@@ -2713,7 +2786,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "stagger-children-delay",
@@ -2748,7 +2822,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "view-transitions-spa",
@@ -2783,7 +2858,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "will-change-sparingly",
@@ -2818,7 +2894,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "capture-vs-bubble",
@@ -2853,7 +2930,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "custom-elements-lifecycle",
@@ -2888,7 +2966,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "dialog-element-native",
@@ -2923,7 +3002,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "event-delegation-one-listener",
@@ -2959,7 +3039,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "focus-trap-modal",
@@ -2994,7 +3075,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "inert-background",
@@ -3029,7 +3111,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "intersection-observer-lazy",
@@ -3064,7 +3147,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "mutation-observer-vs-polling",
@@ -3099,7 +3183,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "passive-scroll-listener",
@@ -3134,7 +3219,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "popover-api-native",
@@ -3169,7 +3255,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "resize-observer-loop",
@@ -3204,7 +3291,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "shadow-dom-encapsulation",
@@ -3239,7 +3327,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "bundle-analyzer-chunk",
@@ -3274,7 +3363,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "env-vars-build-time",
@@ -3309,7 +3399,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "esbuild-vs-webpack-dev",
@@ -3344,7 +3435,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "eslint-flat-config",
@@ -3379,7 +3471,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "github-actions-static-pages",
@@ -3414,7 +3507,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "husky-pre-commit-scope",
@@ -3449,7 +3543,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "monorepo-turborepo-cache",
@@ -3484,7 +3579,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "prettier-vs-linter",
@@ -3519,7 +3615,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "source-maps-production",
@@ -3554,7 +3651,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "static-site-zero-backend",
@@ -3590,7 +3688,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "tree-shaking-side-effects",
@@ -3625,7 +3724,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "typescript-strict-gradual",
@@ -3660,7 +3760,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "aspect-ratio-media",
@@ -3695,7 +3796,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "container-queries-component",
@@ -3730,7 +3832,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "dropdown-z-index-war",
@@ -3765,7 +3868,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "flex-min-width-zero",
@@ -3800,7 +3904,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "grid-auto-fr-trap",
@@ -3835,7 +3940,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "horizontal-scroll-one-pixel",
@@ -3871,7 +3977,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "logical-properties-rtl",
@@ -3906,7 +4013,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "margin-collapse-surprise",
@@ -3941,7 +4049,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "scroll-snap-trap",
@@ -3976,7 +4085,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "subgrid-alignment",
@@ -4011,7 +4121,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "viewport-units-mobile",
@@ -4046,7 +4157,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "z-index-stacking-context",
@@ -4082,7 +4194,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "abort-controller-ghost-updates",
@@ -4118,7 +4231,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "async-await-sequential-trap",
@@ -4153,7 +4267,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "closure-stale-state",
@@ -4189,7 +4304,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "event-loop-one-thread",
@@ -4225,7 +4341,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "iterator-protocol-custom",
@@ -4260,7 +4377,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "microtasks-before-render",
@@ -4295,7 +4413,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "optional-chaining-null-ui",
@@ -4330,7 +4449,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "promise-chain-errors",
@@ -4365,7 +4485,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "structured-clone-postmessage",
@@ -4400,7 +4521,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "temporal-dead-zone-hooks",
@@ -4435,7 +4557,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "this-four-rules",
@@ -4470,7 +4593,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "weakmap-dom-metadata",
@@ -4505,7 +4629,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "cache-control-static",
@@ -4540,7 +4665,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "cors-preflight-cost",
@@ -4575,7 +4701,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "debounce-vs-throttle-search",
@@ -4610,7 +4737,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "etag-conditional",
@@ -4645,7 +4773,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "fetch-race-abort",
@@ -4681,7 +4810,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "graphql-overfetch",
@@ -4716,7 +4846,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "idempotency-retry",
@@ -4751,7 +4882,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "offline-queue-sync",
@@ -4786,7 +4918,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "pagination-cursor",
@@ -4821,7 +4954,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "sse-vs-websocket",
@@ -4856,7 +4990,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "stale-while-revalidate",
@@ -4891,7 +5026,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "websocket-reconnect",
@@ -4926,7 +5062,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "command-palette-keyboard",
@@ -4961,7 +5098,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "dark-mode-tokens",
@@ -4996,7 +5134,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "data-table-virtual-scroll",
@@ -5031,7 +5170,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "empty-state-action",
@@ -5066,7 +5206,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "form-multi-step-wizard",
@@ -5101,7 +5242,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "infinite-scroll-footer",
@@ -5136,7 +5278,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "onboarding-checklist-progress",
@@ -5171,7 +5314,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "pricing-tier-anchor",
@@ -5206,7 +5350,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "responsive-nav-drawer",
@@ -5241,7 +5386,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "skeleton-vs-spinner-choice",
@@ -5277,7 +5423,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "toast-stack-limit",
@@ -5312,7 +5459,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "undo-destructive-action",
@@ -5347,7 +5495,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "content-visibility-sections",
@@ -5382,7 +5531,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "critical-css-myth",
@@ -5417,7 +5567,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "defer-third-party",
@@ -5452,7 +5603,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "font-loading-cls",
@@ -5488,7 +5640,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "image-lazy-above-fold",
@@ -5523,7 +5676,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "inp-long-tasks",
@@ -5558,7 +5712,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "lcp-not-hero-image",
@@ -5594,7 +5749,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "preconnect-fonts",
@@ -5629,7 +5785,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "prefetch-vs-preload",
@@ -5664,7 +5821,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "rum-vs-lab",
@@ -5699,7 +5857,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "service-worker-stale",
@@ -5734,7 +5893,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "virtualize-or-paginate",
@@ -5769,7 +5929,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "aesthetic-usability-effect",
@@ -5804,7 +5965,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "anchoring-first-number",
@@ -5839,7 +6001,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "banner-blindness-cta",
@@ -5874,7 +6037,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "choice-paralysis-filters",
@@ -5909,7 +6073,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "chronoception-wait-modal",
@@ -5944,7 +6109,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "fake-loading-progress",
@@ -5980,7 +6146,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "loss-aversion-delete",
@@ -6015,7 +6182,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "optimistic-ui-feels-instant",
@@ -6050,7 +6218,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "peak-end-loading-states",
@@ -6085,7 +6254,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "progressive-disclosure-overload",
@@ -6120,7 +6290,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "skeleton-screens-perceived-speed",
@@ -6156,7 +6327,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "von-restorff-error-state",
@@ -6191,7 +6363,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "context-rerender-storm",
@@ -6226,7 +6399,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "controlled-uncontrolled-inputs",
@@ -6261,7 +6435,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "error-boundary-recovery",
@@ -6296,7 +6471,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "hydration-two-trees",
@@ -6332,7 +6508,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "key-prop-identity",
@@ -6368,7 +6545,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "lifting-state-too-high",
@@ -6403,7 +6581,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "memo-when-it-lies",
@@ -6438,7 +6617,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "optimistic-ui-rollback",
@@ -6473,7 +6653,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "portal-modal-layer",
@@ -6508,7 +6689,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "ref-imperative-escape",
@@ -6543,7 +6725,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "server-components-boundary",
@@ -6578,7 +6761,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "stale-closure-use-effect",
@@ -6613,7 +6797,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "suspense-boundary-granularity",
@@ -6648,7 +6833,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "use-effect-runs-twice",
@@ -6683,7 +6869,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "ai-widget-third-party",
@@ -6718,7 +6905,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "clickjacking-frame-ancestors",
@@ -6753,7 +6941,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "csp-inline-script",
@@ -6788,7 +6977,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "csrf-cookie-samesite",
@@ -6823,7 +7013,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "dom-clobbering-id",
@@ -6858,7 +7049,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "oauth-pkce-spa",
@@ -6893,7 +7085,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "postmessage-origin-check",
@@ -6928,7 +7121,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "prototype-pollution-merge",
@@ -6963,7 +7157,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "secrets-in-client-bundle",
@@ -6999,7 +7194,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "subresource-integrity",
@@ -7034,7 +7230,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "supply-chain-dependency",
@@ -7069,7 +7266,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "xss-innerhtml-trap",
@@ -7104,7 +7302,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "derived-state-anti-pattern",
@@ -7139,7 +7338,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "event-bus-vs-props",
@@ -7174,7 +7374,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "feature-sliced-folders",
@@ -7209,7 +7410,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "finite-state-machines-ui",
@@ -7244,7 +7446,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "indexeddb-offline-cache",
@@ -7279,7 +7482,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "lifted-state-prop-drill",
@@ -7314,7 +7518,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "local-storage-quota",
@@ -7349,7 +7554,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "module-federation-boundary",
@@ -7384,7 +7590,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "optimistic-lock-version",
@@ -7419,7 +7626,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "redux-normalized-entities",
@@ -7454,7 +7662,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "single-writer-principle",
@@ -7489,7 +7698,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "url-as-source-of-truth",
@@ -7525,7 +7735,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-05-31T00:00:00Z"
+      "publishedAt": "2026-05-31T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "accessibility-axe-ci",
@@ -7560,7 +7771,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "component-storybook-docs",
@@ -7595,7 +7807,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "contract-tests-msw",
@@ -7630,7 +7843,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "coverage-myth-lines",
@@ -7665,7 +7879,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "e2e-smoke-critical-path",
@@ -7700,7 +7915,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "flaky-test-timers",
@@ -7735,7 +7951,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "mutation-testing-overkill",
@@ -7770,7 +7987,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "playwright-trace-debug",
@@ -7805,7 +8023,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "property-based-edge",
@@ -7840,7 +8059,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "snapshot-tests-smell",
@@ -7875,7 +8095,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "testing-library-user-first",
@@ -7910,7 +8131,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "visual-regression-percy",
@@ -7945,7 +8167,8 @@
       ],
       "artPanels": 8,
       "status": "idea",
-      "outcomes": []
+      "outcomes": [],
+      "mvpLaunch": false
     },
     {
       "slug": "fitts-law-touch-targets",
@@ -7981,7 +8204,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-06-01T00:00:00Z"
+      "publishedAt": "2026-06-01T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "hicks-law-navigation-count",
@@ -8017,7 +8241,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-06-01T00:00:00Z"
+      "publishedAt": "2026-06-01T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "miller-chunking-forms",
@@ -8053,7 +8278,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-06-01T00:00:00Z"
+      "publishedAt": "2026-06-01T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "doherty-threshold-input-latency",
@@ -8089,7 +8315,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-06-01T00:00:00Z"
+      "publishedAt": "2026-06-01T00:00:00Z",
+      "mvpLaunch": false
     },
     {
       "slug": "gestalt-spacing-as-syntax",
@@ -8125,7 +8352,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-06-01T00:00:00Z"
+      "publishedAt": "2026-06-01T00:00:00Z",
+      "mvpLaunch": true
     },
     {
       "slug": "cognitive-load-error-recovery",
@@ -8161,7 +8389,8 @@
       "artPanels": 8,
       "status": "live",
       "outcomes": [],
-      "publishedAt": "2026-06-01T00:00:00Z"
+      "publishedAt": "2026-06-01T00:00:00Z",
+      "mvpLaunch": true
     }
   ]
 }

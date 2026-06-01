@@ -12,6 +12,18 @@
       "junior": "Try adding 200 rows in broken mode — see the slowdown? Now try fixed mode. Same rows, one listener, instant.",
       "mid": "Check the Event Listeners panel in DevTools Elements tab. Broken: dozens of entries on rows. Fixed: one entry on the container.",
       "staff": "The memory footprint difference is significant at 1000+ rows. Each DOM listener is a retained reference — per-row listeners on removed rows that weren't cleaned up are classic memory leaks."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're making large tables fast by using one event listener instead of one per row. It's called event delegation, and it's one of the most useful DOM patterns.",
         "mid": "This case covers event delegation — how event bubbling makes it work, why closest() is the key primitive, and when not to use it.",
         "staff": "We're covering the full delegation toolkit: closest, matches, focusin/focusout for non-bubbling events, and the React synthetic event system interaction."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try adding 200 rows in broken mode — see the slowdown? Now try fixed mode. Same rows, one listener, instant.",
+        "mid": "Check the Event Listeners panel in DevTools Elements tab. Broken: dozens of entries on rows. Fixed: one entry on the container.",
+        "staff": "The memory footprint difference is significant at 1000+ rows. Each DOM listener is a retained reference — per-row listeners on removed rows that weren't cleaned up are classic memory leaks."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for event-delegation-one-listener.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \"The Event Loop: One Thread, Many Queues\"",
+          "href": "/cases/event-loop-one-thread/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \"The Event Loop: One Thread, Many Queues\"",
+          "href": "/cases/event-loop-one-thread/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \"The Event Loop: One Thread, Many Queues\"",
+          "href": "/cases/event-loop-one-thread/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

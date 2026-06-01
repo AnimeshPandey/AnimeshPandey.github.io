@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: LCP Is Often Text, Not Your Hero Image
@@ -16,6 +17,8 @@ relatedCases:
     title: The Layout Shift You Forgot (Fonts)
   - slug: skeleton-screens-perceived-speed
     title: Why Skeleton Screens Beat Spinners
+---
+ogImage: https://anmshpndy.com/brand/cases/lcp-not-hero-image-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -91,6 +94,14 @@ relatedCases:
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: LCP element identification</h2>
   <div class="tone-junior"><p>Toggle between "Broken" (lazy-loaded image + render-blocking font — LCP is slow) and "Fixed" (preloaded font + eager image + no render block). Open Lighthouse to see the LCP score difference.</p></div>
@@ -116,24 +127,25 @@ relatedCases:
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://web.dev/articles/lcp" rel="noopener noreferrer">web.dev — LCP</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint" rel="noopener noreferrer">MDN — LCP API</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://web.dev/articles/optimize-lcp" rel="noopener noreferrer">web.dev — Optimize LCP</a></li>
+      <li><a href="https://github.com/GoogleChrome/web-vitals" rel="noopener noreferrer">web-vitals library</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://developers.google.com/search/docs/appearance/core-web-vitals" rel="noopener noreferrer">Google Search — CWV</a></li>
+      <li><a href="https://web.dev/articles/lcp" rel="noopener noreferrer">web.dev — LCP deep dive</a></li>
     </ol>
   </div>
 </section>

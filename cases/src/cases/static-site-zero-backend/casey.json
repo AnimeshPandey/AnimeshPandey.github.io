@@ -12,6 +12,18 @@
       "junior": "The 'With Backend' demo shows a simple blog using an Express server — one 200ms round trip to get posts that never change. The 'Static' demo serves the same posts as pre-built HTML. Zero round trips.",
       "mid": "Open the Network tab. Backend version: 200ms+ to first byte (server round trip). Static version: 15–40ms to first byte (CDN edge). Same content, same data — architecture is the difference.",
       "staff": "Measure TTFB. The static version hits a CDN PoP 5–30ms from the user. The server version hits an origin region, adds route processing, and database lookup (even cached). For public content, static always wins on TTFB."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're looking at when you don't need a backend at all — and how a static site on a CDN is faster, cheaper, and more reliable than a server for most content.",
         "mid": "This case covers the static vs dynamic architecture decision, when Jamstack is the right call, and what serverless functions handle when you need just a little dynamism.",
         "staff": "We're covering the TTFB math, the CDN delivery model, cache invalidation patterns, and the operational cost argument for defaulting to static until you genuinely need a server."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "The 'With Backend' demo shows a simple blog using an Express server — one 200ms round trip to get posts that never change. The 'Static' demo serves the same posts as pre-built HTML. Zero round trips.",
+        "mid": "Open the Network tab. Backend version: 200ms+ to first byte (server round trip). Static version: 15–40ms to first byte (CDN edge). Same content, same data — architecture is the difference.",
+        "staff": "Measure TTFB. The static version hits a CDN PoP 5–30ms from the user. The server version hits an origin region, adds route processing, and database lookup (even cached). For public content, static always wins on TTFB."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for static-site-zero-backend.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \"Secrets in the Client Bundle (Never)\"",
+          "href": "/cases/secrets-in-client-bundle/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \"Secrets in the Client Bundle (Never)\"",
+          "href": "/cases/secrets-in-client-bundle/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \"Secrets in the Client Bundle (Never)\"",
+          "href": "/cases/secrets-in-client-bundle/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

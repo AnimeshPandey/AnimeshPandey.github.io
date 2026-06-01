@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "fetch + AbortController: Cancel Ghost Requests"
@@ -16,6 +17,8 @@ relatedCases:
     title: Ghost Updates and Race Conditions
   - slug: event-loop-one-thread
     title: "The Event Loop: One Thread, Many Queues"
+---
+ogImage: https://anmshpndy.com/brand/cases/fetch-race-abort-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -83,6 +86,14 @@ const [user, posts, comments] = await Promise.all([
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: uncancelled vs cancelled fetch</h2>
   <div class="tone-junior"><p>Start a slow fetch then immediately click Cancel. "Broken" — the fetch completes and updates state anyway. "Fixed" — the fetch is aborted, no state update, no error.</p></div>
@@ -108,24 +119,24 @@ const [user, posts, comments] = await Promise.all([
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/fetch" rel="noopener noreferrer">MDN — fetch()</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">MDN — AbortController</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://web.dev/articles/optimizing-web-workers" rel="noopener noreferrer">web.dev — Async patterns</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">AbortController</a></li>
+      <li><a href="https://stripe.com/blog/idempotent-requests" rel="noopener noreferrer">Stripe — Idempotent requests</a></li>
     </ol>
   </div>
 </section>

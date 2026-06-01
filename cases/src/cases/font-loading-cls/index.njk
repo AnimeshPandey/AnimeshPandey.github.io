@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: The Layout Shift You Forgot (Fonts)
@@ -16,6 +17,8 @@ relatedCases:
     title: LCP Is Often Text, Not Your Hero Image
   - slug: skeleton-screens-perceived-speed
     title: Why Skeleton Screens Beat Spinners
+---
+ogImage: https://anmshpndy.com/brand/cases/font-loading-cls-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -67,6 +70,14 @@ body {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: font swap with and without metric match</h2>
   <div class="tone-junior"><p>Watch the headline in "Broken" mode — it jumps when the font arrives. In "Fixed" mode the same swap happens but the text doesn't shift because the fallback metrics match.</p></div>
@@ -92,24 +103,25 @@ body {
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://web.dev/articles/cls" rel="noopener noreferrer">web.dev — CLS</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face" rel="noopener noreferrer">MDN — @font-face</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://web.dev/articles/font-best-practices" rel="noopener noreferrer">web.dev — Font best practices</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-display" rel="noopener noreferrer">MDN — font-display</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev — CWV</a></li>
+      <li><a href="https://github.com/GoogleChrome/lighthouse" rel="noopener noreferrer">Lighthouse</a></li>
     </ol>
   </div>
 </section>

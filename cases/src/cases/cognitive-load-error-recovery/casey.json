@@ -12,6 +12,18 @@
       "junior": "Submit the broken form with errors. Notice the error summary at the top — you have to read 4 error messages, then scroll down to find each field. Now try the fixed form. Errors appear immediately next to the offending field with a clear fix.",
       "mid": "The demo logs your time-to-resubmit for both forms. The inline error form is typically 60–70% faster on resubmit, because users don't have to re-parse and re-locate — they can fix and move on.",
       "staff": "Error recovery has two sub-problems: discoverability (user notices the error) and actionability (user knows how to fix it). Inline errors with specific, actionable copy solve both. 'Invalid email' solves neither — 'Enter a valid email like name@example.com' solves both."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "This case is about cognitive load during error recovery — why error summaries at the top of forms make things worse, and why inline errors fix them.",
         "mid": "We're covering Cognitive Load Theory, extraneous vs intrinsic load in form flows, inline vs summary error patterns, and actionable error copy.",
         "staff": "We're covering Sweller 1988, the schema/error mapping API contract, the two sub-problems of error recovery (discoverability and actionability), and React error boundary scope."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Submit the broken form with errors. Notice the error summary at the top — you have to read 4 error messages, then scroll down to find each field. Now try the fixed form. Errors appear immediately next to the offending field with a clear fix.",
+        "mid": "The demo logs your time-to-resubmit for both forms. The inline error form is typically 60–70% faster on resubmit, because users don't have to re-parse and re-locate — they can fix and move on.",
+        "staff": "Error recovery has two sub-problems: discoverability (user notices the error) and actionability (user knows how to fix it). Inline errors with specific, actionable copy solve both. 'Invalid email' solves neither — 'Enter a valid email like name@example.com' solves both."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for cognitive-load-error-recovery.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

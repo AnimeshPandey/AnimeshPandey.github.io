@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Keys Are Identity, Not Index
@@ -16,6 +17,8 @@ relatedCases:
     title: "Two Trees: Hydration Explained"
   - slug: closure-stale-state
     title: Closures and Stale State in Handlers
+---
+ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -183,6 +186,14 @@ function createTodo(text) {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: index key vs stable key</h2>
 
@@ -273,21 +284,24 @@ function Wizard({ steps, currentStep }) {
 </section>
 
 {# ── Chapter: References ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
-
-  <div class="tone-mid">
+  <div class="tone-junior">
     <ol>
-      <li>React docs — <a href="https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key" rel="noopener noreferrer">Keeping list items in order with key</a>.</li>
-      <li>Robin Pokorny, <a href="https://robinpokorny.com/blog/index-as-a-key-is-an-anti-pattern/" rel="noopener noreferrer">Index as a key is an anti-pattern</a>.</li>
+      <li><a href="https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key" rel="noopener noreferrer">React — Keys in lists</a></li>
     </ol>
   </div>
-
+  <div class="tone-mid">
+    <ol>
+      <li><a href="https://react.dev/reference/react/useId" rel="noopener noreferrer">React — useId</a></li>
+      <li><a href="https://react.dev/learn/preserving-and-resetting-state" rel="noopener noreferrer">React — Preserving state</a></li>
+    </ol>
+  </div>
   <div class="tone-staff">
     <ol>
-      <li>React docs — <a href="https://react.dev/learn/rendering-lists" rel="noopener noreferrer">Rendering Lists</a>.</li>
-      <li>React reconciliation algorithm — Eli Perelman's deep-dive notes.</li>
-      <li>eslint-plugin-react — <code>react/no-array-index-key</code> rule.</li>
+      <li><a href="https://react.dev/learn/reconciliation" rel="noopener noreferrer">React — Reconciliation</a></li>
+      <li><a href="https://overreacted.io/why-do-react-elements-have-type/" rel="noopener noreferrer">Dan Abramov — Element types</a></li>
     </ol>
   </div>
 </section>

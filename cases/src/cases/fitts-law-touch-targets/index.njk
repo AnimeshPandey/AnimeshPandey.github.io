@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Fitts's Law and Tap Target Sizing"
@@ -16,6 +17,8 @@ relatedCases:
     title: Cognitive Load and Error Recovery UX
   - slug: gestalt-spacing-as-syntax
     title: "Gestalt: Spacing Is Syntax"
+---
+ogImage: https://anmshpndy.com/brand/cases/fitts-law-touch-targets-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -74,6 +77,14 @@ relatedCases:
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: small vs large touch targets</h2>
   <div class="tone-junior"><p>Both modes show the same settings screen. The "Small" mode uses 20×20px hit areas. The "Large" mode uses 44×44px hit areas. Try to accurately tap the third toggle from the top in both modes — notice how much more careful you have to be with the small targets.</p></div>
@@ -99,24 +110,25 @@ relatedCases:
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://lawsofux.com/fittss-law/" rel="noopener noreferrer">Laws of UX — Fitts's Law</a></li>
+      <li><a href="https://developer.apple.com/design/human-interface-guidelines/" rel="noopener noreferrer">Apple HIG</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html" rel="noopener noreferrer">WCAG 2.2 — Target size</a></li>
+      <li><a href="https://m3.material.io/components/buttons/specs" rel="noopener noreferrer">Material 3 — Button specs</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2 spec</a></li>
+      <li><a href="https://web.dev/articles/accessible-tap-targets" rel="noopener noreferrer">web.dev — Accessible tap targets</a></li>
     </ol>
   </div>
 </section>
