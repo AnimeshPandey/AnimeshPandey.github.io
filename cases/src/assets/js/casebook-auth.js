@@ -1,55 +1,20 @@
 /**
  * casebook-auth.js — client-only email sign-in (magic link in URL).
- * Placeholder until a transactional email backend is wired.
+ * Core token logic: casebook-auth-core.js (also unit-tested).
  */
 (function initCasebookAuth() {
   'use strict';
 
-  var AUTH_KEY = 'casebook-auth-v1';
-  var SALT = 'casebook-magic-v1';
-
-  function normalizeEmail(email) {
-    return String(email || '')
-      .trim()
-      .toLowerCase();
+  var core = window.CasebookAuthCore;
+  if (!core) {
+    console.warn('[casebook-auth] CasebookAuthCore missing — load casebook-auth-core.js first');
+    return;
   }
 
-  function hashString(str) {
-    var h = 2166136261;
-    for (var i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return (h >>> 0).toString(36);
-  }
-
-  function makeToken(email) {
-    var norm = normalizeEmail(email);
-    var sig = hashString(SALT + ':' + norm);
-    var payload = norm + ':' + sig;
-    try {
-      return btoa(payload).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    } catch (e) {
-      return '';
-    }
-  }
-
-  function parseToken(token) {
-    if (!token) return null;
-    try {
-      var padded = token.replace(/-/g, '+').replace(/_/g, '/');
-      while (padded.length % 4) padded += '=';
-      var raw = atob(padded);
-      var parts = raw.split(':');
-      if (parts.length < 2) return null;
-      var email = parts.slice(0, -1).join(':');
-      var sig = parts[parts.length - 1];
-      if (hashString(SALT + ':' + email) !== sig) return null;
-      return { email: email };
-    } catch (e) {
-      return null;
-    }
-  }
+  var AUTH_KEY = core.AUTH_KEY;
+  var normalizeEmail = core.normalizeEmail;
+  var makeToken = core.makeToken;
+  var parseToken = core.parseToken;
 
   function loadAuth() {
     try {
@@ -202,5 +167,6 @@
     clear: clearAuth,
     magicLinkFor: magicLinkFor,
     makeToken: makeToken,
+    parseToken: parseToken,
   };
 }());
