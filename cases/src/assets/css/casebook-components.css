@@ -302,6 +302,17 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   .casey-coach__avatar.casey-bounce-once,
   .casey-coach__avatar.casey-tier-fade,
   .casey-hub__img.casey-tier-fade { animation: none; }
+  .casey-hub--enter .casey-hub__avatar-frame,
+  .casey-hub--enter .casey-hub__panel,
+  .casey-hub--entered .casey-hub__avatar-frame,
+  .casey-hub--entered .casey-hub__panel {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .casey-hub::before { display: none; }
+  .casey-hub__avatar-frame { transform: none; transition: none; }
+  .casey-hub__avatar-wrap--wave .casey-hub__avatar-frame { animation: none; }
 }
 
 .casey-coach__bubble {
@@ -404,13 +415,22 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   transition: opacity 0.22s ease;
 }
 
-.casey-avatar-frame.casey-breathing {
+.casey-coach__card .casey-avatar-frame.casey-breathing,
+.casey-coach--dock-bottom .casey-avatar-frame.casey-breathing {
+  animation: casey-breathe var(--casey-breathe-duration, 4s) ease-in-out infinite;
+}
+
+.casey-hub__avatar-frame.casey-breathing .casey-avatar-frame__img {
   animation: casey-breathe var(--casey-breathe-duration, 4s) ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .casey-avatar-frame__img { transition: none; }
-  .casey-avatar-frame.casey-breathing { animation: none; }
+  .casey-coach__card .casey-avatar-frame.casey-breathing,
+  .casey-coach--dock-bottom .casey-avatar-frame.casey-breathing,
+  .casey-hub__avatar-frame.casey-breathing .casey-avatar-frame__img {
+    animation: none;
+  }
 }
 .casey-coach__voice {
   font-family: var(--mono, monospace); font-size: 11px;
@@ -671,10 +691,78 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   background: var(--casebook-surface);
   border: 1px solid var(--casebook-border);
   border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.casey-hub::before {
+  content: '';
+  position: absolute;
+  inset: -40% -20% auto -20%;
+  height: 70%;
+  background: radial-gradient(
+    ellipse 60% 50% at 18% 40%,
+    color-mix(in srgb, var(--casebook-accent) 14%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.casey-hub--entered::before {
+  opacity: 1;
+}
+
+.casey-hub--enter .casey-hub__avatar-frame {
+  opacity: 0;
+  transform: translateY(14px) scale(0.92);
+}
+
+.casey-hub--enter .casey-hub__panel {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.casey-hub--entered .casey-hub__avatar-frame,
+.casey-hub--entered .casey-hub__panel {
+  opacity: 1;
+  transform: translateY(0) translateX(0) scale(1);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.casey-hub--entered .casey-hub__panel {
+  transition-delay: 0.08s;
 }
 
 .casey-hub__avatar-wrap {
   flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.casey-hub__avatar-wrap:focus-visible {
+  box-shadow: 0 0 0 2px var(--casebook-bg, #0a0a0a), 0 0 0 4px var(--casebook-accent);
+}
+
+.casey-hub__avatar-wrap--wave .casey-hub__avatar-frame {
+  animation: casey-hub-wave-pop 0.52s ease;
+}
+
+@keyframes casey-hub-wave-pop {
+  0% { transform: translate(var(--casey-look-x, 0), var(--casey-look-y, 0)) scale(1); }
+  35% { transform: translate(var(--casey-look-x, 0), var(--casey-look-y, 0)) scale(1.06); }
+  100% { transform: translate(var(--casey-look-x, 0), var(--casey-look-y, 0)) scale(1); }
+}
+
+.casey-hub__avatar-frame {
+  transform: translate(var(--casey-look-x, 0), var(--casey-look-y, 0));
+  transition: transform 0.2s ease-out;
+  will-change: transform;
 }
 
 .casey-hub__img {

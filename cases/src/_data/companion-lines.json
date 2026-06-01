@@ -34,6 +34,16 @@
       "junior": "Going deeper — I'll skip some basics.",
       "mid": "Tone updated — hints and voice match your level now.",
       "staff": "Staff mode — trade-offs and production notes ahead."
+    },
+    "clickHi": {
+      "junior": "Hey! Pick a case below — or tap Start flagship when you're ready.",
+      "mid": "Still here when you need a nudge. Filters narrow the grid; flagship is the on-ramp.",
+      "staff": "Wave returned. Jump into a case or the library — I'll stay out of the way."
+    },
+    "actionHover": {
+      "junior": "That one's a good next step — go for it.",
+      "mid": "Solid pick — that link will take you straight in.",
+      "staff": "Efficient routing. Open it when you're ready to ship the pattern."
     }
   },
   "case": {

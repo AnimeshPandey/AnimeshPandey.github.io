@@ -375,7 +375,7 @@
     return out;
   }
 
-  function scheduleBlink(avatars, assetBase, ext, getTier, cards) {
+  function scheduleBlink(avatars, assetBase, ext, getTier, cards, getRestPose) {
     var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prm || !interactionsCfg || !shouldShowCaseyBehavior('rotate')) return;
     var blinkRule = (interactionsCfg.interactions || []).filter(function (r) {
@@ -386,16 +386,25 @@
       return;
     }
     avatars.forEach(function (img) { img.classList.add('casey-breathing'); });
+    function restPose() {
+      if (getRestPose) return getRestPose();
+      return 'idle';
+    }
     function run() {
       var min = blinkRule.intervalMsMin || 4000;
       var max = blinkRule.intervalMsMax || 8000;
       var delay = min + Math.random() * (max - min);
       activeTimers.blink = setTimeout(function () {
         var tier = getTier();
+        var after = restPose();
+        if (!after) {
+          run();
+          return;
+        }
         avatars.forEach(function (img) { img.classList.remove('casey-breathing'); });
         setManyPoses(avatars, assetBase, ext, tier, 'blink', { preload: false });
         activeTimers.blinkEnd = setTimeout(function () {
-          setManyPoses(avatars, assetBase, ext, tier, 'idle', { preload: false });
+          setManyPoses(avatars, assetBase, ext, tier, after, { preload: false });
           avatars.forEach(function (img) { img.classList.add('casey-breathing'); });
           run();
         }, blinkRule.durationMs || 400);
@@ -948,13 +957,162 @@
     var visited;
     try { visited = !!localStorage.getItem(VISITED_KEY); } catch (e) { visited = false; }
     if (avatar) ensureAvatarFrame(avatar);
-    var hubPose = prm ? 'sleep' : (visited ? 'welcome' : 'present');
-    if (getIntensity() === 'off') hubPose = 'idle';
-    if (avatar) {
-      setImgPose(avatar, assetBase, assetExt, currentTier, hubPose, {
-        alt: 'Casey, ' + currentTier + ' developer kitten',
-      });
+    var hubFrame = avatar && avatar.closest('.casey-avatar-frame');
+    var hubPlayEl = hubEl.querySelector('[data-casey-hub-play]');
+    var hubIdleTimer = null;
+    var hubActionHoverTimer = null;
+
+    function hubBasePose() {
+      if (getIntensity() === 'off') return 'idle';
+      if (prm) return 'sleep';
+      return visited ? 'welcome' : 'present';
     }
+
+    function hubMotionAllowed() {
+      return !prm && shouldShowCaseyBehavior('rotate');
+    }
+
+    function setHubBreathing(on) {
+      if (!hubFrame) return;
+      hubFrame.classList.toggle('casey-breathing', !!on);
+    }
+
+    function stopHubIdleLoop() {
+      if (hubIdleTimer) clearTimeout(hubIdleTimer);
+      hubIdleTimer = null;
+    }
+
+    function startHubIdleLoop() {
+      stopHubIdleLoop();
+      if (!hubMotionAllowed() || !avatar || filterActive) return;
+      setHubBreathing(true);
+      function tick() {
+        if (!hubMotionAllowed() || filterActive || document.hidden) {
+          hubIdleTimer = setTimeout(tick, 2500);
+          return;
+        }
+        var roll = Math.random();
+        var pose = null;
+        var hold = 400;
+        if (roll < 0.38) pose = 'blink';
+        else if (roll < 0.58) pose = 'nod';
+        else if (roll < 0.72) pose = 'perk';
+        else if (roll < 0.8) pose = 'curious';
+        if (!pose) {
+          hubIdleTimer = setTimeout(tick, 4000 + Math.random() * 5000);
+          return;
+        }
+        setHubBreathing(false);
+        setImgPose(avatar, assetBase, assetExt, currentTier, pose, { preload: false });
+        hubIdleTimer = setTimeout(function () {
+          setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+          setHubBreathing(true);
+          hubIdleTimer = setTimeout(tick, 4500 + Math.random() * 5500);
+        }, hold);
+      }
+      hubIdleTimer = setTimeout(tick, 3500 + Math.random() * 2000);
+    }
+
+    function playHubEntrance() {
+      hubEl.classList.add('casey-hub--enter');
+      requestAnimationFrame(function () {
+        hubEl.classList.add('casey-hub--entered');
+      });
+      if (!avatar) return;
+      var alt = 'Casey, ' + currentTier + ' developer kitten';
+      if (prm || getIntensity() === 'off') {
+        setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { alt: alt });
+        return;
+      }
+      if (!visited) {
+        setImgPose(avatar, assetBase, assetExt, currentTier, 'present', { alt: alt });
+        setTimeout(function () {
+          setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', { preload: false });
+          setTimeout(function () {
+            setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+            startHubIdleLoop();
+          }, 650);
+        }, 480);
+      } else {
+        setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { alt: alt });
+        startHubIdleLoop();
+      }
+    }
+
+    function bindHubPlay() {
+      if (!hubPlayEl || !avatar) return;
+
+      function waveAtCasey() {
+        if (filterActive || prm || getIntensity() === 'off') return;
+        stopHubIdleLoop();
+        hubPlayEl.classList.add('casey-hub__avatar-wrap--wave');
+        setTimeout(function () { hubPlayEl.classList.remove('casey-hub__avatar-wrap--wave'); }, 520);
+        setHubBreathing(false);
+        setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', { preload: false });
+        var quip = lineAt('hub.clickHi', currentTier);
+        if (quip && shouldShowCaseyBehavior('bubble')) setGreetingText(quip);
+        setTimeout(function () {
+          setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+          startHubIdleLoop();
+        }, 720);
+      }
+
+      hubPlayEl.addEventListener('click', waveAtCasey);
+      hubPlayEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          waveAtCasey();
+        }
+      });
+
+      if (window.matchMedia('(pointer: fine)').matches && hubMotionAllowed()) {
+        hubEl.addEventListener('mousemove', function (e) {
+          if (!hubFrame || filterActive) return;
+          var rect = hubEl.getBoundingClientRect();
+          var x = (e.clientX - rect.left) / rect.width - 0.5;
+          var y = (e.clientY - rect.top) / rect.height - 0.5;
+          hubFrame.style.setProperty('--casey-look-x', (x * 10).toFixed(1) + 'px');
+          hubFrame.style.setProperty('--casey-look-y', (y * -6).toFixed(1) + 'px');
+        });
+        hubEl.addEventListener('mouseleave', function () {
+          if (!hubFrame) return;
+          hubFrame.style.setProperty('--casey-look-x', '0px');
+          hubFrame.style.setProperty('--casey-look-y', '0px');
+        });
+      }
+
+      if (actionsEl) {
+        actionsEl.addEventListener('mouseenter', function (e) {
+          var link = e.target.closest('.casey-hub__action');
+          if (!link || !hubMotionAllowed() || filterActive) return;
+          if (hubActionHoverTimer) clearTimeout(hubActionHoverTimer);
+          setHubBreathing(false);
+          var pose = link.classList.contains('casey-hub__action--primary') ? 'nod' : 'perk';
+          setImgPose(avatar, assetBase, assetExt, currentTier, pose, { preload: false });
+        }, true);
+        actionsEl.addEventListener('mouseleave', function (e) {
+          if (!e.target.closest('.casey-hub__action')) return;
+          if (hubActionHoverTimer) clearTimeout(hubActionHoverTimer);
+          hubActionHoverTimer = setTimeout(function () {
+            setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+            setHubBreathing(true);
+          }, 220);
+        }, true);
+        actionsEl.addEventListener('focusin', function (e) {
+          var link = e.target.closest('.casey-hub__action');
+          if (!link || !hubMotionAllowed() || filterActive) return;
+          setHubBreathing(false);
+          setImgPose(avatar, assetBase, assetExt, currentTier, 'nod', { preload: false });
+        });
+        actionsEl.addEventListener('focusout', function () {
+          hubActionHoverTimer = setTimeout(function () {
+            setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+            setHubBreathing(true);
+          }, 200);
+        });
+      }
+    }
+
     if (getIntensity() === 'off' && greetingEl) {
       greetingEl.textContent = '';
     }
@@ -963,6 +1121,8 @@
     }
     setGreetingText(pickInitialGreeting(currentTier));
     renderHubActions();
+    playHubEntrance();
+    bindHubPlay();
 
     function rotateGreeting() {
       var g = greetings(currentTier);
@@ -999,19 +1159,30 @@
       var newTier = e.detail && e.detail.tone;
       if (!newTier || newTier === currentTier) return;
       currentTier = newTier;
-      if (avatar) setImgPose(avatar, assetBase, assetExt, newTier, visited ? 'welcome' : 'present', { tierFade: true });
+      if (hubFrame) hubFrame.dataset.caseyTier = newTier;
+      stopHubIdleLoop();
+      if (avatar) {
+        setImgPose(avatar, assetBase, assetExt, newTier, hubBasePose(), { tierFade: true });
+      }
       if (tierLabelEl && interactionsCfg && interactionsCfg.tierLabels) {
         tierLabelEl.textContent = interactionsCfg.tierLabels[newTier];
       }
       setGreetingText(lineAt('hub.toneSwitch', newTier) || pickInitialGreeting(newTier));
       hubEl.dataset.caseyTier = newTier;
+      startHubIdleLoop();
     });
 
     document.addEventListener('casey-hub-filter', function (e) {
       var d = e.detail || {};
       filterActive = !!d.track;
-      if (filterActive) stopRotation();
-      else startRotation();
+      if (filterActive) {
+        stopRotation();
+        stopHubIdleLoop();
+        setHubBreathing(false);
+      } else {
+        startRotation();
+        startHubIdleLoop();
+      }
       var sug = suggest({
         surface: 'hub',
         tone: currentTier,
@@ -1039,14 +1210,13 @@
       if (tierLabelEl && cfg && cfg.tierLabels) {
         tierLabelEl.textContent = cfg.tierLabels[currentTier];
       }
-      if (avatar && !prm) {
-        var hubFrame = avatar.closest('.casey-avatar-frame');
-        if (hubFrame) hubFrame.classList.add('casey-breathing');
-        else avatar.classList.add('casey-breathing');
+      if (hubFrame && cfg && cfg.tierMotion) {
+        var motion = cfg.tierMotion[currentTier] || cfg.tierMotion.junior;
+        hubFrame.style.setProperty('--casey-breathe-duration', motion.breatheDurationSec + 's');
       }
     });
 
-    return {};
+    return { stopHubIdle: stopHubIdleLoop, startHubIdle: startHubIdleLoop };
   }
 
   /* ── Surface: library ── */
