@@ -4,6 +4,7 @@ navActive: cases
 title: The Frontend Casebook
 description: Visual case studies for frontend and agent UI engineering. Scroll through the patterns production UIs teach you — with Casey as your guide.
 schemaType: WebSite
+hubStyles: true
 permalink: /index.html
 ---
 
@@ -15,12 +16,27 @@ permalink: /index.html
     <p class="casebook-hub__subtitle">{{ site.tagline }}</p>
     <p class="casebook-hub__stats">
       {{ manifest.stats.total }} cases across 18 tracks ·
-      <a href="{{ '/about/' | url }}">About this project</a>
+      <a href="{{ '/library/' | url }}">{{ libraryEntries | length }} references</a> ·
+      <a href="{{ '/about/' | url }}">About</a>
     </p>
   </header>
 
   {# ── Subscribe CTA ── #}
   {% include 'partials/subscribe-cta.njk' %}
+
+  {# ── Content type nav ── #}
+  <div class="hub-content-type-nav" role="group" aria-label="Content type">
+    <a href="{{ '/index.html' | url }}"
+       class="seg-btn seg-btn--active"
+       aria-current="page">
+      Interactive
+    </a>
+    <a href="{{ '/library/' | url }}"
+       class="seg-btn">
+      Reading library
+      <span class="seg-btn__count" aria-label="{{ libraryEntries | length }} articles">{{ libraryEntries | length }}</span>
+    </a>
+  </div>
 
   {# ── Track filter ── #}
   <div class="casebook-hub__filter">
@@ -39,6 +55,14 @@ permalink: /index.html
           id="hub-filter-count"
           aria-live="polite"
           aria-atomic="true"></span>
+  </div>
+
+  {# ── Upcoming toggle (shown by JS only) ── #}
+  <div id="hub-upcoming-toggle" hidden>
+    <button class="hub-upcoming-btn" id="hub-show-upcoming" aria-expanded="false">
+      Show upcoming cases
+      <span class="hub-upcoming-btn__count" id="hub-upcoming-count"></span>
+    </button>
   </div>
 
   {# ── Case grid ── #}
@@ -71,6 +95,9 @@ permalink: /index.html
                 {% if case.flagship %}
                   <span class="case-card__badge case-card__badge--flagship">★ Flagship</span>
                 {% endif %}
+                {% if case.tier == 'pro' %}
+                  <span class="case-card__badge case-card__badge--pro" title="Pro depth — full access coming soon">🔒 Pro</span>
+                {% endif %}
                 {# "New" badge is injected by JS from data-published-at — no server-side guess #}
                 {% if isScheduled %}
                   <span class="case-card__badge case-card__badge--scheduled">Coming soon</span>
@@ -94,29 +121,66 @@ permalink: /index.html
 
 <script>
 (function () {
-  // ── Track filter ──────────────────────────────────────────────
   var sel = document.getElementById('track-filter');
   var grid = document.getElementById('hub-grid');
   var count = document.getElementById('hub-filter-count');
-  if (sel && grid) {
-    function filter() {
-      var track = sel.value;
-      var items = grid.querySelectorAll('[data-track]');
-      var visible = 0;
-      items.forEach(function (item) {
-        var show = !track || item.dataset.track === track;
-        item.style.display = show ? '' : 'none';
-        if (show) visible++;
-      });
-      count.textContent = track ? visible + ' case' + (visible !== 1 ? 's' : '') : '';
+
+  // ── Hide non-live cards by default; show toggle ───────────────
+  var upcomingToggle = document.getElementById('hub-upcoming-toggle');
+  var showUpcomingBtn = document.getElementById('hub-show-upcoming');
+  var upcomingCountEl = document.getElementById('hub-upcoming-count');
+  var upcomingVisible = false;
+
+  if (grid) {
+    var nonLiveItems = Array.from(grid.querySelectorAll('[data-status]:not([data-status="live"]):not([data-status="scheduled"])'));
+    var scheduledItems = Array.from(grid.querySelectorAll('[data-status="scheduled"]'));
+    var upcomingItems = nonLiveItems.concat(scheduledItems);
+
+    if (upcomingItems.length > 0) {
+      upcomingItems.forEach(function (item) { item.hidden = true; });
+      if (upcomingToggle) {
+        upcomingToggle.hidden = false;
+        if (upcomingCountEl) upcomingCountEl.textContent = '(' + upcomingItems.length + ')';
+      }
+      if (showUpcomingBtn) {
+        showUpcomingBtn.addEventListener('click', function () {
+          upcomingVisible = !upcomingVisible;
+          upcomingItems.forEach(function (item) { item.hidden = !upcomingVisible; });
+          showUpcomingBtn.setAttribute('aria-expanded', String(upcomingVisible));
+          showUpcomingBtn.querySelector('.hub-upcoming-btn__count').textContent =
+            upcomingVisible ? '' : '(' + upcomingItems.length + ')';
+          showUpcomingBtn.firstChild.nodeValue = upcomingVisible
+            ? 'Hide upcoming cases '
+            : 'Show upcoming cases ';
+          // Re-apply track filter
+          if (sel) filter();
+        });
+      }
     }
+  }
+
+  // ── Track filter ──────────────────────────────────────────────
+  function filter() {
+    if (!sel || !grid) return;
+    var track = sel.value;
+    var items = grid.querySelectorAll('[data-track]');
+    var visible = 0;
+    items.forEach(function (item) {
+      var trackMatch = !track || item.dataset.track === track;
+      var statusMatch = item.dataset.status === 'live' || upcomingVisible;
+      var show = trackMatch && statusMatch;
+      item.hidden = !show;
+      if (show) visible++;
+    });
+    count.textContent = track ? visible + ' case' + (visible !== 1 ? 's' : '') : '';
+  }
+
+  if (sel) {
     sel.addEventListener('change', filter);
     filter();
   }
 
   // ── "New" badge — client-side date math ──────────────────────
-  // NEW_BADGE_DAYS from site.json (baked at build time via data-new-days attr on grid,
-  // or fall back to 14). No server-side guessing of "is this new?" needed.
   var newDays = parseInt(grid && grid.dataset.newDays, 10) || 14;
   var cutoff = Date.now() - newDays * 24 * 60 * 60 * 1000;
   var liveItems = document.querySelectorAll('#hub-grid [data-status="live"][data-published-at]');
@@ -128,7 +192,6 @@ permalink: /index.html
       var badge = document.createElement('span');
       badge.className = 'case-card__badge case-card__badge--new';
       badge.textContent = 'New';
-      // Insert after flagship badge if present, else prepend
       var flagship = meta.querySelector('.case-card__badge--flagship');
       if (flagship && flagship.nextSibling) {
         meta.insertBefore(badge, flagship.nextSibling);

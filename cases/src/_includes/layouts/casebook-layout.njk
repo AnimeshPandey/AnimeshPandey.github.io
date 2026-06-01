@@ -24,6 +24,11 @@
   {% set productStylesheet = '/assets/css/casebook.css' | url %}
   {% include 'partials/platform-shell-styles.njk' %}
 
+  {# ── Hub-only styles (hub, library, companies pages) ── #}
+  {% if hubStyles %}
+  <link rel="stylesheet" href="{{ '/assets/css/hub-filters.css' | url }}" />
+  {% endif %}
+
   {# ── RSS alternate ── #}
   <link rel="alternate" type="application/rss+xml"
         title="{{ site.name }} — RSS"
@@ -71,5 +76,6 @@
   <script src="/assets/i18n/i18n.js" defer></script>
   <script src="/assets/platform/display-menu.js" defer></script>
   <script src="{{ '/assets/js/casebook-preferences.js' | url }}" defer></script>
+  <script src="{{ '/assets/js/pro-gate.js' | url }}" defer></script>
 </body>
 </html>

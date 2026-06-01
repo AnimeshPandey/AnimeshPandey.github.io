@@ -1,0 +1,100 @@
+---
+pagination:
+  data: hubFacets.companies
+  size: 1
+  alias: company
+layout: layouts/casebook-layout.njk
+navActive: cases
+noindex: true
+hubStyles: true
+permalink: /companies/{{ company.slug }}/index.html
+---
+
+{% set companyEntries = [] %}
+{% for entry in libraryEntries %}
+  {% if entry.companySlug == company.slug %}
+    {% set companyEntries = (companyEntries.push(entry), companyEntries) %}
+  {% endif %}
+{% endfor %}
+
+<div class="casebook-hub casebook-hub--company-detail">
+
+  <header class="casebook-hub__hero">
+    <p class="casebook-hub__breadcrumb">
+      <a href="{{ '/companies/' | url }}">Companies</a> /
+    </p>
+    <h1 class="casebook-hub__title">{{ company.name }}</h1>
+    <p class="casebook-hub__subtitle">
+      {{ companyEntries | length }} article{{ 's' if companyEntries | length != 1 else '' }} in the reading library
+    </p>
+  </header>
+
+  {# ── Sort control ── #}
+  <div class="hub-filter-bar hub-filter-bar--company">
+    <div class="hub-filter-bar__row hub-filter-bar__row--selects">
+      <select id="company-sort" class="hub-select" aria-label="Sort by">
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="title-az">Title A–Z</option>
+      </select>
+    </div>
+    <div class="hub-active-filters">
+      <span class="hub-result-count">
+        <strong id="company-result-count">{{ companyEntries | length }}</strong> articles
+      </span>
+    </div>
+  </div>
+
+  {# ── Article list ── #}
+  {% if companyEntries | length > 0 %}
+    <ul class="casebook-hub__grid casebook-hub__grid--library company-articles" id="company-grid" role="list">
+      {% for entry in companyEntries | sort(true, false, "publishedYear") %}
+        <li class="library-grid__item"
+            data-year="{{ entry.publishedYear }}"
+            data-title="{{ entry.title | lower }}"
+            data-idx="{{ loop.index0 }}">
+          {% include "partials/reading-card.njk" %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="hub-empty__text">No articles from {{ company.name }} in the reading library yet.</p>
+  {% endif %}
+
+  {# ── Back nav ── #}
+  <nav class="company-back-nav" aria-label="Navigation">
+    <a href="{{ '/companies/' | url }}" class="btn btn--ghost">← All companies</a>
+    <a href="{{ '/library/' | url }}" class="btn btn--ghost">Reading library</a>
+  </nav>
+
+  {# ── Attribution ── #}
+  <footer class="library-attribution">
+    <p>
+      Reading list sourced from
+      <a href="https://github.com/andrew--r/frontend-case-studies" rel="noopener noreferrer">
+        Frontend Case Studies
+      </a> by Andrew Romanov
+      (<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>).
+    </p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var sel = document.getElementById('company-sort');
+  var grid = document.getElementById('company-grid');
+  if (!sel || !grid) return;
+
+  sel.addEventListener('change', function () {
+    var items = Array.from(grid.querySelectorAll('.library-grid__item'));
+    items.sort(function (a, b) {
+      if (sel.value === 'newest') return (b.dataset.year || 0) - (a.dataset.year || 0);
+      if (sel.value === 'oldest') return (a.dataset.year || 0) - (b.dataset.year || 0);
+      if (sel.value === 'title-az') return (a.dataset.title || '').localeCompare(b.dataset.title || '');
+      return 0;
+    });
+    items.forEach(function (item) { grid.appendChild(item); });
+  });
+}());
+</script>

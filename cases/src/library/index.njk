@@ -1,0 +1,209 @@
+---
+layout: layouts/casebook-layout.njk
+navActive: cases
+title: Reading Library — The Frontend Casebook
+description: Browse 900+ engineering articles from top frontend teams. Sourced from the Frontend Case Studies index.
+noindex: true
+hubStyles: true
+permalink: /library/index.html
+---
+
+<div class="casebook-hub casebook-hub--library" id="library-page">
+
+  {# ── Hero ── #}
+  <header class="casebook-hub__hero">
+    <h1 class="casebook-hub__title">Reading Library</h1>
+    <p class="casebook-hub__subtitle">
+      {{ libraryEntries | length }} articles from the web's best engineering blogs.
+      <a href="{{ '/index.html' | url }}">← Interactive cases</a>
+    </p>
+  </header>
+
+  {# ── Filter bar ── #}
+  <div class="hub-filter-bar hub-filter-bar--library" role="search" aria-label="Filter reading library">
+
+    {# Mobile toggle #}
+    <button class="hub-filter-toggle" aria-expanded="false" aria-controls="library-filter-sheet" id="library-filter-toggle">
+      Filters
+      <span class="hub-filter-badge" id="library-filter-badge" hidden aria-label="active filters">0</span>
+    </button>
+
+    {# Desktop primary row #}
+    <div class="hub-filter-bar__primary" id="library-filter-primary">
+
+      <div class="hub-filter-bar__row">
+        {# Category chips #}
+        <div class="chip-group" role="group" aria-label="Filter by category" id="lib-category-chips">
+          <button class="chip chip--active" data-filter="category" data-value="" aria-pressed="true">All topics</button>
+          {% for cat in hubFacets.categories %}
+            {% if cat.count > 0 %}
+              <button class="chip" data-filter="category" data-value="{{ cat.id }}" aria-pressed="false">
+                {{ cat.label }}
+                <span class="chip__count" aria-hidden="true">{{ cat.count }}</span>
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="hub-filter-bar__row hub-filter-bar__row--selects">
+        {# Company combobox #}
+        <div class="combobox-wrapper" role="group" aria-label="Filter by company">
+          <label for="lib-company-input" class="visually-hidden">Company</label>
+          <input type="text"
+                 id="lib-company-input"
+                 class="combobox-input"
+                 role="combobox"
+                 autocomplete="off"
+                 aria-autocomplete="list"
+                 aria-expanded="false"
+                 aria-controls="lib-company-listbox"
+                 aria-haspopup="listbox"
+                 placeholder="Company…"
+                 data-filter="company">
+          <ul id="lib-company-listbox"
+              class="combobox-listbox"
+              role="listbox"
+              aria-label="Companies"
+              hidden></ul>
+        </div>
+
+        {# Year select #}
+        <select id="lib-year-select" class="hub-select" data-filter="year" aria-label="Year">
+          <option value="">All years</option>
+          {% for year in hubFacets.years %}
+            <option value="{{ year }}">{{ year }}</option>
+          {% endfor %}
+        </select>
+
+        {# Sort select #}
+        <select id="lib-sort-select" class="hub-select" data-filter="sort" aria-label="Sort by">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="title-az">Title A–Z</option>
+          <option value="company">Company</option>
+        </select>
+      </div>
+    </div>
+
+    {# Active filter pills + result count #}
+    <div class="hub-active-filters" aria-live="polite" aria-atomic="true" id="lib-active-filters">
+      <span class="hub-result-count">
+        Showing <strong id="lib-result-count">{{ libraryEntries | length }}</strong>
+        of {{ libraryEntries | length }} articles
+      </span>
+      <div id="lib-filter-pills" class="hub-filter-pills"></div>
+      <button class="hub-clear-all" id="lib-clear-all" hidden>Clear all</button>
+    </div>
+  </div>
+
+  {# Mobile filter sheet #}
+  <div id="library-filter-sheet"
+       class="filter-sheet"
+       role="dialog"
+       aria-modal="true"
+       aria-label="Filters"
+       hidden>
+    <div class="filter-sheet__header">
+      <h2 class="filter-sheet__title">Filters</h2>
+      <button class="filter-sheet__close" aria-label="Close filters" id="lib-sheet-close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="filter-sheet__body">
+      {# Sheet controls injected by hub-filters.js from desktop controls #}
+    </div>
+    <footer class="filter-sheet__footer">
+      <button class="filter-sheet__clear" id="lib-sheet-clear">Clear</button>
+      <button class="filter-sheet__apply btn btn--primary" id="lib-sheet-apply">Apply</button>
+    </footer>
+  </div>
+
+  {# ── Card grid ── #}
+  <div id="library-grid-wrapper">
+    <ul class="casebook-hub__grid casebook-hub__grid--library" id="library-grid" role="list" aria-label="Reading library articles">
+      {% for entry in libraryEntries %}
+        <li class="library-grid__item"
+            data-locale="{{ entry.locale }}"
+            data-company="{{ entry.companySlug }}"
+            data-year="{{ entry.publishedYear }}"
+            data-category="{{ entry.categories | join(',') }}"
+            data-track="{{ entry.track }}"
+            data-title="{{ entry.title | lower }}"
+            data-idx="{{ loop.index0 }}">
+          {% include "partials/reading-card.njk" %}
+        </li>
+      {% endfor %}
+    </ul>
+
+    {# Zero result state #}
+    <div class="hub-empty" id="lib-empty" role="status" hidden>
+      <p>No articles match your filters.</p>
+      <button onclick="LibraryFilters.clearAll()" class="btn btn--ghost">Clear filters</button>
+    </div>
+
+    {# Pagination #}
+    <nav class="lib-pagination" id="lib-pagination" aria-label="Page navigation" hidden>
+      <button class="lib-pagination__btn" id="lib-prev" aria-label="Previous page" disabled>← Prev</button>
+      <span class="lib-pagination__info" id="lib-page-info" aria-live="polite"></span>
+      <button class="lib-pagination__btn" id="lib-next" aria-label="Next page">Next →</button>
+    </nav>
+  </div>
+
+  {# ── Attribution ── #}
+  <footer class="library-attribution">
+    <p>
+      Reading list sourced from
+      <a href="https://github.com/andrew--r/frontend-case-studies" rel="noopener noreferrer">
+        Frontend Case Studies
+      </a> by Andrew Romanov
+      (<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>).
+      The Frontend Casebook adds interactive cases and does not republish article content.
+    </p>
+  </footer>
+
+</div>
+
+{# Inline company data for JS combobox — serialized at build time #}
+<script id="hub-companies-data" type="application/json">
+{{ hubFacets.companies | dump | safe }}
+</script>
+
+{# Library entries for client-side filter — serialized at build time #}
+<script id="library-entries-data" type="application/json">
+{{ libraryEntries | dump | safe }}
+</script>
+
+<script src="{{ '/assets/js/hub-filters.js' | url }}" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof LibraryFilters !== 'undefined') {
+    LibraryFilters.init({
+      gridId: 'library-grid',
+      countId: 'lib-result-count',
+      emptyId: 'lib-empty',
+      paginationId: 'lib-pagination',
+      prevId: 'lib-prev',
+      nextId: 'lib-next',
+      pageInfoId: 'lib-page-info',
+      clearAllId: 'lib-clear-all',
+      filterPillsId: 'lib-filter-pills',
+      activeBadgeId: 'library-filter-badge',
+      toggleId: 'library-filter-toggle',
+      sheetId: 'library-filter-sheet',
+      sheetCloseId: 'lib-sheet-close',
+      sheetClearId: 'lib-sheet-clear',
+      sheetApplyId: 'lib-sheet-apply',
+      categoryChipsId: 'lib-category-chips',
+      companyInputId: 'lib-company-input',
+      companyListboxId: 'lib-company-listbox',
+      yearSelectId: 'lib-year-select',
+      localeSelectId: 'lib-locale-select',
+      sortSelectId: 'lib-sort-select',
+      pageSize: 50,
+    });
+  }
+});
+</script>

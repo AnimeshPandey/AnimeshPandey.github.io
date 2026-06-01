@@ -22,5 +22,13 @@
     "cadenceDaysMax": 10,
     "newBadgeDays": 14,
     "requireConfirm": true
+  },
+  "payments": {
+    "enabled": false,
+    "monthlyUrl": "",
+    "lifetimeUrl": "",
+    "waitlistUrl": "https://buttondown.com/animesh",
+    "monthlyPrice": "$1/mo",
+    "lifetimePrice": "$10"
   }
 }

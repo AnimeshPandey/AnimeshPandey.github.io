@@ -1,0 +1,33 @@
+{#
+  pro-preview-banner.njk — sticky banner shown on Pro case pages for non-Pro users.
+  Hidden by default; pro-gate.js shows it when gate is locked.
+  Context: case (from manifest), site.payments
+#}
+<div class="pro-preview-banner" role="complementary" aria-label="Pro preview" hidden>
+  <div class="pro-preview-banner__inner">
+    <span class="pro-preview-banner__label">
+      🔒 Pro preview — reading chapter 1 of {{ case.chapters | length }}
+    </span>
+    {% if site.payments.enabled %}
+      <a href="{{ site.payments.monthlyUrl }}"
+         class="btn btn--primary pro-preview-banner__btn"
+         target="_blank"
+         rel="noopener noreferrer"
+         data-pro-unlock
+         data-payments-enabled="true"
+         data-pro-url="{{ site.payments.monthlyUrl }}">
+        Unlock — {{ site.payments.monthlyPrice }}
+      </a>
+    {% else %}
+      <a href="{{ site.payments.waitlistUrl }}"
+         class="btn btn--primary pro-preview-banner__btn"
+         target="_blank"
+         rel="noopener noreferrer"
+         data-pro-unlock
+         data-payments-enabled="false"
+         data-waitlist-url="{{ site.payments.waitlistUrl }}">
+        Pro soon — join waitlist
+      </a>
+    {% endif %}
+  </div>
+</div>
