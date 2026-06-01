@@ -13,9 +13,9 @@
     "url": "https://anmshpndy.com/"
   },
   "newsletter": {
-    "enabled": false,
-    "username": "",
-    "subscribeUrl": ""
+    "enabled": true,
+    "username": "animesh",
+    "subscribeUrl": "https://buttondown.com/animesh"
   },
   "publishing": {
     "cadenceDaysMin": 7,
