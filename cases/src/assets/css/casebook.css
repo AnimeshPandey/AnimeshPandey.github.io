@@ -5,6 +5,8 @@
      /cases/assets/css/casebook.css  ← this file
 
    Do NOT add a bundler. Use @import for browser-native cascade.
+   hub-filters.css is loaded as a separate <link> only on hub/library routes
+   (set hubStyles: true in front matter) to avoid a 24KB payload on case pages.
 ──────────────────────────────────────────────────────────────────────────── */
 
 @import url('./casebook-tokens.css');

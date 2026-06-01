@@ -2,6 +2,9 @@ const path = require('path');
 const nunjucks = require('nunjucks');
 const site = require('./src/_data/site.json');
 const manifest = require('./src/_data/manifest.json');
+const libraryEntries = require('./src/_data/library-entries.json');
+const hubFacets = require('./src/_data/hub-facets.json');
+const hubIndex = require('./src/_data/hub-index.json');
 
 module.exports = function (eleventyConfig) {
   const nunjucksEnvironment = nunjucks.configure(
@@ -21,6 +24,11 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/assets');
   eleventyConfig.addPassthroughCopy({ 'src/cases/**/images': 'cases' });
   eleventyConfig.addPassthroughCopy('src/cases/**/casey.json');
+
+  /* ── Global data ── */
+  eleventyConfig.addGlobalData('libraryEntries', libraryEntries);
+  eleventyConfig.addGlobalData('hubFacets', hubFacets);
+  eleventyConfig.addGlobalData('hubIndex', hubIndex);
 
   /* ── Collections ── */
   eleventyConfig.addCollection('liveCases', () =>

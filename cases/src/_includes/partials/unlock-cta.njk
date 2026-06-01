@@ -1,0 +1,52 @@
+{#
+  unlock-cta.njk — Pro upgrade CTA.
+  Context: site.payments (from site.json)
+  Renders either a waitlist button (Phase A) or checkout links (Phase B).
+#}
+<aside class="unlock-cta" aria-label="Unlock Pro access">
+  <div class="unlock-cta__inner">
+    <div class="unlock-cta__copy">
+      <p class="unlock-cta__headline">
+        🔒 This case is part of <strong>Pro depth</strong>
+      </p>
+      <p class="unlock-cta__sub">
+        Go beyond the preview — full walkthrough, interactive demo, and staff-level annotations.
+        {% if not site.payments.enabled %}
+          Pro tier launching soon · {{ site.payments.monthlyPrice }} per month or {{ site.payments.lifetimePrice }} lifetime.
+        {% else %}
+          {{ site.payments.monthlyPrice }} per month · {{ site.payments.lifetimePrice }} lifetime.
+        {% endif %}
+      </p>
+    </div>
+    <div class="unlock-cta__actions">
+      {% if site.payments.enabled %}
+        <a href="{{ site.payments.monthlyUrl }}"
+           class="btn btn--primary unlock-cta__btn"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-pro-unlock
+           data-payments-enabled="true"
+           data-pro-url="{{ site.payments.monthlyUrl }}">
+          Unlock Pro — {{ site.payments.monthlyPrice }}
+        </a>
+        <a href="{{ site.payments.lifetimeUrl }}"
+           class="unlock-cta__lifetime"
+           target="_blank"
+           rel="noopener noreferrer">
+          or {{ site.payments.lifetimePrice }} lifetime
+        </a>
+      {% else %}
+        <a href="{{ site.payments.waitlistUrl }}"
+           class="btn btn--primary unlock-cta__btn"
+           target="_blank"
+           rel="noopener noreferrer"
+           data-pro-unlock
+           data-payments-enabled="false"
+           data-waitlist-url="{{ site.payments.waitlistUrl }}">
+          Join waitlist — be first to know
+        </a>
+        <p class="unlock-cta__note">Pro tier launching soon. Free cases stay free forever.</p>
+      {% endif %}
+    </div>
+  </div>
+</aside>

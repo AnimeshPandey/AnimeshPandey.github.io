@@ -1,0 +1,58 @@
+{#
+  reading-card.njk — reading-room entry card
+  Context: entry (from library-entries.json)
+#}
+<article class="reading-card"
+         data-locale="{{ entry.locale }}"
+         data-company="{{ entry.companySlug }}"
+         data-year="{{ entry.publishedYear }}"
+         {% for cat in entry.categories %}data-cat-{{ cat }}="true" {% endfor %}
+         data-track="{{ entry.track }}"
+         data-priority="{{ entry.priority }}">
+
+  <header class="reading-card__header">
+    {% if entry.company %}
+      <span class="reading-card__company-chip">{{ entry.company }}</span>
+    {% endif %}
+    {% if entry.publishedYear %}
+      <span class="reading-card__year-chip">{{ entry.publishedYear }}</span>
+    {% endif %}
+    {% for cat in entry.categories %}
+      <span class="reading-card__cat-chip reading-card__cat-chip--{{ cat }}">{{ cat | replace("-", " ") }}</span>
+    {% endfor %}
+  </header>
+
+  <h3 class="reading-card__title">
+    <a href="{{ entry.primaryUrl }}"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="reading-card__link">
+      {{ entry.title }}
+      <svg class="reading-card__external-icon" aria-hidden="true" focusable="false"
+           width="12" height="12" viewBox="0 0 12 12" fill="none"
+           xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 2L2 10M10 2H6M10 2V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </h3>
+
+  {% if entry.mapsToSlug %}
+    <p class="reading-card__ours reading-card__ours--linked">
+      <a href="{{ ('/' ~ entry.mapsToSlug ~ '/') | url }}">Casebook version available →</a>
+    </p>
+  {% else %}
+    <p class="reading-card__ours reading-card__ours--coming">Our take coming</p>
+  {% endif %}
+
+  {% if entry.frontendcsUrl %}
+    <footer class="reading-card__footer">
+      <a href="{{ entry.frontendcsUrl }}"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="reading-card__fcs-link">
+        frontendcs.com →
+      </a>
+    </footer>
+  {% endif %}
+
+</article>
