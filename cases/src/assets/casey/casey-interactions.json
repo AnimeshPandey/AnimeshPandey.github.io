@@ -2,7 +2,7 @@
   "version": 1,
   "assetBase": "/cases/assets/casey",
   "tiers": ["junior", "mid", "staff"],
-  "poses": ["idle", "blink", "perk", "point", "think", "celebrate", "sleep", "wave", "welcome", "proud", "support", "read", "present"],
+  "poses": ["idle", "blink", "perk", "point", "think", "celebrate", "sleep", "wave", "welcome", "proud", "support", "read", "present", "curious", "nod", "focus"],
   "voiceProfiles": {
     "junior": { "rate": 1.02, "pitch": 1.08 },
     "mid": { "rate": 0.96, "pitch": 1.0 },
@@ -102,8 +102,7 @@
     {
       "id": "demo-idle",
       "trigger": "demo-idle-30s",
-      "pose": "think",
-      "aliasPose": "curious"
+      "pose": "curious"
     },
     {
       "id": "demo-broken",

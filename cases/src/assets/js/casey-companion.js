@@ -10,9 +10,6 @@
   var VISITED_KEY = 'casebook-visited';
 
   var POSE_ALIAS = {
-    curious: 'think',
-    nod: 'perk',
-    focus: 'point',
     'think-deep': 'think',
     'hi-five': 'celebrate',
   };
@@ -247,7 +244,7 @@
       } else if (typeof ctx.filterCount === 'number' && ctx.filterCount > 0 && ctx.track) {
         var nLabel = ctx.filterCount === 1 ? '' : 's';
         out.line = lineAt('hub.filterMatch', tone, { n: ctx.filterCount, nLabel: nLabel });
-        out.pose = 'perk';
+        out.pose = 'nod';
       }
       return out;
     }
@@ -463,7 +460,7 @@
           if (currentChapter !== 'demo') return;
           var idle = suggest({ surface: 'case', moment: 'demoIdle', tone: currentTone });
           if (idle.line) setBubble(idle.line, true);
-          setPose('think');
+          setPose('curious');
         }, 30000);
       }
 

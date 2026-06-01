@@ -11,6 +11,10 @@
   {% if flagshipCase %}data-flagship-slug="{{ flagshipCase.slug }}"{% endif %}>
 
   <div class="casey-hub__avatar-wrap">
+    <div class="casey-lottie-host casey-lottie-host--hub"
+         data-casey-lottie-tier="junior"
+         hidden
+         aria-hidden="true"></div>
     <picture>
       <source type="image/webp"
               srcset="{{ '/assets/casey/hub/casey-companion-hero.webp' | url }} 1x,
@@ -21,7 +25,8 @@
            width="160" height="160"
            loading="eager"
            fetchpriority="high"
-           data-casey-hub-avatar="true" />
+           data-casey-hub-avatar="true"
+           data-casey-lottie-fallback="true" />
     </picture>
   </div>
 

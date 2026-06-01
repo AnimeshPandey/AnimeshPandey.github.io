@@ -9,6 +9,7 @@ PREVIEW="$CASEY/style-anchor/preview-ai"
 
 CORE_POSES=(idle blink perk point think celebrate sleep wave)
 GUIDE_POSES=(welcome proud support read present)
+COMPANION_POSES=(curious nod focus)
 TIERS=(junior mid staff)
 
 guide_alias() {
@@ -74,5 +75,19 @@ done
 
 mid_think="$CASEY/mid/think.png"
 [[ -f "$mid_think" ]] && install_one "$mid_think" "$CASEY/hub/casey-empty.png"
+
+echo "Companion poses (curious, nod, focus)…"
+for tier in "${TIERS[@]}"; do
+  for pose in "${COMPANION_POSES[@]}"; do
+    gen="$SRC/casey-${tier}-${pose}.png"
+    dest="$CASEY/$tier/${pose}.png"
+    if [[ -f "$gen" ]]; then
+      install_one "$gen" "$dest"
+    fi
+  done
+done
+python3 "$ROOT/scripts/casey-images.py" poses
+python3 "$ROOT/scripts/casey-images.py" webp
+python3 "$ROOT/scripts/casey-images.py" lottie
 
 echo "Done."
