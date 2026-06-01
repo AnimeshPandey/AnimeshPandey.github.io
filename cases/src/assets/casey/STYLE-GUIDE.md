@@ -8,7 +8,7 @@
 
 - Clean vector mascot: **thick dark outlines**, flat/soft cel fills, premium-cute (Notion/Linear editorial — not stock clipart).
 - **viewBox:** `0 0 100 100` for all pose SVGs; character ~65% of frame; 8px padding.
-- **Runtime assets:** raster PNG (512px max edge) per pose; legacy SVG kept for reference/regen.
+- **Runtime assets:** raster PNG (512px max edge) per pose, **RGBA with true transparency** (run `scripts/fix-casey-transparency.py` after AI export or `install-casey-pngs.sh`).
 - **Regen:** AI anchors in `style-anchor/preview-ai/` → pose batch → `scripts/install-casey-pngs.sh`.
 
 ## Tier proportions
