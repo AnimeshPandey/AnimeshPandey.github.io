@@ -39,6 +39,10 @@
   <meta name="robots" content="index, follow" />
 {% endif %}
 
+{% if site.googleVerification %}
+<meta name="google-site-verification" content="{{ site.googleVerification }}" />
+{% endif %}
+
 {# ── JSON-LD ── #}
 {% if schemaType == 'WebSite' %}
 <script type="application/ld+json">
