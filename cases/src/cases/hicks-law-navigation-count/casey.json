@@ -12,6 +12,18 @@
       "junior": "Try finding 'Account Settings' in both navs. The long nav takes measurably more time even though the target is in the same position. Your brain has to scan and reject every other option first.",
       "mid": "The demo measures time-to-click. Notice that even when you 'know' where the target is, the presence of more options still adds latency — the visual scan is not optional.",
       "staff": "Grouping nav items into categories (like a mega-menu) reduces effective n for Hick's Law from total items to items per group. But this only works when the categorization matches the user's mental model."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Today we're covering Hick's Law — why adding more nav items actually makes navigation slower, not faster.",
         "mid": "This case covers the RT = b·log2(n+1) formula, how it applies to navigation design, and when grouping overrides the raw item count.",
         "staff": "We're covering Hick's Law, its interaction with Miller's 7±2, mega-menu grouping as a cognitive hack, and empirical nav audit methods."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try finding 'Account Settings' in both navs. The long nav takes measurably more time even though the target is in the same position. Your brain has to scan and reject every other option first.",
+        "mid": "The demo measures time-to-click. Notice that even when you 'know' where the target is, the presence of more options still adds latency — the visual scan is not optional.",
+        "staff": "Grouping nav items into categories (like a mega-menu) reduces effective n for Hick's Law from total items to items per group. But this only works when the categorization matches the user's mental model."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for hicks-law-navigation-count.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \"Miller's Rule: Chunking Long Forms\"",
+          "href": "/cases/miller-chunking-forms/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

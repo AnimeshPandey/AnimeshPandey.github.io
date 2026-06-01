@@ -1,5 +1,6 @@
 ---
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Ghost Updates and Race Conditions
@@ -17,6 +18,8 @@ relatedCases:
     title: "The Event Loop: One Thread, Many Queues"
   - slug: fetch-race-abort
     title: "fetch + AbortController: Cancel Ghost Requests"
+---
+ogImage: https://anmshpndy.com/brand/cases/abort-controller-ghost-updates-og.png
 ---
 ogImage: https://anmshpndy.com/brand/cases/abort-controller-ghost-updates-og.png
 ---
@@ -335,6 +338,7 @@ await fetch('/api/upload', { signal });</code></pre>
   </div>
 </section>
 
+{# ── Chapter: References ── #}
 {# ── Chapter: References ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">

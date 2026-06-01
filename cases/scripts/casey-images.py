@@ -31,9 +31,12 @@ def ensure_rgba(img: Image.Image) -> Image.Image:
     return img
 
 
-def derive_pose(tier: str, pose: str, source_pose: str) -> None:
+def derive_pose(tier: str, pose: str, source_pose: str, *, force: bool = False) -> None:
     src = CASEY / tier / f"{source_pose}.png"
     dest = CASEY / tier / f"{pose}.png"
+    if dest.is_file() and not force:
+        print(f"  SKIP derive (exists): {dest.relative_to(ROOT)}")
+        return
     if not src.is_file():
         print(f"SKIP derive {tier}/{pose}: missing {source_pose}")
         return
@@ -276,10 +279,11 @@ def main() -> None:
 
     cmd = sys.argv[1] if len(sys.argv) > 1 else "all"
     if cmd in ("all", "poses"):
+        force = "--force" in sys.argv
         print("Companion poses (curious, nod, focus)…")
         for tier in TIERS:
             for pose, src in COMPANION_POSES.items():
-                derive_pose(tier, pose, src)
+                derive_pose(tier, pose, src, force=force)
     if cmd in ("all", "webp"):
         print("Hub WebP hero…")
         write_webp_hero()

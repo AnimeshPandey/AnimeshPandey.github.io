@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "@media (prefers-reduced-motion)"
@@ -16,6 +17,8 @@ relatedCases:
     title: "Respecting prefers-reduced-motion"
   - slug: focus-visible-not-outline-none
     title: ":focus-visible, Not outline: none"
+---
+ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -86,6 +89,14 @@ relatedCases:
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: motion without guard vs motion safe</h2>
   <div class="tone-junior"><p>"No guard" shows a slide animation that runs regardless of your OS motion setting. "Motion safe" wraps the animation in a no-preference query — if your OS has Reduce Motion on, no animation plays. Toggle your OS setting (System Preferences → Accessibility → Motion) to see the difference.</p></div>
@@ -111,24 +122,25 @@ relatedCases:
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" rel="noopener noreferrer">MDN — prefers-reduced-motion</a></li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html" rel="noopener noreferrer">WCAG 2.2 — Animation</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://web.dev/articles/prefers-reduced-motion" rel="noopener noreferrer">web.dev — Reduced motion</a></li>
+      <li><a href="https://www.framer.com/motion/guide-accessibility/" rel="noopener noreferrer">Motion — Accessibility</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://www.w3.org/TR/WCAG22/#reduced-motion" rel="noopener noreferrer">WCAG 2.2 — Reduced motion (normative)</a></li>
+      <li><a href="https://css-tricks.com/revisiting-prefers-reduced-motion/" rel="noopener noreferrer">CSS-Tricks — prefers-reduced-motion</a></li>
     </ol>
   </div>
 </section>

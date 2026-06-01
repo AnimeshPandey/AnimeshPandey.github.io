@@ -12,6 +12,18 @@
       "junior": "Try typing in both inputs. The slow input has a 600ms response delay — notice how it feels sluggish and unresponsive. The fast input responds in under 100ms. The difference in 'feel' is enormous even though both inputs accept your keystrokes.",
       "mid": "The demo measures perceived responsiveness through a self-report scale after a 20-keystroke typing session. The 600ms input scores 3–4/10; the sub-100ms input scores 8–9/10. The task completion time is within 5% of each other.",
       "staff": "Optimistic updates bypass the Doherty Threshold by applying state changes immediately (before server confirmation) and rolling back on failure. This is the correct pattern for most form submissions and toggle interactions — fail rate is low, and the UX benefit is enormous."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "This case is about the Doherty Threshold — the magic 400ms line where your app either keeps users in flow or kicks them out of it.",
         "mid": "We're covering the three latency perception tiers, the Doherty Threshold research, debounce timing, and optimistic update patterns.",
         "staff": "We're covering Doherty 1982, the 100ms / 400ms / 1000ms tiers from Nielsen, optimistic updates as a Doherty bypass, and IME composition event handling."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try typing in both inputs. The slow input has a 600ms response delay — notice how it feels sluggish and unresponsive. The fast input responds in under 100ms. The difference in 'feel' is enormous even though both inputs accept your keystrokes.",
+        "mid": "The demo measures perceived responsiveness through a self-report scale after a 20-keystroke typing session. The 600ms input scores 3–4/10; the sub-100ms input scores 8–9/10. The task completion time is within 5% of each other.",
+        "staff": "Optimistic updates bypass the Doherty Threshold by applying state changes immediately (before server confirmation) and rolling back on failure. This is the correct pattern for most form submissions and toggle interactions — fail rate is low, and the UX benefit is enormous."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for doherty-threshold-input-latency.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: Fake Progress Bars and Trust",
+          "href": "/cases/fake-loading-progress/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: Fake Progress Bars and Trust",
+          "href": "/cases/fake-loading-progress/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: Fake Progress Bars and Trust",
+          "href": "/cases/fake-loading-progress/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

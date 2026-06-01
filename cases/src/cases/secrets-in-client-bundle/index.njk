@@ -1,4 +1,5 @@
 ---
+---
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Secrets in the Client Bundle (Never)"
@@ -16,6 +17,8 @@ relatedCases:
     title: "Static Site, Zero Backend (L0)"
   - slug: url-as-source-of-truth
     title: URL as Source of Truth for Filters
+---
+ogImage: https://anmshpndy.com/brand/cases/secrets-in-client-bundle-og.png
 ---
 
 {# ── Chapter: Hook ── #}
@@ -67,6 +70,14 @@ fetch('/api/weather') // → your server → weather API with key</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: UI Strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    {% include 'partials/case-illustration.njk' %}
+  </div>
+</section>
+
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: exposed vs proxied key</h2>
   <div class="tone-junior"><p>Open DevTools → Sources → search for "KEY" in the "Broken" bundle. You'll find the fake key in plain text. The "Fixed" version makes the same API call through a proxy — no key in the bundle.</p></div>
@@ -92,24 +103,25 @@ fetch('/api/weather') // → your server → weather API with key</code></pre>
 {# ── Chapter: Takeaway ── #}
 
 {# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li>MDN Web Docs — relevant API guides.</li>
-      <li>web.dev — Learn section.</li>
+      <li><a href="https://owasp.org/www-project-top-ten/" rel="noopener noreferrer">OWASP Top 10</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security" rel="noopener noreferrer">MDN — Web security</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li>MDN — detailed reference.</li>
-      <li>W3C / WHATWG specs where applicable.</li>
+      <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html" rel="noopener noreferrer">OWASP — HTML5 security</a></li>
+      <li><a href="https://webpack.js.org/guides/production/" rel="noopener noreferrer">webpack — Production</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Primary spec or RFC.</li>
-      <li>web.dev — performance and best practices.</li>
+      <li><a href="https://owasp.org/www-project-api-security/" rel="noopener noreferrer">OWASP API Security Top 10</a></li>
+      <li><a href="https://web.dev/articles/secure-app-with-audits" rel="noopener noreferrer">web.dev — Security audits</a></li>
     </ol>
   </div>
 </section>

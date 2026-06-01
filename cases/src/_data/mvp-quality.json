@@ -155,6 +155,69 @@
       "max": 7,
       "mvpLaunch": true,
       "notes": "references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "skeleton-vs-spinner-choice",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "secrets-in-client-bundle",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "paste-error-without-learning",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "motion-safe-fallback",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "micro-frontend-boundary-drift",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "mcp-host-client-server",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "horizontal-scroll-one-pixel",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "hicks-law-navigation-count",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
+    },
+    {
+      "slug": "doherty-threshold-input-latency",
+      "score": 7,
+      "max": 7,
+      "mvpLaunch": false,
+      "notes": "post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage"
     }
   ]
 }

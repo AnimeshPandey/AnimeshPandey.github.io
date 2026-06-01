@@ -12,6 +12,18 @@
       "junior": "The broken demo has a fake API key in the bundle. Search for 'KEY' in DevTools Sources — you'll find it. The fixed version makes the same call through /api/proxy.",
       "mid": "Check the Network tab request URLs. Broken: key is a URL parameter (visible in logs, proxies, CDNs). Fixed: URL is /api/proxy, key is on the server.",
       "staff": "Run strings on the production bundle to verify no key leaked. This is a good addition to your deployment CI checklist."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
@@ -30,6 +42,24 @@
         "junior": "Hey! Today we're fixing a security mistake that costs real money: putting API keys in frontend JavaScript where anyone can read them.",
         "mid": "This case covers the secrets-in-bundle vulnerability — why client-side JavaScript is public, the proxy pattern, and serverless functions as a lightweight fix.",
         "staff": "We're covering OWASP A02 cryptographic failures, the full secret management lifecycle (rotation, CI scanning, rate limiting), and framework-specific patterns for keeping secrets server-side."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "The broken demo has a fake API key in the bundle. Search for 'KEY' in DevTools Sources — you'll find it. The fixed version makes the same call through /api/proxy.",
+        "mid": "Check the Network tab request URLs. Broken: key is a URL parameter (visible in logs, proxies, CDNs). Fixed: URL is /api/proxy, key is on the server.",
+        "staff": "Run strings on the production bundle to verify no key leaked. This is a good addition to your deployment CI checklist."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for secrets-in-client-bundle.",
+        "mid": "",
+        "staff": ""
       }
     ]
   },
@@ -92,6 +122,10 @@
       "chapter": "takeaway",
       "junior": [
         {
+          "label": "Next: \"Static Site, Zero Backend (L0)\"",
+          "href": "/cases/static-site-zero-backend/"
+        },
+        {
           "label": "Back to all cases",
           "href": "/cases/"
         },
@@ -102,6 +136,10 @@
       ],
       "mid": [
         {
+          "label": "Next: \"Static Site, Zero Backend (L0)\"",
+          "href": "/cases/static-site-zero-backend/"
+        },
+        {
           "label": "Hub",
           "href": "/cases/"
         },
@@ -111,6 +149,10 @@
         }
       ],
       "staff": [
+        {
+          "label": "Next: \"Static Site, Zero Backend (L0)\"",
+          "href": "/cases/static-site-zero-backend/"
+        },
         {
           "label": "Case hub",
           "href": "/cases/"

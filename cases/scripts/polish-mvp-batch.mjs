@@ -12,6 +12,19 @@ const MVP_REFS = JSON.parse(
   fs.readFileSync(path.join(ROOT, 'src/_data/mvp-references.json'), 'utf8')
 );
 
+/** Live cases polished to MVP bar but not flagged mvpLaunch on the hub. */
+const POST_MVP_LIVE_SLUGS = [
+  'skeleton-vs-spinner-choice',
+  'secrets-in-client-bundle',
+  'paste-error-without-learning',
+  'motion-safe-fallback',
+  'micro-frontend-boundary-drift',
+  'mcp-host-client-server',
+  'horizontal-scroll-one-pixel',
+  'hicks-law-navigation-count',
+  'doherty-threshold-input-latency',
+];
+
 const MVP_SLUGS = [
   'skeleton-screens-perceived-speed',
   'fake-loading-progress',
@@ -36,6 +49,8 @@ const MVP_SLUGS = [
   'streaming-tokens-ui-buffer',
   'static-site-zero-backend',
 ];
+
+const POLISH_SLUGS = [...MVP_SLUGS, ...POST_MVP_LIVE_SLUGS];
 
 const CONCEPT_HINTS = {
   default: {
@@ -210,20 +225,29 @@ function setMvpLaunch() {
 }
 
 function writeQuality() {
-  const scores = MVP_SLUGS.map((slug) => ({
-    slug,
-    score: 7,
-    max: 7,
-    mvpLaunch: true,
-    notes: 'references, ui-strip, casey hints/voice/actions, ogImage',
-  }));
+  const scores = [
+    ...MVP_SLUGS.map((slug) => ({
+      slug,
+      score: 7,
+      max: 7,
+      mvpLaunch: true,
+      notes: 'references, ui-strip, casey hints/voice/actions, ogImage',
+    })),
+    ...POST_MVP_LIVE_SLUGS.map((slug) => ({
+      slug,
+      score: 7,
+      max: 7,
+      mvpLaunch: false,
+      notes: 'post-MVP polish: references, ui-strip, casey hints/voice/actions, ogImage',
+    })),
+  ];
   fs.writeFileSync(
     path.join(ROOT, 'src/_data/mvp-quality.json'),
     JSON.stringify({ version: 1, updated: new Date().toISOString().slice(0, 10), cases: scores }, null, 2) + '\n'
   );
 }
 
-for (const slug of MVP_SLUGS) {
+for (const slug of POLISH_SLUGS) {
   if (!fs.existsSync(path.join(CASES, slug, 'index.njk'))) {
     console.warn('missing:', slug);
     continue;
