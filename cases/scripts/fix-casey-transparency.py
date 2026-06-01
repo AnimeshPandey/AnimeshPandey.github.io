@@ -60,6 +60,10 @@ def color_close(r: int, g: int, b: int, ref: tuple[int, int, int], tol: int) -> 
 
 def is_character_pixel(r: int, g: int, b: int, tol: int = 22) -> bool:
     """Protect fur, garments, and face fills from matte removal."""
+    # Pure neutral white is studio background, never fur — must guard before swatch check
+    # because (255,255,255) falls within tol=22 of fur #FAFAF8=(250,250,248).
+    if r >= 253 and g >= 253 and b >= 253 and abs(r - g) <= 2 and abs(g - b) <= 2:
+        return False
     for ref in CHARACTER_SWATCHES:
         if color_close(r, g, b, ref, tol):
             return True
@@ -79,6 +83,29 @@ def is_background_pixel(r: int, g: int, b: int, refs: list[tuple[int, int, int]]
     if abs(r - g) <= 10 and abs(g - b) <= 10 and 190 <= r <= 246:
         return True
     return False
+
+
+def clear_interior_matte(im: Image.Image) -> Image.Image:
+    """Second pass: clear opaque neutral-white studio-card pixels enclosed by character ink.
+
+    Edge flood can't reach interior white pixels surrounded by character outline.
+    We use a warmth criterion directly: fur #FAFAF8=(250,250,248) has r-b=2 and
+    g-b=2 (warm). Studio card is neutral: r-b=0, g-b=0. Any near-pure-white
+    pixel with (r-b) <= 1 and (g-b) <= 1 is studio background, not fur.
+    """
+    im = im.copy()
+    w, h = im.size
+    px = im.load()
+    for y in range(h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            if a == 0:
+                continue
+            if r >= 248 and g >= 248 and b >= 248 and abs(r - g) <= 3:
+                # Neutral or barely-warm = studio card.  Fur always has r-b >= 2.
+                if (r - b) <= 1 and (g - b) <= 1:
+                    px[x, y] = (r, g, b, 0)
+    return im
 
 
 def flood_background_to_alpha(im: Image.Image, tol: int = 20) -> Image.Image:
@@ -169,13 +196,14 @@ def process_file(path: Path, tol: int, trim: bool, sharpen: bool, normalize: boo
     if trim:
         im = trim_transparent(im, pad=10)
     if normalize and should_normalize(path):
-        fill = 0.78 if "junior" in path.parts else 0.84
+        fill = 0.88 if "junior" in path.parts else 0.90
         im = normalize_canvas(im, fill=fill)
     if sharpen:
         rgb = im.convert("RGB")
         alpha = im.split()[-1]
         rgb = polish(rgb)
         im = Image.merge("RGBA", (*rgb.split(), alpha))
+    im = clear_interior_matte(im)  # After sharpen: catches any neutral-white artefacts it creates
     im.save(path, "PNG", optimize=True)
     alpha = im.split()[-1]
     ext = alpha.getextrema()
