@@ -65,17 +65,9 @@
   margin-bottom: 6px;
 }
 
-/* ── Tone copy blocks ── */
-.tone-junior,
-.tone-mid,
-.tone-staff { display: block; }
-
-/* default: only junior visible; JS manages the rest */
+/* ── Tone copy blocks: junior default before JS; case-scroll.js sets inline display ── */
 .tone-mid,
 .tone-staff { display: none; }
-.tone-mid.active,
-.tone-staff.active,
-.tone-junior.active { display: block; }
 
 /* ── Chapter sections ── */
 .case-chapter {
@@ -292,9 +284,21 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   animation: casey-bounce-once 0.6s ease;
 }
 
+/* Tier change — brief fade on avatar swap */
+@keyframes casey-tier-fade {
+  0%   { opacity: 0.55; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.casey-coach__avatar.casey-tier-fade,
+.casey-hub__img.casey-tier-fade {
+  animation: casey-tier-fade 0.25s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .casey-coach__avatar.casey-breathing,
-  .casey-coach__avatar.casey-bounce-once { animation: none; }
+  .casey-coach__avatar.casey-bounce-once,
+  .casey-coach__avatar.casey-tier-fade,
+  .casey-hub__img.casey-tier-fade { animation: none; }
 }
 
 .casey-coach__bubble {

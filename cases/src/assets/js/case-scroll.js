@@ -21,9 +21,9 @@
     var midBlocks    = document.querySelectorAll('.tone-mid');
     var staffBlocks  = document.querySelectorAll('.tone-staff');
 
-    juniorBlocks.forEach(function (el) { el.style.display = tone === 'junior' ? '' : 'none'; });
-    midBlocks.forEach(function (el)    { el.style.display = tone === 'mid'    ? '' : 'none'; });
-    staffBlocks.forEach(function (el)  { el.style.display = tone === 'staff'  ? '' : 'none'; });
+    juniorBlocks.forEach(function (el) { el.style.display = tone === 'junior' ? 'block' : 'none'; });
+    midBlocks.forEach(function (el)    { el.style.display = tone === 'mid'    ? 'block' : 'none'; });
+    staffBlocks.forEach(function (el)  { el.style.display = tone === 'staff'  ? 'block' : 'none'; });
 
     /* Update tone buttons aria-pressed */
     var btns = document.querySelectorAll('.case-tone__btn[data-tone]');
@@ -31,8 +31,9 @@
       btn.setAttribute('aria-pressed', btn.dataset.tone === tone ? 'true' : 'false');
     });
 
-    /* Persist */
+    /* Persist + document hook for CSS/telemetry */
     try { localStorage.setItem(TONE_KEY, tone); } catch (err) {}
+    document.documentElement.dataset.casebookTone = tone;
 
     /* Dispatch event */
     document.dispatchEvent(new CustomEvent('casebook-tone-change', {

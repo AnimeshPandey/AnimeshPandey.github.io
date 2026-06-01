@@ -16,6 +16,7 @@
 
   var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var assetBase = document.documentElement.dataset.assetBase || '/cases/assets/casey/';
+  var assetExt = 'png';
 
   /* ── DOM refs ── */
   var avatar = hubEl.querySelector('[data-casey-hub-avatar]');
@@ -46,10 +47,10 @@
     return (g && (g[tier] || g.junior)) || [];
   }
 
-  function setAvatar(tier) {
+  function setAvatar(tier, poseOverride) {
     if (!avatar) return;
-    var pose = prm ? 'sleep' : 'wave';
-    avatar.src = assetBase + tier + '/' + pose + '.svg';
+    var pose = poseOverride || (prm ? 'sleep' : 'wave');
+    avatar.src = assetBase + tier + '/' + pose + '.' + assetExt;
     avatar.alt = 'Casey, ' + tier + ' developer kitten' + (prm ? ', resting' : ', waving hello');
     hubEl.dataset.caseyTier = tier;
   }
@@ -103,7 +104,9 @@
   }
 
   /* ── Initial render ── */
-  setAvatar(currentTier);
+  var firstVisit;
+  try { firstVisit = !localStorage.getItem('casebook-visited'); } catch (e) {}
+  setAvatar(currentTier, firstVisit && !prm ? 'welcome' : undefined);
   setTierLabel(currentTier);
   setGreeting(currentTier);
   startRotation();
@@ -118,6 +121,12 @@
     var newTier = e.detail && e.detail.tone;
     if (!newTier || newTier === currentTier) return;
     currentTier = newTier;
+    if (avatar && !prm) {
+      avatar.classList.remove('casey-tier-fade');
+      void avatar.offsetWidth;
+      avatar.classList.add('casey-tier-fade');
+      setTimeout(function () { avatar.classList.remove('casey-tier-fade'); }, 280);
+    }
     setAvatar(newTier);
     setTierLabel(newTier);
     setGreeting(newTier);
@@ -130,8 +139,8 @@
     hubEl.querySelectorAll('.casey-hub__action').forEach(function (link) {
       link.addEventListener('click', function () {
         if (!avatar) return;
-        var waveSrc = assetBase + currentTier + '/wave.svg';
-        avatar.src = assetBase + currentTier + '/perk.svg';
+        var waveSrc = assetBase + currentTier + '/wave.' + assetExt;
+        avatar.src = assetBase + currentTier + '/perk.' + assetExt;
         avatar.alt = 'Casey, perking up';
         setTimeout(function () {
           avatar.src = waveSrc;

@@ -2,11 +2,18 @@
 
 | File | Purpose |
 |------|---------|
-| `casey-{junior,mid,staff}-front.png` | Approved front bust (1024px, from harmonized SVG) |
-| `casey-{tier}-front.svg` | Vector source for regen |
-| `reference/` | User inspiration PNGs (img2img reference) |
+| `casey-{junior,mid,staff}-front.png` | Approved AI style anchors (512px web) |
+| `preview-ai/` | Source anchors + generation references |
+| `casey-{tier}-front.svg` | Legacy vector fallback |
+| `reference/` | User inspiration PNGs |
 
-Regenerate all poses:
+Install AI pose batch (after generating `casey-{tier}-{pose}.png` into Cursor assets):
+
+```bash
+cd cases && ./scripts/install-casey-pngs.sh
+```
+
+Legacy SVG regen:
 
 ```bash
 cd cases && node scripts/generate-casey-svgs.mjs
