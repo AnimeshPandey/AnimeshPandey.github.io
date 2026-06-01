@@ -272,6 +272,31 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   flex-shrink: 0;
   background: var(--casebook-surface-2);
 }
+
+/* Breathe — duration set via JS from casey-interactions.json tierMotion */
+@keyframes casey-breathe {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-2px); }
+}
+.casey-coach__avatar.casey-breathing {
+  animation: casey-breathe var(--casey-breathe-duration, 4s) ease-in-out infinite;
+}
+
+/* Bounce — fired once on case-demo-fixed event */
+@keyframes casey-bounce-once {
+  0%, 100% { transform: translateY(0); }
+  30%       { transform: translateY(-6px); }
+  60%       { transform: translateY(-2px); }
+}
+.casey-coach__avatar.casey-bounce-once {
+  animation: casey-bounce-once 0.6s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .casey-coach__avatar.casey-breathing,
+  .casey-coach__avatar.casey-bounce-once { animation: none; }
+}
+
 .casey-coach__bubble {
   background: var(--casey-bubble-bg);
   border: 1px solid var(--casebook-border);
@@ -511,4 +536,169 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   font-family: var(--mono, monospace);
   font-size: 11px; color: var(--casebook-accent);
   margin: 10px 0 0;
+}
+
+/* ══════════════════════════════════════════════════
+   CASEY HUB — welcome panel on /cases/ homepage
+   ══════════════════════════════════════════════════ */
+
+.casey-hub {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px 24px;
+  margin: 0 0 28px;
+  background: var(--casebook-surface);
+  border: 1px solid var(--casebook-border);
+  border-radius: 14px;
+}
+
+.casey-hub__avatar-wrap {
+  flex-shrink: 0;
+}
+
+.casey-hub__img {
+  display: block;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--casebook-surface-2);
+}
+
+@media (min-width: 600px) {
+  .casey-hub__img { width: 100px; height: 100px; }
+}
+
+@media (min-width: 900px) {
+  .casey-hub { gap: 28px; padding: 28px 32px; }
+  .casey-hub__img { width: 120px; height: 120px; }
+}
+
+.casey-hub__panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.casey-hub__label {
+  font-family: var(--mono, monospace);
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--casebook-accent);
+  margin: 0 0 8px;
+}
+
+.casey-hub__greeting {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--casebook-ink-2);
+  margin: 0 0 16px;
+  min-height: 2.4em;
+}
+
+/* Actions list */
+.casey-hub__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0; padding: 0;
+}
+
+.casey-hub__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  font-family: var(--mono, monospace);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  color: var(--casebook-ink-2);
+  background: var(--casebook-surface-2);
+  border: 1px solid var(--casebook-border);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: color .15s, border-color .15s, background .15s;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.casey-hub__action:hover,
+.casey-hub__action:focus-visible {
+  color: var(--casebook-ink);
+  border-color: var(--casebook-accent);
+}
+
+.casey-hub__action:focus-visible {
+  outline: 2px solid var(--casebook-accent);
+  outline-offset: 2px;
+}
+
+.casey-hub__action--primary {
+  color: var(--casebook-accent);
+  border-color: var(--casebook-accent);
+  background: transparent;
+}
+
+.casey-hub__action--primary:hover,
+.casey-hub__action--primary:focus-visible {
+  background: var(--casebook-accent);
+  color: var(--casebook-bg, #0a0a0a);
+}
+
+/* ── Hub empty state ── */
+.hub-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--casebook-ink-faint);
+}
+
+.hub-empty__img {
+  width: 80px; height: 80px;
+  opacity: .85;
+}
+
+.hub-empty__msg {
+  font-size: 14px;
+  color: var(--casebook-ink-2);
+  margin: 0;
+}
+
+/* ── Casey coach action chips (case pages) ── */
+.casey-coach__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.casey-coach__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 11px;
+  font-family: var(--mono, monospace);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--casebook-accent);
+  background: transparent;
+  border: 1px solid var(--casebook-accent);
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .15s, color .15s;
+  min-height: 36px;
+}
+
+.casey-coach__chip:hover,
+.casey-coach__chip:focus-visible {
+  background: var(--casebook-accent);
+  color: var(--casebook-bg, #0a0a0a);
+}
+
+.casey-coach__chip:focus-visible {
+  outline: 2px solid var(--casebook-accent);
+  outline-offset: 2px;
 }

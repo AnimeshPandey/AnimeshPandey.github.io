@@ -22,6 +22,21 @@
       "staff": "Lukew Wroblewski's research on skeleton screens distinguishes 'known-shape content' (profile, article, feed row) from 'unknown-shape content' (search results, dynamic lists). The rule: use skeletons only for known shapes, spinners for unknown counts."
     }
   ],
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try spinner mode", "target": "[data-demo-state=broken]" },
+        { "label": "Try skeleton mode", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle demo", "target": ".case-demo" }
+      ],
+      "staff": [
+        { "label": "Toggle demo", "target": ".case-demo" }
+      ]
+    }
+  ],
   "voice": {
     "enabled": true,
     "sections": [

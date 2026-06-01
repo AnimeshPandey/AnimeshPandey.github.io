@@ -1,0 +1,64 @@
+{
+  "greetings": {
+    "junior": [
+      "Hey — pick a case below or start with the flagship. I'll hint as you scroll.",
+      "New here? The flagship case is the friendliest on-ramp — try it first.",
+      "I'm Casey. I grow up when you switch Junior → Staff. Weird? Try it inside any case.",
+      "Each case has a live demo you can break and fix. That's the point."
+    ],
+    "mid": [
+      "Filter by track or jump to the reading library — I'll stay out of your way unless you want hints.",
+      "Flagship cases have demos. Break them, then fix them — that's the whole method.",
+      "Tone switcher changes my age and how deep I go, not just labels.",
+      "Use the library for external war stories; cases here are pattern-first with production subtext."
+    ],
+    "staff": [
+      "Use the library for war stories. Cases here are pattern-first with production subtext.",
+      "Tone switcher changes my age and voice — not reading level labels. Try Staff in a flagship.",
+      "Demos are intentionally breakable. RUM deltas > lab numbers, but the lab shows you why.",
+      "Each case has a takeaway with trade-off notes. Skip to it if you know the concept."
+    ]
+  },
+  "contextual": [
+    {
+      "when": "first-visit",
+      "junior": "I'm Casey — I grow up when you switch Junior → Staff in any case. Weird? Try it.",
+      "mid": "Casey here. Tone switcher changes my depth, not just reading level labels.",
+      "staff": "I'm Casey. Staff mode skips the basics and goes straight to trade-offs and production notes."
+    },
+    {
+      "when": "no-live-cases",
+      "junior": "We're still shipping cases — subscribe so you don't miss the first wave.",
+      "mid": "Cases are in progress. Subscribe for email when they drop.",
+      "staff": "Pipeline is active. Subscribe to be notified on publish."
+    }
+  ],
+  "actions": [
+    {
+      "id": "flagship",
+      "label": "Start: flagship case",
+      "icon": "star",
+      "tier": "all",
+      "useFlagshipSlug": true
+    },
+    {
+      "id": "library",
+      "label": "Browse reading library",
+      "href": "/cases/library/",
+      "tier": "all"
+    },
+    {
+      "id": "about",
+      "label": "How this Casebook works",
+      "href": "/cases/about/",
+      "tier": "all"
+    },
+    {
+      "id": "subscribe",
+      "label": "Get new cases by email",
+      "href": "#subscribe",
+      "tier": "all",
+      "when": "newsletter-enabled"
+    }
+  ]
+}

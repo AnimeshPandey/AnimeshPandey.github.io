@@ -21,6 +21,9 @@ permalink: /index.html
     </p>
   </header>
 
+  {# ── Casey hub welcome panel ── #}
+  {% include 'partials/casey-hub.njk' %}
+
   {# ── Subscribe CTA ── #}
   {% include 'partials/subscribe-cta.njk' %}
 
@@ -117,6 +120,19 @@ permalink: /index.html
     {% endfor %}
   </ul>
 
+  {# Casey empty state — shown by track filter JS when 0 live cases match #}
+  <div class="hub-empty" id="hub-grid-empty" hidden aria-live="polite">
+    <img class="hub-empty__img"
+         src="{{ '/assets/casey/hub/casey-empty.svg' | url }}"
+         alt="Casey shrugging — no cases match"
+         width="80" height="80"
+         loading="lazy" />
+    <p class="hub-empty__msg">No cases match that filter.</p>
+    <button type="button" class="casey-hub__action" onclick="document.getElementById('track-filter').value='';document.getElementById('track-filter').dispatchEvent(new Event('change'))">
+      Clear filter
+    </button>
+  </div>
+
 </div>
 
 <script>
@@ -202,3 +218,5 @@ permalink: /index.html
   });
 }());
 </script>
+
+<script src="{{ '/assets/js/casey-hub.js' | url }}" defer></script>

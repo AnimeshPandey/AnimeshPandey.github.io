@@ -28,6 +28,21 @@
       "staff": "Org-wide: define skeleton components before perf A/B tests — otherwise you're measuring implementation variance, not the pattern."
     }
   ],
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken (spinner)", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed (skeleton)", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle demo", "target": ".case-demo" }
+      ],
+      "staff": [
+        { "label": "Toggle demo", "target": ".case-demo" }
+      ]
+    }
+  ],
   "voice": {
     "enabled": true,
     "sections": [

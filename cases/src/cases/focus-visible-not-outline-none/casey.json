@@ -22,6 +22,21 @@
       "staff": "I've seen teams pass WCAG audits by adding outline: 2px solid transparent for keyboard users — technically visible in high contrast mode but invisible elsewhere. Don't do this."
     }
   ],
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Tab through broken mode", "target": "[data-demo-mode='broken']" },
+        { "label": "See the fix", "target": "[data-demo-mode='fixed']" }
+      ],
+      "mid": [
+        { "label": "Toggle demo mode", "target": ".case-demo" }
+      ],
+      "staff": [
+        { "label": "Inspect the focus CSS", "target": ".case-demo" }
+      ]
+    }
+  ],
   "voice": {
     "enabled": true,
     "sections": [
