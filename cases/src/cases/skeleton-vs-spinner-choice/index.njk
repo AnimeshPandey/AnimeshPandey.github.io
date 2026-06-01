@@ -90,11 +90,69 @@ function UserProfile({ userId }) {
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The settings panel that broke the skeleton rule</h2>
+  <div class="tone-junior">
+    <p>A dashboard team replaced all loading spinners with skeleton screens after reading that skeletons improve perceived performance. For the main feed — a list of activity cards — the change worked well. Skeleton cards appeared, real cards replaced them smoothly, users felt the page was fast. The team was pleased and applied the same treatment to every loading state in the product.</p>
+    <p>The user settings panel was one of those states. It loaded a single async value: the user's current notification preference (a radio button group). The skeleton screen for it showed five columns of shimmer, matching the general-purpose skeleton they'd built. After 200ms, the skeleton collapsed into a single radio group with three options. The layout shift was visually jarring — worse than any spinner had been. User complaints about the settings panel specifically increased after the skeleton rollout.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The skeleton was the wrong tool because the content shape was not known in advance. Five-column shimmer suggested five columns of content; three radio options produced one compact row. Any skeleton that does not precisely match the actual rendered content causes a layout prediction violation — which the brain perceives as a visual jolt more disruptive than a spinner, whose resolution shape is unpredictable by design. A spinner carries no shape prediction; a skeleton carries an explicit one. Wrong predictions are worse than no predictions.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>The rule: known shape, known count, long enough to notice</h2>
+  <div class="tone-junior">
+    <p>The fix was to revert the settings panel to a centered spinner — small, shape-neutral, and appropriate for a 200–400ms single-value async load. The feed skeleton stayed. The team added an explicit decision rule: skeletons are only permitted when the skeleton's shape exactly matches the content shape, the item count is known or bounded, and the expected load time exceeds 600ms. Everything else uses a spinner.</p>
+    <p>A secondary rule emerged from user testing: loads under 400ms should show nothing at all, gated behind a 200ms delay. A skeleton that flashes for 150ms and disappears is more disruptive than a blank-then-content transition. The <code>useDelayedLoading</code> hook enforced this — no indicator rendered until the async operation had been pending for at least 200ms.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The discipline required is to categorise loading states before choosing an indicator. User profile: known shape (avatar, name, bio), predictable count (1), likely over 600ms on first load — skeleton is correct. Search results: unknown count, may be empty, shape depends on result type — spinner is correct. Form submit: immediate feedback needed, no content shape to predict — button loading state (spinner within the button) is correct. Applying these categories consistently prevents the settings-panel failure mode from recurring.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <figure>
+      <figcaption>Before — skeleton for settings panel (wrong shape, causes layout shift)</figcaption>
+      <pre><code>// ❌ Generic skeleton applied to all loading states
+function SettingsPanel() {
+  const { data, isLoading } = useNotificationPrefs();
+
+  if (isLoading) {
+    // Shows 5-column shimmer — wrong shape for a 3-option radio group
+    return &lt;SkeletonGrid columns={5} rows={2} /&gt;;
+  }
+
+  return &lt;RadioGroup options={data.options} /&gt;;
+  // Skeleton collapses to 1-row radio group → layout shift
+}</code></pre>
+    </figure>
+    <figure>
+      <figcaption>After — spinner for settings (shape-neutral); skeleton retained for feed</figcaption>
+      <pre><code>// ✅ Settings panel: spinner (shape-neutral, short async load)
+function SettingsPanel() {
+  const { data, isLoading } = useNotificationPrefs();
+  const showLoader = useDelayedLoading(isLoading, 200);
+
+  if (showLoader) return &lt;Spinner size="sm" label="Loading settings…" /&gt;;
+  return &lt;RadioGroup options={data.options} /&gt;;
+}
+
+// ✅ Feed: skeleton (known shape, known count, &gt;600ms typical load)
+function ActivityFeed() {
+  const { data, isLoading } = useFeed();
+  const showLoader = useDelayedLoading(isLoading, 200);
+
+  if (showLoader) return &lt;ActivityCardSkeleton count={5} /&gt;;
+  return data.map(item =&gt; &lt;ActivityCard key={item.id} {...item} /&gt;);
+}</code></pre>
+    </figure>
   </div>
 </section>
 
@@ -118,6 +176,44 @@ function UserProfile({ userId }) {
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementation depth</h2>
+  <div class="tone-mid">
+    <p>The skeleton shimmer animation should use <code>background: linear-gradient</code> animated with a CSS <code>@keyframes</code> that shifts the gradient position. The shimmer direction should match reading direction (left to right in LTR). Use <code>animation-timing-function: ease-in-out</code> and a 1.4–1.8s duration — faster shimmer feels erratic; slower feels static.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Skeleton shimmer — accessible, performant */
+@keyframes shimmer {
+  from { background-position: -200px 0; }
+  to   { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-2) 25%,
+    var(--color-surface-3) 50%,
+    var(--color-surface-2) 75%
+  );
+  background-size: 400px 100%;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton { animation: shimmer 1.6s ease-in-out infinite; }
+}
+/* No animation in reduced-motion mode — static skeleton is fine */</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Pitfalls in skeleton screen implementation:</p>
+    <ul>
+      <li><strong>Aria live regions on skeleton swap</strong> — when the skeleton is replaced by real content, screen readers should announce it. Wrap the loading region in <code>aria-live="polite"</code> and ensure the content update includes meaningful text, not just a visual change.</li>
+      <li><strong>Skeleton count must match content count</strong> — if your feed sometimes returns 3 items and sometimes 8, a fixed 5-card skeleton creates a prediction violation on both counts. Use a single generic loading state for variable-count content, or derive count from a cached previous response.</li>
+      <li><strong>CLS from skeleton-to-content transition</strong> — if the skeleton's dimensions don't exactly match the content's dimensions, the swap causes layout shift. Measure both states and ensure skeleton height equals content height. This often requires explicit <code>min-height</code> on the content container.</li>
+      <li><strong>React 18 Suspense + <code>delay</code></strong> — <code>&lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;</code> with <code>startTransition</code> defers showing the fallback for fast loads, preventing skeleton flash. This is the idiomatic React 18 approach to the <code>useDelayedLoading</code> pattern.</li>
+    </ul>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

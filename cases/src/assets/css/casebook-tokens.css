@@ -18,8 +18,17 @@
   --casebook-header-bg:  var(--header-bg);
   --casebook-progress:   var(--accent);
   --casey-bubble-bg:     var(--surface);
-  --case-chapter-gap:    2rem;
+
+  /* ── Layout scale — mirrors portfolio foundation.css ── */
+  --casebook-page-pad: var(--page-pad, clamp(16px, 4vw, 28px));
+  --casebook-max:      1100px;
+
+  /* ── Chapter rhythm — responsive ── */
+  --case-chapter-gap: 1.5rem;
 }
+
+@media (min-width: 640px)  { :root { --case-chapter-gap: 2rem;    --casebook-max: 1100px; } }
+@media (min-width: 1024px) { :root { --case-chapter-gap: 2.5rem;  --casebook-max: 1200px; } }
 
 /* ── Reduced motion class (set by casebook-preferences.js) ── */
 .casebook--reduce-motion *,

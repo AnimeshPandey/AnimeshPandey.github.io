@@ -84,11 +84,70 @@ new ModuleFederationPlugin({
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: Story 1 ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The session token that outlived the session</h2>
+  <div class="tone-junior">
+    <p>A fintech platform had four micro-frontends sharing a user session: identity, payments, portfolio, and notifications. Early on, the session MFE was the authority — every MFE called its API to get the current auth token before making requests. Then a developer on the payments team added a module-scoped cache to avoid the round-trip latency on every route change.</p>
+    <p>For two months, nothing went wrong. Then a user's session expired server-side at 11:58 PM. The session MFE cleared its state and broadcast an auth-changed event. The payments MFE received the event — but its module-scoped cache still held the old token and the subscription handler never updated it. Payment confirmations went through on an expired session for the next 22 minutes until a page reload flushed the cache.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The incident was invisible to monitoring. No 401 errors — the backend token validation had a 30-minute grace window for "recently expired" tokens as a UX concession. The payments MFE passed auth checks with the stale cached value. Users received payment confirmations that were technically processed in a session the system had already invalidated.</p>
+  </div>
+</section>
+
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>The event-bus contract that made auth state unforkable</h2>
+  <div class="tone-junior">
+    <p>The post-incident fix was a strict boundary contract: no MFE is permitted to hold its own copy of auth state. The session MFE owns the auth token and broadcasts it exclusively via a typed event bus message (<code>mfe-auth-changed</code>). All other MFEs subscribe — they receive the current token in the event payload and must discard it when the next event arrives, whether that event carries a new token or a null (logged-out) value.</p>
+    <p>The change removed every local auth cache from every MFE. Where round-trip latency to the session API had been the concern, the event bus subscription was in fact faster — the session MFE pushed updates proactively rather than waiting for polling. The perceived performance improvement was an unexpected benefit of fixing the correctness problem.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The architectural lesson: MFE boundaries must be enforced at the data layer, not just the UI layer. Shared mutable state that can be forked — whether a module variable, a localStorage key, or a cookie read by multiple MFEs — is a ticking correctness hazard. The session MFE is the single writer; all others are read-only subscribers. Any deviation from this ownership model is a bug waiting to manifest.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <figure>
+      <figcaption>Before — module-scoped token cache (stale state bug)</figcaption>
+      <pre><code>// payments-mfe/src/auth.js
+// ❌ Module-scoped cache — survives session expiry
+let cachedToken = null;
+
+export async function getToken() {
+  if (cachedToken) return cachedToken; // returns stale token!
+  cachedToken = await sessionApi.getToken();
+  return cachedToken;
+}
+
+// No invalidation on mfe-auth-changed event
+// Token outlives the session until page reload</code></pre>
+    </figure>
+    <figure>
+      <figcaption>After — event bus subscription, no local copy</figcaption>
+      <pre><code>// payments-mfe/src/auth.js
+// ✅ Subscribe to session MFE; never hold own copy
+let currentToken = null;
+
+window.addEventListener('mfe-auth-changed', (e) =&gt; {
+  currentToken = e.detail.token; // null on logout
+});
+
+export function getToken() {
+  return currentToken; // always reflects session MFE state
+}
+
+// session-mfe/src/broadcaster.js
+function broadcastAuthChange(token) {
+  window.dispatchEvent(new CustomEvent('mfe-auth-changed', {
+    detail: { token } // null when session expires
+  }));
+}</code></pre>
+    </figure>
   </div>
 </section>
 
@@ -112,6 +171,33 @@ new ModuleFederationPlugin({
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementation depth</h2>
+  <div class="tone-mid">
+    <p>Module Federation's <code>shared</code> config is where boundary contracts are encoded. The key options are <code>singleton: true</code> (one instance; first-loaded version wins), <code>requiredVersion</code> (semver range the loaded version must satisfy), and <code>strictVersion: true</code> (throws if exact version doesn't match). The session MFE should be declared <code>eager: true</code> so it initialises before any consumer MFE attempts to read auth state.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// shell webpack.config.js — session MFE as eager singleton
+new ModuleFederationPlugin({
+  shared: {
+    '@company/session-mfe': {
+      singleton: true,
+      eager: true,        // session MFE initialises first
+      requiredVersion: '^2.0.0',
+    },
+  },
+});</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Common pitfalls when enforcing MFE auth boundaries:</p>
+    <ul>
+      <li><strong>localStorage as shared state</strong> — any MFE can read and write localStorage, making it another forkable cache. Treat localStorage as MFE-private; never use it to share auth state across MFEs.</li>
+      <li><strong>Event bus message ordering</strong> — if a MFE loads after the initial <code>mfe-auth-changed</code> event fires, it misses the current token. Solve with a <code>mfe-auth-state-request</code> event that the session MFE responds to on demand.</li>
+      <li><strong>Singleton version mismatch warning</strong> — when webpack logs "Unsatisfied version X of shared singleton module Y" it means a MFE has a different version expectation. This is a contract violation; treat it as a build error in CI, not a warning to ignore.</li>
+      <li><strong>Direct API calls bypassing the session MFE</strong> — adding a CI lint rule that flags direct imports of auth APIs from non-session MFE packages prevents the pattern from re-emerging.</li>
+    </ul>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

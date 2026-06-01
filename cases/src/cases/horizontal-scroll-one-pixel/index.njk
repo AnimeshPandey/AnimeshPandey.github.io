@@ -97,11 +97,55 @@ img, video, canvas { max-width: 100%; }</code></pre>
 </section>
 
 {# ── Chapter: Demo ── #}
+{# ── Chapter: Story 2 ── #}
+<section class="case-chapter" data-chapter="story-2">
+  <h2>The 15-pixel phantom</h2>
+  <div class="tone-junior">
+    <p>A marketing team launched a landing page that passed every browser test: Chrome, Firefox, Safari desktop, and simulated mobile in DevTools. Real users on iOS Safari reported a thin strip of horizontal scroll. The page could scroll 15 pixels to the right revealing nothing but empty space. QA could not reproduce it on desktop simulators. The culprit was a single declaration on the hero section: <code>width: 100vw</code>.</p>
+    <p>On desktop browsers where the scrollbar overlays the viewport, <code>100vw</code> and <code>100%</code> are the same width. On iOS Safari, <code>100vw</code> includes the scrollbar gutter even though iOS uses overlay scrollbars — making the hero 15px wider than the actual viewport and creating exactly enough horizontal overflow to scroll without showing any meaningful content.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The pattern recurs across many projects. Other common sources of the same invisible overflow: a utility class applying <code>margin-inline: -1rem</code> on a full-width element, a <code>translateX()</code> value that pushes decorative content past the viewport edge without a clipping ancestor, or an SVG without a <code>viewBox</code> that renders at its intrinsic pixel dimensions. All produce the same symptom — a thin, useless horizontal scroll that only appears on real mobile devices.</p>
+  </div>
+</section>
+
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <figure>
+      <figcaption>Before — 100vw includes scrollbar gutter on iOS Safari, causes overflow</figcaption>
+      <pre><code>/* ❌ 100vw = viewport width including scrollbar gutter
+   On iOS Safari this is wider than the actual content area */
+.hero {
+  width: 100vw;       /* 390px on iPhone 14 Pro = overflow */
+  background: #0066ff;
+  padding: 80px 24px;
+}
+
+/* Result: hero is ~15px wider than viewport
+   Horizontal scroll appears; page slides right to white */</code></pre>
+    </figure>
+    <figure>
+      <figcaption>After — 100% stays within the parent (no scrollbar gutter issue)</figcaption>
+      <pre><code>/* ✅ 100% = 100% of the parent block, never includes gutter */
+.hero {
+  width: 100%;        /* always fits the content area */
+  background: #0066ff;
+  padding: 80px 24px;
+}
+
+/* For full-bleed sections inside a max-width container: */
+.full-bleed {
+  width: 100%;
+  margin-inline: calc(-1 * var(--page-padding));
+  padding-inline: var(--page-padding);
+}
+
+/* Global safety net */
+*, *::before, *::after { box-sizing: border-box; }
+img, video, svg { max-width: 100%; }</code></pre>
+    </figure>
   </div>
 </section>
 
@@ -125,6 +169,34 @@ img, video, canvas { max-width: 100%; }</code></pre>
       </div>
     </div>
   </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Implementation depth</h2>
+  <div class="tone-mid">
+    <p><code>100vw</code> vs <code>100%</code> is the most frequent source of horizontal overflow on mobile. The difference: <code>100vw</code> is the viewport width including the scrollbar gutter on platforms where the scrollbar is not overlaid. <code>100%</code> is the width of the containing block, which excludes the scrollbar. On desktop Chrome/Firefox with persistent scrollbars, <code>100vw</code> makes elements 15–17px wider than their container. On iOS Safari with overlay scrollbars, <code>100vw</code> still reports the full viewport width despite the scrollbar being overlaid, producing the same overflow on mobile.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Browser console: find the overflowing element in any page
+document.querySelectorAll('*').forEach(el =&gt; {
+  const rect = el.getBoundingClientRect();
+  if (rect.right &gt; window.innerWidth) {
+    console.warn(
+      el.tagName, el.className,
+      `overflows by ${Math.round(rect.right - window.innerWidth)}px`
+    );
+  }
+});</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>Overflow debugging toolkit and prevention patterns:</p>
+    <ul>
+      <li><strong><code>overflow-x: clip</code> vs <code>hidden</code></strong> — <code>clip</code> prevents scrolling without establishing a new block formatting context, so it does not break <code>position: sticky</code>. Prefer <code>clip</code> over <code>hidden</code> when you need to clip decorative content at the viewport edge without affecting sticky headers.</li>
+      <li><strong><code>overscroll-behavior-x: none</code></strong> — prevents horizontal elastic overscroll on iOS but does not prevent actual overflow. Use alongside fixing the overflowing element, not as a substitute.</li>
+      <li><strong>CSS audit: <code>* { outline: 1px solid red }</code></strong> — pasting this into DevTools Styles instantly makes every element's box visible. The element whose box extends past the viewport edge is the culprit.</li>
+      <li><strong>Visual regression CI</strong> — a Playwright test that checks <code>document.body.scrollWidth &gt; document.body.clientWidth</code> on every page catches horizontal overflow before it reaches production. One assertion prevents the entire class of bug.</li>
+      <li><strong>Flex children: <code>min-width: 0</code></strong> — flex items have <code>min-width: auto</code> by default, preventing shrinkage below content width. Adding <code>min-width: 0</code> to flex children allows them to shrink as expected and resolves a large proportion of flex-related overflow bugs.</li>
+    </ul>
+  </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}

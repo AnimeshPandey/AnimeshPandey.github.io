@@ -114,12 +114,35 @@ ogImage: https://anmshpndy.com/brand/cases/lcp-not-hero-image-og.png
   </div>
 </section>
 
-{# ── Chapter: Demo ── #}
 {# ── Chapter: UI Strip ── #}
 <section class="case-chapter" data-chapter="ui-strip">
-  <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    {% include 'partials/case-illustration.njk' %}
+    <p class="case-ui-strip__label">Before — hero image assumed to be LCP</p>
+    <figure>
+      <pre><code>&lt;!-- Hero image — team added fetchpriority="high" --&gt;
+&lt;img src="/hero.webp" fetchpriority="high" loading="eager"
+     alt="Summer collection" width="1200" height="600" /&gt;
+
+&lt;!-- Banner text — rendered by JS after A/B flag resolves --&gt;
+&lt;div id="promo-banner"&gt;&lt;/div&gt;
+&lt;script&gt;
+  abFlag.ready(() =&gt; {
+    document.getElementById('promo-banner').innerHTML =
+      '&lt;h1&gt;Summer sale — 40% off&lt;/h1&gt;';
+  });
+&lt;/script&gt;</code></pre>
+      <figcaption>Actual LCP: the &lt;h1&gt; inside #promo-banner — blocked behind JS execution.</figcaption>
+    </figure>
+    <p class="case-ui-strip__label">After — LCP element identified and unblocked</p>
+    <figure>
+      <pre><code>&lt;!-- Static headline — LCP element, no JS dependency --&gt;
+&lt;h1 class="promo-headline"&gt;Summer sale — 40% off&lt;/h1&gt;
+
+&lt;!-- Hero image — still optimised but no longer the LCP bottleneck --&gt;
+&lt;img src="/hero.webp" loading="eager"
+     alt="Summer collection" width="1200" height="600" /&gt;</code></pre>
+      <figcaption>LCP element is now static HTML — browser paints it in the first render frame.</figcaption>
+    </figure>
   </div>
 </section>
 
