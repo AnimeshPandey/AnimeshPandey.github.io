@@ -20,6 +20,8 @@ permalink: /library/index.html
     </p>
   </header>
 
+  {% include 'partials/casey-library-strip.njk' %}
+
   {# ── Filter bar ── #}
   <div class="hub-filter-bar hub-filter-bar--library" role="search" aria-label="Filter reading library">
 
@@ -178,6 +180,7 @@ permalink: /library/index.html
 </script>
 
 <script src="{{ '/assets/js/hub-filters.js' | url }}" defer></script>
+<script src="{{ '/assets/js/casey-library.js' | url }}" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   if (typeof LibraryFilters !== 'undefined') {

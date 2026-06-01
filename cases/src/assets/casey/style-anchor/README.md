@@ -13,6 +13,8 @@ Install AI pose batch (after generating `casey-{tier}-{pose}.png` into Cursor as
 cd cases && ./scripts/install-casey-pngs.sh
 ```
 
+Guide poses (5×3): generate per `ideas/.../CASEY-AI-GENERATION.md` § Guide poses, then re-run install script.
+
 Legacy SVG regen:
 
 ```bash

@@ -1,0 +1,19 @@
+{# ── Casey on /library/ — read pose, tone-aware copy ── #}
+<section class="casey-library" aria-label="Casey, reading library guide" data-casey-library>
+  <div class="casey-library__avatar-wrap">
+    <img class="casey-library__img"
+         src="{{ '/assets/casey/junior/read.png' | url }}"
+         alt="Casey with a book, ready to help you browse"
+         width="72" height="72"
+         loading="lazy"
+         data-casey-library-avatar="true" />
+  </div>
+  <div class="casey-library__panel">
+    <p class="casey-library__label" data-casey-library-tier-label>Casey · Junior dev</p>
+    <p class="casey-library__line" id="casey-library-line" aria-live="polite">
+      {{ caseyLibrary.lines.junior }}
+    </p>
+    <a href="{{ '/index.html' | url }}" class="casey-library__link">← Back to interactive cases</a>
+  </div>
+</section>
+<script id="casey-library-data" type="application/json">{{ caseyLibrary | dump | safe }}</script>

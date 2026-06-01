@@ -159,6 +159,13 @@
     var btn = e.target.closest('[data-demo-state]');
     if (!btn) return;
     var state = btn.dataset.demoState;
+    if (state === 'broken' && !prm) {
+      setAvatar(currentTone, 'support');
+      setTimeout(function () {
+        if (currentChapter === 'demo') setAvatar(currentTone, 'point');
+        else setAvatar(currentTone, 'idle');
+      }, 1200);
+    }
     if (state === 'fixed' && lastDemoState === 'broken') {
       document.dispatchEvent(new CustomEvent('case-demo-fixed'));
     }
