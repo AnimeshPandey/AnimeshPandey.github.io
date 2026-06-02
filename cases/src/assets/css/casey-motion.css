@@ -33,12 +33,12 @@
 
 .casey-hub__glow {
   position: absolute;
-  inset: -8px;
+  inset: -4px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--casebook-accent) 28%, transparent),
-    transparent 68%
+    color-mix(in srgb, var(--casebook-accent) 18%, transparent),
+    transparent 72%
   );
   pointer-events: none;
   z-index: 0;

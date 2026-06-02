@@ -122,6 +122,40 @@ def flood_background_to_alpha(im: Image.Image, tol: int = 20) -> Image.Image:
     return im
 
 
+def is_studio_white(r: int, g: int, b: int, a: int) -> bool:
+    """Neutral near-white studio stage (not blush, eyes, or hoodie)."""
+    if a < 200:
+        return False
+    if r < 248 or g < 248 or b < 248:
+        return False
+    if abs(r - g) > 6 or abs(g - b) > 10:
+        return False
+    # Blush / warm garment pixels
+    if g < r - 4 or b < r - 12:
+        return False
+    if is_character_pixel(r, g, b, tol=14):
+        # Allow removal only for achromatic studio greys, not tinted fur fills
+        if abs(r - g) <= 3 and abs(g - b) <= 6:
+            return True
+        return False
+    return True
+
+
+def row_studio_white_ratio(im: Image.Image, y: int) -> float:
+    w = im.width
+    px = im.load()
+    white = 0
+    opaque = 0
+    for x in range(w):
+        r, g, b, a = px[x, y]
+        if a < 200:
+            continue
+        opaque += 1
+        if is_studio_white(r, g, b, a):
+            white += 1
+    return white / opaque if opaque else 0.0
+
+
 def remove_studio_floor(im: Image.Image) -> Image.Image:
     """Clear baked white studio floor in bottom band only — never touches fur/garments."""
     im = im.convert("RGBA")
@@ -136,6 +170,31 @@ def remove_studio_floor(im: Image.Image) -> Image.Image:
             if is_character_pixel(r, g, b, tol=22):
                 continue
             if r >= 248 and g >= 248 and b >= 248:
+                px[x, y] = (r, g, b, 0)
+    return im
+
+
+def remove_bottom_stage(im: Image.Image) -> Image.Image:
+    """
+    Remove wide neutral-white studio stage under the cat.
+    AI exports bake the stage as #FAFAF8-like pixels that survive fur guards.
+    """
+    im = im.convert("RGBA")
+    px = im.load()
+    w, h = im.size
+    scan_from = int(h * 0.55)
+    stage_top = h
+    for y in range(h - 1, scan_from - 1, -1):
+        if row_studio_white_ratio(im, y) >= 0.34:
+            stage_top = y
+        elif stage_top < h:
+            break
+    if stage_top >= h:
+        return im
+    for y in range(stage_top, h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            if is_studio_white(r, g, b, a):
                 px[x, y] = (r, g, b, 0)
     return im
 
@@ -185,6 +244,7 @@ def process_file(path: Path, tol: int, trim: bool, sharpen: bool, normalize: boo
     before = Image.open(path)
     im = flood_background_to_alpha(before, tol=tol)
     im = remove_studio_floor(im)
+    im = remove_bottom_stage(im)
     if trim:
         im = trim_transparent(im, pad=10)
     if normalize and should_normalize(path):
