@@ -697,6 +697,11 @@
         });
         if (Math.random() < 0.35) {
           setPose('nod', { force: true, preload: false });
+          setTimeout(function () {
+            if (!currentChapter) return;
+            var hint = getHint(caseyData, currentChapter, currentTone);
+            setPose(chapterPose(currentChapter, !!hint, prm), { force: true, preload: false });
+          }, 520);
         }
       }, 48000 + Math.random() * 12000);
     }
@@ -763,13 +768,19 @@
       if (!newTone) return;
       currentTone = newTone;
       cards.forEach(function (card) { card.dataset.caseyTier = newTone; });
-      setPose('idle', { tierFade: true, force: true });
       var hint = currentChapter ? getHint(caseyData, currentChapter, newTone) : null;
+      var restorePose = currentChapter
+        ? chapterPose(currentChapter, !!hint, prm)
+        : (prm ? 'sleep' : 'idle');
+      setPose(restorePose, { tierFade: true, force: true });
       var toneLine = lineAt('case.toneSwitch', newTone);
       setBubble(hint || toneLine || voiceLineForChapter(caseyData, currentChapter || 'hook', newTone) || '');
       if (currentChapter) renderActionChips(caseyData, currentChapter, newTone, actionContainers);
       if (interactionsCfg) applyMotionTokens(interactionsCfg, newTone, cards);
       if (interactionsCfg) applyTierLabels(interactionsCfg);
+      ['idle', 'blink', 'nod', 'sleep', restorePose].forEach(function (p) {
+        if (p) preloadPose(assetBase, assetExt, newTone, p);
+      });
     });
 
     document.addEventListener('casebook-color-change', function () {
@@ -821,7 +832,7 @@
         dock.classList.add('casey-coach--minimal');
         dock.hidden = false;
       }
-      setPose('idle');
+      setPose('sleep');
       setBubble('');
       actionContainers.forEach(function (c) { c.hidden = true; });
     } else {
@@ -836,7 +847,18 @@
     loadInteractions(assetBase).then(function (cfg) {
       applyTierLabels(cfg);
       applyMotionTokens(cfg, currentTone, cards);
-      scheduleBlink(avatars, assetBase, assetExt, function () { return currentTone; }, cards);
+      scheduleBlink(
+        avatars,
+        assetBase,
+        assetExt,
+        function () { return currentTone; },
+        cards,
+        function () {
+          if (!currentChapter) return prm ? 'sleep' : 'idle';
+          var hint = getHint(caseyData, currentChapter, currentTone);
+          return chapterPose(currentChapter, !!hint, prm);
+        }
+      );
     });
 
     return { setPose: setPose, getChapter: function () { return currentChapter; } };
@@ -1019,7 +1041,7 @@
     var hubActionHoverTimer = null;
 
     function hubBasePose() {
-      if (getIntensity() === 'off') return 'idle';
+      if (getIntensity() === 'off') return 'sleep';
       if (prm) return 'sleep';
       return visited ? 'welcome' : 'present';
     }
@@ -1099,6 +1121,31 @@
         startHubIdleLoop();
         enableHubFloat();
       }
+    }
+
+    function preloadHubBundle(done) {
+      var poses = ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose(), 'sleep'];
+      var seen = {};
+      var list = poses.filter(function (p) {
+        if (!p || seen[p]) return false;
+        seen[p] = true;
+        return true;
+      });
+      if (!list.length) {
+        done();
+        return;
+      }
+      var pending = list.length;
+      list.forEach(function (p) {
+        var probe = new Image();
+        function finish() {
+          pending -= 1;
+          if (pending <= 0) done();
+        }
+        probe.onload = finish;
+        probe.onerror = finish;
+        probe.src = avatarSrc(assetBase, assetExt, currentTier, p);
+      });
     }
 
     function bindHubPlay() {
@@ -1186,7 +1233,11 @@
     ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose()].forEach(function (p) {
       preloadPose(assetBase, assetExt, currentTier, p);
     });
-    playHubEntrance();
+    if (hubFrame) hubFrame.classList.add('casey-hub__avatar--loading');
+    preloadHubBundle(function () {
+      if (hubFrame) hubFrame.classList.remove('casey-hub__avatar--loading');
+      playHubEntrance();
+    });
     bindHubPlay();
 
     function rotateGreeting() {
@@ -1226,6 +1277,9 @@
       currentTier = newTier;
       if (hubFrame) hubFrame.dataset.caseyTier = newTier;
       stopHubIdleLoop();
+      ['present', 'welcome', 'wave', 'blink', 'nod', 'idle', 'sleep'].forEach(function (p) {
+        preloadPose(assetBase, assetExt, newTier, p);
+      });
       if (avatar) {
         setImgPose(avatar, assetBase, assetExt, newTier, hubBasePose(), { tierFade: true });
       }
@@ -1234,7 +1288,23 @@
       }
       setGreetingText(lineAt('hub.toneSwitch', newTier) || pickInitialGreeting(newTier));
       hubEl.dataset.caseyTier = newTier;
-      startHubIdleLoop();
+      if (hubMotionAllowed()) startHubIdleLoop();
+    });
+
+    document.addEventListener('casey-companion-event', function (e) {
+      if (!e.detail || e.detail.type !== 'casey-intensity-change') return;
+      stopHubIdleLoop();
+      setHubBreathing(false);
+      if (hubPlayEl) hubPlayEl.classList.remove('casey-hub__avatar-wrap--float');
+      if (avatar) {
+        setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+      }
+      if (getIntensity() !== 'off' && hubMotionAllowed()) {
+        startHubIdleLoop();
+        enableHubFloat();
+      }
+      if (greetingEl) greetingEl.hidden = !shouldShowCaseyBehavior('bubble');
+      if (actionsEl) actionsEl.hidden = !shouldShowCaseyBehavior('chips');
     });
 
     document.addEventListener('casey-hub-filter', function (e) {
@@ -1245,6 +1315,9 @@
         stopHubIdleLoop();
         setHubBreathing(false);
       } else {
+        if (avatar) {
+          setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
+        }
         startRotation();
         startHubIdleLoop();
       }
@@ -1430,6 +1503,15 @@
     if (hubGreeting) hubGreeting.hidden = !shouldShowCaseyBehavior('bubble');
     var hubActions = document.querySelector('.casey-hub__actions');
     if (hubActions) hubActions.hidden = !shouldShowCaseyBehavior('chips');
+
+    var libAvatar = document.querySelector('[data-casey-library-avatar]');
+    if (libAvatar) {
+      var tier = readTier();
+      var assetBase = document.documentElement.dataset.assetBase || '/cases/assets/casey/';
+      var libPose = intensity === 'off' ? 'sleep' : 'read';
+      setImgPose(libAvatar, assetBase, 'png', tier, libPose, { preload: false });
+      if (intensity === 'off') libAvatar.classList.remove('casey-breathing');
+    }
   });
 
   window.CaseyCompanion = {

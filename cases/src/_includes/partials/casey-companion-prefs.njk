@@ -1,14 +1,43 @@
-{# Casey companion preferences — intensity + milestones (Casebook only) #}
-<div class="casebook-prefs casey-companion-prefs" data-casey-prefs-root>
-  <p class="casebook-prefs__label">Casey guide</p>
-  <div class="casebook-prefs__group" role="radiogroup" aria-label="Casey intensity">
-    <button type="button" class="casebook-prefs__menu" role="menuitemradio" data-casey-intensity="full" aria-checked="true">Full — hints, motion, voice</button>
-    <button type="button" class="casebook-prefs__menu" role="menuitemradio" data-casey-intensity="quiet" aria-checked="false">Quiet — no rotation or confetti</button>
-    <button type="button" class="casebook-prefs__menu" role="menuitemradio" data-casey-intensity="off" aria-checked="false">Off — avatar only</button>
-  </div>
-  <p class="casebook-prefs__label">Milestones</p>
-  <ul class="casey-prefs-milestones" data-casey-milestones aria-label="Your Casey milestones"></ul>
-  <p class="casebook-prefs__hint">
-    <a class="casebook-prefs__link" href="{{ '/?resetCompanion=1' | url }}">Reset Casey memory</a>
-  </p>
+{# Casey settings panel — tier, intensity, progress (Casebook header + mobile nav) #}
+<div class="casey-panel" data-casey-prefs-root data-casey-panel>
+  <header class="casey-panel__header">
+    <div class="casey-avatar-frame casey-panel__avatar-frame" data-casey-panel-avatar-wrap>
+      <img class="casey-avatar-frame__img casey-panel__avatar"
+           src="{{ '/assets/casey/junior/idle.png' | url }}?v=__AP_BUILD_ID__"
+           width="48" height="48"
+           alt=""
+           data-casey-panel-avatar
+           data-casey-frame-ready="1" />
+    </div>
+    <p class="casey-panel__title" data-casey-panel-tier-label>Casey · Junior dev</p>
+  </header>
+
+  <section class="casey-panel__section" aria-labelledby="casey-panel-tier-heading">
+    <h3 class="casebook-prefs__label" id="casey-panel-tier-heading">Reading level</h3>
+    <div class="casey-panel__tier case-tone" role="radiogroup" aria-label="Reading level">
+      <button type="button" class="case-tone__btn casey-panel__tier-btn" data-casey-panel-tier="junior" aria-pressed="true">Junior</button>
+      <button type="button" class="case-tone__btn casey-panel__tier-btn" data-casey-panel-tier="mid" aria-pressed="false">Mid</button>
+      <button type="button" class="case-tone__btn casey-panel__tier-btn" data-casey-panel-tier="staff" aria-pressed="false">Staff</button>
+    </div>
+  </section>
+
+  <section class="casey-panel__section" aria-labelledby="casey-panel-intensity-heading">
+    <h3 class="casebook-prefs__label" id="casey-panel-intensity-heading">Guide intensity</h3>
+    <div class="casebook-prefs__group" role="radiogroup" aria-label="Casey intensity">
+      <button type="button" class="casebook-prefs__menu casey-panel__intensity" role="radio" data-casey-intensity="full" aria-checked="true">Full — hints, motion, voice</button>
+      <button type="button" class="casebook-prefs__menu casey-panel__intensity" role="radio" data-casey-intensity="quiet" aria-checked="false">Quiet — no rotation or confetti</button>
+      <button type="button" class="casebook-prefs__menu casey-panel__intensity" role="radio" data-casey-intensity="off" aria-checked="false">Off — avatar only</button>
+    </div>
+  </section>
+
+  <section class="casey-panel__section" aria-labelledby="casey-panel-progress-heading">
+    <h3 class="casebook-prefs__label" id="casey-panel-progress-heading">Your path</h3>
+    <p class="casey-panel__progress" data-casey-panel-progress>0 of 31 live cases completed</p>
+    <ul class="casey-prefs-milestones" data-casey-milestones aria-label="Your Casey milestones"></ul>
+  </section>
+
+  <footer class="casey-panel__footer">
+    <a class="casebook-prefs__link" href="{{ '/about/' | url }}#casey">About Casey</a>
+    <button type="button" class="casebook-prefs__link casey-panel__reset" data-casey-reset>Reset memory</button>
+  </footer>
 </div>

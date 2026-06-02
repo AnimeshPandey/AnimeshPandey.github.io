@@ -32,6 +32,8 @@ install_one() {
 }
 
 echo "Installing Casey pose PNGs (512px)…"
+echo "Validating AI sources (floor band)…"
+python3 "$ROOT/scripts/validate-casey-src.py"
 for tier in "${TIERS[@]}"; do
   mkdir -p "$CASEY/$tier"
   for pose in "${CORE_POSES[@]}"; do

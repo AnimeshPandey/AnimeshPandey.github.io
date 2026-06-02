@@ -19,6 +19,7 @@ runNode(path.join(TESTS, 'sync-live-slugs.mjs'), path.join(TESTS, '..'));
 const scripts = [
   'assert-casey-fur.mjs',
   'assert-casey-no-checker.mjs',
+  'assert-casey-floor-matte.mjs',
   'assert-live-cases.mjs',
   'assert-deploy-routes.mjs',
   'assert-critical-assets.mjs',

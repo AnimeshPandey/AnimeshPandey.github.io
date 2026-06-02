@@ -122,6 +122,24 @@ def flood_background_to_alpha(im: Image.Image, tol: int = 20) -> Image.Image:
     return im
 
 
+def remove_studio_floor(im: Image.Image) -> Image.Image:
+    """Clear baked white studio floor in bottom band only — never touches fur/garments."""
+    im = im.convert("RGBA")
+    px = im.load()
+    w, h = im.size
+    y0 = int(h * 0.75)
+    for y in range(y0, h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            if a < 200:
+                continue
+            if is_character_pixel(r, g, b, tol=22):
+                continue
+            if r >= 248 and g >= 248 and b >= 248:
+                px[x, y] = (r, g, b, 0)
+    return im
+
+
 def normalize_canvas(im: Image.Image, size: int = 512, fill: float = 0.84) -> Image.Image:
     """Square canvas, consistent scale, feet anchored near bottom (tier/pose swap won't jump)."""
     im = trim_transparent(im, pad=10)
@@ -166,6 +184,7 @@ def polish(im: Image.Image) -> Image.Image:
 def process_file(path: Path, tol: int, trim: bool, sharpen: bool, normalize: bool) -> dict:
     before = Image.open(path)
     im = flood_background_to_alpha(before, tol=tol)
+    im = remove_studio_floor(im)
     if trim:
         im = trim_transparent(im, pad=10)
     if normalize and should_normalize(path):
