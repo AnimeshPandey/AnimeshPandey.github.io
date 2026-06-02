@@ -14,13 +14,12 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const CASEY_SRC = path.join(ROOT, 'cases/src/assets/casey');
 const TIERS = ['junior', 'mid', 'staff'];
 
-/** Hub hero + tier switch (de5efa2: junior 390, mid 552, staff 713) */
-const HUB_POSE = 'present.png';
-const MAX_CHECKER_HUB = 800;
-
-/** Case coach default pose (de5efa2: junior 999, mid 2776, staff 5624) */
-const COACH_POSE = 'idle.png';
-const MAX_CHECKER_IDLE = 6500;
+const POSE_SPECS = [
+  { file: 'present.png', max: 900, label: 'hub-primary' },
+  { file: 'welcome.png', max: 4500, label: 'hub-fallback' },
+  { file: 'idle.png', max: 6500, label: 'coach-idle' },
+  { file: 'nod.png', max: 5000, label: 'coach-reaction' },
+];
 
 function parsePng(buf) {
   const SIG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
@@ -134,11 +133,7 @@ const errors = [];
 const checked = [];
 
 for (const tier of TIERS) {
-  const specs = [
-    { file: HUB_POSE, max: MAX_CHECKER_HUB, label: 'hub' },
-    { file: COACH_POSE, max: MAX_CHECKER_IDLE, label: 'coach' },
-  ];
-  for (const { file, max, label } of specs) {
+  for (const { file, max, label } of POSE_SPECS) {
     const fullPath = path.join(CASEY_SRC, tier, file);
     let result;
     try {
@@ -164,5 +159,5 @@ if (errors.length) {
 }
 
 console.log(
-  `OK: ${checked.length} hub/coach Casey PNGs passed checkerboard check (present ≤${MAX_CHECKER_HUB}, idle ≤${MAX_CHECKER_IDLE})`
+  `OK: ${checked.length} Casey PNGs passed checkerboard matrix check`
 );

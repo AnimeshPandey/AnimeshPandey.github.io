@@ -7,7 +7,7 @@ import { deployRoot } from './deploy-root.mjs';
 
 const CASEY_DEPLOY = path.join(deployRoot(), 'cases/assets/casey');
 const TIERS = ['junior', 'mid', 'staff'];
-const POSES = ['present.png', 'idle.png'];
+const POSES = ['present.png', 'welcome.png', 'idle.png', 'nod.png'];
 const MAX_FLOOR = 100;
 
 function parsePng(buf) {
@@ -113,4 +113,4 @@ if (errors.length) {
   errors.forEach((e) => console.error('  ✗', e));
   process.exit(1);
 }
-console.log(`OK: ${checked.length} deployed PNGs passed floor matte check`);
+console.log(`OK: ${checked.length} deployed PNGs passed floor matte matrix check`);

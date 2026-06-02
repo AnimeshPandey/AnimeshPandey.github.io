@@ -29,7 +29,7 @@ def count_floor_band(im: Image.Image) -> int:
     y0 = int(h * 0.75)
     band = im.crop((0, y0, w, h))
     floor_px = 0
-    for r, g, b, a in band.get_flattened_data():
+    for r, g, b, a in band.getdata():
         if a < 200:
             continue
         if is_warm_fur(r, g, b):

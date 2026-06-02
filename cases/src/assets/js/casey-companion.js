@@ -1021,9 +1021,9 @@
         a.textContent = item.label;
         a.addEventListener('click', function () {
           if (!prm && avatar) {
-            setImgPose(avatar, assetBase, assetExt, currentTier, 'perk', { preload: false });
+            setImgPose(avatar, assetBase, assetExt, currentTier, 'nod', { preload: false });
             setTimeout(function () {
-              setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', { preload: false });
+              setImgPose(avatar, assetBase, assetExt, currentTier, 'present', { preload: false });
             }, 380);
           }
         });
@@ -1040,10 +1040,15 @@
     var hubIdleTimer = null;
     var hubActionHoverTimer = null;
 
+    function safeHubPose(pose) {
+      if (pose === 'wave' || pose === 'perk' || pose === 'welcome') return 'present';
+      return pose || 'present';
+    }
+
     function hubBasePose() {
       if (getIntensity() === 'off') return 'sleep';
       if (prm) return 'sleep';
-      return visited ? 'welcome' : 'present';
+      return 'present';
     }
 
     function hubMotionAllowed() {
@@ -1109,7 +1114,7 @@
       if (!visited) {
         setImgPose(avatar, assetBase, assetExt, currentTier, 'present', { alt: alt });
         setTimeout(function () {
-          setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', {});
+          setImgPose(avatar, assetBase, assetExt, currentTier, 'nod', {});
           setTimeout(function () {
             setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), {});
             startHubIdleLoop();
@@ -1124,7 +1129,7 @@
     }
 
     function preloadHubBundle(done) {
-      var poses = ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose(), 'sleep'];
+      var poses = ['present', 'blink', 'nod', hubBasePose(), 'sleep'];
       var seen = {};
       var list = poses.filter(function (p) {
         if (!p || seen[p]) return false;
@@ -1157,7 +1162,7 @@
         setHubBreathing(false);
         burstHubSparkles(hubEl);
         hubAvatarWiggle(hubPlayEl);
-        setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', { preload: false });
+        setImgPose(avatar, assetBase, assetExt, currentTier, 'nod', { preload: false });
         var quip = lineAt('hub.clickHi', currentTier);
         if (quip && shouldShowCaseyBehavior('bubble')) setGreetingText(quip);
         setTimeout(function () {
@@ -1196,7 +1201,7 @@
           if (!link || !hubMotionAllowed() || filterActive) return;
           if (hubActionHoverTimer) clearTimeout(hubActionHoverTimer);
           setHubBreathing(false);
-          var pose = link.classList.contains('casey-hub__action--primary') ? 'nod' : 'perk';
+          var pose = 'nod';
           setImgPose(avatar, assetBase, assetExt, currentTier, pose, { preload: false });
         }, true);
         actionsEl.addEventListener('mouseleave', function (e) {
@@ -1230,7 +1235,7 @@
     }
     setGreetingText(pickInitialGreeting(currentTier));
     renderHubActions();
-    ['present', 'welcome', 'wave', 'blink', 'nod', hubBasePose()].forEach(function (p) {
+    ['present', 'blink', 'nod', hubBasePose()].forEach(function (p) {
       preloadPose(assetBase, assetExt, currentTier, p);
     });
     if (hubFrame) hubFrame.classList.add('casey-hub__avatar--loading');
@@ -1277,7 +1282,7 @@
       currentTier = newTier;
       if (hubFrame) hubFrame.dataset.caseyTier = newTier;
       stopHubIdleLoop();
-      ['present', 'welcome', 'wave', 'blink', 'nod', 'idle', 'sleep'].forEach(function (p) {
+      ['present', 'blink', 'nod', 'idle', 'sleep'].forEach(function (p) {
         preloadPose(assetBase, assetExt, newTier, p);
       });
       if (avatar) {
@@ -1329,7 +1334,7 @@
       });
       if (shouldShowCaseyBehavior('bubble') && sug.line) setGreetingText(sug.line);
       if (avatar && sug.pose) {
-        setImgPose(avatar, assetBase, assetExt, currentTier, sug.pose, { preload: false });
+        setImgPose(avatar, assetBase, assetExt, currentTier, safeHubPose(sug.pose), { preload: false });
       }
       var emptyImg = document.querySelector('#hub-grid-empty .hub-empty__img');
       if (emptyImg && d.track) {
