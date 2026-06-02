@@ -10,7 +10,7 @@ import { fileURLToPath } from 'url';
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const CASEY_SRC = path.join(ROOT, 'cases/src/assets/casey');
 const TIERS = ['junior', 'mid', 'staff'];
-const POSES = ['present.png', 'idle.png'];
+const POSES = ['present.png', 'welcome.png', 'idle.png', 'nod.png'];
 const MAX_FLOOR = 100;
 
 function parsePng(buf) {
@@ -116,4 +116,4 @@ if (errors.length) {
   errors.forEach((e) => console.error('  ✗', e));
   process.exit(1);
 }
-console.log(`OK: ${checked.length} hub/coach PNGs passed floor matte check (≤${MAX_FLOOR} bottom-band pixels)`);
+console.log(`OK: ${checked.length} Casey PNGs passed floor matte matrix check (≤${MAX_FLOOR} bottom-band pixels)`);

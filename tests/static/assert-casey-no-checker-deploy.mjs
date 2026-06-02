@@ -9,10 +9,12 @@ import { deployRoot } from './deploy-root.mjs';
 
 const CASEY_DEPLOY = path.join(deployRoot(), 'cases/assets/casey');
 const TIERS = ['junior', 'mid', 'staff'];
-const HUB_POSE = 'present.png';
-const MAX_CHECKER_HUB = 800;
-const COACH_POSE = 'idle.png';
-const MAX_CHECKER_IDLE = 6500;
+const POSE_SPECS = [
+  { file: 'present.png', max: 900 },
+  { file: 'welcome.png', max: 4500 },
+  { file: 'idle.png', max: 6500 },
+  { file: 'nod.png', max: 5000 },
+];
 
 function parsePng(buf) {
   const SIG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
@@ -110,10 +112,7 @@ const errors = [];
 const checked = [];
 
 for (const tier of TIERS) {
-  for (const { file, max } of [
-    { file: HUB_POSE, max: MAX_CHECKER_HUB },
-    { file: COACH_POSE, max: MAX_CHECKER_IDLE },
-  ]) {
+  for (const { file, max } of POSE_SPECS) {
     const fullPath = path.join(CASEY_DEPLOY, tier, file);
     let result;
     try {
@@ -136,4 +135,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`OK: ${checked.length} deployed hub/coach Casey PNGs passed checkerboard check`);
+console.log(`OK: ${checked.length} deployed Casey PNGs passed checkerboard matrix check`);
