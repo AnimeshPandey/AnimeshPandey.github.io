@@ -1,0 +1,11 @@
+---
+description: Verification required before claiming fixes are complete
+alwaysApply: true
+---
+
+# Verification policy
+
+- Before stating "tests pass" or "deploy is green", run `npm run test:static` at minimum.
+- If the change touches `cases/src/assets/js/**` or `cases/src/assets/casey/**` or `cases/scripts/**`, run `npm test` (not only static tests).
+- When possible, mention the exact command run in the response (static vs full).
+

@@ -1,0 +1,19 @@
+---
+description: Casey PNG pipeline workflow (validate, install, CI)
+globs: cases/**
+alwaysApply: false
+---
+
+# Casey asset workflow
+
+When editing or regenerating Casey assets:
+
+- Do not hand-edit PNG pixels. Use:
+  - `cases/scripts/fix-casey-transparency.py`
+  - `cases/scripts/install-casey-pngs.sh`
+- If you change `cases/scripts/fix-casey-transparency.py`, run `npm run test:static` after regeneration.
+- Ensure floor/stage and checkerboard constraints remain enforced by static checks:
+  - `tests/static/assert-casey-floor-matte*.mjs`
+  - `tests/static/assert-casey-no-checker*.mjs`
+- If a task claims the hub/coach visuals are fixed, also include evidence from the relevant static checks.
+

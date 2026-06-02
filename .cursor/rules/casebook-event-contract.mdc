@@ -1,0 +1,16 @@
+---
+description: Use the casebook event bus contract for UI state
+globs: cases/src/assets/js/**
+alwaysApply: false
+---
+
+# Event bus contract
+
+- Use custom DOM events for cross-surface state:
+  - `casebook-tone-change`
+  - `casebook-color-change`
+  - `casey-companion-event`
+  - `casey-hub-filter`
+- Do not rely on module-to-module imports for state synchronization.
+- Prefer `document.addEventListener(...` and `document.dispatchEvent(new CustomEvent(...))`.
+
