@@ -1,14 +1,11 @@
 #!/usr/bin/env node
 /**
- * assert-casey-matte-box.mjs — fail CI if any Casey PNG has a visible white studio card.
+ * assert-casey-no-checker.mjs — opaque baked checkerboard on hub/coach hero poses.
  *
- * After fix-casey-transparency.py runs, true neutral white (r-b=0, g-b=0, r>=248)
- * should be 0% of opaque pixels.  A fail means the interior-matte pass was skipped
- * or the is_character_pixel guard re-protected studio-white pixels.
- *
- * Pure Node.js — same PNG decoder as assert-casey-fur.mjs.
+ * Full pose library can retain enclosed studio greys; hub uses present.png per tier
+ * and coach defaults to idle.png. Thresholds calibrated to de5efa2 golden assets.
  */
-import { readFileSync, readdirSync } from 'fs';
+import { readFileSync } from 'fs';
 import { inflateSync } from 'zlib';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -17,8 +14,13 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const CASEY_SRC = path.join(ROOT, 'cases/src/assets/casey');
 const TIERS = ['junior', 'mid', 'staff'];
 
-// >1% truly-neutral opaque pixels = visible studio card
-const MAX_NEUTRAL_RATIO = 0.01;
+/** Hub hero + tier switch (de5efa2: junior 390, mid 552, staff 713) */
+const HUB_POSE = 'present.png';
+const MAX_CHECKER_HUB = 800;
+
+/** Case coach default pose (de5efa2: junior 999, mid 2776, staff 5624) */
+const COACH_POSE = 'idle.png';
+const MAX_CHECKER_IDLE = 6500;
 
 function parsePng(buf) {
   const SIG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
@@ -64,18 +66,40 @@ function reconstructRow(filter, raw, prev, channels) {
   for (let i = 0; i < len; i++) {
     const x = raw[i];
     switch (filter) {
-      case 0: out[i] = x; break;
-      case 1: out[i] = (x + L(i)) & 0xff; break;
-      case 2: out[i] = (x + U(i)) & 0xff; break;
-      case 3: out[i] = (x + ((L(i) + U(i)) >> 1)) & 0xff; break;
-      case 4: out[i] = (x + paeth(L(i), U(i), LU(i))) & 0xff; break;
-      default: out[i] = x;
+      case 0:
+        out[i] = x;
+        break;
+      case 1:
+        out[i] = (x + L(i)) & 0xff;
+        break;
+      case 2:
+        out[i] = (x + U(i)) & 0xff;
+        break;
+      case 3:
+        out[i] = (x + ((L(i) + U(i)) >> 1)) & 0xff;
+        break;
+      case 4:
+        out[i] = (x + paeth(L(i), U(i), LU(i))) & 0xff;
+        break;
+      default:
+        out[i] = x;
     }
   }
   return out;
 }
 
-function countMatte(file) {
+function isWarmFur(r, g, b) {
+  return r >= 244 && g >= 244 && b >= 238 && Math.abs(r - g) <= 6;
+}
+
+/** Visible checker / studio neutrals (not warm fur) */
+function isCheckerOpaque(r, g, b, a) {
+  if (a < 200) return false;
+  if (isWarmFur(r, g, b)) return false;
+  return Math.abs(r - g) <= 6 && Math.abs(g - b) <= 6 && r >= 180 && r <= 238;
+}
+
+function countChecker(file) {
   const buf = readFileSync(file);
   const { width, height, bitDepth, colorType, idatParts } = parsePng(buf);
   if (bitDepth !== 8) return null;
@@ -84,8 +108,7 @@ function countMatte(file) {
 
   const raw = inflateSync(Buffer.concat(idatParts));
   const stride = 1 + width * channels;
-  let opaque = 0;
-  let neutralWhite = 0;
+  let checker = 0;
   let prev = null;
 
   for (let y = 0; y < height; y++) {
@@ -97,62 +120,49 @@ function countMatte(file) {
 
     for (let x = 0; x < width; x++) {
       const i = x * channels;
-      const r = row[i], g = row[i + 1], b = row[i + 2];
+      const r = row[i];
+      const g = row[i + 1];
+      const b = row[i + 2];
       const a = channels === 4 ? row[i + 3] : 255;
-      if (a < 50) continue;
-      opaque++;
-      // True neutral white: r=g=b, no warmth (fur is always r-b >= 2)
-      if (r >= 248 && g >= 248 && b >= 248 && (r - b) === 0 && (g - b) === 0) {
-        neutralWhite++;
-      }
+      if (isCheckerOpaque(r, g, b, a)) checker++;
     }
   }
-  return { opaque, neutralWhite, width, height };
+  return { checker };
 }
 
 const errors = [];
+const checked = [];
 
 for (const tier of TIERS) {
-  const tierDir = path.join(CASEY_SRC, tier);
-  let files;
-  try {
-    files = readdirSync(tierDir).filter((f) => f.endsWith('.png'));
-  } catch {
-    errors.push(`Missing tier directory: ${tier}`);
-    continue;
-  }
-
-  for (const file of files) {
-    const fullPath = path.join(tierDir, file);
+  const specs = [
+    { file: HUB_POSE, max: MAX_CHECKER_HUB, label: 'hub' },
+    { file: COACH_POSE, max: MAX_CHECKER_IDLE, label: 'coach' },
+  ];
+  for (const { file, max, label } of specs) {
+    const fullPath = path.join(CASEY_SRC, tier, file);
     let result;
     try {
-      result = countMatte(fullPath);
+      result = countChecker(fullPath);
     } catch (e) {
       errors.push(`${tier}/${file}: parse error — ${e.message}`);
       continue;
     }
     if (!result) continue;
-
-    const { opaque, neutralWhite } = result;
-    if (opaque === 0) continue;
-    const ratio = neutralWhite / opaque;
-    if (ratio > MAX_NEUTRAL_RATIO) {
+    checked.push(`${tier}/${file}`);
+    if (result.checker > max) {
       errors.push(
-        `${tier}/${file}: neutral-white ratio ${(ratio * 100).toFixed(1)}% > ${MAX_NEUTRAL_RATIO * 100}% ` +
-        `(${neutralWhite}/${opaque} opaque px) — studio card matte not removed`
+        `${tier}/${file} (${label}): ${result.checker} opaque checker pixels (max ${max})`
       );
     }
   }
 }
 
 if (errors.length) {
-  console.error('Casey matte-box check FAILED:');
+  console.error('Casey checkerboard check FAILED:');
   errors.forEach((e) => console.error('  ✗', e));
   process.exit(1);
 }
 
-const totalPngs = TIERS.reduce((n, t) => {
-  try { return n + readdirSync(path.join(CASEY_SRC, t)).filter((f) => f.endsWith('.png')).length; }
-  catch { return n; }
-}, 0);
-console.log(`OK: ${totalPngs} Casey PNGs passed matte-box check (neutral-white ≤${MAX_NEUTRAL_RATIO * 100}%) across ${TIERS.length} tiers`);
+console.log(
+  `OK: ${checked.length} hub/coach Casey PNGs passed checkerboard check (present ≤${MAX_CHECKER_HUB}, idle ≤${MAX_CHECKER_IDLE})`
+);

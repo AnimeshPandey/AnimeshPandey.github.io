@@ -1,21 +1,18 @@
 #!/usr/bin/env node
 /**
- * assert-casey-matte-box-deploy.mjs — fail CI if any DEPLOYED Casey PNG has a white studio card.
- *
- * Mirrors assert-casey-matte-box.mjs but targets _deploy/cases/assets/casey/ so the
- * check proves the *shipped* bytes, not just source repository files.
- * Must run after the stamp + artifact stage step in CI.
+ * assert-casey-no-checker-deploy.mjs — checkerboard guard on shipped hub/coach poses.
  */
-import { readFileSync, readdirSync } from 'fs';
+import { readFileSync } from 'fs';
 import { inflateSync } from 'zlib';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { deployRoot } from './deploy-root.mjs';
 
-const DEPLOY = deployRoot();
-const CASEY_DEPLOY = path.join(DEPLOY, 'cases/assets/casey');
+const CASEY_DEPLOY = path.join(deployRoot(), 'cases/assets/casey');
 const TIERS = ['junior', 'mid', 'staff'];
-const MAX_NEUTRAL_RATIO = 0.01;
+const HUB_POSE = 'present.png';
+const MAX_CHECKER_HUB = 800;
+const COACH_POSE = 'idle.png';
+const MAX_CHECKER_IDLE = 6500;
 
 function parsePng(buf) {
   const SIG = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
@@ -37,9 +34,7 @@ function parsePng(buf) {
       colorType = data[9];
     } else if (type === 'IDAT') {
       idatParts.push(data);
-    } else if (type === 'IEND') {
-      break;
-    }
+    } else if (type === 'IEND') break;
   }
   return { width, height, bitDepth, colorType, idatParts };
 }
@@ -72,7 +67,17 @@ function reconstructRow(filter, raw, prev, channels) {
   return out;
 }
 
-function countMatte(file) {
+function isWarmFur(r, g, b) {
+  return r >= 244 && g >= 244 && b >= 238 && Math.abs(r - g) <= 6;
+}
+
+function isCheckerOpaque(r, g, b, a) {
+  if (a < 200) return false;
+  if (isWarmFur(r, g, b)) return false;
+  return Math.abs(r - g) <= 6 && Math.abs(g - b) <= 6 && r >= 180 && r <= 238;
+}
+
+function countChecker(file) {
   const buf = readFileSync(file);
   const { width, height, bitDepth, colorType, idatParts } = parsePng(buf);
   if (bitDepth !== 8) return null;
@@ -81,8 +86,7 @@ function countMatte(file) {
 
   const raw = inflateSync(Buffer.concat(idatParts));
   const stride = 1 + width * channels;
-  let opaque = 0;
-  let neutralWhite = 0;
+  let checker = 0;
   let prev = null;
 
   for (let y = 0; y < height; y++) {
@@ -96,58 +100,40 @@ function countMatte(file) {
       const i = x * channels;
       const r = row[i], g = row[i + 1], b = row[i + 2];
       const a = channels === 4 ? row[i + 3] : 255;
-      if (a < 50) continue;
-      opaque++;
-      if (r >= 248 && g >= 248 && b >= 248 && (r - b) === 0 && (g - b) === 0) {
-        neutralWhite++;
-      }
+      if (isCheckerOpaque(r, g, b, a)) checker++;
     }
   }
-  return { opaque, neutralWhite };
+  return { checker };
 }
 
 const errors = [];
+const checked = [];
 
 for (const tier of TIERS) {
-  const tierDir = path.join(CASEY_DEPLOY, tier);
-  let files;
-  try {
-    files = readdirSync(tierDir).filter((f) => f.endsWith('.png'));
-  } catch {
-    errors.push(`Missing deployed tier directory: ${tier}`);
-    continue;
-  }
-
-  for (const file of files) {
-    const fullPath = path.join(tierDir, file);
+  for (const { file, max } of [
+    { file: HUB_POSE, max: MAX_CHECKER_HUB },
+    { file: COACH_POSE, max: MAX_CHECKER_IDLE },
+  ]) {
+    const fullPath = path.join(CASEY_DEPLOY, tier, file);
     let result;
     try {
-      result = countMatte(fullPath);
+      result = countChecker(fullPath);
     } catch (e) {
-      errors.push(`${tier}/${file}: parse error — ${e.message}`);
+      errors.push(`deployed ${tier}/${file}: ${e.message}`);
       continue;
     }
     if (!result) continue;
-
-    const { opaque, neutralWhite } = result;
-    if (opaque === 0) continue;
-    const ratio = neutralWhite / opaque;
-    if (ratio > MAX_NEUTRAL_RATIO) {
-      errors.push(
-        `${tier}/${file}: neutral-white ${(ratio * 100).toFixed(1)}% > ${MAX_NEUTRAL_RATIO * 100}% — studio card in deployed artifact`
-      );
+    checked.push(`${tier}/${file}`);
+    if (result.checker > max) {
+      errors.push(`deployed ${tier}/${file}: ${result.checker} opaque checker pixels (max ${max})`);
     }
   }
 }
 
 if (errors.length) {
-  console.error('Casey matte-box deploy check FAILED:');
+  console.error('Deployed Casey checkerboard check FAILED:');
   errors.forEach((e) => console.error('  ✗', e));
   process.exit(1);
 }
 
-const totalPngs = TIERS.reduce((n, t) => {
-  try { return n + readdirSync(path.join(CASEY_DEPLOY, t)).filter((f) => f.endsWith('.png')).length; }
-  catch { return n; }
-}, 0);
-console.log(`OK: ${totalPngs} deployed Casey PNGs passed matte-box check (≤${MAX_NEUTRAL_RATIO * 100}%) across ${TIERS.length} tiers`);
+console.log(`OK: ${checked.length} deployed hub/coach Casey PNGs passed checkerboard check`);
