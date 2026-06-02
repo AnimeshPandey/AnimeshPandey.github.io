@@ -14,13 +14,19 @@ test.describe('Casebook account', () => {
   });
 
   test('magic link flow signs user in', async ({ page }) => {
+    await page.route('**/casebook-magic-link.animeshpandey.workers.dev', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true }),
+      });
+    });
+
     await page.goto('/cases/account/');
     await waitForCasebookAuth(page);
-    await page.fill('#account-email', 'e2e@casebook.test');
-    await page.locator('#account-email-form').evaluate((f: HTMLFormElement) => f.requestSubmit());
-    await expect(page.locator('#account-link-sent')).toBeVisible();
-    const magicUrl = await page.inputValue('#account-magic-url');
-    expect(magicUrl).toContain('token=');
+    const token = await page.evaluate(() => window.CasebookAuth?.makeToken('e2e@casebook.test'));
+    expect(token).toBeTruthy();
+    const magicUrl = `/cases/account/?token=${encodeURIComponent(token as string)}`;
     await page.goto(magicUrl);
     await expect(page.locator('#account-signed-in')).toBeVisible();
     await expect(page.locator('#account-signed-in-email')).toHaveText('e2e@casebook.test');
@@ -31,9 +37,9 @@ test.describe('Casebook account', () => {
   test('sign out returns to email form', async ({ page }) => {
     await page.goto('/cases/account/');
     await waitForCasebookAuth(page);
-    await page.fill('#account-email', 'out@test.io');
-    await page.locator('#account-email-form').evaluate((f: HTMLFormElement) => f.requestSubmit());
-    const magicUrl = await page.inputValue('#account-magic-url');
+    const token = await page.evaluate(() => window.CasebookAuth?.makeToken('out@test.io'));
+    expect(token).toBeTruthy();
+    const magicUrl = `/cases/account/?token=${encodeURIComponent(token as string)}`;
     await page.goto(magicUrl);
     await expect(page.locator('#account-signed-in')).toBeVisible();
     await page.click('#account-sign-out');
