@@ -274,7 +274,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 
 /* ── Desktop aside ── */
-@media (min-width: 768px) {
+@media (min-width: 820px) {
   .casey-coach {
     display: block;
     position: sticky;
@@ -298,7 +298,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   padding: 10px max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-bottom));
   padding-right: max(12px, env(safe-area-inset-right));
 }
-@media (min-width: 768px) {
+@media (min-width: 820px) {
   .casey-coach--dock-bottom { display: none; }
 }
 
@@ -308,6 +308,15 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   flex-shrink: 0;
   border: 2px solid var(--casebook-border);
   background: transparent;
+}
+@media (min-width: 820px) {
+  .casey-coach__avatar-frame {
+    width: 72px;
+    height: 72px;
+  }
+  .casey-coach__avatar {
+    object-position: center 42%;
+  }
 }
 
 .casey-coach__avatar {
@@ -413,18 +422,22 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 
 .casey-hub__avatar-wrap .casey-avatar-frame,
 .casey-hub__avatar-frame {
-  width: 80px;
-  height: 80px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
 }
 
+.casey-hub__avatar-frame.casey-hub__avatar--loading {
+  opacity: 0;
+  pointer-events: none;
+}
 
-@media (min-width: 600px) {
-  .casey-hub__avatar-wrap .casey-avatar-frame { width: 100px; height: 100px; }
+@media (min-width: 768px) {
+  .casey-hub__avatar-wrap .casey-avatar-frame { width: 112px; height: 112px; }
 }
 
 @media (min-width: 900px) {
-  .casey-hub__avatar-wrap .casey-avatar-frame { width: 120px; height: 120px; }
+  .casey-hub__avatar-wrap .casey-avatar-frame { width: 128px; height: 128px; }
 }
 
 .casey-library__img.casey-avatar-frame__img,
@@ -515,6 +528,19 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   display: inline-flex; align-items: center; justify-content: center;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
+.casebook-prefs__trigger.casey-panel__trigger {
+  width: auto;
+  min-width: 44px;
+  padding: 0 10px 0 6px;
+  gap: 4px;
+}
+.casey-panel__trigger-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 .casebook-prefs__trigger:hover,
 .casebook-prefs__trigger[aria-expanded="true"] {
   color: var(--casebook-accent);
@@ -530,6 +556,12 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   box-shadow: 0 8px 32px rgba(0,0,0,.14), 0 2px 8px rgba(0,0,0,.06);
   padding: 10px 8px;
   z-index: 300;
+}
+.casebook-prefs__menu.casey-panel__menu {
+  min-width: 280px;
+  max-width: 320px;
+  padding: 0;
+  overflow: hidden;
 }
 .casebook-prefs__trigger-label {
   font-family: var(--mono, monospace);
@@ -602,6 +634,117 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 
 .casey-companion-prefs .casebook-prefs__group {
   display: flex; flex-direction: column; gap: 2px;
+}
+
+/* ── Casey settings panel ── */
+.casey-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.casey-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--casebook-border);
+}
+.casey-panel__avatar-frame {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  background: transparent;
+}
+.casey-panel__avatar {
+  display: block;
+}
+.casey-panel__title {
+  margin: 0;
+  font-family: var(--mono, monospace);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--casebook-ink);
+}
+.casey-panel__section {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--casebook-border);
+}
+.casey-panel__section:last-of-type {
+  border-bottom: none;
+}
+.casey-panel__tier {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.casey-panel__tier-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+}
+.casey-panel__intensity {
+  width: 100%;
+  text-align: left;
+  font-family: var(--sans, system-ui);
+  font-size: 13px;
+  padding: 8px 10px;
+  min-height: 36px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--casebook-ink-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, color 0.15s;
+}
+.casey-panel__intensity:hover,
+.casey-panel__intensity[aria-checked="true"] {
+  background: var(--casebook-surface-2);
+  color: var(--casebook-ink);
+}
+.casey-panel__intensity[aria-checked="true"] {
+  font-weight: 500;
+}
+.casey-panel__intensity::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--casebook-border);
+  flex-shrink: 0;
+}
+.casey-panel__intensity[aria-checked="true"]::before {
+  background: var(--casebook-accent);
+  border-color: var(--casebook-accent);
+}
+.casey-panel__progress {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--casebook-ink-muted);
+  padding: 0 2px;
+}
+.casey-panel__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--casebook-border);
+}
+.casey-panel__reset {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 6px 0;
+}
+.mobile-nav-footer__casey .casey-panel {
+  border: 1px solid var(--casebook-border);
+  border-radius: 10px;
+  background: var(--casebook-surface-2);
+  margin-top: 8px;
 }
 .casey-prefs-milestones {
   list-style: none; margin: 0; padding: 4px 10px 8px;

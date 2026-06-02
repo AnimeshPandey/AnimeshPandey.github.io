@@ -44,13 +44,14 @@
         {% if product == 'casebook' %}
         {% include "partials/casebook-preferences.njk" %}
         <div class="casebook-prefs">
-          <button type="button" class="casebook-prefs__trigger platform-icon-btn" id="casebook-prefs-btn"
+          <button type="button" class="casebook-prefs__trigger casey-panel__trigger platform-icon-btn" id="casebook-prefs-btn"
                   aria-expanded="false" aria-controls="casebook-prefs-menu"
-                  aria-label="Casebook display and Casey settings">
-            <svg class="icon-sm" aria-hidden="true"><use href="#i-more"/></svg>
+                  aria-haspopup="dialog"
+                  aria-label="Casey guide settings">
+            <img class="casey-panel__trigger-img" src="{{ '/assets/casey/junior/idle.png' | url }}?v=__AP_BUILD_ID__" width="24" height="24" alt="" data-casey-trigger-avatar aria-hidden="true" />
             <span class="casebook-prefs__trigger-label">Casey</span>
           </button>
-          <div id="casebook-prefs-menu" class="casebook-prefs__menu prefs-menu" role="menu" hidden>
+          <div id="casebook-prefs-menu" class="casebook-prefs__menu casey-panel__menu prefs-menu" role="dialog" aria-label="Casey guide settings" hidden>
             {% include "partials/casey-companion-prefs.njk" %}
           </div>
         </div>

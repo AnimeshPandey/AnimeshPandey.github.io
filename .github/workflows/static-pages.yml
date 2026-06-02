@@ -124,6 +124,7 @@ jobs:
           cd tests
           node static/assert-casey-fur-deploy.mjs
           node static/assert-casey-no-checker-deploy.mjs
+          node static/assert-casey-floor-matte-deploy.mjs
           node static/assert-casey-html-bust.mjs
 
       # ── Inject secrets ─────────────────────────────────────────────────────

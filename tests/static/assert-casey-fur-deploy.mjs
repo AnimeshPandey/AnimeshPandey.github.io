@@ -146,4 +146,11 @@ const totalPngs = TIERS.reduce((n, t) => {
   try { return n + readdirSync(path.join(CASEY_DEPLOY, t)).filter((f) => f.endsWith('.png')).length; }
   catch { return n; }
 }, 0);
+
+const MIN_PNG_INVENTORY = 48;
+if (totalPngs < MIN_PNG_INVENTORY) {
+  console.error(`Deployed Casey fur check FAILED: only ${totalPngs} tier PNGs (need ≥${MIN_PNG_INVENTORY})`);
+  process.exit(1);
+}
+
 console.log(`OK: ${totalPngs} deployed Casey PNGs passed fur check across ${TIERS.length} tiers`);
