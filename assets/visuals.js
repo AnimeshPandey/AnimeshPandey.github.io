@@ -309,17 +309,15 @@
      PROJECT CARD EXPAND — "Read more" for clamped descs
      ══════════════════════════════════════════════════ */
   function initCardExpand() {
-    document.querySelectorAll('.pc-desc').forEach(function (desc) {
-      /* Only add toggle if text is actually clamped */
-      if (desc.scrollHeight <= desc.clientHeight + 2) return;
-
+    var descs = Array.from(document.querySelectorAll('.pc-desc'));
+    /* Read all layout props in one pass before any DOM mutation (avoids forced reflow per item) */
+    var clamped = descs.filter(function (d) { return d.scrollHeight > d.clientHeight + 2; });
+    clamped.forEach(function (desc) {
       var btn = document.createElement('button');
       btn.className = 'pc-read-more';
       btn.textContent = 'Read more ↓';
       btn.setAttribute('aria-expanded', 'false');
-
       desc.parentNode.insertBefore(btn, desc.nextSibling);
-
       btn.addEventListener('click', function () {
         var expanded = desc.classList.toggle('expanded');
         btn.textContent = expanded ? 'Show less ↑' : 'Read more ↓';
@@ -431,7 +429,7 @@
       .then(function () {
         if (window.Eggs && window.Eggs.boot) window.Eggs.boot(tier, caps);
       })
-      .catch(function (err) { console.warn('[eggs] load failed', err); });
+      .catch(function () { /* eggs degraded silently */ });
   }
 
   function initSkillsConstellationHint() {
@@ -607,8 +605,7 @@
         .then(function () { return loadScript('/assets/recruiter.js'); })
         .then(function () { return window.RecruiterBriefing || {}; })
         .catch(function (err) {
-          console.warn('[recruiter] module load failed', err);
-          return {};
+          return {}; /* recruiter module degraded silently */
         });
       return _loadPromise;
     }

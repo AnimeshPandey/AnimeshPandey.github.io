@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Install casebook dependencies
         working-directory: cases
@@ -78,6 +78,35 @@ jobs:
           if grep -rq '__AP_BUILD_ID__' _deploy 2>/dev/null; then
             echo "::warning::Some __AP_BUILD_ID__ placeholders remain (non-html/js assets are OK)"
           fi
+
+      - name: Minify CSS and JS in staged artifact
+        run: |
+          set -euo pipefail
+          cd _deploy
+
+          CSS_FILES=(
+            assets/site.css
+            assets/theme.css
+            assets/styles/foundation.css
+            assets/platform/chrome.css
+            assets/platform/prefs-chrome.css
+            assets/platform/shell.css
+            assets/styles/components/button.css
+          )
+          for f in "${CSS_FILES[@]}"; do
+            [ -f "$f" ] && npx --yes clean-css-cli -o "$f" "$f" && echo "minified $f"
+          done
+
+          JS_FILES=(
+            assets/visuals.js
+            assets/nav.js
+            assets/sw-migrate.js
+          )
+          for f in "${JS_FILES[@]}"; do
+            [ -f "$f" ] && npx --yes terser "$f" -o "$f" --compress --mangle && echo "minified $f"
+          done
+
+          echo "✓ CSS/JS minification complete"
 
       - name: Static and unit tests on staged artifact
         env:
