@@ -1,0 +1,12 @@
+---
+description: Forbid em dash punctuation (U+2014)
+alwaysApply: true
+---
+
+# No em dash
+
+Do not use the em dash character `U+2014` anywhere in code, docs, or agent responses.
+
+- Use `-` or `--` for dash usage.
+- Use commas, parentheses, or colons for separation.
+
