@@ -11,6 +11,8 @@
   (function(){
     var v=['light','dark','sage','slate','dusk','high-contrast'];
     var t=localStorage.getItem('theme');
+    /* F33 — auto high-contrast if system requests it and user hasn't overridden */
+    if(!t && window.matchMedia && window.matchMedia('(prefers-contrast: more)').matches) t='high-contrast';
     document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'high-contrast';
     var l=localStorage.getItem('locale');
     if(l){document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl';}
@@ -30,6 +32,8 @@
   <meta name="author" content="Animesh Pandey" />
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
   <meta name="theme-color" content="#FAF8F4" />
+  <!-- H45: color-scheme meta — synced to active theme by theme.js -->
+  <meta name="color-scheme" content="dark" />
   <link rel="canonical" href="https://anmshpndy.com/" />
   <!-- hreflang — locale is client-side state; canonical URL stays https://anmshpndy.com/ -->
   <link rel="alternate" hreflang="en" href="https://anmshpndy.com/" />
@@ -369,6 +373,9 @@
     </symbol>
     <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
     </symbol>
     <symbol id="i-more" viewBox="0 0 18 18" fill="currentColor">
       <circle cx="3" cy="9" r="1.5"/><circle cx="9" cy="9" r="1.5"/><circle cx="15" cy="9" r="1.5"/>
@@ -722,6 +729,18 @@
         <div class="stat-l" data-i18n="stats.mentored">Engineers mentored</div>
       </div>
     </div>
+    <!-- G41: Career mini-bar — JS fills segment widths based on actual tenure -->
+    <div class="career-bar fade-up" role="img" aria-label="Career progression timeline" id="careerBar">
+      <div class="career-seg career-seg--vassar" data-company="Vassar Labs" data-from="2019-06" data-to="2021-01">
+        <span class="career-seg-label">Vassar Labs</span>
+      </div>
+      <div class="career-seg career-seg--tekion" data-company="Tekion" data-from="2022-04" data-to="2025-09">
+        <span class="career-seg-label">Tekion</span>
+      </div>
+      <div class="career-seg career-seg--lifesight" data-company="Lifesight" data-from="2025-09" data-to="present">
+        <span class="career-seg-label">Lifesight</span>
+      </div>
+    </div>
   </section>
 
   <div class="divider" aria-hidden="true"><hr /></div>
@@ -736,6 +755,8 @@
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
           <span class="t-date"><time datetime="2025-09">Sept 2025</time> <span data-i18n="experience.to">to</span> <time data-i18n="experience.present">Present</time></span>
+          <!-- B12: company logo lettermark -->
+          <span class="t-logo t-logo--lifesight" aria-hidden="true">LS</span>
           <a href="https://lifesight.io" class="t-co" target="_blank" rel="noopener noreferrer">Lifesight</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
           <span class="t-industry" data-i18n="experience.industries.saasAnalytics">SaaS Analytics</span>
@@ -751,6 +772,7 @@
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
           <span class="t-date"><time datetime="2022-04">Apr 2022</time> <span data-i18n="experience.to">to</span> <time datetime="2025-09">Sept 2025</time></span>
+          <span class="t-logo t-logo--tekion" aria-hidden="true">TK</span>
           <a href="https://tekion.com" class="t-co" target="_blank" rel="noopener noreferrer">Tekion</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
           <span class="t-industry" data-i18n="experience.industries.automotiveRetail">Automotive Retail</span>
@@ -776,6 +798,7 @@
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
           <span class="t-date"><time datetime="2019-06">Jun 2019</time> <span data-i18n="experience.to">to</span> <time datetime="2021-01">Jan 2021</time></span>
+          <span class="t-logo t-logo--vassar" aria-hidden="true">VL</span>
           <a href="https://vassarlabs.com" class="t-co" target="_blank" rel="noopener noreferrer">Vassar Labs</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Hyderabad</span>
           <span class="t-industry" data-i18n="experience.industries.govtech">GovTech</span>
@@ -1246,6 +1269,11 @@
   <section id="contact" aria-labelledby="contact-heading">
     <p class="section-label" data-i18n="sections.contact.label">// contact</p>
     <h2 id="contact-heading" data-i18n="sections.contact.title">Let's build something</h2>
+    <!-- C19: availability chip -->
+    <div class="contact-avail-chip">
+      <span class="contact-avail-dot" aria-hidden="true"></span>
+      <span data-i18n="contact.availChip">Typically responds in 24h · available now</span>
+    </div>
     <div class="contact-info">
     <p class="contact-intro" data-i18n="contact.intro">Open to full-time roles, contract work, and interesting conversations. If you're building something ambitious in the frontend or product engineering space, I'd love to hear about it.</p>
 
@@ -1304,7 +1332,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="foot-inner">
-    <div class="foot-l">
+    <div class="foot-l" data-spec="Vanilla JS · 11ty · Zero runtime deps · Static deploy">
       Animesh Pandey · Bangalore, India · © <span id="yr">2026</span><a href="https://anmshpndy.com/happy-anniversary/" class="foot-secret" aria-hidden="true" tabindex="-1" focusable="false">❤</a>
     </div>
     <nav aria-label="Social links">
@@ -1344,6 +1372,11 @@
 
 <div id="shortcut-announce" role="status" aria-live="polite" class="visually-hidden"></div>
 
+<!-- E29: Mobile contact FAB — visible only on coarse-pointer (touch) devices -->
+<button class="contact-fab" id="contactFab" aria-label="Contact me" hidden>
+  <svg class="icon-lg" aria-hidden="true"><use href="#i-mail"/></svg>
+</button>
+
 <!-- ── Resume preview modal ───────────────────────────────────── -->
 <dialog id="resume-preview" class="resume-modal" aria-labelledby="resume-modal-title">
   <div class="resume-modal-inner">
@@ -1381,7 +1414,7 @@
 <script src="/assets/i18n/i18n.js" defer></script>
 <script src="/assets/nav.js" defer></script>
 <script src="/assets/visuals.js" defer></script>
-<script src="/assets/contact.js?v=ap24" defer></script>
+<script src="/assets/contact.js?v=__AP_BUILD_ID__" defer></script>
 <!-- ── Cloudflare Web Analytics ──────────────────────────────────
      SETUP: Create a site at https://dash.cloudflare.com → Web Analytics
      Replace YOUR_CF_BEACON_TOKEN with your site's beacon token, then

@@ -51,6 +51,68 @@
   var origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
 
   /* ════════════════════════════════════════════
+     C16 — FLOATING LABELS
+  ════════════════════════════════════════════ */
+  function syncField(input) {
+    var field = input.closest('.field');
+    if (!field) return;
+    var focused = document.activeElement === input;
+    var filled  = input.value.trim().length > 0;
+    field.classList.toggle('field--active', focused || filled);
+    field.classList.toggle('field--filled', filled);
+  }
+
+  [nameEl, emailEl, msgEl].forEach(function (el) {
+    if (!el) return;
+    el.addEventListener('focus', function () { syncField(el); });
+    el.addEventListener('blur',  function () { syncField(el); });
+    el.addEventListener('input', function () { syncField(el); });
+    syncField(el); /* restore state on load (autosave) */
+  });
+
+  /* ════════════════════════════════════════════
+     C17 — CHARACTER COUNTER ARC (textarea only)
+  ════════════════════════════════════════════ */
+  /* C17: character counter arc is initialized by visuals.js (initContactCounter) */
+
+  /* ════════════════════════════════════════════
+     C18 — FORM AUTOSAVE (sessionStorage)
+  ════════════════════════════════════════════ */
+  var saveTimer;
+  function saveState() {
+    try {
+      sessionStorage.setItem('cf_name',  nameEl  ? nameEl.value  : '');
+      sessionStorage.setItem('cf_email', emailEl ? emailEl.value : '');
+      sessionStorage.setItem('cf_msg',   msgEl   ? msgEl.value   : '');
+    } catch (e) {}
+  }
+  function clearState() {
+    try {
+      sessionStorage.removeItem('cf_name');
+      sessionStorage.removeItem('cf_email');
+      sessionStorage.removeItem('cf_msg');
+    } catch (e) {}
+  }
+  function restoreState() {
+    try {
+      var n = sessionStorage.getItem('cf_name');
+      var e = sessionStorage.getItem('cf_email');
+      var m = sessionStorage.getItem('cf_msg');
+      if (n && nameEl)  { nameEl.value  = n; syncField(nameEl); }
+      if (e && emailEl) { emailEl.value = e; syncField(emailEl); }
+      if (m && msgEl)   { msgEl.value   = m; syncField(msgEl); }
+    } catch (e) {}
+  }
+  restoreState();
+  [nameEl, emailEl, msgEl].forEach(function (el) {
+    if (!el) return;
+    el.addEventListener('input', function () {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveState, 400);
+    });
+  });
+
+  /* ════════════════════════════════════════════
      VALIDATION
   ════════════════════════════════════════════ */
   function setErr(el, errId, show) {
@@ -154,11 +216,14 @@
       setLoading(false);
       if (data.success) {
         form.reset();
+        clearState(); /* C18: clear autosave on success */
         /* Clear any lingering aria-invalid states */
         [nameEl, emailEl, msgEl].forEach(function (el) {
-          el.setAttribute('aria-invalid', 'false');
+          el.setAttribute(‘aria-invalid’, ‘false’);
+          syncField(el); /* reset floating labels */
         });
-        showResult('✓ Message sent! I’ll get back to you soon.', 'is-success');
+        document.dispatchEvent(new CustomEvent(‘form-success’)); /* E30: haptic */
+        showResult(‘✓ Message sent! I\’ll get back to you soon.’, ‘is-success’);
       } else {
         var fb = buildMailto(name, email, msg);
         var detail = (data && data.message) ? ' (' + String(data.message).replace(/</g, '&lt;') + ')' : '';
@@ -188,6 +253,45 @@
   if (copyBtn && navigator.clipboard) {
     copyBtn.addEventListener('click', function () {
       navigator.clipboard.writeText(FALLBACK_TO).then(function () {
+
+        /* A7 — Icon morph: copy → check → copy */
+        var svgEl = copyBtn.querySelector('svg');
+        var useEl = svgEl && svgEl.querySelector('use');
+        if (svgEl && useEl) {
+          /* Exit: shrink + fade out */
+          svgEl.style.transition = 'transform 0.16s ease, opacity 0.16s ease';
+          svgEl.style.transform  = 'scale(0.3)';
+          svgEl.style.opacity    = '0';
+          copyBtn.classList.add('copy-done');
+
+          setTimeout(function () {
+            /* Swap to check, then spring in */
+            useEl.setAttribute('href', '#i-check');
+            svgEl.style.transition = 'transform 0.22s cubic-bezier(.16,1,.3,1), opacity 0.18s ease';
+            svgEl.style.transform  = 'scale(1.25)';
+            svgEl.style.opacity    = '1';
+            setTimeout(function () {
+              svgEl.style.transform = 'scale(1)';
+              setTimeout(function () { svgEl.style.transition = ''; }, 200);
+            }, 110);
+          }, 165);
+
+          /* Revert after 2.5 s */
+          setTimeout(function () {
+            svgEl.style.transition = 'transform 0.16s ease, opacity 0.16s ease';
+            svgEl.style.transform  = 'scale(0.3)';
+            svgEl.style.opacity    = '0';
+            copyBtn.classList.remove('copy-done');
+            setTimeout(function () {
+              useEl.setAttribute('href', '#i-copy');
+              svgEl.style.transition = 'transform 0.22s cubic-bezier(.16,1,.3,1), opacity 0.18s ease';
+              svgEl.style.transform  = 'scale(1)';
+              svgEl.style.opacity    = '1';
+              setTimeout(function () { svgEl.style.transition = ''; }, 200);
+            }, 165);
+          }, 2500);
+        }
+
         if (toast) {
           toast.textContent = '✓ Email copied!';
           toast.classList.add('show');
