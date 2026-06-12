@@ -28,6 +28,8 @@
     } catch (e) { return 'high-contrast'; }
   }
 
+  var DARK_THEMES = { dark: 1, slate: 1, dusk: 1, 'high-contrast': 1 };
+
   function applyTheme(id) {
     if (!isValidTheme(id)) id = 'high-contrast';
 
@@ -37,12 +39,16 @@
     document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: id } }));
 
     requestAnimationFrame(function () {
+      /* H45 — sync theme-color meta */
       var metaTheme = document.querySelector('meta[name="theme-color"]');
       if (metaTheme) {
         var v = getComputedStyle(document.documentElement)
           .getPropertyValue('--theme-color-val').trim();
         if (v) metaTheme.content = v;
       }
+      /* H45 — sync color-scheme meta */
+      var metaCS = document.querySelector('meta[name="color-scheme"]');
+      if (metaCS) metaCS.content = DARK_THEMES[id] ? 'dark' : 'light';
     });
 
     var items = document.querySelectorAll('.theme-menu-item[data-t]');
@@ -58,6 +64,15 @@
       if (btn.classList.contains('lang-pick-btn')) return;
       btn.setAttribute('aria-label', 'Theme: ' + label + '. Change');
     });
+
+    /* F37 — announce theme change to screen readers */
+    var announceEl = document.getElementById('shortcut-announce');
+    if (announceEl) {
+      announceEl.textContent = 'Theme changed to ' + label;
+      setTimeout(function () {
+        if (announceEl.textContent.indexOf('Theme') === 0) announceEl.textContent = '';
+      }, 2500);
+    }
   }
 
   // Expose globally so prefs-chrome.js autoBootMenus callbacks can call it lazily
