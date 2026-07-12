@@ -904,7 +904,7 @@ Nothing to do manually when assets change. If you see stale assets locally, hard
 | Impact lens | Hover/tap `.pc[data-impact]` → bar chart reveals |
 | Recruiter lazy | Network tab: `recruiter.js` absent until header icon clicked |
 | `?recruiter=1` deep link | Loads mode + opens panel immediately |
-| Recruiter data | Lifesight `Sept 2025 – Present`; Tekion `Apr 2022 – Sept 2025`; Vassar Labs visible; education `CPI 7.9` |
+| Recruiter data | Lifesight `Dec 2025 – Present`; Tekion `Apr 2022 – Sept 2025`; Vassar Labs visible; education `CPI 7.9` |
 | Recruiter exit | Header exit icon dismisses mode; toggle icon deactivates |
 | Eggs (mobile) | Badge tap → snapshot card; stat long-press → sparkline |
 | Eggs (tablet) | "Built with" heading tap → orbit canvas |

@@ -2,7 +2,7 @@
 
 **Repo:** `AnimeshPandey/AnimeshPandey.github.io`  
 **Live:** https://anmshpndy.com/cases/  
-**Tracking doc:** `ideas/projects/case-studies/frontendcs-corpus/NEXT-BUILD-PLAN.md`  
+**Tracking doc:** `ideas/projects/case-studies/DEVELOPMENT-PLAN.md`  
 **Last updated:** June 2026
 
 This document covers features that are **planned but not yet built** for The Frontend Casebook — organized by theme with enough implementation detail to pick up and build directly.
@@ -15,7 +15,7 @@ This document covers features that are **planned but not yet built** for The Fro
 |-------|-------|
 | 31 live cases with interactive demos | ✅ Done |
 | 779-article reading library + faceted filters | ✅ Done |
-| 187 company index pages | ✅ Done |
+| 167 company index pages | ✅ Done |
 | Pro tier stubs (80+ badges, unlock CTA) | ✅ Done — payments off |
 | Casey companion — FSM, hub motion, voice, prefs | ✅ Done |
 | Casey library strip (`read` pose) | ✅ Done |
@@ -265,4 +265,4 @@ Replace the CSS `float` animation on the Casey hub hero with a Lottie animation 
 | 9 | Server-side progress sync | L | Requires auth done |
 | 10 | Buttondown CI send | S | Requires newsletter account |
 
-See `ideas/projects/case-studies/frontendcs-corpus/NEXT-BUILD-PLAN.md` for the active task tracker.
+See `ideas/projects/case-studies/DEVELOPMENT-PLAN.md` for the active task tracker.

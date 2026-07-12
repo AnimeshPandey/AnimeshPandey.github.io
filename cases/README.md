@@ -106,7 +106,7 @@ Key contracts:
 **Shipped (D0–D7 complete):**
 - 31 live interactive cases with working demos (22 demo modules + `_demo-utils.js`)
 - Reading library — 779 English articles, faceted filters (category, company, year, sort)
-- Company pages — 187 company index pages (`/cases/companies/`)
+- Company pages — 167 company index pages (`/cases/companies/`)
 - Pro tier stubs — 81 Pro badges on hub, honor-system localStorage gate, `payments.enabled: false`
 - SEO — sitemap, JSON-LD, CSS/JS route-scoping, Lighthouse check script
 - Casey companion — FSM hub/case/library, hub hero motion (float/sparkles/glow), intensity prefs, coach peek, library bounce, confetti, voice v2
@@ -120,7 +120,7 @@ Key contracts:
 ## Deferred (not yet built)
 
 **Content**
-- Content polish — ~62 chapter additions across 19 cases (story, ui-strip, fe-depth, references) — see `frontendcs-corpus/NEXT-BUILD-PLAN.md` Task 1-2
+- Content polish — chapter additions across the 22-case MVP set (story, ui-strip, fe-depth, references) — tracked in `ideas/projects/case-studies/DEVELOPMENT-PLAN.md` (Phase 4); the original `frontendcs-corpus/NEXT-BUILD-PLAN.md` task tracker no longer exists
 - `mvpLaunch: true` manifest gating on polished 22-case set — after content complete
 
 **Casey**

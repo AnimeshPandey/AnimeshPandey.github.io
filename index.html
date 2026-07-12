@@ -415,38 +415,47 @@
         </ul>
       </div>
       <div class="nav-utilities">
-        <div class="theme-picker">
-          <button type="button" class="theme-pick-btn platform-icon-btn" id="theme-pick-btn-header"
-                  aria-label="Theme: High contrast. Change" aria-expanded="false" aria-controls="theme-menu-header">
-            <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
+        <div class="nav-more nav-more--desktop">
+          <button type="button" class="nav-more__btn platform-icon-btn" id="nav-more-btn"
+                  aria-label="Preferences and resume" aria-expanded="false" aria-controls="nav-more-menu">
+            <svg class="icon-sm" aria-hidden="true"><use href="#i-more"/></svg>
           </button>
-          <ul id="theme-menu-header" class="theme-menu prefs-menu" role="listbox" aria-label="Choose theme" hidden>
-            <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
-            <li class="theme-menu-item" role="option" data-t="light" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
-            <li class="theme-menu-item" role="option" data-t="dark" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
-            <li class="theme-menu-item" role="option" data-t="sage" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
-            <li class="theme-menu-item" role="option" data-t="slate" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
-            <li class="theme-menu-item" role="option" data-t="dusk" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial</li>
-          </ul>
+          <div id="nav-more-menu" class="platform-menu nav-more__panel" hidden>
+            <div class="nav-more__picker">
+              <p class="nav-more__section-label" id="nav-more-theme-label">Theme</p>
+              <ul class="theme-menu" role="listbox" aria-labelledby="nav-more-theme-label">
+                <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+                <li class="theme-menu-item" role="option" data-t="light" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+                <li class="theme-menu-item" role="option" data-t="dark" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
+                <li class="theme-menu-item" role="option" data-t="sage" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
+                <li class="theme-menu-item" role="option" data-t="slate" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
+                <li class="theme-menu-item" role="option" data-t="dusk" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dusk" aria-hidden="true"></span>Dusk editorial</li>
+              </ul>
+            </div>
+            <div class="nav-more__picker">
+              <p class="nav-more__section-label" id="nav-more-lang-label">Language</p>
+              <ul class="theme-menu lang-menu" role="listbox" aria-labelledby="nav-more-lang-label">
+                <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true" tabindex="-1">English</li>
+                <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" tabindex="-1">हिन्दी</li>
+                <li class="theme-menu-item lang-menu-item" role="option" data-l="es" tabindex="-1">Español</li>
+              </ul>
+            </div>
+            <div class="nav-more__rm">
+              <button type="button" class="header-rm-toggle platform-icon-btn" id="header-rm-toggle"
+                      aria-pressed="false" data-i18n-attr="aria-label" data-i18n="a11y.openRecruiterBriefing"
+                      aria-label="Recruiter briefing">
+                <svg class="icon-sm" aria-hidden="true"><use href="#i-cpu"/></svg>
+                <span data-i18n="nav.recruiterShort">Recruiter</span>
+              </button>
+            </div>
+            <button type="button" class="nav-more__resume platform-icon-btn" id="nav-resume-preview"
+                    aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume"
+                    aria-label="Preview resume">
+              <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
+              <span data-i18n="nav.resume">Resume</span>
+            </button>
+          </div>
         </div>
-        <div class="theme-picker lang-picker">
-          <button type="button" class="lang-pick-btn platform-icon-btn" id="lang-pick-btn-header"
-                  aria-label="Language: EN. Change" aria-expanded="false" aria-controls="lang-menu-header">
-            <svg class="icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
-            <span class="lang-pick-label" aria-hidden="true">EN</span>
-          </button>
-          <ul id="lang-menu-header" class="theme-menu lang-menu prefs-menu" role="listbox" aria-label="Choose language" hidden>
-            <li class="theme-menu-item lang-menu-item" role="option" data-l="en" aria-selected="true" tabindex="-1">English</li>
-            <li class="theme-menu-item lang-menu-item" role="option" data-l="hi" tabindex="-1">हिन्दी</li>
-            <li class="theme-menu-item lang-menu-item" role="option" data-l="es" tabindex="-1">Español</li>
-          </ul>
-        </div>
-        <button type="button" class="nav-resume-icon platform-icon-btn" id="nav-resume-preview"
-                aria-haspopup="dialog" data-i18n-attr="aria-label" data-i18n="a11y.previewResume"
-                aria-label="Preview resume">
-          <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
-          <span class="visually-hidden" data-i18n="nav.resume">Resume</span>
-        </button>
       </div>
       <button id="hamburger" class="hamburger platform-icon-btn" aria-expanded="false" aria-controls="mobile-nav" data-i18n-attr="aria-label" data-i18n="a11y.openMenu">
         <svg class="icon-lg" aria-hidden="true"><use href="#i-menu"/></svg>
@@ -580,21 +589,11 @@
       <div class="badge"><span class="badge-dot" aria-hidden="true"></span><span data-i18n="hero.badge">Open to senior &amp; staff roles</span></div>
       <h1 class="hero-name">Animesh<br>Pandey<span class="dot" aria-hidden="true">.</span></h1>
       <p class="hero-sub" data-i18n="hero.sub">Senior Frontend Engineer · React, TypeScript, Next.js</p>
-      <p class="hero-rotate" aria-live="polite" aria-atomic="true">
-        <span class="active">shipping interfaces since 2017</span>
-        <span>currently @ Lifesight</span>
-        <span>open to staff &amp; senior roles</span>
-        <span>5 products · 50k+ users daily</span>
-      </p>
       <p class="hero-tag" data-i18n="hero.tagline">I ship interfaces that survive real data: marketing intelligence dashboards, microfrontend platforms for 50k+ daily users, and agentic AI products. Based in Bangalore · open to remote-friendly roles.</p>
       <div class="ctas">
         <a href="#experience" class="btn btn-dark">
           <span data-i18n="hero.ctaExperience">View experience</span>
           <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg>
-        </a>
-        <a href="/cases/" class="btn btn-outline">
-          <svg class="icon" aria-hidden="true"><use href="#i-sparkle"/></svg>
-          <span data-i18n="hero.ctaCasebook">The Casebook</span>
         </a>
         <a href="#contact" class="btn btn-outline">
           <span data-i18n="hero.ctaContact">Let's talk</span>
@@ -609,10 +608,6 @@
           <svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore
         </span>
         <span class="hero-fact" role="listitem" data-i18n="hero.factYears">7+ years</span>
-        <span class="hero-fact" role="listitem">React</span>
-        <span class="hero-fact" role="listitem">TypeScript</span>
-        <span class="hero-fact" role="listitem">Next.js</span>
-        <span class="hero-fact" role="listitem">Microfrontends</span>
       </div>
     </div>
 
@@ -650,14 +645,6 @@
         <span data-i18n="hero.viewResume">View resume</span>
       </button>
     </aside>
-
-    <!-- Tech skill ticker strip — always visible, spans full hero width -->
-    <div class="hero-ticker" aria-hidden="true">
-      <div class="hero-ticker-track">
-        <span class="htk htk-feat">React</span><span class="htk htk-feat">TypeScript</span><span class="htk htk-feat">Next.js</span><span class="htk htk-feat">Microfrontends</span><span class="htk">Module Federation</span><span class="htk">D3.js</span><span class="htk">GraphQL</span><span class="htk">Playwright</span><span class="htk">Docker</span><span class="htk htk-feat">Agentic AI</span><span class="htk">LangChain</span><span class="htk">WCAG 2.1</span><span class="htk">Design Systems</span><span class="htk">AWS</span><span class="htk">Node.js</span><span class="htk">Storybook</span><span class="htk">Vite</span><span class="htk">Redux</span><span class="htk">Playwright</span><span class="htk">GitHub Actions</span><span class="htk">RAG</span><span class="htk">Turborepo</span><span class="htk">Highcharts</span><span class="htk">LLM Streaming</span>
-        <span class="htk htk-feat">React</span><span class="htk htk-feat">TypeScript</span><span class="htk htk-feat">Next.js</span><span class="htk htk-feat">Microfrontends</span><span class="htk">Module Federation</span><span class="htk">D3.js</span><span class="htk">GraphQL</span><span class="htk">Playwright</span><span class="htk">Docker</span><span class="htk htk-feat">Agentic AI</span><span class="htk">LangChain</span><span class="htk">WCAG 2.1</span><span class="htk">Design Systems</span><span class="htk">AWS</span><span class="htk">Node.js</span><span class="htk">Storybook</span><span class="htk">Vite</span><span class="htk">Redux</span><span class="htk">Playwright</span><span class="htk">GitHub Actions</span><span class="htk">RAG</span><span class="htk">Turborepo</span><span class="htk">Highcharts</span><span class="htk">LLM Streaming</span>
-      </div>
-    </div>
 
     <div class="hero-chrome-rail" aria-hidden="true">
       <div class="egg-key-hint" id="egg-key-hint">
@@ -716,11 +703,6 @@
         <div class="stat-n">30%</div>
         <div class="stat-l" data-i18n="stats.load">Load time reduction</div>
       </div>
-      <div class="stat" role="listitem">
-        <div class="stat-icon" aria-hidden="true"><svg class="icon-md"><use href="#i-heart"/></svg></div>
-        <div class="stat-n">8+</div>
-        <div class="stat-l" data-i18n="stats.mentored">Engineers mentored</div>
-      </div>
     </div>
   </section>
 
@@ -735,7 +717,7 @@
       <article class="t-item fade-up">
         <div class="t-dot" aria-hidden="true"></div>
         <div class="t-meta">
-          <span class="t-date"><time datetime="2025-09">Sept 2025</time> <span data-i18n="experience.to">to</span> <time data-i18n="experience.present">Present</time></span>
+          <span class="t-date"><time datetime="2025-12">Dec 2025</time> <span data-i18n="experience.to">to</span> <time data-i18n="experience.present">Present</time></span>
           <a href="https://lifesight.io" class="t-co" target="_blank" rel="noopener noreferrer">Lifesight</a>
           <span class="t-loc"><svg class="icon-sm" aria-hidden="true"><use href="#i-pin"/></svg>Bangalore</span>
           <span class="t-industry" data-i18n="experience.industries.saasAnalytics">SaaS Analytics</span>
@@ -807,21 +789,13 @@
     <p class="section-label" data-i18n="sections.skills.label">// skills</p>
     <h2 id="skills-heading" data-i18n="sections.skills.title">Stack &amp; craft</h2>
     <p class="section-intro" data-i18n="sections.skills.intro">Production tools from recent platforms - not a buzzword dump.</p>
-    <p class="skills-constellation-hint section-intro" data-i18n="skills.constellationHint" hidden>Press ? on desktop to explore the stack in 3D</p>
 
     <div class="sv-grid">
 
         <div class="sv-card sv-card--frontend">
-          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg><span>Frontend</span></div>
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-code"/></svg><span>Frontend &amp; Architecture</span></div>
           <div class="sv-chips">
-            <span class="sv-chip sv-feat">React</span><span class="sv-chip sv-feat">TypeScript</span><span class="sv-chip sv-feat">Next.js</span><span class="sv-chip">JavaScript</span><span class="sv-chip">React Native</span><span class="sv-chip">Redux</span><span class="sv-chip">Zustand</span><span class="sv-chip">React Query</span><span class="sv-chip">Tailwind</span><span class="sv-chip">CSS3</span><span class="sv-chip">Angular</span>
-          </div>
-        </div>
-
-        <div class="sv-card sv-card--architecture">
-          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span>Architecture</span></div>
-          <div class="sv-chips">
-            <span class="sv-chip sv-feat">Microfrontends</span><span class="sv-chip">Module Federation</span><span class="sv-chip">Design Systems</span><span class="sv-chip">Monorepo</span><span class="sv-chip">SSR / SSG</span><span class="sv-chip">WCAG 2.1</span><span class="sv-chip">Storybook</span><span class="sv-chip">Perf Budgets</span>
+            <span class="sv-chip sv-feat">React</span><span class="sv-chip sv-feat">TypeScript</span><span class="sv-chip sv-feat">Next.js</span><span class="sv-chip sv-feat">Microfrontends</span><span class="sv-chip">JavaScript</span><span class="sv-chip">React Native</span><span class="sv-chip">Redux</span><span class="sv-chip">Zustand</span><span class="sv-chip">React Query</span><span class="sv-chip">Tailwind</span><span class="sv-chip">CSS3</span><span class="sv-chip">Angular</span><span class="sv-chip">Module Federation</span><span class="sv-chip">Design Systems</span><span class="sv-chip">Monorepo</span><span class="sv-chip">SSR / SSG</span><span class="sv-chip">WCAG 2.1</span><span class="sv-chip">Storybook</span><span class="sv-chip">Perf Budgets</span>
           </div>
         </div>
 
@@ -833,30 +807,16 @@
         </div>
 
         <div class="sv-card sv-card--testing">
-          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-beaker"/></svg><span>Testing</span></div>
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-beaker"/></svg><span>Testing &amp; Tooling</span></div>
           <div class="sv-chips">
-            <span class="sv-chip">Playwright</span><span class="sv-chip">Jest</span><span class="sv-chip">React Testing Library</span><span class="sv-chip">Cypress</span><span class="sv-chip">E2E / Unit / Integration</span>
-          </div>
-        </div>
-
-        <div class="sv-card sv-card--tooling">
-          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-tool"/></svg><span>Build &amp; Tooling</span></div>
-          <div class="sv-chips">
-            <span class="sv-chip">Webpack</span><span class="sv-chip">Vite</span><span class="sv-chip">Turborepo</span><span class="sv-chip">Nx</span><span class="sv-chip">GitHub Actions</span><span class="sv-chip">Docker</span><span class="sv-chip">CI/CD</span>
+            <span class="sv-chip">Playwright</span><span class="sv-chip">Jest</span><span class="sv-chip">React Testing Library</span><span class="sv-chip">Cypress</span><span class="sv-chip">E2E / Unit / Integration</span><span class="sv-chip">Webpack</span><span class="sv-chip">Vite</span><span class="sv-chip">Turborepo</span><span class="sv-chip">Nx</span><span class="sv-chip">GitHub Actions</span><span class="sv-chip">Docker</span><span class="sv-chip">CI/CD</span>
           </div>
         </div>
 
         <div class="sv-card sv-card--data">
-          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg><span>Data &amp; Viz</span></div>
+          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg><span>Data &amp; Backend</span></div>
           <div class="sv-chips">
-            <span class="sv-chip">D3.js</span><span class="sv-chip">Highcharts</span><span class="sv-chip">Recharts</span><span class="sv-chip">Leaflet</span><span class="sv-chip">GraphQL</span><span class="sv-chip">REST / OpenAPI</span><span class="sv-chip">A/B Testing</span>
-          </div>
-        </div>
-
-        <div class="sv-card sv-card--backend">
-          <div class="sv-head"><svg class="icon" aria-hidden="true"><use href="#i-cloud"/></svg><span>Backend &amp; Cloud</span></div>
-          <div class="sv-chips">
-            <span class="sv-chip">Node.js</span><span class="sv-chip">Express</span><span class="sv-chip">PostgreSQL</span><span class="sv-chip">AWS</span><span class="sv-chip">Azure</span><span class="sv-chip">Microservices</span>
+            <span class="sv-chip">D3.js</span><span class="sv-chip">Highcharts</span><span class="sv-chip">Recharts</span><span class="sv-chip">Leaflet</span><span class="sv-chip">GraphQL</span><span class="sv-chip">REST / OpenAPI</span><span class="sv-chip">A/B Testing</span><span class="sv-chip">Node.js</span><span class="sv-chip">Express</span><span class="sv-chip">PostgreSQL</span><span class="sv-chip">AWS</span><span class="sv-chip">Azure</span><span class="sv-chip">Microservices</span>
           </div>
         </div>
 
@@ -950,7 +910,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up" data-impact='[{"l":"Engineering toil","v":30,"d":"−30%"},{"l":"React 18 migrated","v":100,"d":"done"},{"l":"Time saved","v":90,"d":"days"}]'>
+      <article class="pc pc--extra fade-up" hidden data-impact='[{"l":"Engineering toil","v":30,"d":"−30%"},{"l":"React 18 migrated","v":100,"d":"done"},{"l":"Time saved","v":90,"d":"days"}]'>
         <p class="pc-type" data-i18n="projects.aiTooling.type">AI Tooling · Tekion</p>
         <h3 class="pc-name" data-i18n="projects.aiTooling.title">AI Dev Tooling Suite</h3>
         <p class="pc-desc" data-i18n="projects.aiTooling.desc">Internal CLI and VS Code extension that automated the highest-toil parts of Tekion's frontend development cycle, cutting team overhead by 30%. The scaffolder generates a fully wired microfrontend module in under 10 seconds - Webpack Module Federation config, Storybook stories, Jest setup, and GitHub Actions job - from a single command. An AI-assisted PR review workflow uses GPT-4 to flag accessibility regressions, performance anti-patterns, and missing test coverage before human review. Also shipped automated migration scripts for the React 16 to 18 upgrade across all 10+ modules, completing the migration in days rather than weeks.</p>
@@ -963,7 +923,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up" data-impact='[{"l":"Offline-first","v":100,"d":"SQLite"},{"l":"VIN scanning","v":70,"d":"native"},{"l":"Shared state","v":80,"d":"Redux"}]'>
+      <article class="pc pc--extra fade-up" hidden data-impact='[{"l":"Offline-first","v":100,"d":"SQLite"},{"l":"VIN scanning","v":70,"d":"native"},{"l":"Shared state","v":80,"d":"Redux"}]'>
         <p class="pc-type" data-i18n="projects.dealerApp.type">Mobile · Tekion</p>
         <h3 class="pc-name" data-i18n="projects.dealerApp.title">Dealer Operations Mobile App</h3>
         <p class="pc-desc" data-i18n="projects.dealerApp.desc">React Native companion to Tekion's web-based dealer management platform, designed for dealership staff who work on the shop floor and can't stay at a desk. Covers real-time inventory lookup with VIN scanning, live service queue visibility, and customer CRM access. Built offline-first with SQLite-backed local state that syncs over a conflict-free delta protocol when connectivity restores - critical in underground service bays with patchy signal. Deep-linked from the web platform and shares Redux slices with the web app via a shared library, keeping business logic in one place.</p>
@@ -976,7 +936,7 @@
         </div>
       </article>
 
-      <article class="pc fade-up" data-impact='[{"l":"Regressions caught","v":60,"d":"12 / mo 1"},{"l":"CI coverage","v":100,"d":"all MFEs"}]'>
+      <article class="pc pc--extra fade-up" hidden data-impact='[{"l":"Regressions caught","v":60,"d":"12 / mo 1"},{"l":"CI coverage","v":100,"d":"all MFEs"}]'>
         <p class="pc-type" data-i18n="projects.perfGuard.type">Developer Tooling · Tekion</p>
         <h3 class="pc-name" data-i18n="projects.perfGuard.title">Performance CI Guard</h3>
         <p class="pc-desc" data-i18n="projects.perfGuard.desc">GitHub Actions pipeline that runs Lighthouse CI against a Playwright-rendered preview deployment on every pull request, automatically blocking merges when Core Web Vitals or bundle size regresses beyond configured thresholds. Posts a generated PR comment with before/after metric tables, a bundle diff, and a 30-day trend sparkline so reviewers have full context without leaving GitHub. Historical performance data is persisted to a Postgres store and surfaced on an internal dashboard used by engineering leadership to track platform health across all 10+ microfrontend modules. Went from no performance visibility to catching 12 regressions in the first month.</p>
@@ -990,6 +950,12 @@
       </article>
 
     </div>
+
+    <button type="button" class="projects-show-more" id="projects-show-more" aria-expanded="false" aria-controls="projects">
+      <span data-i18n="projects.showMore">Show 3 more projects</span>
+      <svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+    </button>
+
   </section>
 
   <div class="divider" aria-hidden="true"><hr /></div>
@@ -1006,7 +972,7 @@
         <p class="casebook-cta__kicker" data-i18n="writing.casebookKicker">// case studies</p>
         <h3 class="casebook-cta__title" data-i18n="writing.casebookTitle">The Frontend Casebook</h3>
         <p class="casebook-cta__desc" data-i18n="writing.casebookDesc">
-          Scrollable frontend case studies — skeleton screens, perceived performance,
+          31 live, scrollable frontend case studies — skeleton screens, perceived performance,
           streaming UIs. With interactive demos and reading levels for junior, mid, and staff engineers.
         </p>
         <a href="/cases/" class="btn btn--primary casebook-cta__btn">
@@ -1024,7 +990,7 @@
     <h3 class="writing-subhead" data-i18n="sections.writing.onThisSite">On this site</h3>
     <div class="articles-list articles-list--on-site" role="list">
 
-      <article class="article-item article-item--featured fade-up" role="listitem">
+      <div class="article-item article-item--featured fade-up" role="listitem">
         <div class="article-meta">
           <span class="article-date"><time datetime="2021-03-06">Mar 2021</time></span>
           <span class="article-badge" data-i18n="writing.onSite">On site</span>
@@ -1045,9 +1011,9 @@
           </a>
         </h3>
         <p class="article-excerpt" data-i18n="writing.article.functionalJs.excerpt">What makes a function pure, why procedures aren't functions, and how declarative thinking transforms the way you write JavaScript. A primer on functional programming fundamentals.</p>
-      </article>
+      </div>
 
-      <article class="article-item fade-up" role="listitem">
+      <div class="article-item fade-up" role="listitem">
         <div class="article-meta">
           <span class="article-date"><time datetime="2021-02-28">Feb 2021</time></span>
           <span class="article-badge" data-i18n="writing.onSite">On site</span>
@@ -1068,9 +1034,9 @@
           </a>
         </h3>
         <p class="article-excerpt" data-i18n="writing.article.knowThis.excerpt">JavaScript's <code>this</code> is a runtime binding determined by call-site context. This piece works through all four binding rules (new, explicit, implicit, default) in order of precedence.</p>
-      </article>
+      </div>
 
-      <article class="article-item article-item--featured fade-up" role="listitem">
+      <div class="article-item article-item--featured fade-up" role="listitem">
         <div class="article-meta">
           <span class="article-date"><time datetime="2026-05-31">May 2026</time></span>
           <span class="article-badge" data-i18n="writing.onSite">On site</span>
@@ -1085,7 +1051,7 @@
           </a>
         </h3>
         <p class="article-excerpt" data-i18n="writing.article.streamingAgent.excerpt">How to build a streaming AI agent UI that feels native to your product. SSE lifecycle, tool-call panels, AbortController, UX states for thinking / streaming / error - and why skipping the chat bubble is the right call.</p>
-      </article>
+      </div>
 
     </div>
 
@@ -1093,7 +1059,7 @@
     <h3 class="writing-subhead" data-i18n="sections.writing.publishedElsewhere">Published elsewhere</h3>
     <div class="articles-list articles-list--external" role="list">
 
-      <article class="article-item fade-up" role="listitem">
+      <div class="article-item fade-up" role="listitem">
         <div class="article-meta">
           <span class="article-date"><time datetime="2021-03-11">Mar 2021</time></span>
           <span class="article-badge">
@@ -1112,7 +1078,7 @@
           </a>
         </h3>
         <p class="article-excerpt" data-i18n="writing.article.hackerNoonThis.excerpt">An in-depth look at JavaScript's most misunderstood keyword: implicit, explicit, and new binding rules demystified with real examples.</p>
-      </article>
+      </div>
 
     </div>
 
@@ -1251,18 +1217,24 @@
 
     <!-- Quick actions -->
     <div class="contact-quick" role="list" aria-label="Quick contact options">
-      <button class="cq-btn" id="copyEmailBtn" role="listitem" aria-label="Copy email address">
-        <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
-        animeshpandey1909@gmail.com
-      </button>
-      <a href="mailto:animeshpandey1909@gmail.com" class="cq-btn" role="listitem" aria-label="Send email">
-        <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
-        <span data-i18n="contact.emailMe">Email me</span>
-      </a>
-      <a href="https://linkedin.com/in/pandeyanimesh" class="cq-btn" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="LinkedIn profile">
-        <svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg>
-        LinkedIn
-      </a>
+      <span role="listitem">
+        <button class="cq-btn" id="copyEmailBtn" aria-label="animeshpandey1909@gmail.com — copy email address">
+          <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+          animeshpandey1909@gmail.com
+        </button>
+      </span>
+      <span role="listitem">
+        <a href="mailto:animeshpandey1909@gmail.com" class="cq-btn">
+          <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+          <span data-i18n="contact.emailMe">Email me</span>
+        </a>
+      </span>
+      <span role="listitem">
+        <a href="https://linkedin.com/in/pandeyanimesh" class="cq-btn" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+          <svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg>
+          LinkedIn
+        </a>
+      </span>
     </div>
     </div><!-- /contact-info -->
 

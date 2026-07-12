@@ -114,10 +114,7 @@
         getComputedStyle(document.documentElement).getPropertyValue('--nav-h') || '56', 10
       );
       var railH = (rail && rail.offsetHeight > 0) ? rail.offsetHeight : 0;
-      var promoH = document.body.classList.contains('rm-promo-active')
-        ? parseInt(getComputedStyle(document.documentElement).getPropertyValue('--promo-h') || '44', 10)
-        : 0;
-      return navH + railH + promoH + 16;
+      return navH + railH + 16;
     }
 
     function onScroll() {
@@ -167,6 +164,47 @@
         var href = link.getAttribute('href');
         var hash = href.indexOf('#') >= 0 ? href.substring(href.indexOf('#')) : href;
         if (navigateToHash(hash, false)) {
+          ctx.close();
+        }
+      }
+    });
+  }
+
+  function initMoreMenu() {
+    var moreBtn = document.getElementById('nav-more-btn');
+    var moreMenu = document.getElementById('nav-more-menu');
+    if (!moreBtn || !moreMenu || !window.PrefsChrome) return;
+
+    window.PrefsChrome.PopoverMenu(moreBtn, moreMenu, {
+      onSelect: function (e, ctx) {
+        var themeItem = e.target.closest('[data-t]');
+        var langItem = e.target.closest('[data-l]');
+        if (themeItem) {
+          if (typeof window.applyTheme === 'function') window.applyTheme(themeItem.dataset.t);
+          ctx.close();
+          return;
+        }
+        if (langItem) {
+          if (window.AP_I18N && typeof window.AP_I18N.setLocale === 'function') {
+            window.AP_I18N.setLocale(langItem.dataset.l);
+          }
+          ctx.close();
+          return;
+        }
+        // Resume button (and anything else without data-t/data-l) just closes
+        // the menu; its own click handler (initResumeModal) does the rest.
+        ctx.close();
+      },
+      onActivate: function (e, ctx) {
+        var active = document.activeElement;
+        if (!active || !active.dataset) return;
+        if (active.dataset.t) {
+          if (typeof window.applyTheme === 'function') window.applyTheme(active.dataset.t);
+          ctx.close();
+        } else if (active.dataset.l) {
+          if (window.AP_I18N && typeof window.AP_I18N.setLocale === 'function') {
+            window.AP_I18N.setLocale(active.dataset.l);
+          }
           ctx.close();
         }
       }
@@ -283,6 +321,7 @@
     initScrollSpy();
     initSectionRail();
     initSectionsDropdown();
+    initMoreMenu();
     initResumeModal();
     initChromeMisc();
     initHashOnLoad();

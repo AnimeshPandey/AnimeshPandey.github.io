@@ -23,9 +23,13 @@
     var hintShown = false;
     try { hintShown = sessionStorage.getItem('egg_hint_career') === '1'; } catch (e) {}
 
+    /* Derive the accessible name from the badge's own (possibly localized)
+       visible text so it always contains that text verbatim — avoids
+       label/content mismatches (e.g. "&" vs "and") across locales. */
+    var badgeText = (badge.textContent || '').replace(/\s+/g, ' ').trim();
     badge.setAttribute('role', 'button');
     badge.setAttribute('tabindex', '0');
-    badge.setAttribute('aria-label', 'Open to senior and staff roles - tap for career snapshot');
+    badge.setAttribute('aria-label', badgeText + ' - tap for career snapshot');
     badge.style.cursor = 'pointer';
 
     if (!hintShown) {
