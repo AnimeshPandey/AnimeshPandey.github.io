@@ -25,7 +25,7 @@
   "a11y": {
     "skipToMain": "Saltar al contenido principal",
     "skipToArticle": "Saltar al artículo",
-    "home": "Animesh Pandey, inicio",
+    "home": "AP. — Animesh Pandey, inicio",
     "previewResume": "Ver o descargar currículum",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
@@ -151,6 +151,7 @@
   },
   "projects": {
     "intro": "Trabajo seleccionado en analítica SaaS, retail automotriz y GovTech.",
+    "showMore": "Ver 3 proyectos más",
     "microfrontend": {
       "type": "Arquitectura · Tekion",
       "title": "Arquitectura de Microfrontends a Escala",
@@ -209,7 +210,7 @@
   "writing": {
     "casebookKicker": "// casos de estudio",
     "casebookTitle": "El Casebook de Frontend",
-    "casebookDesc": "Casos de estudio de frontend desplazables — skeleton screens, rendimiento percibido, UIs de streaming. Con demos interactivas y niveles de lectura para ingenieros junior, mid y staff.",
+    "casebookDesc": "31 casos de estudio de frontend en vivo, desplazables — skeleton screens, rendimiento percibido, UIs de streaming. Con demos interactivas y niveles de lectura para ingenieros junior, mid y staff.",
     "casebookBtn": "Explorar el Casebook",
     "onSite": "En este sitio",
     "alsoOn": "También en",

@@ -220,10 +220,6 @@
     var lines = data.terminalLines || [];
     if (!lines.length) return;
 
-    /* Hint — shown once per session */
-    var hintShown = false;
-    try { hintShown = sessionStorage.getItem('egg_hint_terminal') === '1'; } catch (e) {}
-
     /* Build terminal */
     var term = document.createElement('div');
     term.id = 'egg-terminal';
@@ -260,12 +256,6 @@
       term.classList.add('egg-tm-open');
       tmClose.focus();
 
-      /* Show hint hint once */
-      if (!hintShown) {
-        try { sessionStorage.setItem('egg_hint_terminal', '1'); } catch (e) {}
-        hintShown = true;
-      }
-
       /* Schedule lines (skip on reduced motion — show all at once) */
       if (caps.reducedMotion) {
         lines.forEach(function (l) { appendLine(l); });
@@ -301,20 +291,8 @@
       if (e.key === 'Escape' && tmOpen) closeTerminal();
     });
 
-    /* Hint on the page — shown to desktop visitors once */
-    if (!hintShown) {
-      var hintEl = document.querySelector('.egg-key-hint');
-      /* Inject the "npm test" hint as a second line if the element exists */
-      if (hintEl) {
-        var npmHint = document.createElement('p');
-        npmHint.className = 'egg-hint';
-        npmHint.setAttribute('aria-hidden', 'true');
-        npmHint.textContent = '✦  type npm test';
-        hintEl.appendChild(npmHint);
-        setTimeout(function () { npmHint.classList.add('visible'); }, 9000);
-        setTimeout(function () { npmHint.classList.remove('visible'); }, 16000);
-      }
-    }
+    /* No unsolicited on-page hint — eggs are discoverable via "press ?" only
+       (see hero-chrome-rail .egg-key-hint), not advertised individually. */
 
     /* Buffer to detect "npm test" typed outside inputs */
     var buf = '', bufTimer;

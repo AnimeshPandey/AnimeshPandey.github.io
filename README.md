@@ -54,7 +54,7 @@ flowchart TB
 |-------|------|
 | **Homepage** | Root `index.html` + shared `assets/` |
 | **Articles** | Eleventy [`site/`](site/) |
-| **Casebook** | Eleventy [`cases/`](cases/) — 31 live cases · 779-article reading library · 187 company pages · Pro tier stubs |
+| **Casebook** | Eleventy [`cases/`](cases/) — 31 live cases · 779-article reading library · 167 company pages · Pro tier stubs |
 | **Chrome** | `assets/platform/*`, i18n `en` / `hi` / `es`, 6 portfolio themes |
 | **SW** | `sw.js` — pass-through (no fetch handler); CI replaces `__AP_BUILD_ID__`; `sw-migrate.js` clears old caches |
 | **CI** | [`.github/workflows/static-pages.yml`](.github/workflows/static-pages.yml) |
@@ -74,7 +74,7 @@ flowchart TB
 | Device-tier easter eggs | Mobile / tablet / desktop lazy bundles |
 | Contact | Web3Forms POST; key injected at deploy |
 | Reading library | `/cases/library/` — 779 real-world articles with faceted filters (category, company, year, sort) |
-| Company pages | `/cases/companies/` — 187 company index pages auto-generated from library data |
+| Company pages | `/cases/companies/` — 167 company index pages auto-generated from library data |
 | Pro tier (pre-launch) | 81 Pro badges on hub; honor-system localStorage gate; payments off until 100 MAU |
 | Sign-in (beta) | `/account/` — email magic-link flow (copy-link UX; transactional email wiring deferred) |
 | Casey companion | Hub/case/library mascot with FSM, hub hero motion, intensity prefs, progression tracking |

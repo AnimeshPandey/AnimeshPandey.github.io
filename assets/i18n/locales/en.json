@@ -25,7 +25,7 @@
   "a11y": {
     "skipToMain": "Skip to main content",
     "skipToArticle": "Skip to article",
-    "home": "Animesh Pandey, home",
+    "home": "AP. — Animesh Pandey, home",
     "previewResume": "Preview or download resume",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
@@ -152,6 +152,7 @@
   },
   "projects": {
     "intro": "Selected work across SaaS analytics, automotive retail, and GovTech.",
+    "showMore": "Show 3 more projects",
     "microfrontend": {
       "type": "Architecture · Tekion",
       "title": "Microfrontend Architecture at Scale",
@@ -210,7 +211,7 @@
   "writing": {
     "casebookKicker": "// case studies",
     "casebookTitle": "The Frontend Casebook",
-    "casebookDesc": "Scrollable frontend case studies — skeleton screens, perceived performance, streaming UIs. With interactive demos and reading levels for junior, mid, and staff engineers.",
+    "casebookDesc": "31 live, scrollable frontend case studies — skeleton screens, perceived performance, streaming UIs. With interactive demos and reading levels for junior, mid, and staff engineers.",
     "casebookBtn": "Explore the Casebook",
     "onSite": "On site",
     "alsoOn": "Also on",

@@ -28,15 +28,15 @@
   function boot() {
     if (window.__VISUALS_DISABLED) return;
     initScrollReveal();
-    if (caps.canvas2d && !caps.reducedMotion && !caps.saveData) initHeroCanvas();
+    if (caps.canvas2d && !caps.reducedMotion && !caps.saveData && mq('(min-width: 769px)')) initHeroCanvas();
     initHeroChrome();
     initStatCountUp();
+    initProjectsShowMore();
     initCardExpand();
     initCardTilt();
     initTagStagger();
     initArticleTap();
     initEggs();
-    initSkillsConstellationHint();
     initThemeWink();
     if (caps.iob) initTimelineHighlight();
     initImpactLens();
@@ -68,23 +68,9 @@
   }
 
   /* ══════════════════════════════════════════════════
-     HERO CHROME — rotate, spotlight, card tilt, float parallax
+     HERO CHROME — spotlight, card tilt, float parallax
      ══════════════════════════════════════════════════ */
   function initHeroChrome() {
-    var rotateEl = document.querySelector('.hero-rotate');
-    if (rotateEl && !caps.reducedMotion) {
-      var rSpans = Array.from(rotateEl.querySelectorAll('span'));
-      if (rSpans.length > 1) {
-        var rIdx = 0;
-        rSpans[rIdx].classList.add('active');
-        setInterval(function () {
-          rSpans[rIdx].classList.remove('active');
-          rIdx = (rIdx + 1) % rSpans.length;
-          rSpans[rIdx].classList.add('active');
-        }, 2800);
-      }
-    }
-
     if (!caps.finePointer || caps.reducedMotion) return;
 
     var heroEl = document.getElementById('hero');
@@ -306,6 +292,24 @@
 
 
   /* ══════════════════════════════════════════════════
+     PROJECTS SHOW MORE — reveal extra cards on demand
+     ══════════════════════════════════════════════════ */
+  function initProjectsShowMore() {
+    var btn = document.getElementById('projects-show-more');
+    var extras = Array.prototype.slice.call(document.querySelectorAll('.pc--extra'));
+    if (!btn || !extras.length) { if (btn) btn.hidden = true; return; }
+
+    btn.addEventListener('click', function () {
+      btn.setAttribute('aria-expanded', 'true');
+      extras.forEach(function (card) {
+        card.hidden = false;
+        card.classList.add('in');
+      });
+      btn.hidden = true;
+    });
+  }
+
+  /* ══════════════════════════════════════════════════
      PROJECT CARD EXPAND — "Read more" for clamped descs
      ══════════════════════════════════════════════════ */
   function initCardExpand() {
@@ -432,19 +436,13 @@
       .catch(function () { /* eggs degraded silently */ });
   }
 
-  function initSkillsConstellationHint() {
-    var hint = document.querySelector('.skills-constellation-hint');
-    if (!hint || caps.reducedMotion) return;
-    if (!mq('(min-width: 820px)')) return;
-    hint.removeAttribute('hidden');
-  }
-
   /* ══════════════════════════════════════════════════
      THEME WINK (X2) — 5 rapid toggles → one-line toast
      Cross-tier; once per session.
      ══════════════════════════════════════════════════ */
   function initThemeWink() {
     var btn = document.getElementById('theme-pick-btn-header') ||
+      document.getElementById('nav-more-btn') ||
       document.getElementById('theme-pick-btn-mobile');
     if (!btn) return;
 
@@ -622,51 +620,9 @@
       });
     });
 
-    /* ── R8: Recruiter promo card — shown once per session when panel closed ── */
-    (function initPromoCard() {
-      try { if (sessionStorage.getItem('rm-promo') === '1') return; } catch(e) {}
-
-      var promo = document.createElement('div');
-      promo.id        = 'rm-promo';
-      promo.className = 'rm-promo';
-      promo.setAttribute('role', 'complementary');
-      promo.setAttribute('aria-label', 'Recruiter shortcut');
-      promo.innerHTML =
-        '<div class="rm-promo-inner">' +
-          '<span class="rm-promo-icon" aria-hidden="true">★</span>' +
-          '<span class="rm-promo-text">Recruiter? Get a 90-second briefing on this portfolio.</span>' +
-          '<button class="rm-promo-cta" type="button">Open briefing</button>' +
-          '<button class="rm-promo-dismiss" type="button" aria-label="Dismiss recruiter shortcut">✕</button>' +
-        '</div>';
-
-      document.body.appendChild(promo);
-
-      function dismiss() {
-        promo.classList.add('rm-promo-out');
-        document.body.classList.remove('rm-promo-active');
-        document.documentElement.style.removeProperty('--promo-h');
-        try { sessionStorage.setItem('rm-promo', '1'); } catch(e) {}
-        window.__rmPromoDismiss = null;
-        setTimeout(function () { if (promo.parentNode) promo.remove(); }, 350);
-      }
-
-      promo.querySelector('.rm-promo-dismiss').addEventListener('click', dismiss);
-      promo.querySelector('.rm-promo-cta').addEventListener('click', function () {
-        dismiss();
-        toggleBriefing(promo.querySelector('.rm-promo-cta'));
-      });
-
-      window.__rmPromoDismiss = dismiss;
-
-      setTimeout(function () {
-        promo.classList.add('rm-promo-in');
-        document.body.classList.add('rm-promo-active');
-        requestAnimationFrame(function () {
-          var h = promo.offsetHeight;
-          if (h > 0) document.documentElement.style.setProperty('--promo-h', h + 'px');
-        });
-      }, 700);
-    }());
+    /* Recruiter mode is opt-in only — reached via the header toggle (desktop More
+       menu / mobile drawer) or the ?recruiter=1 deep link. No unsolicited first-paint
+       promo card competing with hero CTAs. */
 
     if (new URLSearchParams(location.search).get('recruiter') === '1') {
       loadRecruiterModule().then(function (m) {

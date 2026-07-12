@@ -1,18 +1,23 @@
 \documentclass[a4paper,10pt]{article}
 
 % ---------------------- Packages ----------------------
-\usepackage[margin=0.7in]{geometry}
+\usepackage[margin=0.65in]{geometry}
 \usepackage{titlesec}
 \usepackage{enumitem}
 \usepackage{hyperref}
+\hypersetup{
+  pdftitle={Animesh Pandey - Senior Frontend Engineer Resume},
+  pdfauthor={Animesh Pandey},
+  pdfsubject={Resume},
+  pdfkeywords={Senior Frontend Engineer, React, ReactJS, TypeScript, Next.js, JavaScript, Redux, Microfrontends, Design Systems, Accessibility, WCAG, Performance Optimization, SSR, Agentic AI}
+}
 \usepackage[sfdefault]{roboto}
-\usepackage{fontawesome5}
 \renewcommand{\familydefault}{\sfdefault}
 \urlstyle{same}
 \pagestyle{empty}
 
 % ---------------------- Line spacing & alignment ----------------------
-\renewcommand{\baselinestretch}{1.01}
+\renewcommand{\baselinestretch}{1.02}
 \raggedright
 
 % ---------------------- Section styles -----------------
@@ -20,7 +25,7 @@
 \titlespacing*{\section}{0pt}{5pt}{3pt}
 
 % ---------------------- List spacing -------------------
-\setlist[itemize]{leftmargin=*, label=--, topsep=0pt, itemsep=0pt, parsep=0pt, partopsep=0pt}
+\setlist[itemize]{leftmargin=*, label=\textbullet, topsep=0pt, itemsep=0pt, parsep=0pt, partopsep=0pt}
 
 % ---------------------- Helper commands ----------------
 \newcommand{\companyfirst}[1]{\noindent\textbf{#1}\\[-2pt]}
@@ -35,11 +40,11 @@
 {\large Senior Frontend Engineer}\\[4pt]
 
 \sloppy
-\faIcon{envelope}\enspace \href{mailto:animeshpandey1909@gmail.com}{animeshpandey1909@gmail.com} \quad
-\faIcon{phone}\enspace +91-8318717926 \quad
-\faIcon{linkedin}\enspace \href{https://linkedin.com/in/pandeyanimesh}{linkedin.com/in/pandeyanimesh} \quad
-\faIcon{map-marker-alt}\enspace Bangalore, India \quad
-\faIcon{globe}\enspace \href{https://animeshpandey.github.io}{animeshpandey.github.io}
+\href{mailto:animeshpandey1909@gmail.com}{animeshpandey1909@gmail.com} \quad | \quad
++91-8318717926 \quad | \quad
+\href{https://linkedin.com/in/pandeyanimesh}{linkedin.com/in/pandeyanimesh} \quad | \quad
+Bangalore, India \quad | \quad
+\href{https://anmshpndy.com}{anmshpndy.com}
 
 % ===== Summary =====
 \section*{Summary}
@@ -56,33 +61,44 @@ Proven track record of shipping customer-facing platforms serving \textbf{50k+ d
   \item Led frontend architecture modernization across analytics dashboards, microfrontends, and performance-critical reporting interfaces — improving load times by up to \textbf{30\%}.
 \end{itemize}
 
+% ===== Skills =====
+\section*{Skills}
+\textbf{Frontend:} React / ReactJS, Next.js, TypeScript, JavaScript, HTML5, CSS3, Redux, Angular, React Native, Tailwind CSS \\
+\textbf{Architecture \& Platform:} Microfrontends, Design Systems, SSR, Storybook, Module Federation, Performance Budgets, Accessibility (WCAG 2.1 -- Web Content Accessibility Guidelines), Responsive Design \\
+\textbf{Testing:} Jest, React Testing Library, Playwright, Cypress, Unit / Integration / E2E Testing \\
+\textbf{Build \& Tooling:} Webpack, Vite, GitHub Actions, CI/CD, Git, Docker, Agile, Scrum \\
+\textbf{Analytics \& Data Viz:} REST APIs, Highcharts, Leaflet, D3.js, Reporting Platforms, A/B Testing \\
+\textbf{Backend \& Cloud:} Node.js, Express, Microservices, AWS, Azure \\
+\textbf{AI/Automation:} Agentic AI, OpenAI API, LangChain, GitHub Copilot, LLM-powered Developer Tooling \\
+\textbf{Languages:} JavaScript, TypeScript, Python, Java
+
 % ===== Work Experience =====
 \section*{Work Experience}
 
 \companyfirst{Lifesight, Bangalore}
-\role{Senior Software Engineer}{Sept 2025 -- Present}
+\role{Senior Software Engineer}{Dec 2025 -- Present}
 \begin{itemize}
   \item Leading frontend platform development for \textbf{Lifesight's Unified Measurement OS} — a marketing intelligence SaaS combining \textbf{MMM (marketing mix modeling)}, incrementality testing, and causal attribution, enabling enterprise brands to optimize campaign ROI and customer journey insights across channels.
   \item Contributing to the frontend of \textbf{Mia}, Lifesight's agentic AI marketing intelligence agent — surfacing AI-driven recommendations from unified measurement data through interactive, data-rich UI experiences.
   \item Architected scalable, \textbf{SSR-capable analytics dashboards} and reporting workflows using \textbf{ReactJS}, \textbf{TypeScript}, and \textbf{Next.js}, optimized for high-volume enterprise datasets and fast time-to-insight.
   \item Established \textbf{performance budgets} and frontend observability practices — including \textbf{Lighthouse} audits, Core Web Vitals monitoring, and bundle optimization — ensuring responsive, reliable interfaces for global enterprise users.
-  \item Implemented \textbf{A/B testing} and experimentation infrastructure for growth engineering workflows; drove \textbf{accessibility (WCAG --- Web Content Accessibility Guidelines 2.1)} and semantic HTML standards across the platform.
+  \item Implemented \textbf{A/B testing} and experimentation infrastructure for growth engineering workflows; drove \textbf{accessibility (WCAG 2.1)} and semantic HTML standards across the platform.
   \item Authored frontend platform standards — reusable UI abstractions, \textbf{Storybook}-driven component libraries, and architecture guidelines — accelerating delivery across analytics and growth engineering squads.
   \item Introduced \textbf{automated testing practices} (unit, integration, E2E) using \textbf{Jest}, \textbf{React Testing Library}, and \textbf{Playwright}, significantly improving release confidence and reducing regression cycles.
-  \item Partnered cross-functionally with product, data, and backend teams in an \textbf{Agile} environment to translate attribution and analytics requirements into intuitive, high-performance user experiences.
+  \item Partnered cross-functionally with product, data, and backend teams in an \textbf{Agile/Scrum} environment to translate attribution and analytics requirements into intuitive, high-performance user experiences.
   \item Mentored engineers on frontend architecture, performance optimization, and scalable component-driven development; led architecture reviews and defined team-wide engineering best practices.
 \end{itemize}
 
 \company{Tekion, Bangalore}
-\role{Software Engineer}{Apr 2022 -- Sept 2025}
+\role{Software Engineer}{Apr 2022 -- Sep 2025}
 \begin{itemize}
   \item Owned and scaled \textbf{10+ mission-critical frontend modules} across enterprise automotive retail products, driving consistency, reusability, and long-term maintainability.
   \item Designed and implemented \textbf{Storybook}-documented \textbf{UI component libraries}, \textbf{microfrontend architectures} using \textbf{Webpack Module Federation}, and company-wide frontend platform standards — reducing duplicate code by \textbf{25\%}.
-  \item Built scalable frontend systems using \textbf{ReactJS}, \textbf{TypeScript}, \textbf{Redux}, and \textbf{Next.js}; integrated \textbf{GraphQL} and \textbf{REST APIs} to support complex enterprise data workflows.
+  \item Built scalable frontend systems using \textbf{ReactJS}, \textbf{TypeScript}, \textbf{Redux}, and \textbf{Next.js}; integrated \textbf{REST APIs} to support complex enterprise data workflows.
   \item Optimized distributed web applications using lazy loading, code splitting, \textbf{Lighthouse} audits, and bundle optimization — reducing load times by up to \textbf{30\%} for \textbf{50k+ daily active users}.
   \item Automated engineering workflows using \textbf{Agentic AI} and LLM-powered developer tooling (GitHub Copilot, internal automation), reducing repetitive engineering effort by \textbf{30\%} and accelerating sprint throughput.
-  \item Championed \textbf{accessibility (WCAG 2.1)}, \textbf{responsive design}, and cross-browser compatibility standards; established \textbf{CI/CD (Continuous Integration / Delivery)} pipelines via \textbf{GitHub Actions} for reliable, automated release workflows.
-  \item Mentored \textbf{8+ engineers} through code reviews, Agile sprint planning, and architecture workshops; shaped frontend hiring and onboarding processes.
+  \item Championed \textbf{accessibility (WCAG 2.1)}, \textbf{responsive design}, and cross-browser compatibility standards; established \textbf{CI/CD} pipelines via \textbf{GitHub Actions} for reliable, automated release workflows.
+  \item Mentored \textbf{8+ engineers} through code reviews, Agile/Scrum sprint planning, and architecture workshops; shaped frontend hiring and onboarding processes.
 \end{itemize}
 
 \rolenext{Associate Software Engineer}{Jan 2021 -- Apr 2022}
@@ -109,16 +125,5 @@ Proven track record of shipping customer-facing platforms serving \textbf{50k+ d
 \section*{Education}
 \companyfirst{Indian Institute of Information Technology, Design and Management (IIITDM) Jabalpur}
 \role{B.Tech --- Computer Science and Engineering}{2015 -- 2019 \hspace{4pt} | \hspace{4pt} CPI: \textbf{7.9}}
-
-% ===== Skills =====
-\section*{Skills}
-\faIcon{code}\enspace \textbf{Frontend:} React / ReactJS, Next.js, TypeScript, JavaScript, HTML5, CSS3, Redux, Angular, React Native, Tailwind CSS \\
-\faIcon{layer-group}\enspace \textbf{Architecture \& Platform:} Microfrontends, Design Systems, SSR, Storybook, Module Federation, Performance Budgets, Accessibility (WCAG 2.1), Responsive Design \\
-\faIcon{vial}\enspace \textbf{Testing:} Jest, React Testing Library, Playwright, Cypress, Unit / Integration / E2E Testing \\
-\faIcon{tools}\enspace \textbf{Build \& Tooling:} Webpack, Vite, Turborepo, GitHub Actions, CI/CD, Git, Docker \\
-\faIcon{chart-line}\enspace \textbf{Analytics \& Data Viz:} GraphQL, REST APIs, Highcharts, Leaflet, D3.js, Reporting Platforms, A/B Testing \\
-\faIcon{server}\enspace \textbf{Backend \& Cloud:} Node.js, Express, Microservices, AWS, Azure \\
-\faIcon{robot}\enspace \textbf{AI/Automation:} Agentic AI, OpenAI API, LangChain, GitHub Copilot, LLM-powered Developer Tooling \\
-\faIcon{keyboard}\enspace \textbf{Languages:} JavaScript, TypeScript, Python, Java
 
 \end{document}

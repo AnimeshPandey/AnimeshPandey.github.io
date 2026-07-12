@@ -10,12 +10,10 @@ Human-readable technical documentation for **anmshpndy.com** (`AnimeshPandey.git
 
 ## Repo alignment
 
-If the codebase does not match the documented layer model (e.g. hero logic in `nav.js`, inline FAQ CSS), implement fixes using the agent prompt:
-
-**[`.claude/prompts/portfolio-architecture-alignment-prompt.md`](../.claude/prompts/portfolio-architecture-alignment-prompt.md)**
+If the codebase does not match the documented layer model (e.g. hero logic in `nav.js`, inline FAQ CSS), check the **alignment status** section in [ARCHITECTURE.md](ARCHITECTURE.md) and fix drift directly — there is no separate alignment prompt file.
 
 ## Not here
 
-**Implementation prompts** for Claude/Cursor live in **[`.claude/prompts/`](../.claude/prompts/)** — not under `docs/`.
+**Implementation prompts** for Claude/Cursor live in the planning repo — **[`ideas/projects/case-studies/prompts/`](../../ideas/projects/case-studies/prompts/)** — not under `docs/`. Start with `03-portfolio-resume-sync-declutter-docs-prompt.md`.
 
 Quick start and deploy: root [README.md](../README.md).

@@ -7,9 +7,10 @@
          aria-labelledby="case-continue-heading">
   <div class="case-continue__progress" data-casebook-progress-strip hidden>
     <div class="case-continue__progress-label">
-      <span data-casebook-progress-label>Your path</span>
+      <span data-casebook-progress-label id="case-continue-progress-title">Your path</span>
     </div>
     <div class="case-continue__progress-bar" role="progressbar"
+         aria-labelledby="case-continue-progress-title"
          aria-valuemin="0" aria-valuemax="{{ nav.liveTotal }}" aria-valuenow="0"
          data-casebook-progress-bar>
       <span class="case-continue__progress-fill" data-casebook-progress-fill style="width: 0%"></span>

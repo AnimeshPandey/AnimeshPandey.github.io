@@ -43,9 +43,9 @@
         company:   'Lifesight',
         location:  'Bangalore',
         role:      'Senior Software Engineer',
-        start:     '2025-09',           // Sept 2025
+        start:     '2025-12',           // Dec 2025
         end:       null,                // Present
-        display:   'Sept 2025 – Present',
+        display:   'Dec 2025 – Present',
         detail:    'Unified Measurement OS · SSR dashboards · Mia agentic AI',
         anchor:    '#experience'
       },
