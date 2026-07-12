@@ -276,23 +276,30 @@
 
 <main id="main-content" class="notfound-main">
   <div class="notfound-wrap">
-    <div class="nf-code">4<span>0</span>4</div>
+
+    <!-- G44: Premium 404 — terminal-style error with dev humor -->
+    <div class="nf-terminal" aria-hidden="true">
+      <span class="nf-terminal-line"><span class="nf-prompt">$</span> fetch('<span id="nf-path-display">/this-page</span>')</span>
+      <span class="nf-terminal-line nf-error">Error: 404 Not Found — route does not exist</span>
+      <span class="nf-terminal-line nf-comment">// This one's on us. No stack trace, just a wrong turn.</span>
+    </div>
+
+    <div class="nf-code" aria-hidden="true">4<span>0</span>4</div>
     <h1 class="nf-heading">Page not found</h1>
-    <p class="nf-sub">This URL doesn't exist. You may have followed a stale link, or the page was moved. Here's where you probably want to go:</p>
+    <p class="nf-sub">You followed a stale link, or this page moved. Here's where you probably want to go:</p>
 
     <div id="redirect-msg" role="status" aria-live="polite"></div>
 
     <div class="quick-nav">
       <p class="qn-label">// Navigate to</p>
       <a href="/" class="qn-link">Portfolio home <span class="qn-badge">anmshpndy.com</span></a>
+      <a href="/cases/" class="qn-link">The Frontend Casebook <span class="qn-badge">case studies</span></a>
       <a href="/#writing" class="qn-link">Writing &amp; articles <span class="qn-badge">#writing</span></a>
       <a href="/#experience" class="qn-link">Experience <span class="qn-badge">#experience</span></a>
       <a href="/#contact" class="qn-link">Contact <span class="qn-badge">#contact</span></a>
-      <a href="/fundamentals-of-functional-javascript/" class="qn-link">Fundamentals of Functional JavaScript <span class="qn-badge">article</span></a>
-      <a href="/how-well-do-you-know-this/" class="qn-link">How Well Do You Know "this"? <span class="qn-badge">article</span></a>
     </div>
 
-    <a href="/" class="home-btn">← Go home</a>
+    <a href="/" class="home-btn">← Back to portfolio</a>
   </div>
 </main>
 
@@ -302,6 +309,28 @@
     <a href="/" style="font-family:var(--mono);font-size:11px;color:var(--ink-3);text-decoration:none;">← anmshpndy.com</a>
   </div>
 </footer>
+
+<style>
+  /* G44: 404 terminal block */
+  .nf-terminal {
+    display: flex; flex-direction: column; gap: 4px;
+    background: var(--surface); border: 1px solid var(--border-2);
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 28px;
+    font-family: var(--mono); font-size: 12px;
+  }
+  .nf-terminal-line { display: block; line-height: 1.7; }
+  .nf-prompt { color: var(--accent); margin-right: 6px; }
+  .nf-error   { color: var(--error); }
+  .nf-comment { color: var(--ink-3); font-style: italic; }
+</style>
+
+<script>
+  /* Show the actual 404 path in the terminal block */
+  (function() {
+    var el = document.getElementById('nf-path-display');
+    if (el) el.textContent = window.location.pathname || '/unknown';
+  })();
+</script>
 
 <script>
   const redirectMap = {
