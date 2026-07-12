@@ -2,6 +2,8 @@
 :root {
   color-scheme: light;
   --bg:             #FAF8F4;
+  --error:          #c0392b;
+  --error-bg:       rgba(192,57,43,.08);
   --surface:        #F2EDE4;
   --surface-2:      #E9E2D5;
   --ink:            #1C1714;
@@ -43,6 +45,8 @@
 /* ── Dark / Charcoal ── */
 [data-theme="dark"] {
   color-scheme: dark;
+  --error:          #e05c4b;
+  --error-bg:       rgba(224,92,75,.12);
   --bg:             #141210;
   --surface:        #1C1916;
   --surface-2:      #252220;
@@ -103,6 +107,8 @@
 /* ── Slate studio — cool dark, cyan-teal accent ── */
 [data-theme="slate"] {
   color-scheme: dark;
+  --error:          #e05c4b;
+  --error-bg:       rgba(224,92,75,.12);
   --bg:             #141B22;
   --surface:        #1C2630;
   --surface-2:      #23303C;
@@ -133,6 +139,8 @@
 /* ── Dusk editorial — deep plum, gold accent ── */
 [data-theme="dusk"] {
   color-scheme: dark;
+  --error:          #e05c4b;
+  --error-bg:       rgba(224,92,75,.12);
   --bg:             #18131E;
   --surface:        #211929;
   --surface-2:      #2C2234;
@@ -163,6 +171,8 @@
 /* ── High contrast — WCAG-first, near #000/#fff ── */
 [data-theme="high-contrast"] {
   color-scheme: dark;
+  --error:          #FF6B6B;
+  --error-bg:       rgba(255,107,107,.15);
   --bg:             #000000;
   --surface:        #111111;
   --surface-2:      #1E1E1E;
