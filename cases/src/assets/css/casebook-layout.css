@@ -161,7 +161,7 @@ body {
 .case-card__track {
   font-family: var(--mono, monospace);
   font-size: 10px; letter-spacing: .12em;
-  color: var(--casebook-accent); text-transform: uppercase;
+  color: var(--casebook-accent-ink); text-transform: uppercase;
 }
 .case-card__title {
   font-family: var(--serif, Georgia, serif);
@@ -240,7 +240,7 @@ html.casebook--reduce-motion .casebook-progress { transition: none; }
   color: var(--casebook-ink-faint); margin-bottom: 24px;
   flex-wrap: wrap;
 }
-.case-breadcrumb a { color: var(--casebook-accent); text-decoration: none; }
+.case-breadcrumb a { color: var(--casebook-accent-ink); text-decoration: none; }
 .case-breadcrumb a:hover { text-decoration: underline; }
 .case-breadcrumb__sep { color: var(--casebook-border-2); }
 
@@ -416,7 +416,7 @@ html.casebook--reduce-motion .casebook-progress { transition: none; }
 .casebook-back-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
 .casebook-back-top:active  { transform: scale(.92); }
 @media (hover: hover) and (pointer: fine) {
-  .casebook-back-top:hover { background: var(--casebook-accent); color: #fff; border-color: var(--casebook-accent); }
+  .casebook-back-top:hover { background: var(--casebook-accent); color: var(--casebook-accent-contrast); border-color: var(--casebook-accent); }
 }
 
 /* ── Forced colors (Windows HCM) ── */

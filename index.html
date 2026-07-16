@@ -13,7 +13,7 @@
     var t=localStorage.getItem('theme');
     /* F33 — auto high-contrast if system requests it and user hasn't overridden */
     if(!t && window.matchMedia && window.matchMedia('(prefers-contrast: more)').matches) t='high-contrast';
-    document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'high-contrast';
+    document.documentElement.dataset.theme=v.indexOf(t)!==-1?t:'light';
     var l=localStorage.getItem('locale');
     if(l){document.documentElement.lang=l;if(l==='ar')document.documentElement.dir='rtl';}
   })();
@@ -550,7 +550,7 @@
      aria-labelledby="rm-panel-title" aria-describedby="rm-panel-desc">
   <div class="rm-panel-backdrop" tabindex="-1" aria-hidden="true"></div>
   <div class="rm-panel-sheet">
-    <header class="rm-panel-head">
+    <div class="rm-panel-head">
       <div class="rm-panel-head-left">
         <span class="rm-panel-eyebrow" aria-hidden="true">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -565,12 +565,12 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
       </div>
-    </header>
+    </div>
     <div class="rm-panel-scan" id="rm-scan" aria-live="polite" aria-atomic="false"></div>
     <div class="rm-panel-body" id="rm-body" tabindex="0" role="region" aria-label="Briefing content">
       <!-- JS-rendered content -->
     </div>
-    <footer class="rm-panel-foot">
+    <div class="rm-panel-foot">
       <div class="rm-foot-ctas">
         <a href="/resume.pdf" download class="rm-foot-btn rm-foot-prime">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -582,7 +582,7 @@
                 aria-label="Copy plain-text brief to clipboard"><span data-i18n="recruiter.copyBrief">Copy brief</span></button>
       </div>
       <p class="rm-honesty" id="rm-panel-desc"><em data-i18n="recruiter.honesty">Synthesized from this portfolio's public content - not a live AI model.</em></p>
-    </footer>
+    </div>
   </div>
 </div>
 
@@ -619,7 +619,7 @@
     </div>
 
     <!-- Right column: info card — desktop only -->
-    <aside class="hero-card" aria-label="Quick facts">
+    <div class="hero-card" aria-label="Quick facts">
       <span class="hc-comment" data-i18n="hero.cardCommentRole">// frontend lead · measurement &amp; AI</span>
       <hr class="hc-divider" />
       <span class="hc-comment" data-i18n="hero.cardCommentCurrently">// currently</span>
@@ -647,11 +647,11 @@
       </span>
 
       <button type="button" class="hc-dl" id="resume-preview-hc" aria-haspopup="dialog"
-              data-i18n-attr="aria-label" data-i18n="a11y.previewResume">
+              data-i18n-attr="aria-label" data-i18n="a11y.previewResumeHero">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
         <span data-i18n="hero.viewResume">View resume</span>
       </button>
-    </aside>
+    </div>
 
     <div class="hero-chrome-rail" aria-hidden="true">
       <div class="egg-key-hint" id="egg-key-hint">
@@ -719,7 +719,7 @@
       <div class="career-seg career-seg--tekion" data-company="Tekion" data-from="2022-04" data-to="2025-09">
         <span class="career-seg-label">Tekion</span>
       </div>
-      <div class="career-seg career-seg--lifesight" data-company="Lifesight" data-from="2025-09" data-to="present">
+      <div class="career-seg career-seg--lifesight" data-company="Lifesight" data-from="2025-12" data-to="present">
         <span class="career-seg-label">Lifesight</span>
       </div>
     </div>
@@ -810,7 +810,7 @@
   <!-- SKILLS -->
   <section id="skills" aria-labelledby="skills-heading">
     <p class="section-label" data-i18n="sections.skills.label">// skills</p>
-    <h2 id="skills-heading" data-i18n="sections.skills.title">Stack &amp; craft</h2>
+    <h2 id="skills-heading"><button type="button" class="skills-heading-trigger" data-i18n="sections.skills.title">Stack &amp; craft</button></h2>
     <p class="section-intro" data-i18n="sections.skills.intro">Production tools from recent platforms - not a buzzword dump.</p>
 
     <div class="sv-grid">
@@ -990,7 +990,7 @@
     <p class="writing-intro" data-i18n="sections.writing.intro">I write about the JavaScript patterns, system design decisions, and frontend engineering trade-offs I encounter at work - the stuff that doesn't make it into the docs.</p>
 
     <!-- Casebook CTA -->
-    <div class="casebook-cta fade-up" role="complementary" aria-label="The Frontend Casebook">
+    <div class="casebook-cta fade-up" aria-label="The Frontend Casebook">
       <div class="casebook-cta__inner">
         <p class="casebook-cta__kicker" data-i18n="writing.casebookKicker">// case studies</p>
         <h3 class="casebook-cta__title" data-i18n="writing.casebookTitle">The Frontend Casebook</h3>
@@ -1299,6 +1299,9 @@
     </form>
   </section>
 
+  <!-- Global keyboard-shortcut live-region announcer (invisible; screen-reader only) -->
+  <div id="shortcut-announce" role="status" aria-live="polite" class="visually-hidden"></div>
+
 </main>
 
 <!-- FOOTER -->
@@ -1342,8 +1345,6 @@
   </svg>
 </button>
 
-<div id="shortcut-announce" role="status" aria-live="polite" class="visually-hidden"></div>
-
 <!-- E29: Mobile contact FAB — visible only on coarse-pointer (touch) devices -->
 <button class="contact-fab" id="contactFab" aria-label="Contact me" hidden>
   <svg class="icon-lg" aria-hidden="true"><use href="#i-mail"/></svg>
@@ -1352,7 +1353,7 @@
 <!-- ── Resume preview modal ───────────────────────────────────── -->
 <dialog id="resume-preview" class="resume-modal" aria-labelledby="resume-modal-title">
   <div class="resume-modal-inner">
-    <header class="resume-modal-head">
+    <div class="resume-modal-head">
       <h2 id="resume-modal-title" class="resume-modal-title">Animesh Pandey — Resume</h2>
       <div class="resume-modal-actions">
         <a href="/resume.pdf" download="Animesh_Pandey_Resume.pdf" class="btn btn-outline resume-modal-dl" aria-label="Download resume PDF">
@@ -1363,9 +1364,10 @@
           <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
         </button>
       </div>
-    </header>
+    </div>
     <div class="resume-modal-body">
-      <iframe src="/resume.pdf#view=FitH&amp;toolbar=0&amp;navpanes=0" class="resume-embed" title="Resume PDF preview" data-i18n-attr="title" data-i18n="resume.iframeTitle"></iframe>
+      <!-- src set lazily by nav.js on first open — an eager PDF embed disables the whole page's back/forward cache eligibility -->
+      <iframe data-src="/resume.pdf#view=FitH&amp;toolbar=0&amp;navpanes=0" class="resume-embed" title="Resume PDF preview" data-i18n-attr="title" data-i18n="resume.iframeTitle"></iframe>
       <div class="resume-embed-fallback" hidden>
         <p data-i18n="resume.fallbackText">PDF preview isn't available in this browser.</p>
         <a href="/resume.pdf" download="Animesh_Pandey_Resume.pdf" class="btn btn-dark">

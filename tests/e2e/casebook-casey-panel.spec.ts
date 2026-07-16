@@ -23,7 +23,7 @@ test.describe('Casey settings panel', () => {
     await expect(page.locator('[data-casey-hub-tier-label]')).toContainText(/Staff/i);
     await expect(page.locator('[data-casey-hub-avatar]')).toHaveAttribute('src', /\/staff\//);
     await expect(panel.locator('[data-casey-panel-tier="staff"]')).toHaveAttribute(
-      'aria-pressed',
+      'aria-checked',
       'true'
     );
   });

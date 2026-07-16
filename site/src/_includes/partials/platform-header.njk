@@ -9,7 +9,7 @@
   <div class="nav-inner">
     {% if product == 'casebook' %}
     <a href="{{ '/cases/' | url }}" class="nav-logo casebook-header__logo" aria-label="{{ site.name | default('The Frontend Casebook') }}, home">
-      <span>{ }</span> Casebook
+      <span aria-hidden="true">{ }</span> Casebook
     </a>
     <nav class="platform-header__nav" aria-label="Casebook navigation">
       <ul class="casebook-header__nav" role="list">
@@ -65,8 +65,8 @@
             <div class="nav-more__picker">
               <p class="nav-more__section-label" id="nav-more-theme-label">Theme</p>
               <ul class="theme-menu" role="listbox" aria-labelledby="nav-more-theme-label">
-                <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
-                <li class="theme-menu-item" role="option" data-t="light" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+                <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+                <li class="theme-menu-item" role="option" data-t="light" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
                 <li class="theme-menu-item" role="option" data-t="dark" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
                 <li class="theme-menu-item" role="option" data-t="sage" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
                 <li class="theme-menu-item" role="option" data-t="slate" aria-selected="false" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>

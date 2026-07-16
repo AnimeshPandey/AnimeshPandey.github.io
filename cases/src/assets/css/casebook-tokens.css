@@ -13,6 +13,8 @@
   --casebook-ink-muted:  var(--ink-2);
   --casebook-ink-faint:  var(--ink-3);
   --casebook-accent:     var(--accent);
+  --casebook-accent-contrast: var(--accent-contrast, #fff);
+  --casebook-accent-ink: var(--accent-ink, var(--accent));
   --casebook-border:     var(--border);
   --casebook-border-2:   var(--border-2);
   --casebook-header-bg:  var(--header-bg);
