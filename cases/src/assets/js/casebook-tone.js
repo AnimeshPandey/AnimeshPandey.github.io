@@ -31,9 +31,10 @@
     document.querySelectorAll('.case-tone__btn[data-tone]').forEach(function (btn) {
       btn.setAttribute('aria-pressed', btn.dataset.tone === tone ? 'true' : 'false');
     });
-    document.querySelectorAll('[data-casey-panel-tier]').forEach(function (btn) {
-      btn.setAttribute('aria-pressed', btn.dataset.caseyPanelTier === tone ? 'true' : 'false');
-    });
+    /* [data-casey-panel-tier] buttons use role="radio" + aria-checked (set by
+       casey-companion-prefs.js's refreshPanel/bindPanel) — aria-pressed is not
+       an allowed attribute on role="radio" per the ARIA spec, so this radiogroup
+       is intentionally excluded here. */
   }
 
   function setTone(tone) {

@@ -44,7 +44,7 @@ publishedAt: 2026-05-31
       <p>A thin backend proxy - a Node.js Express route is 40 lines - solves all of this. It holds the upstream connection to the model, buffers and forwards the SSE stream to the browser, handles retry on upstream error, and enforces a sane timeout on the model call without letting it propagate as a broken pipe to the browser. The proxy is also where you add request authentication, context injection, and model versioning without shipping those details to every client.</p>
 
       <figure class="article-figure" aria-labelledby="fig1-cap">
-        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig1-cap">
+        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig1-cap" tabindex="0">
 Browser (React)          Node BFF Proxy           Model API
      │                        │                       │
      │  POST /api/stream       │                       │
@@ -164,7 +164,7 @@ function useAgentStream() {
       <p>The state machine has six states, and each one requires deliberate UI treatment. Collapsing them - showing one spinner for thinking, tool execution, and slow network alike - produces an interface that users can't read or trust.</p>
 
       <figure class="article-figure" aria-labelledby="fig2-cap">
-        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig2-cap">
+        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig2-cap" tabindex="0">
   ┌─────────┐  send()   ┌──────────┐  status:tool   ┌──────────┐
   │  idle   │ ─────────►│ thinking │ ──────────────► │   tool   │
   └─────────┘           └──────────┘                 └──────────┘
@@ -201,7 +201,7 @@ function useAgentStream() {
       <p><strong>idle</strong>: The default. The entry point has a text input and a send button. Nothing else. Adding "suggested prompts" or a conversation history header before the user has sent anything increases cognitive load for zero benefit.</p>
 
       <figure class="article-figure" aria-labelledby="fig3-cap">
-        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig3-cap">
+        <pre class="article-diagram-ascii" role="img" aria-labelledby="fig3-cap" tabindex="0">
 ┌─────────────────────────────────────────────────────────────┐
 │  Agent panel (fixed width drawer or inline card)            │
 │                                                             │

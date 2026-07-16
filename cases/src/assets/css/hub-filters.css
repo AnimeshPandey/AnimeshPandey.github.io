@@ -219,7 +219,11 @@
 
 .seg-btn__count {
   font-size: 0.72rem;
-  opacity: 0.8;
+  /* opacity: 0.8 removed and color bumped from inherited ink-muted to full
+     ink — the translucent white badge background lightens the effective
+     backdrop enough that ink-muted alone still fell short (4.14:1) on the
+     cooler dark themes (slate/dusk). */
+  color: var(--casebook-ink);
   background: rgba(255,255,255,0.2);
   padding: 0.1rem 0.3rem;
   border-radius: 3px;
@@ -284,7 +288,7 @@
   height: 1.25rem;
   padding-inline: 0.25rem;
   background: var(--casebook-accent);
-  color: #fff;
+  color: var(--casebook-accent-contrast);
   border-radius: 999px;
   font-size: 0.7rem;
   font-weight: 700;
@@ -326,7 +330,7 @@
 .seg-btn--active,
 .seg-btn[aria-pressed="true"] {
   background: var(--casebook-accent);
-  color: #fff;
+  color: var(--casebook-accent-contrast);
 }
 
 .seg-btn:focus-visible {
@@ -369,12 +373,13 @@
 .chip[aria-pressed="true"] {
   background: var(--casebook-accent);
   border-color: var(--casebook-accent);
-  color: #fff;
+  color: var(--casebook-accent-contrast);
 }
 
 .chip__count {
   font-size: 0.7rem;
-  opacity: 0.75;
+  /* opacity: 0.75 removed — it diluted the inherited --casebook-ink-muted
+     text below 4.5:1 against the chip background. */
 }
 
 .chip--active .chip__count,
@@ -465,7 +470,7 @@
 .combobox-option:hover,
 .combobox-option[aria-selected="true"] {
   background: var(--casebook-accent);
-  color: #fff;
+  color: var(--casebook-accent-contrast);
 }
 
 .combobox-option__count {
@@ -664,7 +669,7 @@
   background: var(--casebook-accent);
   border: none;
   border-radius: 6px;
-  color: #fff;
+  color: var(--casebook-accent-contrast);
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
@@ -787,7 +792,10 @@
   background: color-mix(in srgb, var(--casebook-accent) 12%, transparent);
   border-radius: 4px;
   font-size: 0.68rem;
-  color: var(--casebook-accent);
+  /* --casebook-accent-ink (same text-safe accent used elsewhere) — the flat
+     75%-toward-black mix this replaced still failed 4.5:1 on several themes
+     against the tinted chip background (measured as low as 3.6:1). */
+  color: var(--casebook-accent-ink);
   text-transform: capitalize;
 }
 
@@ -831,7 +839,8 @@
 }
 
 .reading-card__ours--coming {
-  color: var(--casebook-ink-muted);
+  /* --casebook-ink-muted measured 4.16:1 here (fails 4.5:1) — use full ink. */
+  color: var(--casebook-ink);
   font-style: italic;
 }
 
@@ -852,7 +861,8 @@
 
 .reading-card__fcs-link {
   font-size: 0.75rem;
-  color: var(--casebook-ink-muted);
+  /* --casebook-ink-muted measured 4.16:1 here (fails 4.5:1) — use full ink. */
+  color: var(--casebook-ink);
   text-decoration: none;
 }
 
@@ -1068,7 +1078,7 @@
 .az-nav__link:hover {
   background: var(--casebook-accent);
   border-color: var(--casebook-accent);
-  color: #fff;
+  color: var(--casebook-accent-contrast);
 }
 
 .az-nav__link:focus-visible {
@@ -1170,7 +1180,7 @@
 .btn--primary {
   background: var(--casebook-accent);
   border: 1px solid var(--casebook-accent);
-  color: #fff;
+  color: var(--casebook-accent-contrast);
 }
 
 .btn--primary:hover {

@@ -49,12 +49,14 @@ layout: layouts/casebook-layout.njk
 
   {# ── Casey coach aside (desktop) ── #}
   <aside aria-label="Casey your guide" class="casey-coach">
+    {% set caseyIdPrefix = "" %}
     {% include 'partials/casey-coach.njk' %}
   </aside>
 </div>
 
 {# ── Casey coach dock (mobile) ── #}
 <div class="casey-coach casey-coach--dock-bottom" aria-label="Casey your guide (dock)" id="casey-dock">
+  {% set caseyIdPrefix = "mobile-" %}
   {% include 'partials/casey-coach.njk' %}
 </div>
 

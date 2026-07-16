@@ -239,6 +239,8 @@
       if (embed && fallback) {
         embed.hidden = false;
         fallback.hidden = true;
+        /* Lazy iframe src — an eager PDF embed disables back/forward cache for every visit, not just ones that open this modal */
+        if (!embed.src && embed.dataset.src) embed.src = embed.dataset.src;
         fetch('/resume.pdf', { method: 'HEAD' })
           .then(function (r) { if (!r.ok) showFallback(); })
           .catch(showFallback);

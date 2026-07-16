@@ -48,7 +48,7 @@
 
 .hub-progress__account-link {
   font-size: 0.8rem;
-  color: var(--casebook-accent);
+  color: var(--casebook-accent-ink);
   text-decoration: none;
 }
 
@@ -173,7 +173,7 @@
 
 .case-continue__btn--primary {
   background: var(--casebook-accent);
-  color: #0a0a0a;
+  color: var(--casebook-accent-contrast);
   font-weight: 600;
   width: 100%;
   max-width: 420px;
@@ -188,7 +188,8 @@
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  opacity: 0.85;
+  /* opacity: 0.85 removed — it diluted the inherited --casebook-accent-contrast
+     text below 4.5:1 against the accent button fill on the sage theme. */
 }
 
 .case-continue__btn-title {
@@ -286,7 +287,7 @@
   min-height: 44px;
   padding: 0.55rem 1.1rem;
   background: var(--casebook-accent);
-  color: #0a0a0a;
+  color: var(--casebook-accent-contrast);
   border: none;
   border-radius: 8px;
   font-weight: 600;

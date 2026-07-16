@@ -9,7 +9,7 @@
 .case-cover__track {
   font-family: var(--mono, monospace);
   font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--casebook-accent); margin-bottom: 10px;
+  color: var(--casebook-accent-ink); margin-bottom: 10px;
 }
 .case-cover__title {
   font-family: var(--serif, 'DM Serif Display', Georgia, serif);
@@ -51,7 +51,7 @@
 }
 .case-tone__btn[aria-pressed="true"] {
   background: var(--casebook-accent);
-  color: var(--casebook-bg);
+  color: var(--casebook-accent-contrast);
   font-weight: 500;
 }
 .case-tone__btn:focus-visible {
@@ -195,7 +195,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 .case-demo__btn:hover { border-color: var(--casebook-accent); color: var(--casebook-accent); }
 .case-demo__btn[aria-pressed="true"] {
-  background: var(--casebook-accent); color: var(--casebook-bg);
+  background: var(--casebook-accent); color: var(--casebook-accent-contrast);
   border-color: var(--casebook-accent);
 }
 .case-demo__state-label {
@@ -798,7 +798,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 .casebook-subscribe__form .btn--primary {
   background: var(--casebook-accent);
-  color: var(--casebook-bg);
+  color: var(--casebook-accent-contrast);
   border-color: var(--casebook-accent);
 }
 .casebook-subscribe__rss {
@@ -806,12 +806,16 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   margin-top: 12px;
   font-family: var(--mono, monospace); font-size: 12px;
   color: var(--casebook-ink-faint);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 .casebook-subscribe__rss:hover { color: var(--casebook-accent); }
 .casebook-subscribe__privacy {
   font-size: 11px; color: var(--casebook-ink-faint); margin-top: 10px;
 }
+/* Overrides the broader .casebook-about a rule below, which is sized for
+   body-copy links and fails 4.5:1 at this widget's 11px caption size. */
+.casebook-subscribe__privacy a { color: var(--casebook-accent-ink); }
 
 /* ── About page ── */
 .casebook-about {
@@ -829,7 +833,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   color: var(--casebook-ink); margin: 32px 0 12px;
 }
 .casebook-about p { color: var(--casebook-ink-muted); margin: 0 0 1em; }
-.casebook-about a { color: var(--casebook-accent); }
+.casebook-about a { color: var(--casebook-accent-ink); }
 .casebook-about ul { padding-left: 1.4em; color: var(--casebook-ink-muted); }
 .casebook-about li { margin-bottom: 6px; }
 
@@ -1023,7 +1027,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 .casey-hub__action--primary:hover,
 .casey-hub__action--primary:focus-visible {
   background: var(--casebook-accent);
-  color: var(--casebook-bg, #0a0a0a);
+  color: var(--casebook-accent-contrast);
 }
 
 /* ══════════════════════════════════════════════════
@@ -1061,7 +1065,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   font-size: 10px;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--casebook-accent);
+  color: var(--casebook-accent-ink);
   margin: 0 0 6px;
 }
 
@@ -1076,7 +1080,8 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   font-family: var(--mono, monospace);
   font-size: 11px;
   color: var(--casebook-ink-faint);
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .casey-library__link:hover,
@@ -1149,7 +1154,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   font-family: var(--mono, monospace);
   font-size: 10.5px;
   font-weight: 500;
-  color: var(--casebook-accent);
+  color: var(--casebook-accent-ink);
   background: transparent;
   border: 1px solid var(--casebook-accent);
   border-radius: 6px;
@@ -1162,7 +1167,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 .casey-coach__chip:hover,
 .casey-coach__chip:focus-visible {
   background: var(--casebook-accent);
-  color: var(--casebook-bg, #0a0a0a);
+  color: var(--casebook-accent-contrast);
 }
 
 .casey-coach__chip:focus-visible {
@@ -1263,7 +1268,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   border: 1px solid var(--casebook-border);
   border-radius: 8px;
   background: transparent;
-  color: var(--casebook-accent);
+  color: var(--casebook-accent-ink);
   cursor: pointer;
   flex-shrink: 0;
   align-self: center;

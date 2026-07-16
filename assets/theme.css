@@ -8,12 +8,15 @@
   --surface-2:      #E9E2D5;
   --ink:            #1C1714;
   --ink-2:          #5C4F47;
-  --ink-3:          #9B8C84;
+  --ink-3:          #685D57; /* darkened from #9B8C84 — raw value was 2.52:1 vs --surface-2 (worst-case realistic bg, fails WCAG AA at small text sizes); 4.95:1 */
   --accent:         #BF5A32;
   --accent-bg:      #F8E5DA;
   --accent-dim:     rgba(191,90,50,.12);
+  --accent-contrast: #000000; /* text-on-accent-bg; #BF5A32 is 4.45:1 vs white (fails WCAG AA), 4.72:1 vs black */
+  --accent-ink:     #994828; /* text-on-page-bg (accent used as body text, not a button fill); raw #BF5A32 is 3.81:1 vs --surface-2 (fails), darkened 20% toward black passes 4.92:1 */
   --sage:           #4E7A68;
   --sage-bg:        #D3E8DF;
+  --sage-ink:       #456d5d; /* text-on-sage-bg; raw #4E7A68 is 3.80:1 vs --sage-bg (fails), darkened 11% toward black passes 4.55:1 */
   --border:         #DDD6C9;
   --border-2:       #CAC2B4;
   --hero-card-bg:   #1C1714;
@@ -40,6 +43,14 @@
   --skill-cat-tooling: #8A6952;
   --skill-cat-data: #7072BA;
   --skill-cat-backend: #4A7090;
+  /* text-on-surface variants; raw skill-cat-* values are 3.11-4.49:1 vs --surface (fail), darkened toward black to clear 4.5:1 */
+  --skill-cat-frontend-ink: var(--accent-ink);
+  --skill-cat-architecture-ink: #3e7283; /* 4.57:1 */
+  --skill-cat-ai-ink: #86599c; /* 4.59:1 */
+  --skill-cat-testing-ink: #497362; /* 4.60:1 */
+  --skill-cat-tooling-ink: #84654f; /* 4.55:1 */
+  --skill-cat-data-ink: #6465a6; /* 4.55:1 */
+  --skill-cat-backend-ink: #496f8f; /* 4.56:1 */
 }
 
 /* ── Dark / Charcoal ── */
@@ -52,12 +63,15 @@
   --surface-2:      #252220;
   --ink:            #F5F0E8;
   --ink-2:          #C4B8AE;
-  --ink-3:          #7A6E68;
+  --ink-3:          #938882; /* darkened from #7A6E68 — raw value was 3.21:1 vs --surface-2 (worst-case realistic bg, fails WCAG AA at small text sizes); 4.58:1 */
   --accent:         #E07A52;
   --accent-bg:      rgba(224,122,82,.14);
   --accent-dim:     rgba(224,122,82,.10);
+  --accent-contrast: #000000; /* #E07A52 is 2.97:1 vs white (fails WCAG AA), 7.08:1 vs black */
+  --accent-ink:     #E07A52; /* already passes as body text: 6.30:1 vs --bg */
   --sage:           #7BAF98;
   --sage-bg:        rgba(78,122,104,.18);
+  --sage-ink:       #7BAF98; /* already passes as text-on-sage-bg: 5.59:1 */
   --border:         #2E2926;
   --border-2:       #3D3632;
   --hero-card-bg:   #0E0B09;
@@ -72,6 +86,14 @@
   --skill-cat-tooling: #B89A7A;
   --skill-cat-data: #9094E8;
   --skill-cat-backend: #6A9AB8;
+  /* all already pass 4.5:1 vs --surface as body text */
+  --skill-cat-frontend-ink: var(--accent-ink);
+  --skill-cat-architecture-ink: var(--skill-cat-architecture);
+  --skill-cat-ai-ink: var(--skill-cat-ai);
+  --skill-cat-testing-ink: var(--skill-cat-testing);
+  --skill-cat-tooling-ink: var(--skill-cat-tooling);
+  --skill-cat-data-ink: var(--skill-cat-data);
+  --skill-cat-backend-ink: var(--skill-cat-backend);
 }
 
 /* ── Sage mist — light base, forest-green accent ── */
@@ -82,12 +104,15 @@
   --surface-2:      #DAE5D7;
   --ink:            #1A2218;
   --ink-2:          #4A5C45;
-  --ink-3:          #8A9E84;
+  --ink-3:          #586653; /* darkened from #8A9E84 — raw value was 2.21:1 vs --surface-2 (worst-case realistic bg, fails WCAG AA at small text sizes); 4.70:1 */
   --accent:         #2D7A4F;
   --accent-bg:      #D4EDE0;
   --accent-dim:     rgba(45,122,79,.12);
+  --accent-contrast: #FFFFFF; /* #2D7A4F is 5.24:1 vs white (passes WCAG AA), 4.01:1 vs black (fails) */
+  --accent-ink:     #296E47; /* text-on-page-bg; raw #2D7A4F is 4.37:1 vs --surface-2 (fails), darkened 10% toward black passes 4.73:1 */
   --sage:           #2D7A4F;
   --sage-bg:        rgba(45,122,79,.12);
+  --sage-ink:       #2a734a; /* text-on-sage-bg; raw #2D7A4F is 4.16:1 vs composite --sage-bg (fails), darkened 6% toward black passes 4.57:1 */
   --border:         #C8D9C4;
   --border-2:       #B5C9B0;
   --hero-card-bg:   #1A2218;
@@ -102,6 +127,14 @@
   --skill-cat-tooling: #6A7A5A;
   --skill-cat-data: #4A6A8A;
   --skill-cat-backend: #3A6A7A;
+  /* text-on-surface variants; architecture/ai/testing/tooling raw values are 3.56-4.47:1 vs --surface (fail), darkened toward black; data/backend already pass */
+  --skill-cat-frontend-ink: var(--accent-ink);
+  --skill-cat-architecture-ink: #31755e; /* 4.67:1 */
+  --skill-cat-ai-ink: #506d89; /* 4.61:1 */
+  --skill-cat-testing-ink: #2c784d; /* 4.59:1 */
+  --skill-cat-tooling-ink: #606f52; /* 4.60:1 */
+  --skill-cat-data-ink: var(--skill-cat-data);
+  --skill-cat-backend-ink: var(--skill-cat-backend);
 }
 
 /* ── Slate studio — cool dark, cyan-teal accent ── */
@@ -114,12 +147,15 @@
   --surface-2:      #23303C;
   --ink:            #E4EEF4;
   --ink-2:          #9BBACE;
-  --ink-3:          #5C7888;
+  --ink-3:          #8299A6; /* lightened from #5C7888 — raw value was 2.88:1 vs --surface-2 (worst-case realistic bg, fails WCAG AA at small text sizes); 4.65:1 */
   --accent:         #3BBFBF;
   --accent-bg:      rgba(59,191,191,.14);
   --accent-dim:     rgba(59,191,191,.10);
+  --accent-contrast: #000000; /* #3BBFBF is 2.24:1 vs white (fails WCAG AA), 9.39:1 vs black */
+  --accent-ink:     #3BBFBF; /* already passes as body text: 7.76:1 vs --bg */
   --sage:           #5BBFAA;
   --sage-bg:        rgba(91,191,170,.14);
+  --sage-ink:       #5BBFAA; /* already passes as text-on-sage-bg: 6.06:1 */
   --border:         #23323E;
   --border-2:       #2E4050;
   --hero-card-bg:   #0C1318;
@@ -134,6 +170,14 @@
   --skill-cat-tooling: #8A9AA8;
   --skill-cat-data: #7090D8;
   --skill-cat-backend: #4A8AA8;
+  /* backend raw value is 4.01:1 vs --surface (fails), lightened toward white; rest already pass */
+  --skill-cat-frontend-ink: var(--accent-ink);
+  --skill-cat-architecture-ink: var(--skill-cat-architecture);
+  --skill-cat-ai-ink: var(--skill-cat-ai);
+  --skill-cat-testing-ink: var(--skill-cat-testing);
+  --skill-cat-tooling-ink: var(--skill-cat-tooling);
+  --skill-cat-data-ink: var(--skill-cat-data);
+  --skill-cat-backend-ink: #5a95b0; /* 4.65:1 */
 }
 
 /* ── Dusk editorial — deep plum, gold accent ── */
@@ -146,12 +190,15 @@
   --surface-2:      #2C2234;
   --ink:            #F0EAF8;
   --ink-2:          #BBA8CC;
-  --ink-3:          #7A6888;
+  --ink-3:          #9887A4; /* lightened from #7A6888 — raw value was 3.00:1 vs --surface-2 (worst-case realistic bg, fails WCAG AA at small text sizes); 4.65:1 */
   --accent:         #D4A840;
   --accent-bg:      rgba(212,168,64,.14);
   --accent-dim:     rgba(212,168,64,.10);
+  --accent-contrast: #000000; /* #D4A840 is 2.22:1 vs white (fails WCAG AA), 9.47:1 vs black */
+  --accent-ink:     #D4A840; /* already passes as body text: 8.23:1 vs --bg */
   --sage:           #A87AC0;
   --sage-bg:        rgba(168,122,192,.14);
+  --sage-ink:       #a97bc1; /* raw #A87AC0 is 4.51:1 vs composite --sage-bg (borderline), lightened 1% toward white passes 4.57:1 with margin */
   --border:         #2E2438;
   --border-2:       #3C3050;
   --hero-card-bg:   #100C16;
@@ -166,6 +213,14 @@
   --skill-cat-tooling: #B89870;
   --skill-cat-data: #8898D0;
   --skill-cat-backend: #7090B0;
+  /* all already pass 4.5:1 vs --surface as body text */
+  --skill-cat-frontend-ink: var(--accent-ink);
+  --skill-cat-architecture-ink: var(--skill-cat-architecture);
+  --skill-cat-ai-ink: var(--skill-cat-ai);
+  --skill-cat-testing-ink: var(--skill-cat-testing);
+  --skill-cat-tooling-ink: var(--skill-cat-tooling);
+  --skill-cat-data-ink: var(--skill-cat-data);
+  --skill-cat-backend-ink: var(--skill-cat-backend);
 }
 
 /* ── High contrast — WCAG-first, near #000/#fff ── */
@@ -182,8 +237,11 @@
   --accent:         #FFD700;
   --accent-bg:      rgba(255,215,0,.15);
   --accent-dim:     rgba(255,215,0,.10);
+  --accent-contrast: #000000; /* #FFD700 is 1.4:1 vs white (fails WCAG AA), 14.97:1 vs black */
+  --accent-ink:     #FFD700; /* already passes as body text: 14.97:1 vs --bg */
   --sage:           #44DD88;
   --sage-bg:        rgba(68,221,136,.15);
+  --sage-ink:       #44DD88; /* already passes as text-on-sage-bg: 9.63:1 */
   --border:         #333333;
   --border-2:       #555555;
   --hero-card-bg:   #111111;
@@ -198,6 +256,14 @@
   --skill-cat-tooling: #DDAA66;
   --skill-cat-data: #88AAFF;
   --skill-cat-backend: #66BBDD;
+  /* all already pass 4.5:1 vs --surface as body text */
+  --skill-cat-frontend-ink: var(--accent-ink);
+  --skill-cat-architecture-ink: var(--skill-cat-architecture);
+  --skill-cat-ai-ink: var(--skill-cat-ai);
+  --skill-cat-testing-ink: var(--skill-cat-testing);
+  --skill-cat-tooling-ink: var(--skill-cat-tooling);
+  --skill-cat-data-ink: var(--skill-cat-data);
+  --skill-cat-backend-ink: var(--skill-cat-backend);
 }
 
 /* ── System dark preference — applies only when no theme is explicitly set ── */
@@ -209,10 +275,12 @@
     --surface-2:      #252220;
     --ink:            #F5F0E8;
     --ink-2:          #C4B8AE;
-    --ink-3:          #7A6E68;
+    --ink-3:          #938882;
     --accent:         #E07A52;
     --accent-bg:      rgba(224,122,82,.14);
     --accent-dim:     rgba(224,122,82,.10);
+    --accent-contrast: #000000;
+    --accent-ink:     #E07A52;
     --sage:           #7BAF98;
     --sage-bg:        rgba(78,122,104,.18);
     --border:         #2E2926;

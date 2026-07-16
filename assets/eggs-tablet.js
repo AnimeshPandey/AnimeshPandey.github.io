@@ -17,6 +17,10 @@
   function initT2(caps) {
     var heading = document.getElementById('skills-heading');
     if (!heading) return;
+    /* Interactive trigger is a real <button> nested in the h2 — keeps the
+       heading's native heading semantics for screen-reader nav (role="button"
+       on an <h2> itself is not an allowed ARIA role and breaks heading nav). */
+    var trigger = heading.querySelector('.skills-heading-trigger') || heading;
 
     var nodes   = data.orbitNodes || [];
     var N       = nodes.length;
@@ -89,13 +93,11 @@
         rmOpen = false;
         overlay.classList.remove('open');
         overlay.setAttribute('aria-hidden', 'true');
-        heading.focus();
+        trigger.focus();
       }
       registerClose(closeRM);
-      heading.setAttribute('role', 'button');
-      heading.setAttribute('tabindex', '0');
-      heading.addEventListener('click', openRM);
-      heading.addEventListener('keydown', function (e) {
+      trigger.addEventListener('click', openRM);
+      trigger.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); rmOpen ? closeRM() : openRM(); }
       });
       closeBtn.addEventListener('click', closeRM);
@@ -203,7 +205,7 @@
       cancelAnimationFrame(raf);
       overlay.classList.remove('open');
       overlay.setAttribute('aria-hidden', 'true');
-      heading.focus();
+      trigger.focus();
     }
 
     registerClose(closeOverlay);
@@ -227,10 +229,8 @@
     }, { passive: true });
 
     /* Heading trigger */
-    heading.setAttribute('role', 'button');
-    heading.setAttribute('tabindex', '0');
-    heading.addEventListener('click', openOverlay);
-    heading.addEventListener('keydown', function (e) {
+    trigger.addEventListener('click', openOverlay);
+    trigger.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open ? closeOverlay() : openOverlay(); }
     });
 

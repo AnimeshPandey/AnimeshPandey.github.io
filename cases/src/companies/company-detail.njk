@@ -47,6 +47,7 @@ permalink: /companies/{{ company.slug }}/index.html
 
   {# ── Article list ── #}
   {% if companyEntries | length > 0 %}
+    <h2 class="visually-hidden">Articles from {{ company.name }}</h2>
     <ul class="casebook-hub__grid casebook-hub__grid--library company-articles" id="company-grid" role="list">
       {% for entry in companyEntries | sort(true, false, "publishedYear") %}
         <li class="library-grid__item"
@@ -62,13 +63,13 @@ permalink: /companies/{{ company.slug }}/index.html
   {% endif %}
 
   {# ── Back nav ── #}
-  <nav class="company-back-nav" aria-label="Navigation">
+  <nav class="company-back-nav" aria-label="More browsing options">
     <a href="{{ '/companies/' | url }}" class="btn btn--ghost">← All companies</a>
     <a href="{{ '/library/' | url }}" class="btn btn--ghost">Reading library</a>
   </nav>
 
   {# ── Attribution ── #}
-  <footer class="library-attribution">
+  <div class="library-attribution">
     <p>
       Reading list sourced from
       <a href="https://github.com/andrew--r/frontend-case-studies" rel="noopener noreferrer">
@@ -76,7 +77,7 @@ permalink: /companies/{{ company.slug }}/index.html
       </a> by Andrew Romanov
       (<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>).
     </p>
-  </footer>
+  </div>
 
 </div>
 
