@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://anmshpndy.com/sitemap.xml
+Sitemap: https://anmshpndy.com/cases/sitemap.xml

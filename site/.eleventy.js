@@ -8,6 +8,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ '../site.webmanifest': 'site.webmanifest' });
   eleventyConfig.addPassthroughCopy({ '../sitemap.xml': 'sitemap.xml' });
   eleventyConfig.addPassthroughCopy({ '../robots.txt': 'robots.txt' });
+  eleventyConfig.addPassthroughCopy({ '../llms.txt': 'llms.txt' });
   eleventyConfig.addPassthroughCopy({ '../index.html': 'index.html' });
   eleventyConfig.addPassthroughCopy({ '../404.html': '404.html' });
 
