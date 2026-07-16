@@ -24,14 +24,14 @@
   function getStoredTheme() {
     try {
       var t = localStorage.getItem('theme');
-      return isValidTheme(t) ? t : 'high-contrast';
-    } catch (e) { return 'high-contrast'; }
+      return isValidTheme(t) ? t : 'light';
+    } catch (e) { return 'light'; }
   }
 
   var DARK_THEMES = { dark: 1, slate: 1, dusk: 1, 'high-contrast': 1 };
 
   function applyTheme(id) {
-    if (!isValidTheme(id)) id = 'high-contrast';
+    if (!isValidTheme(id)) id = 'light';
 
     document.documentElement.dataset.theme = id;
     try { localStorage.setItem('theme', id); } catch (e) {}

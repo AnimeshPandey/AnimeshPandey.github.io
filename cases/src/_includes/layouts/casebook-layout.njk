@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ site.locale | default('en') }}"
-      data-theme="high-contrast"
+      data-theme="light"
       data-asset-base="{{ '/assets/casey/' | url }}"
       data-path-prefix="{{ site.pathPrefix | default('/cases/') }}"
       data-ap-build-id="__AP_BUILD_ID__">
@@ -14,7 +14,7 @@
     var valid = { light:1, dark:1, sage:1, slate:1, dusk:1, 'high-contrast':1 };
     var stored;
     try { stored = localStorage.getItem('theme'); } catch (e) {}
-    document.documentElement.dataset.theme = (stored && valid[stored]) ? stored : 'high-contrast';
+    document.documentElement.dataset.theme = (stored && valid[stored]) ? stored : 'light';
   })();
   </script>
 

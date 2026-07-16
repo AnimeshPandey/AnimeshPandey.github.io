@@ -132,7 +132,7 @@
 
     root.querySelectorAll('[data-casey-panel-tier]').forEach(function (btn) {
       var val = btn.getAttribute('data-casey-panel-tier');
-      btn.setAttribute('aria-pressed', val === currentTier ? 'true' : 'false');
+      btn.setAttribute('aria-checked', val === currentTier ? 'true' : 'false');
       btn.addEventListener('click', function () {
         if (window.CasebookTone) window.CasebookTone.setTone(val);
       });
@@ -182,7 +182,7 @@
     var list = root.querySelector('[data-casey-milestones]');
     if (list) list.innerHTML = milestoneRows(state);
     root.querySelectorAll('[data-casey-panel-tier]').forEach(function (btn) {
-      btn.setAttribute('aria-pressed', btn.getAttribute('data-casey-panel-tier') === tier ? 'true' : 'false');
+      btn.setAttribute('aria-checked', btn.getAttribute('data-casey-panel-tier') === tier ? 'true' : 'false');
     });
     root.querySelectorAll('[data-casey-intensity]').forEach(function (btn) {
       btn.setAttribute(

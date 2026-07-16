@@ -307,7 +307,7 @@
 
 .platform-header--casebook .casebook-header__nav a:hover,
 .platform-header--casebook .casebook-header__nav a[aria-current="page"] {
-  color: var(--casebook-accent, var(--accent));
+  color: var(--casebook-accent-ink, var(--accent-ink));
   background: var(--casebook-surface-2, var(--surface-2));
 }
 
@@ -342,7 +342,7 @@
 }
 
 .platform-header--casebook .nav-logo span {
-  color: var(--casebook-accent, var(--accent));
+  color: var(--casebook-accent-ink, var(--accent-ink));
 }
 
 .platform-header__nav {

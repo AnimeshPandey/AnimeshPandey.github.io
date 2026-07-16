@@ -118,14 +118,15 @@ permalink: /library/index.html
     <div class="filter-sheet__body">
       {# Sheet controls injected by hub-filters.js from desktop controls #}
     </div>
-    <footer class="filter-sheet__footer">
+    <div class="filter-sheet__footer">
       <button class="filter-sheet__clear" id="lib-sheet-clear">Clear</button>
       <button class="filter-sheet__apply btn btn--primary" id="lib-sheet-apply">Apply</button>
-    </footer>
+    </div>
   </div>
 
   {# ── Card grid ── #}
   <div id="library-grid-wrapper">
+    <h2 class="visually-hidden">Articles</h2>
     <ul class="casebook-hub__grid casebook-hub__grid--library" id="library-grid" role="list" aria-label="Reading library articles">
       {% for entry in libraryEntries %}
         <li class="library-grid__item"
@@ -149,14 +150,14 @@ permalink: /library/index.html
 
     {# Pagination #}
     <nav class="lib-pagination" id="lib-pagination" aria-label="Page navigation" hidden>
-      <button class="lib-pagination__btn" id="lib-prev" aria-label="Previous page" disabled>← Prev</button>
+      <button class="lib-pagination__btn" id="lib-prev" disabled><span aria-hidden="true">←</span> Prev</button>
       <span class="lib-pagination__info" id="lib-page-info" aria-live="polite"></span>
-      <button class="lib-pagination__btn" id="lib-next" aria-label="Next page">Next →</button>
+      <button class="lib-pagination__btn" id="lib-next">Next <span aria-hidden="true">→</span></button>
     </nav>
   </div>
 
   {# ── Attribution ── #}
-  <footer class="library-attribution">
+  <div class="library-attribution">
     <p>
       Reading list sourced from
       <a href="https://github.com/andrew--r/frontend-case-studies" rel="noopener noreferrer">
@@ -165,7 +166,7 @@ permalink: /library/index.html
       (<a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>).
       The Frontend Casebook adds interactive cases and does not republish article content.
     </p>
-  </footer>
+  </div>
 
 </div>
 

@@ -26,7 +26,7 @@ body {
 
 /* ── Focus ── */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -66,7 +66,7 @@ header.scrolled {
   font-family: var(--serif); font-size: 20px;
   color: var(--ink); text-decoration: none; letter-spacing: -.02em;
 }
-.nav-logo span { color: var(--accent); }
+.nav-logo span { color: var(--accent-ink); }
 .nav-right { display: flex; align-items: center; gap: 12px; }
 
 /* Desktop nav — hidden until ≥820px */
@@ -208,6 +208,11 @@ h2 {
   font-weight: 400; line-height: 1.2; color: var(--ink); margin-bottom: 40px;
 }
 h2 em { font-style: italic; color: var(--ink-2); }
+/* Native <button> nested in a heading (e.g. #skills-heading's tablet-egg
+   trigger) — reset button chrome so it renders identically to plain text. */
+h2 > button {
+  all: unset; font: inherit; color: inherit; cursor: pointer;
+}
 
 /* ── Hero — mobile-first ── */
 #hero {
@@ -924,20 +929,20 @@ button.social-btn { background: transparent; border: none; cursor: pointer; font
   border-top: 3px solid var(--cat, var(--border-2));
   transition: transform .2s ease, box-shadow .2s;
 }
-.sv-card--frontend     { --cat: var(--skill-cat-frontend); }
-.sv-card--architecture { --cat: var(--skill-cat-architecture); }
-.sv-card--ai           { --cat: var(--skill-cat-ai); }
-.sv-card--testing      { --cat: var(--skill-cat-testing); }
-.sv-card--tooling      { --cat: var(--skill-cat-tooling); }
-.sv-card--data         { --cat: var(--skill-cat-data); }
-.sv-card--backend      { --cat: var(--skill-cat-backend); }
+.sv-card--frontend     { --cat: var(--skill-cat-frontend); --cat-ink: var(--skill-cat-frontend-ink); }
+.sv-card--architecture { --cat: var(--skill-cat-architecture); --cat-ink: var(--skill-cat-architecture-ink); }
+.sv-card--ai           { --cat: var(--skill-cat-ai); --cat-ink: var(--skill-cat-ai-ink); }
+.sv-card--testing      { --cat: var(--skill-cat-testing); --cat-ink: var(--skill-cat-testing-ink); }
+.sv-card--tooling      { --cat: var(--skill-cat-tooling); --cat-ink: var(--skill-cat-tooling-ink); }
+.sv-card--data         { --cat: var(--skill-cat-data); --cat-ink: var(--skill-cat-data-ink); }
+.sv-card--backend      { --cat: var(--skill-cat-backend); --cat-ink: var(--skill-cat-backend-ink); }
 @media (hover: hover) and (pointer: fine) {
   .sv-card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(28,23,20,.07); }
 }
 .sv-head {
   display: flex; align-items: center; gap: 8px;
   font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--cat, var(--ink-2));
+  text-transform: uppercase; color: var(--cat-ink, var(--ink-2));
   margin-bottom: 12px;
 }
 .sv-head svg { flex-shrink: 0; opacity: .85; color: var(--cat, var(--ink-2)); }
@@ -950,7 +955,7 @@ button.social-btn { background: transparent; border: none; cursor: pointer; font
 }
 .sv-chip.sv-feat {
   border-color: var(--cat, var(--accent));
-  color: var(--cat, var(--accent));
+  color: var(--cat-ink, var(--accent-ink));
   font-weight: 500;
 }
 
@@ -1586,12 +1591,12 @@ html.theme-transitioning footer {
 }
 
 /* B11 — Technology tag semantic color coding (classes added by JS) */
-.tag.tc-js   { border-color: rgba(97,218,251,.35); color: var(--skill-cat-frontend); }
-.tag.tc-test { border-color: rgba(78,122,104,.4);  color: var(--skill-cat-testing); }
-.tag.tc-ai   { border-color: rgba(144,96,168,.4);  color: var(--skill-cat-ai); }
-.tag.tc-arch { border-color: rgba(191,90,50,.35);  color: var(--accent); }
-.tag.tc-tool { border-color: rgba(138,105,82,.4);  color: var(--skill-cat-tooling); }
-.tag.tc-data { border-color: rgba(112,114,186,.4); color: var(--skill-cat-data); }
+.tag.tc-js   { border-color: rgba(97,218,251,.35); color: var(--skill-cat-frontend-ink); }
+.tag.tc-test { border-color: rgba(78,122,104,.4);  color: var(--skill-cat-testing-ink); }
+.tag.tc-ai   { border-color: rgba(144,96,168,.4);  color: var(--skill-cat-ai-ink); }
+.tag.tc-arch { border-color: rgba(191,90,50,.35);  color: var(--accent-ink); }
+.tag.tc-tool { border-color: rgba(138,105,82,.4);  color: var(--skill-cat-tooling-ink); }
+.tag.tc-data { border-color: rgba(112,114,186,.4); color: var(--skill-cat-data-ink); }
 
 /* B12 — Company lettermark logos in timeline */
 .t-logo {
@@ -1726,7 +1731,7 @@ html.theme-transitioning footer {
 .contact-avail-chip {
   display: inline-flex; align-items: center; gap: 7px;
   font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
-  color: var(--sage); background: var(--sage-bg);
+  color: var(--sage-ink); background: var(--sage-bg);
   padding: 5px 13px; border-radius: 100px;
   margin-bottom: 22px; width: fit-content;
 }

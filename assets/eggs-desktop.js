@@ -227,6 +227,7 @@
     term.setAttribute('aria-modal', 'false');
     term.setAttribute('aria-label', 'Test run output');
     term.setAttribute('aria-hidden', 'true');
+    term.inert = true; /* off-screen slide (bottom: -100%) keeps it in the tab order; inert removes the close button from focus/AT while hidden */
     term.innerHTML =
       '<div class="egg-tm-bar">' +
         '<div class="egg-tm-dots">' +
@@ -235,7 +236,7 @@
           '<span class="egg-tm-dot egg-tm-dot-g" aria-hidden="true"></span>' +
         '</div>' +
         '<span class="egg-tm-title">npm test</span>' +
-        '<button class="egg-tm-close-btn" aria-label="Close terminal">✕</button>' +
+        '<button class="egg-tm-close-btn" aria-label="Close terminal" tabindex="-1">✕</button>' +
       '</div>' +
       '<div class="egg-tm-body" id="egg-tm-body" aria-live="polite"></div>';
     document.body.appendChild(term);
@@ -253,6 +254,8 @@
       tmBody.innerHTML = '';
       clearTimers();
       term.setAttribute('aria-hidden', 'false');
+      term.inert = false;
+      tmClose.setAttribute('tabindex', '0');
       term.classList.add('egg-tm-open');
       tmClose.focus();
 
@@ -282,6 +285,8 @@
       clearTimers();
       term.classList.remove('egg-tm-open');
       term.setAttribute('aria-hidden', 'true');
+      term.inert = true;
+      tmClose.setAttribute('tabindex', '-1');
     }
 
     registerClose(closeTerminal);

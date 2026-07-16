@@ -13,12 +13,12 @@
     <span class="casey-coach__name">Casey · Junior</span>
   </div>
 
-  <p class="casey-coach__bubble" aria-live="polite" id="casey-bubble-{{ loop.index if loop else '0' }}">
+  <p class="casey-coach__bubble" aria-live="polite" id="{{ caseyIdPrefix | default('') }}casey-bubble">
     Hey! I'm Casey — scroll through the case and I'll chime in with hints.
   </p>
 
   {# Action chips — rendered by casey-coach.js from casey.json actions array #}
-  <div class="casey-coach__actions" aria-label="Casey's suggested actions" hidden></div>
+  <div class="casey-coach__actions" role="group" aria-label="Casey's suggested actions" hidden></div>
 
   <button type="button" class="casey-coach__voice" aria-label="Listen with Casey (text-to-speech)"
           title="Listen with Casey">

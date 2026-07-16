@@ -1,8 +1,8 @@
-<nav id="mobile-nav" class="mobile-nav--casebook" aria-label="Casebook navigation">
+<nav id="mobile-nav" class="mobile-nav--casebook" aria-label="Mobile menu">
   <div class="mobile-nav-header">
     <a href="{{ '/cases/' | url }}" class="nav-logo casebook-header__logo"
        aria-label="{{ site.name | default('The Frontend Casebook') }}, home">
-      <span>{ }</span> Casebook
+      <span aria-hidden="true">{ }</span> Casebook
     </a>
     <button id="mobile-nav-close" class="mobile-nav-close" type="button" aria-label="Close menu">
       <svg class="icon-lg" aria-hidden="true"><use href="#i-close"/></svg>
@@ -45,13 +45,13 @@
         <div class="theme-picker">
           <button type="button" class="theme-pick-btn" id="theme-pick-btn-mobile-cb"
                   aria-expanded="false" aria-controls="theme-menu-mobile-cb"
-                  aria-label="Theme: High contrast. Change">
+                  aria-label="Theme: Warm paper. Change">
             <svg class="icon-sm" aria-hidden="true"><use href="#i-palette"/></svg>
           </button>
           <ul id="theme-menu-mobile-cb" class="theme-menu prefs-menu"
               role="listbox" aria-label="Choose theme" hidden data-popover-fixed="true">
-            <li class="theme-menu-item" role="option" data-t="high-contrast" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
-            <li class="theme-menu-item" role="option" data-t="light" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
+            <li class="theme-menu-item" role="option" data-t="high-contrast" tabindex="-1"><span class="theme-swatch ts-high-contrast" aria-hidden="true"></span>High contrast</li>
+            <li class="theme-menu-item" role="option" data-t="light" aria-selected="true" tabindex="-1"><span class="theme-swatch ts-light" aria-hidden="true"></span>Warm paper</li>
             <li class="theme-menu-item" role="option" data-t="dark" tabindex="-1"><span class="theme-swatch ts-dark" aria-hidden="true"></span>Charcoal</li>
             <li class="theme-menu-item" role="option" data-t="sage" tabindex="-1"><span class="theme-swatch ts-sage" aria-hidden="true"></span>Sage mist</li>
             <li class="theme-menu-item" role="option" data-t="slate" tabindex="-1"><span class="theme-swatch ts-slate" aria-hidden="true"></span>Slate studio</li>
@@ -61,6 +61,7 @@
       </div>
     </div>
     <div class="mobile-nav-footer__casey">
+      {% set panelIdPrefix = "mobile-" %}
       {% include "partials/casey-companion-prefs.njk" %}
     </div>
   </div>
