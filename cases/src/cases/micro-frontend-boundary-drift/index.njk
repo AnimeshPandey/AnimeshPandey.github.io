@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: When Micro-Frontends Stop Sharing a Design System
-description: How design system version drift happens in micro-frontend architectures — and the Module Federation singleton pattern that prevents it.
+description: How design system version drift happens in micro-frontend architectures, and the Module Federation singleton pattern that prevents it.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: micro-frontend-boundary-drift
 track: advanced-frontend
@@ -24,13 +24,13 @@ ogImage: https://anmshpndy.com/brand/cases/micro-frontend-boundary-drift-og.png
   <h2>Two teams, two versions, one broken brand</h2>
   <div class="tone-junior">
     <p>Team A owns the product catalog micro-frontend. Team B owns checkout. Both use the company's design system. Six months ago, Team A upgraded to design system v3.2. Team B stayed on v2.8 because they had a freeze. A user navigates from catalog to checkout: the button border radius jumps from 8px to 4px, the blue shifts slightly, and the spacing feels different. No errors, just a silently broken experience.</p>
-    <p>This is design system version drift — and it's one of the most common failure modes when teams own independent micro-frontends.</p>
+    <p>This is design system version drift, and it's one of the most common failure modes when teams own independent micro-frontends.</p>
   </div>
   <div class="tone-mid">
-    <p>In a monolith, the design system version is a single dependency in a single package.json. All components share the same instance. In a micro-frontend architecture, each team's bundle can include its own copy of the design system at their own version. Without explicit enforcement, drift is the natural outcome — teams update on their own schedule, pin during freezes, and fall behind.</p>
+    <p>In a monolith, the design system version is a single dependency in a single package.json. All components share the same instance. In a micro-frontend architecture, each team's bundle can include its own copy of the design system at their own version. Without explicit enforcement, drift is the natural outcome: teams update on their own schedule, pin during freezes, and fall behind.</p>
   </div>
   <div class="tone-staff">
-    <p>The problem has two layers: (1) <em>runtime duplication</em> — the same design system code ships twice in the browser, once per micro-frontend, increasing bundle size; (2) <em>visual inconsistency</em> — different versions have different token values, component APIs, and visual outputs. Layer 1 is a performance issue; Layer 2 is a UX/brand issue. Both are solved by the same mechanism: singleton shared dependencies in Module Federation.</p>
+    <p>The problem has two layers: (1) <em>runtime duplication</em>, the same design system code ships twice in the browser, once per micro-frontend, increasing bundle size; (2) <em>visual inconsistency</em>, different versions have different token values, component APIs, and visual outputs. Layer 1 is a performance issue; Layer 2 is a UX/brand issue. Both are solved by the same mechanism: singleton shared dependencies in Module Federation.</p>
   </div>
 </section>
 
@@ -38,7 +38,7 @@ ogImage: https://anmshpndy.com/brand/cases/micro-frontend-boundary-drift-og.png
 <section class="case-chapter" data-chapter="concept">
   <h2>Module Federation singleton shared dependencies</h2>
   <div class="tone-junior">
-    <p>Module Federation lets micro-frontends share dependencies at runtime — the design system loads once and is reused by all micro-frontends. The key setting is <code>singleton: true</code>: if multiple micro-frontends try to load the design system, only the first-loaded version runs.</p>
+    <p>Module Federation lets micro-frontends share dependencies at runtime: the design system loads once and is reused by all micro-frontends. The key setting is <code>singleton: true</code>: if multiple micro-frontends try to load the design system, only the first-loaded version runs.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Shell app's webpack.config.js (module federation plugin)
 new ModuleFederationPlugin({
   name: 'shell',
@@ -55,12 +55,12 @@ new ModuleFederationPlugin({
   <div class="tone-mid">
     <p>The version enforcement options:</p>
     <ul>
-      <li><strong><code>singleton: true</code></strong> — one instance; first loaded wins; logs a warning if version mismatch</li>
-      <li><strong><code>requiredVersion: '^3.0.0'`</strong> — throws at runtime if the loaded version doesn't satisfy the semver range</li>
-      <li><strong><code>strictVersion: true</code></strong> — throws if exact version doesn't match (use for breaking changes)</li>
+      <li><strong><code>singleton: true</code></strong>: one instance; first loaded wins; logs a warning if version mismatch</li>
+      <li><strong><code>requiredVersion: '^3.0.0'</code></strong>: throws at runtime if the loaded version doesn't satisfy the semver range</li>
+      <li><strong><code>strictVersion: true</code></strong>: throws if exact version doesn't match (use for breaking changes)</li>
     </ul>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Each micro-frontend also declares the shared dep
-// They don't need to specify a version — they accept the shell's
+// They don't need to specify a version; they accept the shell's
 new ModuleFederationPlugin({
   name: 'checkout',
   shared: {
@@ -74,10 +74,10 @@ new ModuleFederationPlugin({
   <div class="tone-staff">
     <p>The governance model that makes this sustainable:</p>
     <ul>
-      <li><strong>Shell owns the design system version</strong> — the shell app's package.json is the single source of truth for the shared design system version</li>
-      <li><strong>Minor versions auto-update</strong> — <code>^3.0.0</code> range means all micro-frontends automatically receive 3.x patches when shell upgrades</li>
-      <li><strong>Major versions are migration events</strong> — breaking token/API changes require coordinated migration across all micro-frontends before the shell upgrades</li>
-      <li><strong>CI enforcement</strong> — a CI check that validates all micro-frontends declare the same <code>singleton: true</code> for the design system prevents drift from being accidentally introduced</li>
+      <li><strong>Shell owns the design system version</strong>: the shell app's package.json is the single source of truth for the shared design system version</li>
+      <li><strong>Minor versions auto-update</strong>: <code>^3.0.0</code> range means all micro-frontends automatically receive 3.x patches when shell upgrades</li>
+      <li><strong>Major versions are migration events</strong>: breaking token/API changes require coordinated migration across all micro-frontends before the shell upgrades</li>
+      <li><strong>CI enforcement</strong>: a CI check that validates all micro-frontends declare the same <code>singleton: true</code> for the design system prevents drift from being accidentally introduced</li>
     </ul>
     <p>The deeper principle: <em>governance through tooling beats governance through process</em>. A Jira ticket to "keep design system in sync" will fail. A webpack config that makes mismatched versions a runtime error will not.</p>
   </div>
@@ -88,11 +88,11 @@ new ModuleFederationPlugin({
 <section class="case-chapter" data-chapter="story-1">
   <h2>The session token that outlived the session</h2>
   <div class="tone-junior">
-    <p>A fintech platform had four micro-frontends sharing a user session: identity, payments, portfolio, and notifications. Early on, the session MFE was the authority — every MFE called its API to get the current auth token before making requests. Then a developer on the payments team added a module-scoped cache to avoid the round-trip latency on every route change.</p>
-    <p>For two months, nothing went wrong. Then a user's session expired server-side at 11:58 PM. The session MFE cleared its state and broadcast an auth-changed event. The payments MFE received the event — but its module-scoped cache still held the old token and the subscription handler never updated it. Payment confirmations went through on an expired session for the next 22 minutes until a page reload flushed the cache.</p>
+    <p>A fintech platform had four micro-frontends sharing a user session: identity, payments, portfolio, and notifications. Early on, the session MFE was the authority: every MFE called its API to get the current auth token before making requests. Then a developer on the payments team added a module-scoped cache to avoid the round-trip latency on every route change.</p>
+    <p>For two months, nothing went wrong. Then a user's session expired server-side at 11:58 PM. The session MFE cleared its state and broadcast an auth-changed event. The payments MFE received the event, but its module-scoped cache still held the old token and the subscription handler never updated it. Payment confirmations went through on an expired session for the next 22 minutes until a page reload flushed the cache.</p>
   </div>
   <div class="tone-mid">
-    <p>The incident was invisible to monitoring. No 401 errors — the backend token validation had a 30-minute grace window for "recently expired" tokens as a UX concession. The payments MFE passed auth checks with the stale cached value. Users received payment confirmations that were technically processed in a session the system had already invalidated.</p>
+    <p>The incident was invisible to monitoring. No 401 errors: the backend token validation had a 30-minute grace window for "recently expired" tokens as a UX concession. The payments MFE passed auth checks with the stale cached value. Users received payment confirmations that were technically processed in a session the system had already invalidated.</p>
   </div>
 </section>
 
@@ -100,11 +100,11 @@ new ModuleFederationPlugin({
 <section class="case-chapter" data-chapter="story-2">
   <h2>The event-bus contract that made auth state unforkable</h2>
   <div class="tone-junior">
-    <p>The post-incident fix was a strict boundary contract: no MFE is permitted to hold its own copy of auth state. The session MFE owns the auth token and broadcasts it exclusively via a typed event bus message (<code>mfe-auth-changed</code>). All other MFEs subscribe — they receive the current token in the event payload and must discard it when the next event arrives, whether that event carries a new token or a null (logged-out) value.</p>
-    <p>The change removed every local auth cache from every MFE. Where round-trip latency to the session API had been the concern, the event bus subscription was in fact faster — the session MFE pushed updates proactively rather than waiting for polling. The perceived performance improvement was an unexpected benefit of fixing the correctness problem.</p>
+    <p>The post-incident fix was a strict boundary contract: no MFE is permitted to hold its own copy of auth state. The session MFE owns the auth token and broadcasts it exclusively via a typed event bus message (<code>mfe-auth-changed</code>). All other MFEs subscribe: they receive the current token in the event payload and must discard it when the next event arrives, whether that event carries a new token or a null (logged-out) value.</p>
+    <p>The change removed every local auth cache from every MFE. Where round-trip latency to the session API had been the concern, the event bus subscription was in fact faster, since the session MFE pushed updates proactively rather than waiting for polling. The perceived performance improvement was an unexpected benefit of fixing the correctness problem.</p>
   </div>
   <div class="tone-mid">
-    <p>The architectural lesson: MFE boundaries must be enforced at the data layer, not just the UI layer. Shared mutable state that can be forked — whether a module variable, a localStorage key, or a cookie read by multiple MFEs — is a ticking correctness hazard. The session MFE is the single writer; all others are read-only subscribers. Any deviation from this ownership model is a bug waiting to manifest.</p>
+    <p>The architectural lesson: MFE boundaries must be enforced at the data layer, not just the UI layer. Shared mutable state that can be forked (whether a module variable, a localStorage key, or a cookie read by multiple MFEs) is a ticking correctness hazard. The session MFE is the single writer; all others are read-only subscribers. Any deviation from this ownership model is a bug waiting to manifest.</p>
   </div>
 </section>
 
@@ -113,9 +113,9 @@ new ModuleFederationPlugin({
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
     <figure>
-      <figcaption>Before — module-scoped token cache (stale state bug)</figcaption>
+      <figcaption>Before: module-scoped token cache (stale state bug)</figcaption>
       <pre><code>// payments-mfe/src/auth.js
-// ❌ Module-scoped cache — survives session expiry
+// ❌ Module-scoped cache: survives session expiry
 let cachedToken = null;
 
 export async function getToken() {
@@ -128,7 +128,7 @@ export async function getToken() {
 // Token outlives the session until page reload</code></pre>
     </figure>
     <figure>
-      <figcaption>After — event bus subscription, no local copy</figcaption>
+      <figcaption>After: event bus subscription, no local copy</figcaption>
       <pre><code>// payments-mfe/src/auth.js
 // ✅ Subscribe to session MFE; never hold own copy
 let currentToken = null;
@@ -153,9 +153,9 @@ function broadcastAuthChange(token) {
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: drifted vs aligned design system</h2>
-  <div class="tone-junior"><p>"Drifted" shows two micro-frontends side-by-side with different design system versions — notice the button border radius, spacing, and color token differences. "Aligned" shows the same two micro-frontends sharing a singleton — visually consistent across the boundary.</p></div>
+  <div class="tone-junior"><p>"Drifted" shows two micro-frontends side-by-side with different design system versions; notice the button border radius, spacing, and color token differences. "Aligned" shows the same two micro-frontends sharing a singleton: visually consistent across the boundary.</p></div>
   <div class="tone-mid"><p>Inspect the buttons in each mode. In drifted mode, the catalog button uses the v3 token scale (border-radius: 8px, gap: 12px) and the checkout button uses the v2 token scale (border-radius: 4px, gap: 8px). Same brand, two versions, silent divergence.</p></div>
-  <div class="tone-staff"><p>Open DevTools → Sources in the drifted mode. You'll find both design system versions in the bundle — the same library shipped twice. In aligned mode, one version, shared. This is the bundle size argument alongside the visual consistency argument.</p></div>
+  <div class="tone-staff"><p>Open DevTools → Sources in the drifted mode. You'll find both design system versions in the bundle: the same library shipped twice. In aligned mode, one version, shared. This is the bundle size argument alongside the visual consistency argument.</p></div>
 
   <section class="case-demo" aria-label="Try it: drifted vs aligned design system" data-required="true" data-demo-type="toggle" data-demo-slug="micro-frontend-boundary-drift">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -163,10 +163,10 @@ function broadcastAuthChange(token) {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Drifted — two versions</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Aligned — singleton</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Drifted: two versions</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Aligned: singleton</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Aligned — singleton</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Aligned, singleton</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
       </div>
     </div>
@@ -178,7 +178,7 @@ function broadcastAuthChange(token) {
   <h2>Implementation depth</h2>
   <div class="tone-mid">
     <p>Module Federation's <code>shared</code> config is where boundary contracts are encoded. The key options are <code>singleton: true</code> (one instance; first-loaded version wins), <code>requiredVersion</code> (semver range the loaded version must satisfy), and <code>strictVersion: true</code> (throws if exact version doesn't match). The session MFE should be declared <code>eager: true</code> so it initialises before any consumer MFE attempts to read auth state.</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// shell webpack.config.js — session MFE as eager singleton
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// shell webpack.config.js: session MFE as eager singleton
 new ModuleFederationPlugin({
   shared: {
     '@company/session-mfe': {
@@ -192,36 +192,36 @@ new ModuleFederationPlugin({
   <div class="tone-staff">
     <p>Common pitfalls when enforcing MFE auth boundaries:</p>
     <ul>
-      <li><strong>localStorage as shared state</strong> — any MFE can read and write localStorage, making it another forkable cache. Treat localStorage as MFE-private; never use it to share auth state across MFEs.</li>
-      <li><strong>Event bus message ordering</strong> — if a MFE loads after the initial <code>mfe-auth-changed</code> event fires, it misses the current token. Solve with a <code>mfe-auth-state-request</code> event that the session MFE responds to on demand.</li>
-      <li><strong>Singleton version mismatch warning</strong> — when webpack logs "Unsatisfied version X of shared singleton module Y" it means a MFE has a different version expectation. This is a contract violation; treat it as a build error in CI, not a warning to ignore.</li>
-      <li><strong>Direct API calls bypassing the session MFE</strong> — adding a CI lint rule that flags direct imports of auth APIs from non-session MFE packages prevents the pattern from re-emerging.</li>
+      <li><strong>localStorage as shared state</strong>: any MFE can read and write localStorage, making it another forkable cache. Treat localStorage as MFE-private; never use it to share auth state across MFEs.</li>
+      <li><strong>Event bus message ordering</strong>: if a MFE loads after the initial <code>mfe-auth-changed</code> event fires, it misses the current token. Solve with a <code>mfe-auth-state-request</code> event that the session MFE responds to on demand.</li>
+      <li><strong>Singleton version mismatch warning</strong>: when webpack logs "Unsatisfied version X of shared singleton module Y" it means a MFE has a different version expectation. This is a contract violation; treat it as a build error in CI, not a warning to ignore.</li>
+      <li><strong>Direct API calls bypassing the session MFE</strong>: adding a CI lint rule that flags direct imports of auth APIs from non-session MFE packages prevents the pattern from re-emerging.</li>
     </ul>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub, expand per case) ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
       <li><a href="https://micro-frontends.org/" rel="noopener noreferrer">micro-frontends.org</a></li>
-      <li><a href="https://webpack.js.org/concepts/module-federation/" rel="noopener noreferrer">webpack — Module Federation</a></li>
+      <li><a href="https://webpack.js.org/concepts/module-federation/" rel="noopener noreferrer">webpack: Module Federation</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://single-spa.js.org/docs/getting-started-overview" rel="noopener noreferrer">single-spa — Overview</a></li>
-      <li><a href="https://martinfowler.com/articles/micro-frontends.html" rel="noopener noreferrer">Martin Fowler — Micro frontends</a></li>
+      <li><a href="https://single-spa.js.org/docs/getting-started-overview" rel="noopener noreferrer">single-spa: Overview</a></li>
+      <li><a href="https://martinfowler.com/articles/micro-frontends.html" rel="noopener noreferrer">Martin Fowler: Micro frontends</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://nx.dev/concepts/module-federation/micro-frontend-architecture" rel="noopener noreferrer">Nx — Module federation architecture</a></li>
-      <li><a href="https://web.dev/articles/rendering-on-the-web" rel="noopener noreferrer">web.dev — Rendering on the web</a></li>
+      <li><a href="https://nx.dev/concepts/module-federation/micro-frontend-architecture" rel="noopener noreferrer">Nx: Module federation architecture</a></li>
+      <li><a href="https://web.dev/articles/rendering-on-the-web" rel="noopener noreferrer">web.dev: Rendering on the web</a></li>
     </ol>
   </div>
 </section>
@@ -233,12 +233,12 @@ new ModuleFederationPlugin({
     <ul>
       <li>
         <div class="tone-junior">In micro-frontend architectures, each team's bundle can ship its own copy of the design system. Without enforcement, versions drift and the UI becomes visually inconsistent.</div>
-        <div class="tone-mid">Module Federation's singleton: true makes a shared dependency load only once at runtime — the shell's version wins. All micro-frontends receive the same instance.</div>
+        <div class="tone-mid">Module Federation's singleton: true makes a shared dependency load only once at runtime: the shell's version wins. All micro-frontends receive the same instance.</div>
         <div class="tone-staff">Shell owns the design system version. Minor versions auto-update via semver range. Major versions are migration events. CI enforcement validates all micro-frontends declare the same singleton config.</div>
       </li>
       <li>
         <div class="tone-junior">The singleton config goes in every micro-frontend's Module Federation plugin, not just the shell. All participants must agree to share the single instance.</div>
-        <div class="tone-mid">requiredVersion: '^3.0.0' throws a runtime error for mismatched versions — turning silent visual drift into a loud failure that gets fixed. strictVersion: true enforces exact version matches for breaking-change releases.</div>
+        <div class="tone-mid">requiredVersion: '^3.0.0' throws a runtime error for mismatched versions, turning silent visual drift into a loud failure that gets fixed. strictVersion: true enforces exact version matches for breaking-change releases.</div>
         <div class="tone-staff">Governance through tooling beats governance through process. A webpack config that makes version mismatch a runtime error is more reliable than a Jira ticket asking teams to stay in sync.</div>
       </li>
     </ul>

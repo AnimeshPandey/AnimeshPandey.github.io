@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Paste Error, Zero Learning (Anti-pattern)"
-description: Why the paste-fix-repeat cycle with AI makes you a worse developer over time — and the diagnosis-first pattern that builds real understanding.
+description: Why the paste-fix-repeat cycle with AI makes you a worse developer over time, and the diagnosis-first pattern that builds real understanding.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: paste-error-without-learning
 track: agentic-ai
@@ -24,13 +24,13 @@ ogImage: https://anmshpndy.com/brand/cases/paste-error-without-learning-og.png
   <h2>Fix without understanding is future debt</h2>
   <div class="tone-junior">
     <p>You see "TypeError: Cannot read properties of undefined (reading 'map')." You paste it into the AI chat. It says add <code>?.map</code> or default to <code>[]</code>. You do it. The error is gone. An hour later: same error, different component. You paste it again. Same answer. A week later: you can't explain to your team why five components use optional chaining in the same spot.</p>
-    <p>The error wasn't the bug — undefined data during loading was the bug. Each patch hid a symptom without addressing the root cause. You got faster at applying band-aids and slower at diagnosing wounds.</p>
+    <p>The error wasn't the bug: undefined data during loading was the bug. Each patch hid a symptom without addressing the root cause. You got faster at applying band-aids and slower at diagnosing wounds.</p>
   </div>
   <div class="tone-mid">
     <p>AI accelerates your existing workflow. If your workflow is "see error → get fix → ship it," AI makes you faster at that workflow. But the workflow is wrong. The correct workflow is "see error → read it → form a hypothesis → ask a targeted question → understand the answer → apply and verify." AI accelerates the middle steps; the diagnosis and verification are yours.</p>
   </div>
   <div class="tone-staff">
-    <p>This is a cognitive dependency risk, not an AI problem specifically. Cargo-culting from StackOverflow predates LLMs by a decade. AI makes the copy-paste loop faster and frictionless — which amplifies both the good (faster iteration on understood problems) and the bad (faster accumulation of poorly-understood patches). The defense is deliberate comprehension, not avoidance of AI.</p>
+    <p>This is a cognitive dependency risk, not an AI problem specifically. Cargo-culting from StackOverflow predates LLMs by a decade. AI makes the copy-paste loop faster and frictionless, which amplifies both the good (faster iteration on understood problems) and the bad (faster accumulation of poorly-understood patches). The defense is deliberate comprehension, not avoidance of AI.</p>
   </div>
 </section>
 
@@ -54,9 +54,9 @@ component wait for isLoading before rendering?"</code></pre>
   <div class="tone-mid">
     <p>The rubber duck pattern: describe the problem to yourself before describing it to the model. The description forces a hypothesis. Then use AI to validate or refute it:</p>
     <ul>
-      <li><strong>"I think [X] is causing [Y] because [Z]. Is that right?"</strong> — validates your reasoning</li>
-      <li><strong>"I expected [A] but got [B]. What am I missing about how [concept] works?"</strong> — fills knowledge gaps</li>
-      <li><strong>"The fix is [patch]. But is this addressing the root cause or just the symptom?"</strong> — catches shallow fixes</li>
+      <li><strong>"I think [X] is causing [Y] because [Z]. Is that right?"</strong>: validates your reasoning</li>
+      <li><strong>"I expected [A] but got [B]. What am I missing about how [concept] works?"</strong>: fills knowledge gaps</li>
+      <li><strong>"The fix is [patch]. But is this addressing the root cause or just the symptom?"</strong>: catches shallow fixes</li>
     </ul>
     <p>When the model answers, verify the explanation makes sense. If you can't explain the fix to a colleague in two sentences, you don't understand it yet.</p>
   </div>
@@ -71,11 +71,11 @@ component wait for isLoading before rendering?"</code></pre>
 <section class="case-chapter" data-chapter="story-1">
   <h2>The agent that burned its own context window</h2>
   <div class="tone-junior">
-    <p>An agentic coding loop was tasked with migrating a TypeScript codebase to strict mode. On its third iteration, it hit a compilation error. The agent's next turn included the full raw output of <code>tsc --strict</code> — 214 lines of interleaved diagnostics from 19 different files. The model read all 214 lines, identified two errors, attempted fixes, and ran tsc again. The new output was 198 lines. It pasted all 198 lines into the next turn.</p>
+    <p>An agentic coding loop was tasked with migrating a TypeScript codebase to strict mode. On its third iteration, it hit a compilation error. The agent's next turn included the full raw output of <code>tsc --strict</code>: 214 lines of interleaved diagnostics from 19 different files. The model read all 214 lines, identified two errors, attempted fixes, and ran tsc again. The new output was 198 lines. It pasted all 198 lines into the next turn.</p>
     <p>Four turns later, the context window was 78% consumed by raw compiler output. The agent had fixed 3 of the 19 errors. At turn six, it began confabulating fixes for errors it could no longer see in full, introducing new type errors while patching old ones. The loop had to be restarted from scratch.</p>
   </div>
   <div class="tone-mid">
-    <p>The failure mode was not that the agent used AI — it was that the agent's error-handling strategy was "include everything and let the model sort it out." For a 214-line compiler output, that strategy consumed roughly 4,000 tokens per turn, 24,000 tokens across six turns, just in error text. A structured parser that extracted the first diagnostic per file (file path, line, error code, message) would have produced a 19-line summary: around 400 tokens, leaving the context window for actual code fixes.</p>
+    <p>The failure mode was not that the agent used AI; it was that the agent's error-handling strategy was "include everything and let the model sort it out." For a 214-line compiler output, that strategy consumed roughly 4,000 tokens per turn, 24,000 tokens across six turns, just in error text. A structured parser that extracted the first diagnostic per file (file path, line, error code, message) would have produced a 19-line summary: around 400 tokens, leaving the context window for actual code fixes.</p>
   </div>
 </section>
 
@@ -83,11 +83,11 @@ component wait for isLoading before rendering?"</code></pre>
 <section class="case-chapter" data-chapter="story-2">
   <h2>The error digest pattern</h2>
   <div class="tone-junior">
-    <p>The fix was a structured error parser inserted between the compilation step and the agent's next turn. Rather than passing the raw output, the parser extracted: error code, file path, line number, and the single-sentence diagnostic message — one entry per unique error. If the same error code appeared multiple times in the same file, it was grouped as "TS2345 at src/api.ts (3 occurrences)" rather than listed three times.</p>
-    <p>The agent's context now received a clean digest: "19 errors across 8 files. Priority: TS2345 at src/api.ts:42 — Argument of type string not assignable to number. TS7006 at src/utils.ts:18 — Parameter implicitly has any type." The model immediately identified the correct fix for each, applied them in priority order, and completed the migration in two turns.</p>
+    <p>The fix was a structured error parser inserted between the compilation step and the agent's next turn. Rather than passing the raw output, the parser extracted: error code, file path, line number, and the single-sentence diagnostic message, one entry per unique error. If the same error code appeared multiple times in the same file, it was grouped as "TS2345 at src/api.ts (3 occurrences)" rather than listed three times.</p>
+    <p>The agent's context now received a clean digest: "19 errors across 8 files. Priority: TS2345 at src/api.ts:42, argument of type string not assignable to number. TS7006 at src/utils.ts:18, parameter implicitly has any type." The model immediately identified the correct fix for each, applied them in priority order, and completed the migration in two turns.</p>
   </div>
   <div class="tone-mid">
-    <p>The structural principle: an AI agent's effectiveness is bounded by the signal-to-noise ratio of its inputs. Raw tool outputs — compiler errors, test failures, linter results, stack traces — are high-noise. The agent's job is not to parse noise; it is to reason about signal. The pipeline stage that runs the tool should also produce a structured summary of the result. This is not a limitation of AI — it is good engineering practice for any automated system that processes tool output.</p>
+    <p>The structural principle: an AI agent's effectiveness is bounded by the signal-to-noise ratio of its inputs. Raw tool outputs (compiler errors, test failures, linter results, stack traces) are high-noise. The agent's job is not to parse noise; it is to reason about signal. The pipeline stage that runs the tool should also produce a structured summary of the result. This is not a limitation of AI; it is good engineering practice for any automated system that processes tool output.</p>
   </div>
 </section>
 
@@ -96,7 +96,7 @@ component wait for isLoading before rendering?"</code></pre>
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
     <figure>
-      <figcaption>Before — raw compiler output pasted directly into agent turn</figcaption>
+      <figcaption>Before: raw compiler output pasted directly into agent turn</figcaption>
       <pre><code>// ❌ 214 lines of raw tsc output as agent input
 const agentInput = `
 src/api.ts(42,14): error TS2345: Argument of type 'string' is not
@@ -110,8 +110,8 @@ src/utils.ts(18,11): error TS7006: Parameter 'x' implicitly has an
 // Context budget: ~4,000 tokens for errors alone, per turn</code></pre>
     </figure>
     <figure>
-      <figcaption>After — structured error digest: file, line, code, message</figcaption>
-      <pre><code>// ✅ Structured digest — ~400 tokens for the same 19 errors
+      <figcaption>After: structured error digest: file, line, code, message</figcaption>
+      <pre><code>// ✅ Structured digest, ~400 tokens for the same 19 errors
 function parseTscOutput(rawOutput) {
   const lines = rawOutput.split('\n');
   const seen = new Set();
@@ -123,22 +123,22 @@ function parseTscOutput(rawOutput) {
     const key = `${m[3]}:${m[1]}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    digest.push(`${m[3]} at ${m[1]}:${m[2]} — ${m[4]}`);
+    digest.push(`${m[3]} at ${m[1]}:${m[2]}: ${m[4]}`);
   }
 
   return `${digest.length} errors:\n${digest.join('\n')}`;
 }
 
-// Agent input: "19 errors:\nTS2345 at src/api.ts:42 — ..."</code></pre>
+// Agent input: "19 errors:\nTS2345 at src/api.ts:42: ..."</code></pre>
     </figure>
   </div>
 </section>
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: paste vs diagnose</h2>
-  <div class="tone-junior"><p>"Paste" mode shows a raw error being sent to AI — watch the generic fix it gets back. "Diagnose" mode shows the same error with a one-sentence hypothesis — watch the teaching answer that explains root cause and prevention.</p></div>
+  <div class="tone-junior"><p>"Paste" mode shows a raw error being sent to AI, and you can watch the generic fix it gets back. "Diagnose" mode shows the same error with a one-sentence hypothesis, and you can watch the teaching answer that explains root cause and prevention.</p></div>
   <div class="tone-mid"><p>In diagnose mode, the AI asks a follow-up question. That's the signal you entered a diagnostic conversation rather than a vending-machine fix loop. Follow-up questions mean the model has enough context to be specific.</p></div>
-  <div class="tone-staff"><p>In the paste mode, the suggested fix adds <code>?.map()</code> — which hides the undefined rather than preventing it. The diagnose mode identifies the missing loading guard and the type annotation that should have caught this at compile time.</p></div>
+  <div class="tone-staff"><p>In the paste mode, the suggested fix adds <code>?.map()</code>, which hides the undefined rather than preventing it. The diagnose mode identifies the missing loading guard and the type annotation that should have caught this at compile time.</p></div>
 
   <section class="case-demo" aria-label="Try it: paste vs diagnose-first" data-required="true" data-demo-type="toggle" data-demo-slug="paste-error-without-learning">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -146,10 +146,10 @@ function parseTscOutput(rawOutput) {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Paste — raw error</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Diagnose — hypothesis first</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Paste: raw error</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Diagnose: hypothesis first</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Diagnose — hypothesis first</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Diagnose, hypothesis first</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
       </div>
     </div>
@@ -160,7 +160,7 @@ function parseTscOutput(rawOutput) {
 <section class="case-chapter" data-chapter="fe-depth">
   <h2>Implementation depth</h2>
   <div class="tone-mid">
-    <p>Error summarisation in agentic loops should be a first-class pipeline stage, not an afterthought. For TypeScript specifically, <code>tsc --noEmit --pretty false</code> produces machine-parseable output without ANSI escape codes. Pipe it through a digest function before the output reaches the agent's next prompt. For test runners, most support <code>--reporter json</code> or <code>--reporter tap</code> — structured output that can be summarised without regex.</p>
+    <p>Error summarisation in agentic loops should be a first-class pipeline stage, not an afterthought. For TypeScript specifically, <code>tsc --noEmit --pretty false</code> produces machine-parseable output without ANSI escape codes. Pipe it through a digest function before the output reaches the agent's next prompt. For test runners, most support <code>--reporter json</code> or <code>--reporter tap</code>: structured output that can be summarised without regex.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Agentic loop: run tool, summarise, pass digest to model
 async function runWithDigest(command) {
   const { stdout, stderr } = await exec(command);
@@ -183,36 +183,36 @@ async function runWithDigest(command) {
   <div class="tone-staff">
     <p>Context budget management principles for agentic loops:</p>
     <ul>
-      <li><strong>Budget tool outputs explicitly</strong> — define a maximum token budget per tool result (e.g., 500 tokens). Any output exceeding this must be summarised before inclusion. Enforce this at the pipeline level, not the model level.</li>
-      <li><strong>Deduplicate repeated errors</strong> — the same error code at the same location appearing in multiple output lines should be counted, not repeated. One entry with an occurrence count is clearer and cheaper.</li>
-      <li><strong>Prioritise by error code</strong> — TS errors with "implicit any" (TS7006) or "type mismatch" (TS2345) are actionable; "module not found" (TS2307) may indicate a missing dependency that blocks all downstream errors. Show blocking errors first.</li>
-      <li><strong>Retry strategy</strong> — if the same error appears across three consecutive turns without progress, surface it to the operator rather than continuing to loop. Infinite retry on an unresolvable error is a common failure mode in agentic systems.</li>
+      <li><strong>Budget tool outputs explicitly</strong>: define a maximum token budget per tool result (e.g., 500 tokens). Any output exceeding this must be summarised before inclusion. Enforce this at the pipeline level, not the model level.</li>
+      <li><strong>Deduplicate repeated errors</strong>: the same error code at the same location appearing in multiple output lines should be counted, not repeated. One entry with an occurrence count is clearer and cheaper.</li>
+      <li><strong>Prioritise by error code</strong>: TS errors with "implicit any" (TS7006) or "type mismatch" (TS2345) are actionable; "module not found" (TS2307) may indicate a missing dependency that blocks all downstream errors. Show blocking errors first.</li>
+      <li><strong>Retry strategy</strong>: if the same error appears across three consecutive turns without progress, surface it to the operator rather than continuing to loop. Infinite retry on an unresolvable error is a common failure mode in agentic systems.</li>
     </ul>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub, expand per case) ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://www.nngroup.com/articles/error-message-guidelines/" rel="noopener noreferrer">NN/g — Error message guidelines</a></li>
-      <li><a href="https://designsystem.service.gov.uk/components/error-message/" rel="noopener noreferrer">GOV.UK — Error messages</a></li>
+      <li><a href="https://www.nngroup.com/articles/error-message-guidelines/" rel="noopener noreferrer">NN/g: Error message guidelines</a></li>
+      <li><a href="https://designsystem.service.gov.uk/components/error-message/" rel="noopener noreferrer">GOV.UK: Error messages</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html" rel="noopener noreferrer">WCAG 2.2 — Error suggestion</a></li>
-      <li><a href="https://polaris.shopify.com/components/feedback-indicators/banner" rel="noopener noreferrer">Shopify Polaris — Banners</a></li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html" rel="noopener noreferrer">WCAG 2.2: Error suggestion</a></li>
+      <li><a href="https://polaris.shopify.com/components/feedback-indicators/banner" rel="noopener noreferrer">Shopify Polaris: Banners</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://www.nngroup.com/articles/ten-usability-heuristics/" rel="noopener noreferrer">NN/g — Usability heuristics</a></li>
-      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard — Form UX</a></li>
+      <li><a href="https://www.nngroup.com/articles/ten-usability-heuristics/" rel="noopener noreferrer">NN/g: Usability heuristics</a></li>
+      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard: Form UX</a></li>
     </ol>
   </div>
 </section>
@@ -229,7 +229,7 @@ async function runWithDigest(command) {
       </li>
       <li>
         <div class="tone-junior">If you can't explain a fix to a colleague in two sentences, you don't understand it yet. Understanding is the check, not "did the error go away."</div>
-        <div class="tone-mid">Use AI to validate hypotheses ("I think X is happening because Y — is that right?") rather than to generate fixes from blank context. You get better answers and you learn faster.</div>
+        <div class="tone-mid">Use AI to validate hypotheses ("I think X is happening because Y, is that right?") rather than to generate fixes from blank context. You get better answers and you learn faster.</div>
         <div class="tone-staff">The systemic fix: tighten the type system so these errors can't happen at runtime. Optional chaining at every consumer is a symptom of missing type guarantees at the data layer.</div>
       </li>
     </ul>

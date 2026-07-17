@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: URL as Source of Truth for Filters
-description: Why filter and search state belongs in the URL — and how to make it work without a router library.
+description: Why filter and search state belongs in the URL, and how to make it work without a router library.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: url-as-source-of-truth
 track: state-architecture
@@ -19,21 +19,21 @@ relatedCases:
 ogImage: https://anmshpndy.com/brand/cases/url-as-source-of-truth-og.png
 ---
 
-{# ── Chapter: Hook ── #}
+{# -- Chapter: Hook -- #}
 <section class="case-chapter" data-chapter="hook">
   <h2>The filter that disappears on refresh</h2>
   <div class="tone-junior">
-    <p>User applies filters to a product list — category, price range, sort order. They find what they want and copy the URL to share with a colleague. The colleague opens the link. The filters are gone — the page shows unfiltered results. The user refreshes — the filters reset. This is the cost of keeping filter state in component state instead of the URL.</p>
+    <p>User applies filters to a product list: category, price range, sort order. They find what they want and copy the URL to share with a colleague. The colleague opens the link. The filters are gone; the page shows unfiltered results. The user refreshes, and the filters reset. This is the cost of keeping filter state in component state instead of the URL.</p>
   </div>
   <div class="tone-mid">
-    <p>Filter, sort, pagination, and search state is "UI state that users expect to be bookmarkable and shareable." Storing it in component state is a UX failure — it's ephemeral, doesn't survive refresh, and can't be linked to. The URL querystring is the natural, persistent store for this state.</p>
+    <p>Filter, sort, pagination, and search state is "UI state that users expect to be bookmarkable and shareable." Storing it in component state is a UX failure: it's ephemeral, doesn't survive refresh, and can't be linked to. The URL querystring is the natural, persistent store for this state.</p>
   </div>
   <div class="tone-staff">
     <p>URL-as-state is also SEO state for e-commerce and content sites. Google indexes URL-parameterized filter pages. Products filtered by category at <code>/products?category=shoes&sort=price</code> can rank. Component state at the same URL cannot. The architecture decision has both UX and business implications.</p>
   </div>
 </section>
 
-{# ── Chapter: Concept ── #}
+{# -- Chapter: Concept -- #}
 <section class="case-chapter" data-chapter="concept">
   <h2>Reading and writing URL params</h2>
   <div class="tone-junior">
@@ -75,48 +75,48 @@ function ProductFilters() {
     &lt;/select&gt;
   );
 }</code></pre>
-    <p><code>useSearchParams</code> is the React Router native hook for URL query params — it handles the synchronization between URL and state automatically.</p>
+    <p><code>useSearchParams</code> is the React Router native hook for URL query params. It handles the synchronization between URL and state automatically.</p>
   </div>
   <div class="tone-staff">
     <p>State architecture decision matrix for UI state:</p>
     <ul>
-      <li><strong>URL query params</strong> — filter, sort, search, pagination (shareable + bookmarkable)</li>
-      <li><strong>URL path</strong> — entity identity (/products/123)</li>
-      <li><strong>Component state</strong> — ephemeral UI (open/closed, hover, focus)</li>
-      <li><strong>Global state (Redux, Zustand)</strong> — cross-component derived state, server cache</li>
-      <li><strong>localStorage</strong> — user preferences that persist across sessions (theme, density)</li>
+      <li><strong>URL query params</strong>: filter, sort, search, pagination (shareable + bookmarkable)</li>
+      <li><strong>URL path</strong>: entity identity (/products/123)</li>
+      <li><strong>Component state</strong>: ephemeral UI (open/closed, hover, focus)</li>
+      <li><strong>Global state (Redux, Zustand)</strong>: cross-component derived state, server cache</li>
+      <li><strong>localStorage</strong>: user preferences that persist across sessions (theme, density)</li>
     </ul>
     <p>Putting filter state in global store (Redux) when it should be in the URL is a common over-engineering that creates the same UX bugs (non-shareable) while adding more complexity.</p>
   </div>
 </section>
 
-{# ── Chapter: Story 1 ── #}
+{# -- Chapter: Story 1 -- #}
 <section class="case-chapter" data-chapter="story-1">
   <h2>The filtered view nobody else could see</h2>
   <div class="tone-junior">
-    <p>Sarah spends 20 minutes applying 4 filters to a customer data table — status: "Active", region: "APAC", plan: "Pro", joined: "Last 30 days." She finds exactly the cohort she was looking for, 47 accounts, and wants her colleague James to verify the numbers. She copies the URL and pastes it in Slack. James opens it. He sees 8,000 unfiltered accounts. No filters applied. He sends back "I'm not seeing 47." Sarah is confused. She refreshes her own tab. Her 47 accounts are gone too. The filters were only in React state — they never touched the URL.</p>
+    <p>Sarah spends 20 minutes applying 4 filters to a customer data table: status: "Active", region: "APAC", plan: "Pro", joined: "Last 30 days." She finds exactly the cohort she was looking for, 47 accounts, and wants her colleague James to verify the numbers. She copies the URL and pastes it in Slack. James opens it. He sees 8,000 unfiltered accounts. No filters applied. He sends back "I'm not seeing 47." Sarah is confused. She refreshes her own tab. Her 47 accounts are gone too. The filters were only in React state; they never touched the URL.</p>
   </div>
   <div class="tone-mid">
-    <p>The implementation used <code>useState</code> for all four filter values. No URL sync, no serialization, no <code>history.pushState</code>. When Sarah copied the URL, she copied <code>/customers</code> — a URL that carries no filter information whatsoever. When James opened it, the component initialized with default state. When Sarah refreshed, the component re-mounted with default state. Four filters, four state values, zero persistence.</p>
+    <p>The implementation used <code>useState</code> for all four filter values. No URL sync, no serialization, no <code>history.pushState</code>. When Sarah copied the URL, she copied <code>/customers</code>, a URL that carries no filter information whatsoever. When James opened it, the component initialized with default state. When Sarah refreshed, the component re-mounted with default state. Four filters, four state values, zero persistence.</p>
   </div>
   <div class="tone-staff">
-    <p>This bug has a hidden business cost: the filters Sarah applied were a meaningful analysis — 47 Pro accounts in APAC who joined in the last 30 days, the team's highest-priority expansion targets. Every time someone needs to reproduce this view, they spend 5 minutes re-applying 4 filters. Multiply by team size and frequency, and the lost time is significant. The feature appears to work, so it never gets prioritized for a fix. URL-as-state is a correctness requirement, not a polish feature.</p>
+    <p>This bug has a hidden business cost: the filters Sarah applied were a meaningful analysis: 47 Pro accounts in APAC who joined in the last 30 days, the team's highest-priority expansion targets. Every time someone needs to reproduce this view, they spend 5 minutes re-applying 4 filters. Multiply by team size and frequency, and the lost time is significant. The feature appears to work, so it never gets prioritized for a fix. URL-as-state is a correctness requirement, not a polish feature.</p>
   </div>
 </section>
 
-{# ── Chapter: Story 2 ── #}
+{# -- Chapter: Story 2 -- #}
 <section class="case-chapter" data-chapter="story-2">
   <h2>Every filter change writes to the URL</h2>
   <div class="tone-junior">
-    <p>After the fix, applying filters updates the URL bar in real time: <code>/customers?status=active&region=apac&plan=pro&joined=30d</code>. Sarah applies her 4 filters, copies that URL, and pastes it to James. He opens it — the exact same 47 accounts, filters pre-applied. She refreshes — filters persist. The URL is now the source of truth. The data lives in the address bar, not React memory.</p>
+    <p>After the fix, applying filters updates the URL bar in real time: <code>/customers?status=active&region=apac&plan=pro&joined=30d</code>. Sarah applies her 4 filters, copies that URL, and pastes it to James. He opens it: the exact same 47 accounts, filters pre-applied. She refreshes, and filters persist. The URL is now the source of truth. The data lives in the address bar, not React memory.</p>
   </div>
   <div class="tone-mid">
     <p>The migration was mechanical. Each <code>useState</code> filter was replaced with a read from <code>URLSearchParams</code> and writes through <code>history.pushState</code>. A <code>popstate</code> listener keeps the UI in sync when the user navigates back/forward. In React Router v6, <code>useSearchParams</code> does this in one hook:</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Before (component state — not shareable)
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Before (component state, not shareable)
 const [status, setStatus] = useState('active');
 const [region, setRegion] = useState('all');
 
-// After (URL state — shareable, bookmarkable, refresh-safe)
+// After (URL state: shareable, bookmarkable, refresh-safe)
 const [searchParams, setSearchParams] = useSearchParams();
 const status = searchParams.get('status') ?? 'active';
 const region = searchParams.get('region') ?? 'all';
@@ -125,11 +125,11 @@ const setFilter = (key, value) =&gt;
   setSearchParams(prev =&gt; { prev.set(key, value); return prev; });</code></pre>
   </div>
   <div class="tone-staff">
-    <p>Two additional wins came from the migration: (1) Google started indexing the filtered URLs for publicly visible product catalog pages — <code>/products?category=shoes&sort=price-asc</code> became a rankable page. (2) Support tickets with "can you look at this?" started including a URL with full context instead of written descriptions. The team added a Playwright test that navigates to a hardcoded filter URL and asserts the correct filtered result count — a test that was impossible before the fix.</p>
+    <p>Two additional wins came from the migration: (1) Google started indexing the filtered URLs for publicly visible product catalog pages, and <code>/products?category=shoes&sort=price-asc</code> became a rankable page. (2) Support tickets with "can you look at this?" started including a URL with full context instead of written descriptions. The team added a Playwright test that navigates to a hardcoded filter URL and asserts the correct filtered result count, a test that was impossible before the fix.</p>
   </div>
 </section>
 
-{# ── Chapter: UI Strip ── #}
+{# -- Chapter: UI Strip -- #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
@@ -143,12 +143,12 @@ const [sort, setSort] = useState('date');
 const [page, setPage] = useState(1);
 
 // URL stays at: /customers
-// (no querystring — nothing to share or bookmark)
+// (no querystring: nothing to share or bookmark)
 
 // On refresh: state resets to defaults
 // On share: colleague sees unfiltered view
 // On back: browser back doesn't restore filters</code></pre>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">URL: <code>/customers</code> — unshareable, lost on refresh</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">URL: <code>/customers</code> (unshareable, lost on refresh)</p>
       </div>
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
         <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ FILTER STATE IN URL PARAMS</p>
@@ -162,7 +162,7 @@ const page = Number(searchParams.get('page') ?? 1);
 // On refresh: URL parsed, same filters applied
 // On share: colleague sees identical filtered view
 // On back: browser back restores previous filter state</code></pre>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">URL: <code>/customers?status=active&sort=date</code> — shareable</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">URL: <code>/customers?status=active&sort=date</code> (shareable)</p>
       </div>
     </div>
   </div>
@@ -170,9 +170,9 @@ const page = Number(searchParams.get('page') ?? 1);
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: filter in state vs URL</h2>
-  <div class="tone-junior"><p>Apply filters in "Broken" mode, then reload the page — filters are gone. Switch to "Fixed" and apply filters — the URL updates. Reload — filters persist.</p></div>
+  <div class="tone-junior"><p>Apply filters in "Broken" mode, then reload the page: filters are gone. Switch to "Fixed" and apply filters; the URL updates. Reload, and filters persist.</p></div>
   <div class="tone-mid"><p>Notice the URL bar in fixed mode as you click filters. Each filter change updates the querystring. Browser back/forward restores the previous filter state.</p></div>
-  <div class="tone-staff"><p>Copy the filtered URL from the fixed demo and open in a new tab — the filters are applied immediately on page load. That's the sharing and SEO benefit in action.</p></div>
+  <div class="tone-staff"><p>Copy the filtered URL from the fixed demo and open in a new tab. The filters are applied immediately on page load. That's the sharing and SEO benefit in action.</p></div>
 
   <section class="case-demo" aria-label="Try it: URL state vs component state" data-required="true" data-demo-type="toggle" data-demo-slug="url-as-source-of-truth">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -180,17 +180,17 @@ const page = Number(searchParams.get('page') ?? 1);
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — component state</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — URL state</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken: component state</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed: URL state</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — URL state</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed, URL state</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:140px;"></div>
       </div>
     </div>
   </section>
 </section>
 
-{# ── Chapter: FE Depth ── #}
+{# -- Chapter: FE Depth -- #}
 <section class="case-chapter" data-chapter="fe-depth">
   <h2>Implementing URL state: native API to framework patterns</h2>
   <div class="tone-junior">
@@ -217,7 +217,7 @@ window.addEventListener('popstate', () =&gt; {
   </div>
   <div class="tone-mid">
     <p>React Router v6 and Next.js patterns:</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// React Router v6 — useSearchParams
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// React Router v6: useSearchParams
 import { useSearchParams } from 'react-router-dom';
 
 function Filters() {
@@ -231,7 +231,7 @@ function Filters() {
   return &lt;select value={status} onChange={e =&gt; update('status', e.target.value)}&gt;...&lt;/select&gt;;
 }
 
-// Next.js App Router — useRouter + useSearchParams
+// Next.js App Router: useRouter + useSearchParams
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function Filters() {
@@ -246,10 +246,10 @@ function Filters() {
 }</code></pre>
     <p>Implementation notes:</p>
     <ul>
-      <li>Always <strong>merge</strong> into existing params (<code>prev.set(key, val)</code>) — never replace the whole querystring, or other filters get wiped</li>
-      <li>Use <code>replace</code> instead of <code>push</code> for ephemeral state like page number — keeps history clean</li>
+      <li>Always <strong>merge</strong> into existing params (<code>prev.set(key, val)</code>); never replace the whole querystring, or other filters get wiped</li>
+      <li>Use <code>replace</code> instead of <code>push</code> for ephemeral state like page number, which keeps history clean</li>
       <li>Serialize arrays as repeated params: <code>tag=a&tag=b</code>, read with <code>params.getAll('tag')</code></li>
-      <li>Skip URL sync for truly ephemeral UI: dropdown open/closed, hover state, tooltip visibility — these don't need to survive refresh</li>
+      <li>Skip URL sync for truly ephemeral UI: dropdown open/closed, hover state, tooltip visibility. These don't need to survive refresh</li>
     </ul>
   </div>
   <div class="tone-staff">
@@ -264,40 +264,40 @@ function Filters() {
   });
   // Fully typed, validated, synced to URL automatically
 }</code></pre>
-    <p>State architecture matrix — where each type of UI state belongs:</p>
+    <p>State architecture matrix: where each type of UI state belongs.</p>
     <ul>
-      <li><strong>URL path</strong> (<code>/products/123</code>) — entity identity, navigable</li>
-      <li><strong>URL query params</strong> — filter, sort, search, page (shareable + bookmarkable)</li>
-      <li><strong>Component state</strong> — open/closed, hover, focus (ephemeral, lives and dies with the component)</li>
-      <li><strong>Global store (Redux/Zustand)</strong> — cross-component derived state, optimistic updates, server cache</li>
-      <li><strong>localStorage</strong> — user preferences persisted across sessions (theme, density, column order)</li>
+      <li><strong>URL path</strong> (<code>/products/123</code>): entity identity, navigable</li>
+      <li><strong>URL query params</strong>: filter, sort, search, page (shareable + bookmarkable)</li>
+      <li><strong>Component state</strong>: open/closed, hover, focus (ephemeral, lives and dies with the component)</li>
+      <li><strong>Global store (Redux/Zustand)</strong>: cross-component derived state, optimistic updates, server cache</li>
+      <li><strong>localStorage</strong>: user preferences persisted across sessions (theme, density, column order)</li>
     </ul>
-    <p>Red flag: filter state in Redux or Zustand when it should be in the URL. This adds store complexity while delivering the same UX bugs — filters still aren't shareable unless you also write a URL sync layer on top. Pick the right store for the state type from the start.</p>
+    <p>Red flag: filter state in Redux or Zustand when it should be in the URL. This adds store complexity while delivering the same UX bugs; filters still aren't shareable unless you also write a URL sync layer on top. Pick the right store for the state type from the start.</p>
   </div>
 </section>
 
-{# ── Chapter: Takeaway ── #}
+{# -- Chapter: Takeaway -- #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
-{# ── Chapter: References ── #}
-{# ── Chapter: References ── #}
+{# -- Chapter: References (stub, expand per case) -- #}
+{# -- Chapter: References -- #}
+{# -- Chapter: References -- #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/History" rel="noopener noreferrer">MDN — History API</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/History" rel="noopener noreferrer">MDN: History API</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
       <li><a href="https://reactrouter.com/en/main" rel="noopener noreferrer">React Router</a></li>
-      <li><a href="https://remix.run/docs/en/main/discussion/state-management" rel="noopener noreferrer">Remix — State in URL</a></li>
+      <li><a href="https://remix.run/docs/en/main/discussion/state-management" rel="noopener noreferrer">Remix: State in URL</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://www.nngroup.com/articles/url-as-ui/" rel="noopener noreferrer">NN/g — URL as UI</a></li>
-      <li><a href="https://nextjs.org/docs/app/building-your-application/routing" rel="noopener noreferrer">Next.js — Routing</a></li>
+      <li><a href="https://www.nngroup.com/articles/url-as-ui/" rel="noopener noreferrer">NN/g: URL as UI</a></li>
+      <li><a href="https://nextjs.org/docs/app/building-your-application/routing" rel="noopener noreferrer">Next.js: Routing</a></li>
     </ol>
   </div>
 </section>
@@ -308,14 +308,14 @@ function Filters() {
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">Filter, sort, and search state belongs in the URL querystring — not component state. It's bookmarkable, shareable, and survives refresh.</div>
-        <div class="tone-mid">URLSearchParams + history.pushState is the native API — no library needed for basic URL state management.</div>
+        <div class="tone-junior">Filter, sort, and search state belongs in the URL querystring, not component state. It's bookmarkable, shareable, and survives refresh.</div>
+        <div class="tone-mid">URLSearchParams + history.pushState is the native API; no library needed for basic URL state management.</div>
         <div class="tone-staff">URL-parameterized filter pages are indexed by search engines. Component-state filters are not. This is a business decision, not just a UX preference.</div>
       </li>
       <li>
-        <div class="tone-junior">Listen to the popstate event to sync UI when user clicks back/forward — URL state changes on navigation, not just on user action.</div>
-        <div class="tone-mid">React Router's useSearchParams handles the two-way sync automatically — state reads from URL, writes back to URL, syncs on navigation.</div>
-        <div class="tone-staff">Don't put filter state in Redux or Zustand when URL is the right store — over-engineering the state layer creates the same UX bugs with added complexity.</div>
+        <div class="tone-junior">Listen to the popstate event to sync UI when user clicks back/forward. URL state changes on navigation, not just on user action.</div>
+        <div class="tone-mid">React Router's useSearchParams handles the two-way sync automatically: state reads from URL, writes back to URL, syncs on navigation.</div>
+        <div class="tone-staff">Don't put filter state in Redux or Zustand when URL is the right store. Over-engineering the state layer creates the same UX bugs with added complexity.</div>
       </li>
     </ul>
   </div>

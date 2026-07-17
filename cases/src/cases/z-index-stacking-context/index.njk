@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Z-Index Is Not Magic
-description: Why z-index stops working — and why the fix is almost never a bigger number. A guide to stacking contexts.
+description: Why z-index stops working, and why the fix is almost never a bigger number. A guide to stacking contexts.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: z-index-stacking-context
 track: css-layout
@@ -31,7 +31,7 @@ ogImage: https://anmshpndy.com/brand/cases/z-index-stacking-context-og.png
     </p>
     <p>
       This isn't about using a bigger number. The modal is trapped inside a
-      <strong>stacking context</strong> — and no z-index value can escape it.
+      <strong>stacking context</strong>, and no z-index value can escape it.
     </p>
   </div>
 
@@ -46,7 +46,7 @@ ogImage: https://anmshpndy.com/brand/cases/z-index-stacking-context-og.png
 
   <div class="tone-staff">
     <p>
-      Stacking contexts are created by over a dozen CSS properties — many not obviously
+      Stacking contexts are created by over a dozen CSS properties, many not obviously
       related to layering. The fix is architectural, not numerical: render portals (modals,
       tooltips, dropdowns) as direct children of <code>&lt;body&gt;</code> or a known
       top-level container to escape ancestor stacking contexts entirely.
@@ -62,7 +62,7 @@ ogImage: https://anmshpndy.com/brand/cases/z-index-stacking-context-og.png
     <p>
       A stacking context is like a "group" that gets stacked as a single unit. Everything
       inside the group is painted together, and the group's position relative to other groups
-      is determined by the group's z-index — not the children's.
+      is determined by the group's z-index, not the children's.
     </p>
     <p>Common triggers that create a new stacking context:</p>
     <ul>
@@ -78,7 +78,7 @@ ogImage: https://anmshpndy.com/brand/cases/z-index-stacking-context-og.png
   <div class="tone-mid">
     <p>
       The tricky ones: <code>transform: translateZ(0)</code> is often added for GPU compositing
-      ("hardware acceleration hack") — but it also creates a stacking context. If your animation
+      ("hardware acceleration hack"), but it also creates a stacking context. If your animation
       container has this, every modal inside it is trapped.
     </p>
     <p>
@@ -93,25 +93,25 @@ ogImage: https://anmshpndy.com/brand/cases/z-index-stacking-context-og.png
       The full list is in the CSS spec (CSS2 spec + CSS Transforms + CSS Filters). Worth knowing:
       <code>contain: layout</code> and <code>contain: paint</code> also create stacking contexts.
       The proliferation of stacking context triggers in modern CSS makes this class of bug
-      increasingly common — particularly in component libraries that use transform-based animation
+      increasingly common, particularly in component libraries that use transform-based animation
       and will-change for performance.
     </p>
   </div>
 </section>
 
-{# ── Chapter: Story — bad pattern ── #}
+{# ── Chapter: Story, bad pattern ── #}
 <section class="case-chapter" data-chapter="story-1">
   <h2>The accidental stacking context</h2>
 
   <div class="tone-junior">
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ❌ This creates a stacking context that traps the modal */
 .sidebar {
-  transform: translateX(0); /* GPU compositing hack — creates stacking context */
+  transform: translateX(0); /* GPU compositing hack, creates stacking context */
 }
 
 .modal {
   position: fixed;
-  z-index: 9999; /* trapped inside .sidebar's context — won't go above */
+  z-index: 9999; /* trapped inside .sidebar's context, won't go above */
 }</code></pre>
     <p>
       The <code>transform: translateX(0)</code> was added to fix a jank issue on a sidebar
@@ -123,13 +123,13 @@ ogImage: https://anmshpndy.com/brand/cases/z-index-stacking-context-og.png
   <div class="tone-mid">
     <p>
       Another common culprit: setting z-index on a positioned ancestor to control internal
-      layering between siblings — but inadvertently creating a stacking context that
+      layering between siblings, but inadvertently creating a stacking context that
       constrains all descendants:
     </p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ❌ z-index: 0 on the container creates a stacking context */
 .card-container {
   position: relative;
-  z-index: 0; /* "reset" — but actually creates a context */
+  z-index: 0; /* "reset", but actually creates a context */
 }
 .tooltip {
   position: absolute;
@@ -141,14 +141,14 @@ ogImage: https://anmshpndy.com/brand/cases/z-index-stacking-context-og.png
     <p>
       The pattern that catches teams by surprise: <code>opacity: 0.99</code> on a fade-out
       container. Non-1 opacity creates a stacking context. A modal inside a fade-out wrapper
-      gets trapped during the transition. The workaround — use <code>opacity: 1</code> and
-      animate with GSAP's <code>alpha</code>, or remove the fade from the modal's ancestor —
-      but the root fix is portal rendering.
+      gets trapped during the transition. The workaround: use <code>opacity: 1</code> and
+      animate with GSAP's <code>alpha</code>, or remove the fade from the modal's ancestor.
+      Either way, the root fix is portal rendering.
     </p>
   </div>
 </section>
 
-{# ── Chapter: Story — good pattern ── #}
+{# ── Chapter: Story, good pattern ── #}
 <section class="case-chapter" data-chapter="story-2">
   <h2>Two clean fixes</h2>
 
@@ -160,13 +160,13 @@ import { createPortal } from 'react-dom';
 function Modal({ children }) {
   return createPortal(
     &lt;div className="modal"&gt;{children}&lt;/div&gt;,
-    document.body // direct child of body — no ancestor stacking context
+    document.body // direct child of body, no ancestor stacking context
   );
 }</code></pre>
     <p><strong>Fix 2: use <code>isolation: isolate</code> to explicitly contain stacking</strong></p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Make the stacking context intentional and documented */
 .sidebar {
-  isolation: isolate; /* explicit — creates context intentionally */
+  isolation: isolate; /* explicit, creates context intentionally */
 }
 /* Modal is now in body, not inside .sidebar */</code></pre>
   </div>
@@ -175,11 +175,11 @@ function Modal({ children }) {
     <p>
       React portals render a component's DOM output at a different node in the tree while
       keeping it in the React component tree. This means props, context, and event bubbling
-      still work — but the DOM output is at <code>document.body</code> level, escaping all
+      still work, but the DOM output is at <code>document.body</code> level, escaping all
       stacking contexts.
     </p>
     <p>
-      In non-React code: the same pattern is manual — append the modal element to body via
+      In non-React code: the same pattern is manual. Append the modal element to body via
       JavaScript rather than leaving it as a descendant of a positioned ancestor.
     </p>
   </div>
@@ -188,7 +188,7 @@ function Modal({ children }) {
     <p>
       <code>isolation: isolate</code> is the semantic, intentional stacking context creator.
       Unlike <code>transform: translateZ(0)</code> or <code>z-index: 0</code>, it has no
-      visual effect — it only creates the context. Use it to isolate component layers
+      visual effect; it only creates the context. Use it to isolate component layers
       deliberately, and remove accidental context creators (<code>transform</code>,
       <code>will-change</code>) from containers that should be transparent to stacking.
     </p>
@@ -200,7 +200,7 @@ function Modal({ children }) {
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    <p class="case-ui-strip__label">Annotated example: modal z-index — trapped in stacking context vs portal</p>
+    <p class="case-ui-strip__label">Annotated example: modal z-index, trapped in stacking context vs portal</p>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
@@ -243,13 +243,13 @@ function Modal({ children }) {
   <h2>Try it: z-index trapped vs portal</h2>
 
   <div class="tone-junior">
-    <p>Click "Open modal" in broken mode — the modal appears, but behind the accidental stacking context container. In fixed mode, the modal portal renders outside the container and appears correctly on top.</p>
+    <p>Click "Open modal" in broken mode: the modal appears, but behind the accidental stacking context container. In fixed mode, the modal portal renders outside the container and appears correctly on top.</p>
   </div>
   <div class="tone-mid">
     <p>Inspect the DOM in DevTools. In broken mode, the modal div is inside the container with transform. In fixed mode, it's a direct child of body.</p>
   </div>
   <div class="tone-staff">
-    <p>The stacking context tree is visible in DevTools → Layers panel — each context shows as a separate composited layer. The broken modal is a sublayer of its container; the portal modal is at the root context.</p>
+    <p>The stacking context tree is visible in DevTools → Layers panel: each context shows as a separate composited layer. The broken modal is a sublayer of its container; the portal modal is at the root context.</p>
   </div>
 
   <section class="case-demo"
@@ -272,13 +272,13 @@ function Modal({ children }) {
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
           <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
-            Broken — trapped z-index
+            Broken (trapped z-index)
           </button>
           <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
-            Fixed — portal rendering
+            Fixed (portal rendering)
           </button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — portal rendering</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed (portal rendering)</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:180px;position:relative;"></div>
       </div>
     </div>
@@ -300,7 +300,7 @@ function Modal({ children }) {
 
   <div class="tone-mid">
     <p>
-      The browser DevTools Layers panel (3D view) shows every composited layer — each stacking
+      The browser DevTools Layers panel (3D view) shows every composited layer; each stacking
       context is a separate tile. Elements that share a stacking context are on the same tile.
       A modal on a different tile from the content it should cover is the visual confirmation
       of a stacking context bug.
@@ -313,12 +313,12 @@ function Modal({ children }) {
       datepickers, popovers) should either:
     </p>
     <ol>
-      <li>Render in a portal at <code>document.body</code> level (best — escapes all contexts)</li>
+      <li>Render in a portal at <code>document.body</code> level (best: escapes all contexts)</li>
       <li>Use a top-level overlay container with a documented z-index scale</li>
     </ol>
     <p>
       The z-index scale pattern: define tokens <code>--z-modal: 1000</code>, <code>--z-tooltip: 900</code>,
-      <code>--z-overlay: 800</code>. All overlay components use these tokens — teams don't reach
+      <code>--z-overlay: 800</code>. All overlay components use these tokens, so teams don't reach
       for arbitrary large numbers.
     </p>
   </div>
@@ -331,18 +331,18 @@ function Modal({ children }) {
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context" rel="noopener noreferrer">MDN — Stacking context</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context" rel="noopener noreferrer">MDN: Stacking context</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/z-index" rel="noopener noreferrer">MDN — z-index</a></li>
-      <li><a href="https://www.joshwcomeau.com/css/stacking-contexts/" rel="noopener noreferrer">Josh Comeau — Stacking contexts</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/z-index" rel="noopener noreferrer">MDN: z-index</a></li>
+      <li><a href="https://www.joshwcomeau.com/css/stacking-contexts/" rel="noopener noreferrer">Josh Comeau: Stacking contexts</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index" rel="noopener noreferrer">MDN — Understanding z-index</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index" rel="noopener noreferrer">MDN: Understanding z-index</a></li>
     </ol>
   </div>
 </section>
@@ -355,14 +355,14 @@ function Modal({ children }) {
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">Z-index only competes within the same stacking context — no number is big enough to escape a parent context.</div>
-        <div class="tone-mid">transform, opacity &lt; 1, filter, will-change, and isolation all create stacking contexts — many of them are side effects you didn't intend.</div>
+        <div class="tone-junior">Z-index only competes within the same stacking context; no number is big enough to escape a parent context.</div>
+        <div class="tone-mid">transform, opacity &lt; 1, filter, will-change, and isolation all create stacking contexts, and many of them are side effects you didn't intend.</div>
         <div class="tone-staff">Use isolation: isolate to create stacking contexts intentionally, and remove accidental context-creating properties from overlay ancestors.</div>
       </li>
       <li>
         <div class="tone-junior">For modals, tooltips, and dropdowns: render them in a portal at document.body level to escape all ancestor stacking contexts.</div>
-        <div class="tone-mid">React portals render DOM output at a different node while keeping the component in the React tree — props, context, and event bubbling still work.</div>
-        <div class="tone-staff">Define a z-index token scale (--z-modal, --z-tooltip) — teams shouldn't reach for arbitrary numbers, and the scale documents the intended layering hierarchy.</div>
+        <div class="tone-mid">React portals render DOM output at a different node while keeping the component in the React tree; props, context, and event bubbling still work.</div>
+        <div class="tone-staff">Define a z-index token scale (--z-modal, --z-tooltip): teams shouldn't reach for arbitrary numbers, and the scale documents the intended layering hierarchy.</div>
       </li>
     </ul>
   </div>

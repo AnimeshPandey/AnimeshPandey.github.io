@@ -11,25 +11,25 @@
       "chapter": "demo",
       "junior": "The 'Overloaded' demo shows a model struggling to locate the relevant error among noise. The 'Curated' demo shows the same model answering correctly with the same question but less context.",
       "mid": "Watch the model's answer quality drop as irrelevant files enter the context. This mirrors production: RAG pipelines with low-relevance chunks produce worse answers than high-relevance short ones.",
-      "staff": "Token budget isn't just cost — it's quality. Beyond 50% context fill, many models show degraded recall on content from the middle of the window ('lost in the middle' phenomenon, studied in 2023)."
+      "staff": "Token budget isn't just cost: it's quality. Beyond 50% context fill, many models show degraded recall on content from the middle of the window ('lost in the middle' phenomenon, studied in 2023)."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
       "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
     {
       "chapter": "concept",
-      "junior": "I once pasted an entire 1,200-line component to fix a 3-line bug. The model suggested a refactor instead — it had too much to work with. Next try: paste the function plus the error. Fixed in one shot.",
+      "junior": "I once pasted an entire 1,200-line component to fix a 3-line bug. The model suggested a refactor instead; it had too much to work with. Next try: paste the function plus the error. Fixed in one shot.",
       "mid": "A team I consulted used an AI assistant that auto-included the full repo in every request. After capping each request to 5 most-relevant files via embeddings search, fix accuracy went from 60% to 85%.",
       "staff": "The 'lost in the middle' paper (Liu et al., 2023) showed GPT-4 recall dropped to near-random for facts placed in the middle of long contexts. Design your context-assembly pipeline to put critical facts at the start or end."
     }
@@ -39,21 +39,21 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Hey! Today we're learning how to get better answers from AI coding assistants — by sending less, not more.",
+        "junior": "Hey! Today we're learning how to get better answers from AI coding assistants, by sending less, not more.",
         "mid": "This case covers context window budget management: what to include, what to exclude, and how curated context beats document dumps for code-quality tasks.",
-        "staff": "We're covering the token budget math, the lost-in-the-middle recall degradation, and context-assembly strategies for agentic pipelines — RAG, re-ranking, and headroom budgeting."
+        "staff": "We're covering the token budget math, the lost-in-the-middle recall degradation, and context-assembly strategies for agentic pipelines: RAG, re-ranking, and headroom budgeting."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
         "junior": "The 'Overloaded' demo shows a model struggling to locate the relevant error among noise. The 'Curated' demo shows the same model answering correctly with the same question but less context.",
         "mid": "Watch the model's answer quality drop as irrelevant files enter the context. This mirrors production: RAG pipelines with low-relevance chunks produce worse answers than high-relevance short ones.",
-        "staff": "Token budget isn't just cost — it's quality. Beyond 50% context fill, many models show degraded recall on content from the middle of the window ('lost in the middle' phenomenon, studied in 2023)."
+        "staff": "Token budget isn't just cost: it's quality. Beyond 50% context fill, many models show degraded recall on content from the middle of the window ('lost in the middle' phenomenon, studied in 2023)."
       },
       {
         "chapter": "takeaway",

@@ -4,34 +4,34 @@
     {
       "chapter": "hook",
       "junior": "The 'works in dev, breaks in prod' pattern is almost always a hydration mismatch. The first thing to check: any Math.random(), Date.now(), or window reads in render.",
-      "mid": "Hydration errors in production are silent — no console warnings, just a flash of incorrect UI. That's why CLS is a useful proxy metric.",
+      "mid": "Hydration errors in production are silent: no console warnings, just a flash of incorrect UI. That's why CLS is a useful proxy metric.",
       "staff": "React 18's hydrateRoot gives you error boundaries around hydration failures. Use them to capture mismatch telemetry before users see the flash."
     },
     {
       "chapter": "demo",
       "junior": "See how the ID changes every time you 're-render' in broken mode? That's the server ID and client ID being different. Fixed mode always shows the same stable value.",
-      "mid": "useId generates :rN: style IDs — the counter increments based on component tree position, which is identical on server and client.",
-      "staff": "useId is tied to the tree structure, not execution order. Conditional rendering can change the count — test useId in conditional branches."
+      "mid": "useId generates :rN: style IDs: the counter increments based on component tree position, which is identical on server and client.",
+      "staff": "useId is tied to the tree structure, not execution order. Conditional rendering can change the count; test useId in conditional branches."
     },
     {
       "chapter": "fe-depth",
       "junior": "If you see 'Text content did not match' in the console, that's React telling you exactly which component has the mismatch.",
-      "mid": "Grep for Math.random and new Date in your render functions — those are the two most common culprits. Move them to useEffect or useMemo with stable deps.",
-      "staff": "Selective hydration in React 18 means not every mismatch blocks interactivity — but it's still worth eliminating them for CLS health."
+      "mid": "Grep for Math.random and new Date in your render functions: those are the two most common culprits. Move them to useEffect or useMemo with stable deps.",
+      "staff": "Selective hydration in React 18 means not every mismatch blocks interactivity, but it's still worth eliminating them for CLS health."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     }
   ],
   "anecdotes": [
     {
       "chapter": "concept",
-      "junior": "The first hydration mismatch I saw: a 'Last seen' timestamp that differed by one second between server and client. Moved it to useEffect — fixed immediately.",
-      "mid": "I've audited apps where every form had random IDs — dozens of hydration warnings on every page load, silently fixed by client re-render, causing measurable CLS.",
-      "staff": "The FOUC script pattern for themes is underappreciated — it's the cleanest way to read localStorage before React hydrates without any mismatch at all."
+      "junior": "The first hydration mismatch I saw: a 'Last seen' timestamp that differed by one second between server and client. Moved it to useEffect; fixed immediately.",
+      "mid": "I've audited apps where every form had random IDs: dozens of hydration warnings on every page load, silently fixed by client re-render, causing measurable CLS.",
+      "staff": "The FOUC script pattern for themes is underappreciated: it's the cleanest way to read localStorage before React hydrates without any mismatch at all."
     }
   ],
   "voice": {
@@ -39,21 +39,21 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Hey! Today we're figuring out why components work fine in development but flicker or show wrong stuff in production. It's about hydration — don't worry, we'll make it simple.",
-        "mid": "This case covers React hydration mismatches — what causes them, why they're silent in production, and three clean patterns to prevent them.",
+        "junior": "Hey! Today we're figuring out why components work fine in development but flicker or show wrong stuff in production. It's about hydration. Don't worry, we'll make it simple.",
+        "mid": "This case covers React hydration mismatches: what causes them, why they're silent in production, and three clean patterns to prevent them.",
         "staff": "We're covering the server/client tree matching constraint, React 18's selective hydration model, and CLS as a production signal for hydration regressions."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
         "junior": "See how the ID changes every time you 're-render' in broken mode? That's the server ID and client ID being different. Fixed mode always shows the same stable value.",
-        "mid": "useId generates :rN: style IDs — the counter increments based on component tree position, which is identical on server and client.",
-        "staff": "useId is tied to the tree structure, not execution order. Conditional rendering can change the count — test useId in conditional branches."
+        "mid": "useId generates :rN: style IDs: the counter increments based on component tree position, which is identical on server and client.",
+        "staff": "useId is tied to the tree structure, not execution order. Conditional rendering can change the count; test useId in conditional branches."
       },
       {
         "chapter": "takeaway",

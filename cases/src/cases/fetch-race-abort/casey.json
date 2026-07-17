@@ -3,26 +3,26 @@
   "hints": [
     {
       "chapter": "hook",
-      "junior": "Every fetch that can be cancelled should have an AbortController. The three-line pattern — create, pass signal, abort on cleanup — prevents an entire category of bugs.",
+      "junior": "Every fetch that can be cancelled should have an AbortController. The three-line pattern (create, pass signal, abort on cleanup) prevents an entire category of bugs.",
       "mid": "AbortError is expected, not an error. The catch block pattern: if AbortError, return null; else re-throw. Keep it consistent across your data layer.",
-      "staff": "One signal can cancel multiple parallel fetches. Pass the same AbortController.signal to all fetch calls in a Promise.all — one abort() drops them all."
+      "staff": "One signal can cancel multiple parallel fetches. Pass the same AbortController.signal to all fetch calls in a Promise.all: one abort() drops them all."
     },
     {
       "chapter": "demo",
-      "junior": "Start a request and cancel it in broken mode — it completes anyway. Fixed mode shows the cancelled request in the Network panel with an actual termination.",
+      "junior": "Start a request and cancel it in broken mode: it completes anyway. Fixed mode shows the cancelled request in the Network panel with an actual termination.",
       "mid": "The Network panel strikethrough is the proof: the browser actually dropped the TCP connection, not just ignored the response. That's real bandwidth saved.",
-      "staff": "In production, cancelled search requests reduce server load significantly — especially for typeahead endpoints that fire 10+ requests per search session."
+      "staff": "In production, cancelled search requests reduce server load significantly, especially for typeahead endpoints that fire 10+ requests per search session."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "junior": "Skim the code patterns here: you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation; the diff is usually smaller than you expect.",
       "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
@@ -31,7 +31,7 @@
       "chapter": "concept",
       "junior": "My first AbortController use was a product detail page where navigating away left a 2-second fetch running and crashing the next page's state. Three lines fixed it.",
       "mid": "The 'can't update state on unmounted component' React warning is almost always a fetch that needs an AbortController in the cleanup function.",
-      "staff": "Teams that use TanStack Query or SWR correctly get AbortController for free — the libraries pass the signal. The bugs appear when teams write custom fetch hooks without it."
+      "staff": "Teams that use TanStack Query or SWR correctly get AbortController for free: the libraries pass the signal. The bugs appear when teams write custom fetch hooks without it."
     }
   ],
   "voice": {
@@ -39,21 +39,21 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Hey! Today we're learning how to cancel fetch requests — so they don't update state after you navigate away or start a new request.",
-        "mid": "This case is the networking deep-dive on AbortController — the three-line pattern, AbortError handling, and composing signals across parallel requests.",
+        "junior": "Hey! Today we're learning how to cancel fetch requests, so they don't update state after you navigate away or start a new request.",
+        "mid": "This case is the networking deep-dive on AbortController: the three-line pattern, AbortError handling, and composing signals across parallel requests.",
         "staff": "We're covering the full signal API, parallel abort patterns, framework integration (TanStack Query, SWR), and the production bandwidth case for cancellation."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
-        "junior": "Start a request and cancel it in broken mode — it completes anyway. Fixed mode shows the cancelled request in the Network panel with an actual termination.",
+        "junior": "Start a request and cancel it in broken mode: it completes anyway. Fixed mode shows the cancelled request in the Network panel with an actual termination.",
         "mid": "The Network panel strikethrough is the proof: the browser actually dropped the TCP connection, not just ignored the response. That's real bandwidth saved.",
-        "staff": "In production, cancelled search requests reduce server load significantly — especially for typeahead endpoints that fire 10+ requests per search session."
+        "staff": "In production, cancelled search requests reduce server load significantly, especially for typeahead endpoints that fire 10+ requests per search session."
       },
       {
         "chapter": "takeaway",

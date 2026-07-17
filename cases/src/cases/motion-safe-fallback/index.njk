@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "@media (prefers-reduced-motion)"
-description: Two strategies for respecting OS motion preferences in CSS — and why the no-preference guard pattern is easier to maintain than the reduce override pattern.
+description: Two strategies for respecting OS motion preferences in CSS, and why the no-preference guard pattern is easier to maintain than the reduce override pattern.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: motion-safe-fallback
 track: animation-motion
@@ -23,8 +23,8 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
 <section class="case-chapter" data-chapter="hook">
   <h2>The animation that makes users sick</h2>
   <div class="tone-junior">
-    <p>A user with a vestibular disorder visits your site. Your hero section has a parallax scroll effect — layers moving at different speeds as the page scrolls. They've turned on "Reduce Motion" in their OS settings, but your CSS ignores it. Within seconds, they're dizzy. They close the tab.</p>
-    <p>The fix is four lines of CSS. The <code>prefers-reduced-motion</code> media query reads the OS setting and lets you serve different styles to users who've asked for less motion. Ignoring it isn't a UX choice — it's an accessibility failure.</p>
+    <p>A user with a vestibular disorder visits your site. Your hero section has a parallax scroll effect: layers moving at different speeds as the page scrolls. They've turned on "Reduce Motion" in their OS settings, but your CSS ignores it. Within seconds, they're dizzy. They close the tab.</p>
+    <p>The fix is four lines of CSS. The <code>prefers-reduced-motion</code> media query reads the OS setting and lets you serve different styles to users who've asked for less motion. Ignoring it isn't a UX choice, it's an accessibility failure.</p>
   </div>
   <div class="tone-mid">
     <p>An estimated 35% of adults experience some degree of vestibular disorder. The macOS/iOS "Reduce Motion" accessibility setting is the user's opt-out signal. WCAG 2.1 SC 2.3.3 (Level AAA) requires that animations triggered by interaction can be disabled. The <code>prefers-reduced-motion</code> media query is the CSS mechanism for honoring both the user preference and the WCAG criterion.</p>
@@ -36,9 +36,9 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
 
 {# ── Chapter: Concept ── #}
 <section class="case-chapter" data-chapter="concept">
-  <h2>Two strategies — pick one and be consistent</h2>
+  <h2>Two strategies: pick one and be consistent</h2>
   <div class="tone-junior">
-    <p><strong>Strategy 1: no-preference guard (conservative)</strong> — animations only run when the user has not set a motion preference. Motion is off by default; the OS preference to "no preference" enables it.</p>
+    <p><strong>Strategy 1: no-preference guard (conservative)</strong>: animations only run when the user has not set a motion preference. Motion is off by default; the OS preference to "no preference" enables it.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ✅ Strategy 1: only animate when no preference is set */
 @media (prefers-reduced-motion: no-preference) {
   .hero {
@@ -48,7 +48,7 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
     transition: transform 0.2s ease;
   }
 }</code></pre>
-    <p><strong>Strategy 2: reduce override (progressive)</strong> — animations are on by default; the <code>reduce</code> preference disables them. Requires a comprehensive override for every animation.</p>
+    <p><strong>Strategy 2: reduce override (progressive)</strong>: animations are on by default; the <code>reduce</code> preference disables them. Requires a comprehensive override for every animation.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Strategy 2: animate normally, override in reduce */
 .hero {
   animation: slideIn 0.6s ease-out;
@@ -64,7 +64,7 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
 }</code></pre>
   </div>
   <div class="tone-mid">
-    <p>Strategy 1 (no-preference guard) is easier to maintain: animations are inherently opt-in, so you never accidentally ship a new animation without the reduced-motion protection. Strategy 2 (reduce override) requires discipline — every new animation needs a corresponding override in the reduce block.</p>
+    <p>Strategy 1 (no-preference guard) is easier to maintain: animations are inherently opt-in, so you never accidentally ship a new animation without the reduced-motion protection. Strategy 2 (reduce override) requires discipline, since every new animation needs a corresponding override in the reduce block.</p>
     <p>For large codebases, a single global override can cover most cases:</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Nuclear option: disable all transitions + animations in reduce */
 @media (prefers-reduced-motion: reduce) {
@@ -74,7 +74,7 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
     transition-duration: 0.01ms !important;
   }
 }</code></pre>
-    <p>This is safe as a starting point but too aggressive for production — it also disables helpful transitions like focus rings that are not motion-sensitive.</p>
+    <p>This is safe as a starting point but too aggressive for production: it also disables helpful transitions like focus rings that are not motion-sensitive.</p>
   </div>
   <div class="tone-staff">
     <p>The WCAG requirement breakdown:</p>
@@ -82,7 +82,7 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
       <li><strong>SC 2.3.1 (AA)</strong>: nothing flashes more than 3 times per second (photosensitive seizures)</li>
       <li><strong>SC 2.3.3 (AAA)</strong>: animations triggered by interaction can be disabled unless essential</li>
     </ul>
-    <p>Parallax effects are especially problematic for vestibular disorder users because they create a sense of depth that conflicts with physical stillness — the brain's spatial model is contradicted by the visual signal. Any CSS that creates depth parallax through <code>transform: translateZ</code>, layered background scroll rates, or multi-layer fixed positioning should be gated behind <code>prefers-reduced-motion: no-preference</code>.</p>
+    <p>Parallax effects are especially problematic for vestibular disorder users because they create a sense of depth that conflicts with physical stillness: the brain's spatial model is contradicted by the visual signal. Any CSS that creates depth parallax through <code>transform: translateZ</code>, layered background scroll rates, or multi-layer fixed positioning should be gated behind <code>prefers-reduced-motion: no-preference</code>.</p>
   </div>
 </section>
 
@@ -91,11 +91,11 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
 <section class="case-chapter" data-chapter="story-1">
   <h2>Three arrows, no sequence</h2>
   <div class="tone-junior">
-    <p>A design team built an onboarding flow for a productivity app. Three animated arrows guided users through the steps: arrow 1 pointed to "Create a workspace," arrow 2 faded in to point to "Invite your team," arrow 3 appeared last to point to "Import your data." The sequence was clear, engaging, and well-tested. Before launch, a developer added <code>@media (prefers-reduced-motion: reduce) { animation: none }</code> — a one-line fix that seemed to handle accessibility.</p>
-    <p>What users with Reduce Motion enabled actually saw: all three arrows visible simultaneously, stacked in the same position, all pointing to the same UI area at once. The CSS had removed the animation timing — which was the only mechanism that gave each arrow its separate moment. Without the animation, all three rendered at full opacity in their final positions, overlapping and illegible. The "accessible" version was less usable than having no fallback at all.</p>
+    <p>A design team built an onboarding flow for a productivity app. Three animated arrows guided users through the steps: arrow 1 pointed to "Create a workspace," arrow 2 faded in to point to "Invite your team," arrow 3 appeared last to point to "Import your data." The sequence was clear, engaging, and well-tested. Before launch, a developer added <code>@media (prefers-reduced-motion: reduce) { animation: none }</code>, a one-line fix that seemed to handle accessibility.</p>
+    <p>What users with Reduce Motion enabled actually saw: all three arrows visible simultaneously, stacked in the same position, all pointing to the same UI area at once. The CSS had removed the animation timing, which was the only mechanism that gave each arrow its separate moment. Without the animation, all three rendered at full opacity in their final positions, overlapping and illegible. The "accessible" version was less usable than having no fallback at all.</p>
   </div>
   <div class="tone-mid">
-    <p>The root problem was that the animation was not an enhancement — it was the content. The sequence information lived entirely in the animation timing. Removing the animation without replacing it with a static representation of the same information left users with decorative elements and no instructional content. The fix is not to remove the animation; it is to provide a static alternative that communicates the same sequence through visual hierarchy rather than time.</p>
+    <p>The root problem was that the animation was not an enhancement: it was the content. The sequence information lived entirely in the animation timing. Removing the animation without replacing it with a static representation of the same information left users with decorative elements and no instructional content. The fix is not to remove the animation; it is to provide a static alternative that communicates the same sequence through visual hierarchy rather than time.</p>
   </div>
 </section>
 
@@ -104,10 +104,10 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
   <h2>Static numbered list as the canonical fallback</h2>
   <div class="tone-junior">
     <p>The correct reduced-motion version replaced the three animated arrows with a static numbered list: "1. Create a workspace, 2. Invite your team, 3. Import your data." The animated version became the enhancement; the static list became the base layer. Users with Reduce Motion enabled received a clear, sequential, fully comprehensible onboarding experience without motion of any kind.</p>
-    <p>The implementation used the no-preference guard strategy: the animated elements only rendered inside <code>@media (prefers-reduced-motion: no-preference)</code>. The static list was always in the DOM, hidden by CSS only when motion was permitted. This meant the animated version was an enhancement layered on top of working content — the correct architecture for any progressive enhancement.</p>
+    <p>The implementation used the no-preference guard strategy: the animated elements only rendered inside <code>@media (prefers-reduced-motion: no-preference)</code>. The static list was always in the DOM, hidden by CSS only when motion was permitted. This meant the animated version was an enhancement layered on top of working content, which is the correct architecture for any progressive enhancement.</p>
   </div>
   <div class="tone-mid">
-    <p>The broader principle: before adding an animation, ask what information it conveys and whether that information exists somewhere without the animation. Animations that convey sequence, state change, relationship, or spatial context must have a static equivalent. Animations that convey energy or delight — a bouncy button, a satisfying toggle — have a lower bar because removing them leaves a still-functional element, not an information gap.</p>
+    <p>The broader principle: before adding an animation, ask what information it conveys and whether that information exists somewhere without the animation. Animations that convey sequence, state change, relationship, or spatial context must have a static equivalent. Animations that convey energy or delight (a bouncy button, a satisfying toggle) have a lower bar because removing them leaves a still-functional element, not an information gap.</p>
   </div>
 </section>
 
@@ -116,22 +116,22 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
     <figure>
-      <figcaption>Before — animation removed, broken overlap (sequence information lost)</figcaption>
-      <pre><code>/* ❌ Only removes animation — content relies on timing for sequence */
+      <figcaption>Before: animation removed, broken overlap (sequence information lost)</figcaption>
+      <pre><code>/* ❌ Only removes animation; content relies on timing for sequence */
 .step-arrow { animation: fadeInPoint 0.6s ease forwards; }
 .step-arrow:nth-child(2) { animation-delay: 1.2s; }
 .step-arrow:nth-child(3) { animation-delay: 2.4s; }
 
 @media (prefers-reduced-motion: reduce) {
   .step-arrow { animation: none; }
-  /* All 3 arrows render at once, overlapping — unusable */
+  /* All 3 arrows render at once, overlapping (unusable) */
 }</code></pre>
     </figure>
     <figure>
-      <figcaption>After — static list always present; animation is an enhancement only</figcaption>
+      <figcaption>After: static list always present; animation is an enhancement only</figcaption>
       <pre><code>/* ✅ Static fallback always in DOM; animation wraps enhanced version */
 
-/* Static numbered list — always visible */
+/* Static numbered list: always visible */
 .onboarding-steps-list { display: block; }
 .onboarding-arrows { display: none; }
 
@@ -149,8 +149,8 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: motion without guard vs motion safe</h2>
-  <div class="tone-junior"><p>"No guard" shows a slide animation that runs regardless of your OS motion setting. "Motion safe" wraps the animation in a no-preference query — if your OS has Reduce Motion on, no animation plays. Toggle your OS setting (System Preferences → Accessibility → Motion) to see the difference.</p></div>
-  <div class="tone-mid"><p>In the motion-safe version, the CSS media query is doing the work — no JavaScript, no class toggling, no matchMedia listener. The browser reads the OS preference at paint time and applies the right styles. This is the correct default approach.</p></div>
+  <div class="tone-junior"><p>"No guard" shows a slide animation that runs regardless of your OS motion setting. "Motion safe" wraps the animation in a no-preference query: if your OS has Reduce Motion on, no animation plays. Toggle your OS setting (System Preferences → Accessibility → Motion) to see the difference.</p></div>
+  <div class="tone-mid"><p>In the motion-safe version, the CSS media query is doing the work, with no JavaScript, no class toggling, no matchMedia listener. The browser reads the OS preference at paint time and applies the right styles. This is the correct default approach.</p></div>
   <div class="tone-staff"><p>For JavaScript-driven animations (Web Animations API, Framer Motion, GSAP), use <code>window.matchMedia('(prefers-reduced-motion: reduce)').matches</code> to read the preference and conditionally skip the animation. Add a change listener to respond to OS preference changes mid-session.</p></div>
 
   <section class="case-demo" aria-label="Try it: motion without guard vs motion safe" data-required="true" data-demo-type="toggle" data-demo-slug="motion-safe-fallback">
@@ -159,10 +159,10 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">No guard — always animates</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Motion safe — respects OS</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">No guard: always animates</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Motion safe: respects OS</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Motion safe — respects OS</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Motion safe (respects OS)</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
       </div>
     </div>
@@ -173,8 +173,8 @@ ogImage: https://anmshpndy.com/brand/cases/motion-safe-fallback-og.png
 <section class="case-chapter" data-chapter="fe-depth">
   <h2>Implementation depth</h2>
   <div class="tone-mid">
-    <p>The <code>prefers-reduced-motion</code> media query can be read in JavaScript using <code>window.matchMedia</code>. Add a <code>change</code> listener to respond to users toggling the setting mid-session — this matters for accessibility users who may adjust OS settings while using the app. The listener fires synchronously when the OS preference changes, so you can immediately swap states.</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// JS check for motion preference — use for JS-driven animations
+    <p>The <code>prefers-reduced-motion</code> media query can be read in JavaScript using <code>window.matchMedia</code>. Add a <code>change</code> listener to respond to users toggling the setting mid-session; this matters for accessibility users who may adjust OS settings while using the app. The listener fires synchronously when the OS preference changes, so you can immediately swap states.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// JS check for motion preference, used for JS-driven animations
 const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 function applyMotionPreference() {
@@ -193,9 +193,9 @@ mq.addEventListener('change', applyMotionPreference); // on change</code></pre>
   <div class="tone-staff">
     <p>Vestibular disorder context and design principles for reduced-motion fallbacks:</p>
     <ul>
-      <li><strong>Classify animations by vestibular risk</strong> — parallax, spinning, zooming, and large-area translates are high-risk; opacity crossfades and color transitions are low-risk. High-risk animations need a full static fallback; low-risk animations can run in reduced-motion mode.</li>
-      <li><strong>Jump-to-end state</strong> — when removing animation, always show the end state of the animation, not the start state. A collapsed menu should appear fully open; a fade-in element should appear fully visible. The start state is often invisible or partial.</li>
-      <li><strong>Test with DevTools emulation</strong> — Chrome DevTools → Rendering panel → "Emulate CSS media feature prefers-reduced-motion" lets you test without changing OS settings. Add this to your visual regression test matrix.</li>
+      <li><strong>Classify animations by vestibular risk:</strong> parallax, spinning, zooming, and large-area translates are high-risk; opacity crossfades and color transitions are low-risk. High-risk animations need a full static fallback; low-risk animations can run in reduced-motion mode.</li>
+      <li><strong>Jump-to-end state:</strong> when removing animation, always show the end state of the animation, not the start state. A collapsed menu should appear fully open; a fade-in element should appear fully visible. The start state is often invisible or partial.</li>
+      <li><strong>Test with DevTools emulation:</strong> Chrome DevTools → Rendering panel → "Emulate CSS media feature prefers-reduced-motion" lets you test without changing OS settings. Add this to your visual regression test matrix.</li>
       <li><strong>WCAG 2.1 SC 2.3.3 (AAA)</strong> requires animations triggered by interaction to be disableable. If your animation plays on scroll, click, or hover, Reduce Motion must stop it. Decorative background animations (not interaction-triggered) fall under the AAA criterion and are strongly recommended to respect but not strictly required at AA.</li>
     </ul>
   </div>
@@ -203,26 +203,26 @@ mq.addEventListener('change', applyMotionPreference); // on change</code></pre>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub, expand per case) ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" rel="noopener noreferrer">MDN — prefers-reduced-motion</a></li>
-      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html" rel="noopener noreferrer">WCAG 2.2 — Animation</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion" rel="noopener noreferrer">MDN: prefers-reduced-motion</a></li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html" rel="noopener noreferrer">WCAG 2.2: Animation</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://web.dev/articles/prefers-reduced-motion" rel="noopener noreferrer">web.dev — Reduced motion</a></li>
-      <li><a href="https://www.framer.com/motion/guide-accessibility/" rel="noopener noreferrer">Motion — Accessibility</a></li>
+      <li><a href="https://web.dev/articles/prefers-reduced-motion" rel="noopener noreferrer">web.dev: Reduced motion</a></li>
+      <li><a href="https://www.framer.com/motion/guide-accessibility/" rel="noopener noreferrer">Motion: Accessibility</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://www.w3.org/TR/WCAG22/#reduced-motion" rel="noopener noreferrer">WCAG 2.2 — Reduced motion (normative)</a></li>
-      <li><a href="https://css-tricks.com/revisiting-prefers-reduced-motion/" rel="noopener noreferrer">CSS-Tricks — prefers-reduced-motion</a></li>
+      <li><a href="https://www.w3.org/TR/WCAG22/#reduced-motion" rel="noopener noreferrer">WCAG 2.2: Reduced motion (normative)</a></li>
+      <li><a href="https://css-tricks.com/revisiting-prefers-reduced-motion/" rel="noopener noreferrer">CSS-Tricks: prefers-reduced-motion</a></li>
     </ol>
   </div>
 </section>
@@ -235,12 +235,12 @@ mq.addEventListener('change', applyMotionPreference); // on change</code></pre>
       <li>
         <div class="tone-junior">Wrap CSS animations in @media (prefers-reduced-motion: no-preference) { } so they only run when the user hasn't set a motion preference. Four lines protects every user who needs it.</div>
         <div class="tone-mid">Two strategies: no-preference guard (animations opt-in, easier to maintain) vs reduce override (animations on by default, requires comprehensive overrides). Pick one and apply it consistently.</div>
-        <div class="tone-staff">WCAG 2.1 SC 2.3.3 (AAA) requires interaction-triggered animations can be disabled. Parallax is the highest-risk animation type for vestibular disorders — always gate it behind no-preference.</div>
+        <div class="tone-staff">WCAG 2.1 SC 2.3.3 (AAA) requires interaction-triggered animations can be disabled. Parallax is the highest-risk animation type for vestibular disorders, so always gate it behind no-preference.</div>
       </li>
       <li>
-        <div class="tone-junior">Test with the OS "Reduce Motion" setting on — not just off. Your browser DevTools can emulate it (Rendering panel → Emulate CSS media feature).</div>
+        <div class="tone-junior">Test with the OS "Reduce Motion" setting on, not just off. Your browser DevTools can emulate it (Rendering panel → Emulate CSS media feature).</div>
         <div class="tone-mid">For JS animations (GSAP, Framer Motion, Web Animations API), check window.matchMedia('(prefers-reduced-motion: reduce)').matches and skip or simplify the animation accordingly.</div>
-        <div class="tone-staff">Reduced motion means "reduce vestibular-triggering motion" — not "no animation at all." Gentle crossfades and opacity transitions are appropriate in reduce mode; translates, scales, rotates, and parallax are not.</div>
+        <div class="tone-staff">Reduced motion means "reduce vestibular-triggering motion," not "no animation at all." Gentle crossfades and opacity transitions are appropriate in reduce mode; translates, scales, rotates, and parallax are not.</div>
       </li>
     </ul>
   </div>

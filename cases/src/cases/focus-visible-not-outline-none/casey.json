@@ -4,34 +4,34 @@
     {
       "chapter": "hook",
       "junior": "outline: none on :focus removes keyboard navigation visibility for all users. It's one of the most common accessibility mistakes in real codebases.",
-      "mid": ":focus-visible is the correct replacement — it shows the ring for keyboard users and hides it for mouse users. Browser support is now universal.",
-      "staff": "WCAG 2.2 SC 2.4.11 is now AA — focus indicator requirements are no longer optional. Check your design system's focus ring against the contrast and size criteria."
+      "mid": ":focus-visible is the correct replacement: it shows the ring for keyboard users and hides it for mouse users. Browser support is now universal.",
+      "staff": "WCAG 2.2 SC 2.4.11 is now AA, so focus indicator requirements are no longer optional. Check your design system's focus ring against the contrast and size criteria."
     },
     {
       "chapter": "demo",
-      "junior": "Tab through the demo in broken mode — can you tell where you are? Now try fixed mode. The ring shows exactly where keyboard focus is.",
+      "junior": "Tab through the demo in broken mode: can you tell where you are? Now try fixed mode. The ring shows exactly where keyboard focus is.",
       "mid": "Notice: in fixed mode, clicking a button doesn't show the ring. Tabbing to it does. That's :focus-visible working correctly.",
       "staff": "The fixed ring uses outline, not box-shadow. outline renders in Windows High Contrast mode; box-shadow doesn't. Always use outline for focus indicators."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
       "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
     {
       "chapter": "concept",
-      "junior": "My first accessibility audit found outline: none on every interactive element — added by a designer who found the default ring ugly. :focus-visible was the clean fix.",
+      "junior": "My first accessibility audit found outline: none on every interactive element, added by a designer who found the default ring ugly. :focus-visible was the clean fix.",
       "mid": "The CSS reset * { outline: none } is still in many starter templates and tutorial codebases. Always replace it with a :focus-visible rule.",
-      "staff": "I've seen teams pass WCAG audits by adding outline: 2px solid transparent for keyboard users — technically visible in high contrast mode but invisible elsewhere. Don't do this."
+      "staff": "I've seen teams pass WCAG audits by adding outline: 2px solid transparent for keyboard users (technically visible in high contrast mode but invisible elsewhere). Don't do this."
     }
   ],
   "actions": [
@@ -141,18 +141,18 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today we're fixing one of the most common accessibility mistakes: removing the focus ring and making keyboard navigation invisible. The fix is one CSS rule.",
-        "mid": "This case covers :focus-visible — the CSS pseudo-class that shows focus rings for keyboard users only, giving you design control without the accessibility cost.",
+        "mid": "This case covers :focus-visible: the CSS pseudo-class that shows focus rings for keyboard users only, giving you design control without the accessibility cost.",
         "staff": "We're covering WCAG 2.2 focus appearance requirements, the :focus-visible browser heuristic, and design system token patterns for focus indicators."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
-        "junior": "Tab through the demo in broken mode — can you tell where you are? Now try fixed mode. The ring shows exactly where keyboard focus is.",
+        "junior": "Tab through the demo in broken mode: can you tell where you are? Now try fixed mode. The ring shows exactly where keyboard focus is.",
         "mid": "Notice: in fixed mode, clicking a button doesn't show the ring. Tabbing to it does. That's :focus-visible working correctly.",
         "staff": "The fixed ring uses outline, not box-shadow. outline renders in Windows High Contrast mode; box-shadow doesn't. Always use outline for focus indicators."
       },

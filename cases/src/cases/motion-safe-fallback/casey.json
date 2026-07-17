@@ -3,26 +3,26 @@
   "hints": [
     {
       "chapter": "hook",
-      "junior": "Use @media (prefers-reduced-motion: no-preference) to wrap animations — they only run when the OS reports no motion preference. That's the safe default.",
-      "mid": "The two strategies: (1) wrap all motion in no-preference — conservative, motion is off by default; (2) write animations normally, override in reduce — motion is on by default, off when requested. Strategy 2 is more common but requires comprehensive reduce overrides.",
+      "junior": "Use @media (prefers-reduced-motion: no-preference) to wrap animations: they only run when the OS reports no motion preference. That's the safe default.",
+      "mid": "The two strategies: (1) wrap all motion in no-preference (conservative, motion is off by default); (2) write animations normally, override in reduce (motion is on by default, off when requested). Strategy 2 is more common but requires comprehensive reduce overrides.",
       "staff": "WCAG 2.1 SC 2.3.3 (AAA): animations triggered by interaction can be disabled. SC 2.3.1 (AA): nothing flashes more than 3 times per second. prefers-reduced-motion is the CSS implementation path for 2.3.3."
     },
     {
       "chapter": "demo",
       "junior": "Toggle between 'No guard' (always animates) and 'Motion safe' (respects OS preference). If your OS has reduce-motion on, the safe version shows a clean crossfade instead of the slide animation.",
-      "mid": "In the fixed version, the animation is in a no-preference query — it literally doesn't run if the preference is set. No opacity hack, no JavaScript — just the media query guard.",
-      "staff": "The reduce override pattern: define animations unconditionally, then target @media (prefers-reduced-motion: reduce) to override with instant transitions. This works but requires discipline — every animation needs a reduce override. The no-preference pattern avoids the maintenance burden."
+      "mid": "In the fixed version, the animation is in a no-preference query: it literally doesn't run if the preference is set. No opacity hack, no JavaScript, just the media query guard.",
+      "staff": "The reduce override pattern: define animations unconditionally, then target @media (prefers-reduced-motion: reduce) to override with instant transitions. This works but requires discipline; every animation needs a reduce override. The no-preference pattern avoids the maintenance burden."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
       "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
@@ -39,21 +39,21 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Hey! Today we're learning how to make animations respectful — by wrapping them in a media query that only runs them when users are OK with motion.",
+        "junior": "Hey! Today we're learning how to make animations respectful, by wrapping them in a media query that only runs them when users are OK with motion.",
         "mid": "This case covers prefers-reduced-motion in depth: the no-preference vs reduce strategies, the WCAG requirements, and what to do with parallax and page transitions.",
         "staff": "We're covering the two CSS strategies with their trade-offs, WCAG 2.1 SC 2.3.3, vestibular disorder prevalence, and the maintenance argument for the no-preference pattern."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
         "junior": "Toggle between 'No guard' (always animates) and 'Motion safe' (respects OS preference). If your OS has reduce-motion on, the safe version shows a clean crossfade instead of the slide animation.",
-        "mid": "In the fixed version, the animation is in a no-preference query — it literally doesn't run if the preference is set. No opacity hack, no JavaScript — just the media query guard.",
-        "staff": "The reduce override pattern: define animations unconditionally, then target @media (prefers-reduced-motion: reduce) to override with instant transitions. This works but requires discipline — every animation needs a reduce override. The no-preference pattern avoids the maintenance burden."
+        "mid": "In the fixed version, the animation is in a no-preference query: it literally doesn't run if the preference is set. No opacity hack, no JavaScript, just the media query guard.",
+        "staff": "The reduce override pattern: define animations unconditionally, then target @media (prefers-reduced-motion: reduce) to override with instant transitions. This works but requires discipline; every animation needs a reduce override. The no-preference pattern avoids the maintenance burden."
       },
       {
         "chapter": "takeaway",

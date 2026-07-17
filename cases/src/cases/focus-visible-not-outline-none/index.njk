@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: ":focus-visible vs outline: none"
-description: "Why outline: none breaks keyboard navigation for millions of users — and how :focus-visible gives you design control without the accessibility cost."
+description: "Why outline: none breaks keyboard navigation for millions of users, and how :focus-visible gives you design control without the accessibility cost."
 publishedAt: "2026-05-31T00:00:00Z"
 slug: focus-visible-not-outline-none
 track: accessibility
@@ -19,25 +19,25 @@ relatedCases:
 ogImage: https://anmshpndy.com/brand/cases/focus-visible-not-outline-none-og.png
 ---
 
-{# ── Chapter: Hook ── #}
+{# -- Chapter: Hook -- #}
 <section class="case-chapter" data-chapter="hook">
   <h2>The invisible navigation disaster</h2>
   <div class="tone-junior">
-    <p>You notice that default focus rings look a bit ugly on your buttons. You add <code>outline: none</code> to fix it. The blue rings disappear. Design is happy. But users who navigate with keyboards — and there are more than you think — can no longer see where they are on the page. Every button, link, and form field is now invisible to tab navigation.</p>
+    <p>You notice that default focus rings look a bit ugly on your buttons. You add <code>outline: none</code> to fix it. The blue rings disappear. Design is happy. But users who navigate with keyboards (and there are more than you think) can no longer see where they are on the page. Every button, link, and form field is now invisible to tab navigation.</p>
   </div>
   <div class="tone-mid">
-    <p><code>outline: none</code> on <code>:focus</code> is one of the most damaging accessibility mistakes in web development. It removes the only visual cue keyboard users have for their current position. The fix: use <code>:focus-visible</code>, which shows focus rings only when the user is navigating with a keyboard — not when they click with a mouse.</p>
+    <p><code>outline: none</code> on <code>:focus</code> is one of the most damaging accessibility mistakes in web development. It removes the only visual cue keyboard users have for their current position. The fix: use <code>:focus-visible</code>, which shows focus rings only when the user is navigating with a keyboard, not when they click with a mouse.</p>
   </div>
   <div class="tone-staff">
-    <p>The WCAG 2.2 Success Criterion 2.4.11 (Focus Appearance, AA) and 2.4.12 (Focus Appearance, AAA) codify the minimum size and contrast requirements for focus indicators. <code>outline: none</code> fails 2.4.7 (Focus Visible, AA). The :focus-visible pseudo-class, now baseline in all browsers, is the correct solution — it's how the browser already differentiates mouse from keyboard interaction internally.</p>
+    <p>The WCAG 2.2 Success Criterion 2.4.11 (Focus Appearance, AA) and 2.4.12 (Focus Appearance, AAA) codify the minimum size and contrast requirements for focus indicators. <code>outline: none</code> fails 2.4.7 (Focus Visible, AA). The :focus-visible pseudo-class, now baseline in all browsers, is the correct solution: it's how the browser already differentiates mouse from keyboard interaction internally.</p>
   </div>
 </section>
 
-{# ── Chapter: Concept ── #}
+{# -- Chapter: Concept -- #}
 <section class="case-chapter" data-chapter="concept">
   <h2>How :focus-visible works</h2>
   <div class="tone-junior">
-    <p>Browsers know whether you're navigating with a keyboard or a mouse. <code>:focus-visible</code> only applies when the browser thinks a visible focus indicator would help. If you clicked a button with a mouse, <code>:focus-visible</code> doesn't apply — no ring. If you tabbed to a button with the keyboard, it does apply — ring shows.</p>
+    <p>Browsers know whether you're navigating with a keyboard or a mouse. <code>:focus-visible</code> only applies when the browser thinks a visible focus indicator would help. If you clicked a button with a mouse, <code>:focus-visible</code> doesn't apply, so no ring. If you tabbed to a button with the keyboard, it does apply, and the ring shows.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ✅ Remove focus ring on mouse click, keep it for keyboard */
 button:focus:not(:focus-visible) {
   outline: none; /* hides on mouse click */
@@ -48,8 +48,8 @@ button:focus-visible {
 }</code></pre>
   </div>
   <div class="tone-mid">
-    <p>The browser's heuristic for :focus-visible (from the spec): matches if any of these are true — the element received focus via keyboard, the element is a text input, the element type usually benefits from a visible focus indicator. The heuristic is reliable across Chrome, Firefox, and Safari.</p>
-    <p>A simpler, modern approach leverages the fact that browsers style :focus-visible correctly by default — just don't override :focus for mouse clicks:</p>
+    <p>The browser's heuristic for :focus-visible (from the spec) matches if any of these are true: the element received focus via keyboard, the element is a text input, the element type usually benefits from a visible focus indicator. The heuristic is reliable across Chrome, Firefox, and Safari.</p>
+    <p>A simpler, modern approach leverages the fact that browsers style :focus-visible correctly by default. Just don't override :focus for mouse clicks:</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ✅ Modern: customize focus-visible, leave focus alone */
 :focus-visible {
   outline: 2px solid currentColor;
@@ -58,30 +58,30 @@ button:focus-visible {
 }</code></pre>
   </div>
   <div class="tone-staff">
-    <p>The :focus-visible heuristic uses a "has the user interacted with the keyboard recently" internal flag. This means typing in an input then clicking a button can briefly show :focus-visible on the clicked element. This is intentional — the assumption is that a keyboard user is more likely to benefit from the ring even in this edge case. Design systems should account for this in component specs.</p>
+    <p>The :focus-visible heuristic uses a "has the user interacted with the keyboard recently" internal flag. This means typing in an input then clicking a button can briefly show :focus-visible on the clicked element. This is intentional: the assumption is that a keyboard user is more likely to benefit from the ring even in this edge case. Design systems should account for this in component specs.</p>
   </div>
 </section>
 
-{# ── Chapter: Demo ── #}
-{# ── Chapter: UI Strip ── #}
+{# -- Chapter: Demo -- #}
+{# -- Chapter: UI Strip -- #}
 <section class="case-chapter" data-chapter="story-1">
   <h2>The global CSS reset that blinded keyboard users</h2>
   <div class="tone-junior">
     <p>A designer was reviewing the staging site and noticed the blue focus rings around buttons when clicking them. "These look out of place," she said. "Can we remove them?" A developer added <code>* { outline: none }</code> to the global stylesheet. The rings disappeared. Design was satisfied. The change shipped.</p>
-    <p>Three weeks later, an accessibility audit flagged the site as failing WCAG 2.4.7 — Focus Visible. Keyboard-only users navigating with Tab had zero visual indication of their position. Every button, link, and form field was invisible in keyboard navigation. Users who relied on keyboard — people with motor disabilities, power users, anyone not using a mouse — were navigating blind.</p>
+    <p>Three weeks later, an accessibility audit flagged the site as failing WCAG 2.4.7 (Focus Visible). Keyboard-only users navigating with Tab had zero visual indication of their position. Every button, link, and form field was invisible in keyboard navigation. Users who relied on keyboard, including people with motor disabilities, power users, and anyone not using a mouse, were navigating blind.</p>
   </div>
   <div class="tone-mid">
-    <p>The root cause was a category error: the designer saw a visible focus ring on a mouse-clicked button and assumed it was unnecessary. It was — for mouse users. But <code>:focus</code> matches every focus event regardless of input method. Removing <code>outline</code> from <code>:focus</code> with a global rule removed it from keyboard navigation too. There was no way to distinguish mouse focus from keyboard focus in the original CSS — the selector <code>:focus</code> doesn't know how the element received focus. The <code>:focus-visible</code> pseudo-class exists specifically to provide that distinction, but wasn't used here.</p>
+    <p>The root cause was a category error: the designer saw a visible focus ring on a mouse-clicked button and assumed it was unnecessary. It was, for mouse users. But <code>:focus</code> matches every focus event regardless of input method. Removing <code>outline</code> from <code>:focus</code> with a global rule removed it from keyboard navigation too. There was no way to distinguish mouse focus from keyboard focus in the original CSS: the selector <code>:focus</code> doesn't know how the element received focus. The <code>:focus-visible</code> pseudo-class exists specifically to provide that distinction, but wasn't used here.</p>
   </div>
   <div class="tone-staff">
-    <p>The accessibility audit result was a direct WCAG 2.4.7 (Focus Visible, AA) failure. This criterion requires that any keyboard-operable UI component can be visually focused. The global <code>outline: none</code> reset is so common it has its own entry in every accessibility checker's rule set — axe-core rule <code>scrollable-region-focusable</code> and the broader <code>focus-visible</code> rule both catch it. The failure had been in production for three weeks across a surface with 12,000 monthly active keyboard users, a number the team discovered only after pulling keyboard-nav session data they had never looked at before.</p>
+    <p>The accessibility audit result was a direct WCAG 2.4.7 (Focus Visible, AA) failure. This criterion requires that any keyboard-operable UI component can be visually focused. The global <code>outline: none</code> reset is so common it has its own entry in every accessibility checker's rule set: axe-core rule <code>scrollable-region-focusable</code> and the broader <code>focus-visible</code> rule both catch it. The failure had been in production for three weeks across a surface with 12,000 monthly active keyboard users, a number the team discovered only after pulling keyboard-nav session data they had never looked at before.</p>
   </div>
 </section>
 
 <section class="case-chapter" data-chapter="story-2">
-  <h2>:focus-visible — the ring that knows when to show up</h2>
+  <h2>:focus-visible: the ring that knows when to show up</h2>
   <div class="tone-junior">
-    <p>The fix removed the global <code>* { outline: none }</code> rule and replaced it with two targeted rules. Mouse clicks on buttons: no ring. Keyboard navigation: a clean, styled ring. The designer looked at the result and approved it — she had never wanted the ring to appear on mouse clicks; she just hadn't known that was achievable.</p>
+    <p>The fix removed the global <code>* { outline: none }</code> rule and replaced it with two targeted rules. Mouse clicks on buttons: no ring. Keyboard navigation: a clean, styled ring. The designer looked at the result and approved it. She had never wanted the ring to appear on mouse clicks; she just hadn't known that was achievable.</p>
     <p>The keyboard users regained visibility of their position as they tabbed through the page. The accessibility audit was cleared. The change took 20 minutes to write and test. The three-week regression had cost weeks of keyboard users navigating blindly through a product they couldn't use effectively.</p>
   </div>
   <div class="tone-mid">
@@ -100,7 +100,7 @@ button:focus-visible {
     <p>The design system also introduced a <code>--focus-ring-color</code> token so individual components could override the ring color for contrast on dark backgrounds without duplicating the selector logic.</p>
   </div>
   <div class="tone-staff">
-    <p>The post-fix measurement included adding keyboard navigation session tracking to analytics — something the team hadn't done before. 8.3% of monthly active users were keyboard-primary navigators. The three-week regression had exposed all of them to a broken experience that was invisible in clickstream analytics (which measures clicks, not tab presses). The systemic fix included adding <code>axe-core</code> to the CI pipeline targeting the <code>focus-visible</code> rule, and adding a keyboard navigation smoke test to the release checklist — tab through five critical flows before any deploy. The process gap was as important to address as the CSS bug.</p>
+    <p>The post-fix measurement included adding keyboard navigation session tracking to analytics, something the team hadn't done before. 8.3% of monthly active users were keyboard-primary navigators. The three-week regression had exposed all of them to a broken experience that was invisible in clickstream analytics (which measures clicks, not tab presses). The systemic fix included adding <code>axe-core</code> to the CI pipeline targeting the <code>focus-visible</code> rule, and adding a keyboard navigation smoke test to the release checklist: tab through five critical flows before any deploy. The process gap was as important to address as the CSS bug.</p>
   </div>
 </section>
 
@@ -110,22 +110,22 @@ button:focus-visible {
     <p class="case-ui-strip__label">Annotated example: outline: none vs :focus-visible ring on keyboard nav</p>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
-        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ OUTLINE: NONE — keyboard user sees nothing</p>
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ OUTLINE: NONE (keyboard user sees nothing)</p>
         <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
           <button style="padding: 8px 16px; background: var(--casebook-surface-2); border: 1px solid var(--casebook-border); border-radius: 4px; font-size: 12px; cursor: pointer; outline: none;">Home</button>
           <button style="padding: 8px 16px; background: var(--casebook-surface-2); border: 1px solid var(--casebook-border); border-radius: 4px; font-size: 12px; cursor: pointer; outline: none; opacity: 0.5;">About</button>
           <button style="padding: 8px 16px; background: var(--casebook-surface-2); border: 1px solid var(--casebook-border); border-radius: 4px; font-size: 12px; cursor: pointer; outline: none; opacity: 0.5;">Contact</button>
         </div>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 12px;">No ring visible — where is the focus? Keyboard user cannot tell.</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 12px;">No ring visible. Where is the focus? Keyboard user cannot tell.</p>
       </div>
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
-        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ :FOCUS-VISIBLE — clean ring on keyboard nav</p>
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ :FOCUS-VISIBLE (clean ring on keyboard nav)</p>
         <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
           <button style="padding: 8px 16px; background: var(--casebook-surface-2); border: 1px solid var(--casebook-border); border-radius: 4px; font-size: 12px; cursor: pointer; outline: 2px solid #4E7A68; outline-offset: 3px;">Home</button>
           <button style="padding: 8px 16px; background: var(--casebook-surface-2); border: 1px solid var(--casebook-border); border-radius: 4px; font-size: 12px; cursor: pointer; outline: none; opacity: 0.5;">About</button>
           <button style="padding: 8px 16px; background: var(--casebook-surface-2); border: 1px solid var(--casebook-border); border-radius: 4px; font-size: 12px; cursor: pointer; outline: none; opacity: 0.5;">Contact</button>
         </div>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 12px;">"Home" is focused — ring is clear, styled, and accessible.</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 12px;">"Home" is focused: ring is clear, styled, and accessible.</p>
       </div>
     </div>
   </div>
@@ -133,9 +133,9 @@ button:focus-visible {
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: tab navigation with and without focus ring</h2>
-  <div class="tone-junior"><p>Tab through the buttons below in "Broken" mode — you can't see where the focus is. Switch to "Fixed" and tab again — you can follow exactly where you are.</p></div>
-  <div class="tone-mid"><p>Try clicking a button with the mouse in fixed mode — no ring. Then press Tab — ring appears. That's :focus-visible correctly differentiating mouse from keyboard.</p></div>
-  <div class="tone-staff"><p>The fixed focus ring uses outline (not border or box-shadow) — outline doesn't affect layout, supports border-radius in modern browsers, and works in high-contrast mode.</p></div>
+  <div class="tone-junior"><p>Tab through the buttons below in "Broken" mode; you can't see where the focus is. Switch to "Fixed" and tab again, and you can follow exactly where you are.</p></div>
+  <div class="tone-mid"><p>Try clicking a button with the mouse in fixed mode: no ring. Then press Tab, and the ring appears. That's :focus-visible correctly differentiating mouse from keyboard.</p></div>
+  <div class="tone-staff"><p>The fixed focus ring uses outline (not border or box-shadow). Outline doesn't affect layout, supports border-radius in modern browsers, and works in high-contrast mode.</p></div>
 
   <section class="case-demo" aria-label="Try it: focus visible" data-required="true" data-demo-type="toggle" data-demo-slug="focus-visible-not-outline-none">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -143,10 +143,10 @@ button:focus-visible {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — outline: none</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — :focus-visible</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken: outline: none</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed: :focus-visible</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — :focus-visible</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed, :focus-visible</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:140px;"></div>
       </div>
     </div>
@@ -171,15 +171,15 @@ button:focus-visible {
     <p>Key pitfall: never use <code>*:focus { outline: none }</code> without the <code>:not(:focus-visible)</code> guard. The bare rule removes focus rings for keyboard users. Always pair the suppression with a <code>:focus-visible</code> rule that provides the visible ring.</p>
   </div>
   <div class="tone-mid">
-    <p>Framework-specific pattern for React component libraries — define the focus ring as a design token and apply it through a base component class:</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* tokens.css — design system layer */
+    <p>Framework-specific pattern for React component libraries: define the focus ring as a design token and apply it through a base component class:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* tokens.css: design system layer */
 :root {
   --focus-ring-color: #4E7A68;
   --focus-ring-width: 2px;
   --focus-ring-offset: 3px;
 }
 
-/* base.css — applied to all interactive elements */
+/* base.css: applied to all interactive elements */
 .interactive:focus:not(:focus-visible) {
   outline: none;
 }
@@ -197,33 +197,33 @@ button:focus-visible {
     </ol>
   </div>
   <div class="tone-staff">
-    <p>In a design system, focus ring tokens belong in the same tier as color and spacing tokens — not as an accessibility afterthought. Define <code>--focus-ring-color</code>, <code>--focus-ring-width</code>, and <code>--focus-ring-offset</code> as component-level overrideable tokens so dark-background components can set a lighter ring without duplicating the selector logic. For lint enforcement, add axe-core rule <code>focus-visible</code> to your CI gate — it catches <code>outline: none</code> without a <code>:focus-visible</code> counterpart. The WCAG 2.2 SC 2.4.11 minimum requirement is a 3:1 contrast ratio between the focus indicator and the adjacent colors, and a minimum perimeter area equivalent to a 2px outline around the component. Design your <code>--focus-ring-color</code> to pass this check against both your light and dark surface tokens — verify with a contrast checker at token-definition time, not at QA time. Add a Playwright keyboard-navigation smoke test that tabs through all primary navigation elements and asserts each has a visible <code>outline</code> style on <code>:focus</code> — run it in both light and dark modes.</p>
+    <p>In a design system, focus ring tokens belong in the same tier as color and spacing tokens, not as an accessibility afterthought. Define <code>--focus-ring-color</code>, <code>--focus-ring-width</code>, and <code>--focus-ring-offset</code> as component-level overrideable tokens so dark-background components can set a lighter ring without duplicating the selector logic. For lint enforcement, add axe-core rule <code>focus-visible</code> to your CI gate; it catches <code>outline: none</code> without a <code>:focus-visible</code> counterpart. The WCAG 2.2 SC 2.4.11 minimum requirement is a 3:1 contrast ratio between the focus indicator and the adjacent colors, and a minimum perimeter area equivalent to a 2px outline around the component. Design your <code>--focus-ring-color</code> to pass this check against both your light and dark surface tokens; verify with a contrast checker at token-definition time, not at QA time. Add a Playwright keyboard-navigation smoke test that tabs through all primary navigation elements and asserts each has a visible <code>outline</code> style on <code>:focus</code>, and run it in both light and dark modes.</p>
   </div>
 </section>
 
-{# ── Chapter: Takeaway ── #}
+{# -- Chapter: Takeaway -- #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
-{# ── Chapter: References ── #}
-{# ── Chapter: References ── #}
+{# -- Chapter: References (stub, expand per case) -- #}
+{# -- Chapter: References -- #}
+{# -- Chapter: References -- #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible" rel="noopener noreferrer">MDN — :focus-visible</a></li>
-      <li><a href="https://www.a11yproject.com/posts/never-remove-css-outlines/" rel="noopener noreferrer">A11y Project — Never remove outlines</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible" rel="noopener noreferrer">MDN: :focus-visible</a></li>
+      <li><a href="https://www.a11yproject.com/posts/never-remove-css-outlines/" rel="noopener noreferrer">A11y Project: Never remove outlines</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html" rel="noopener noreferrer">WCAG 2.2 — Focus appearance</a></li>
-      <li><a href="https://web.dev/articles/designing-focus-states" rel="noopener noreferrer">web.dev — Designing focus states</a></li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/focus-appearance.html" rel="noopener noreferrer">WCAG 2.2: Focus appearance</a></li>
+      <li><a href="https://web.dev/articles/designing-focus-states" rel="noopener noreferrer">web.dev: Designing focus states</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
       <li><a href="https://www.w3.org/TR/WCAG22/" rel="noopener noreferrer">WCAG 2.2</a></li>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible" rel="noopener noreferrer">MDN — :focus-visible</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible" rel="noopener noreferrer">MDN: :focus-visible</a></li>
       <li><a href="https://dequeuniversity.com/rules/axe/4.9/" rel="noopener noreferrer">axe-core rules</a></li>
     </ol>
   </div>
@@ -235,14 +235,14 @@ button:focus-visible {
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">Never use outline: none on :focus without a replacement — it makes your site invisible to keyboard users.</div>
-        <div class="tone-mid">:focus-visible shows the ring only when a keyboard user would benefit — it's browser-native and handles the heuristic for you.</div>
-        <div class="tone-staff">WCAG 2.2 SC 2.4.11 requires focus indicators with minimum 3:1 contrast ratio and 2px perimeter area — design your focus ring to meet the spec.</div>
+        <div class="tone-junior">Never use outline: none on :focus without a replacement. It makes your site invisible to keyboard users.</div>
+        <div class="tone-mid">:focus-visible shows the ring only when a keyboard user would benefit; it's browser-native and handles the heuristic for you.</div>
+        <div class="tone-staff">WCAG 2.2 SC 2.4.11 requires focus indicators with minimum 3:1 contrast ratio and 2px perimeter area. Design your focus ring to meet the spec.</div>
       </li>
       <li>
-        <div class="tone-junior">Use outline (not border or box-shadow) for focus rings — outline doesn't affect layout and works in Windows High Contrast mode.</div>
-        <div class="tone-mid">outline with border-radius works in Chrome, Firefox, and Safari now — you no longer need box-shadow as a border-radius workaround.</div>
-        <div class="tone-staff">Add :focus-visible to your design system component spec as a first-class token — --focus-ring-color, --focus-ring-width, --focus-ring-offset — not an afterthought.</div>
+        <div class="tone-junior">Use outline (not border or box-shadow) for focus rings. Outline doesn't affect layout and works in Windows High Contrast mode.</div>
+        <div class="tone-mid">outline with border-radius works in Chrome, Firefox, and Safari now, so you no longer need box-shadow as a border-radius workaround.</div>
+        <div class="tone-staff">Add :focus-visible to your design system component spec as a first-class token (--focus-ring-color, --focus-ring-width, --focus-ring-offset), not an afterthought.</div>
       </li>
     </ul>
   </div>

@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "MCP: Host, Client, and Server Roles"
-description: "The three MCP roles explained — which one you build, how they communicate, and why the separation matters for building reliable AI tools."
+description: "The three MCP roles explained: which one you build, how they communicate, and why the separation matters for building reliable AI tools."
 publishedAt: "2026-05-31T00:00:00Z"
 slug: mcp-host-client-server
 track: agent-architecture
@@ -21,13 +21,13 @@ ogImage: https://anmshpndy.com/brand/cases/mcp-host-client-server-og.png
 
 {# ── Chapter: Hook ── #}
 <section class="case-chapter" data-chapter="hook">
-  <h2>Three roles, one protocol — know which one you build</h2>
+  <h2>Three roles, one protocol: know which one you build</h2>
   <div class="tone-junior">
     <p>You read "build an MCP server" in a tutorial. But the MCP docs keep mentioning hosts, clients, and servers. Are they three different things you need to build? Is the server the same as the client? Where does the AI model fit?</p>
-    <p>MCP (Model Context Protocol) defines exactly three roles. You almost certainly only build one of them: the <strong>Server</strong>. The Host is the application the user runs (Claude Desktop, Cursor, an IDE). The Client is the protocol adapter built into the Host. The Server is the part you write — it exposes your tools and data to the model.</p>
+    <p>MCP (Model Context Protocol) defines exactly three roles. You almost certainly only build one of them: the <strong>Server</strong>. The Host is the application the user runs (Claude Desktop, Cursor, an IDE). The Client is the protocol adapter built into the Host. The Server is the part you write: it exposes your tools and data to the model.</p>
   </div>
   <div class="tone-mid">
-    <p>The separation of roles is deliberate. It means: you can write an MCP Server once and have it work with any MCP Host — Claude Desktop today, Cursor tomorrow, a custom agent next week. You don't need to know which model is being used or how the Host works. The protocol is the interface; your Server just needs to implement it.</p>
+    <p>The separation of roles is deliberate. It means: you can write an MCP Server once and have it work with any MCP Host, Claude Desktop today, Cursor tomorrow, a custom agent next week. You don't need to know which model is being used or how the Host works. The protocol is the interface; your Server just needs to implement it.</p>
   </div>
   <div class="tone-staff">
     <p>MCP is built on JSON-RPC 2.0 with two transport options: stdio (for local servers, launched as a subprocess by the Host) and HTTP+SSE (for remote servers, accessed over the network). The transport is pluggable because the protocol layer is defined above it. This is the correct architecture for a protocol designed to work across model providers, IDE integrations, and deployment environments.</p>
@@ -38,12 +38,12 @@ ogImage: https://anmshpndy.com/brand/cases/mcp-host-client-server-og.png
 <section class="case-chapter" data-chapter="concept">
   <h2>The three roles and what they do</h2>
   <div class="tone-junior">
-    <p><strong>Host</strong> — the application the user runs. Manages the model, the conversation, and which MCP Servers to connect. Examples: Claude Desktop, Cursor, VS Code with Copilot. You don't write this unless you're building an AI application from scratch.</p>
-    <p><strong>Client</strong> — lives inside the Host. Handles the JSON-RPC protocol translation between the Host's model calls and the Server's tool responses. You almost never write this — the MCP SDK provides it.</p>
-    <p><strong>Server</strong> — the part you write. Declares tools, resources, and prompts that the model can use. Responds to JSON-RPC requests from the Client. Has no knowledge of the model or the conversation history.</p>
+    <p><strong>Host</strong>: the application the user runs. Manages the model, the conversation, and which MCP Servers to connect. Examples: Claude Desktop, Cursor, VS Code with Copilot. You don't write this unless you're building an AI application from scratch.</p>
+    <p><strong>Client</strong>: lives inside the Host. Handles the JSON-RPC protocol translation between the Host's model calls and the Server's tool responses. You almost never write this; the MCP SDK provides it.</p>
+    <p><strong>Server</strong>: the part you write. Declares tools, resources, and prompts that the model can use. Responds to JSON-RPC requests from the Client. Has no knowledge of the model or the conversation history.</p>
   </div>
   <div class="tone-mid">
-    <p>The tool call flow — how a model uses a tool you built:</p>
+    <p>The tool call flow, how a model uses a tool you built:</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>1. User: "Search the docs for AbortController"
 2. Host sends message to model
 3. Model emits: { type: "tool_use", name: "search_docs", input: { query: "AbortController" } }
@@ -52,7 +52,7 @@ ogImage: https://anmshpndy.com/brand/cases/mcp-host-client-server-og.png
 6. Client wraps result in tool_result format, sends back to Host
 7. Host sends tool_result to model
 8. Model continues generation with search results in context</code></pre>
-    <p>Your Server only participates in steps 5 — the JSON-RPC call. Everything else is the Host and Client.</p>
+    <p>Your Server only participates in steps 5: the JSON-RPC call. Everything else is the Host and Client.</p>
   </div>
   <div class="tone-staff">
     <p>Building an MCP Server with the TypeScript SDK:</p>
@@ -95,10 +95,10 @@ await server.connect(transport);</code></pre>
   <h2>The tool that generated JSON but never ran</h2>
   <div class="tone-junior">
     <p>A developer was building a local AI coding assistant and wanted to add file-write capabilities. They added a tool description to the system prompt: "You have a write_file tool. Call it with path and content parameters." The model dutifully generated JSON like <code>{"tool": "write_file", "path": "src/index.ts", "content": "..."}</code>. The developer pasted the output into their terminal and ran the write manually.</p>
-    <p>When they tried to automate this — have the agent actually write files as part of a loop — nothing happened. The model generated the right JSON, the system prompt said the tool existed, but there was no executor on the other side. The write_file "tool" was a fiction written in English. No server was listening for the JSON the model emitted.</p>
+    <p>When they tried to automate this (have the agent actually write files as part of a loop), nothing happened. The model generated the right JSON, the system prompt said the tool existed, but there was no executor on the other side. The write_file "tool" was a fiction written in English. No server was listening for the JSON the model emitted.</p>
   </div>
   <div class="tone-mid">
-    <p>The confusion was understandable. The model can describe tools, and it can generate tool call JSON when instructed. But generating JSON is not executing a tool. Without an MCP Server — a running process that receives the JSON-RPC call and performs the actual filesystem write — the tool call is a description of intent, not an action. The missing layer was the Server: the process that turns model-generated JSON into real system effects.</p>
+    <p>The confusion was understandable. The model can describe tools, and it can generate tool call JSON when instructed. But generating JSON is not executing a tool. Without an MCP Server (a running process that receives the JSON-RPC call and performs the actual filesystem write), the tool call is a description of intent, not an action. The missing layer was the Server: the process that turns model-generated JSON into real system effects.</p>
   </div>
 </section>
 
@@ -106,11 +106,11 @@ await server.connect(transport);</code></pre>
 <section class="case-chapter" data-chapter="story-2">
   <h2>Separating the description from the execution</h2>
   <div class="tone-junior">
-    <p>The fix was to properly separate the three MCP roles. The Host (in this case, the developer's custom agent runner) manages the conversation and sends messages to the model. The Client (provided by the MCP SDK, embedded in the Host) translates between the model's tool_use format and JSON-RPC calls the Server expects. The Server — a new process they wrote — listens on stdio, receives the write_file call, validates the path, and performs the actual write.</p>
-    <p>Once all three layers existed, the agent loop worked as expected: model emits tool_use, Client routes it to Server, Server writes the file and returns a result, Client passes the tool_result back to the model, the model continues. The key insight was that the model is only responsible for deciding which tool to call and with what arguments — the Server is responsible for execution.</p>
+    <p>The fix was to properly separate the three MCP roles. The Host (in this case, the developer's custom agent runner) manages the conversation and sends messages to the model. The Client (provided by the MCP SDK, embedded in the Host) translates between the model's tool_use format and JSON-RPC calls the Server expects. The Server, a new process they wrote, listens on stdio, receives the write_file call, validates the path, and performs the actual write.</p>
+    <p>Once all three layers existed, the agent loop worked as expected: model emits tool_use, Client routes it to Server, Server writes the file and returns a result, Client passes the tool_result back to the model, the model continues. The key insight was that the model is only responsible for deciding which tool to call and with what arguments; the Server is responsible for execution.</p>
   </div>
   <div class="tone-mid">
-    <p>The correct mental model: the system prompt describes what tools are available (their names, schemas, and descriptions). The MCP Server is what makes those descriptions true. Without the Server, the system prompt is making promises the system cannot keep. An MCP tool is not real until there is a running Server process that implements it — and the Client is what connects the model's intent to the Server's execution.</p>
+    <p>The correct mental model: the system prompt describes what tools are available (their names, schemas, and descriptions). The MCP Server is what makes those descriptions true. Without the Server, the system prompt is making promises the system cannot keep. An MCP tool is not real until there is a running Server process that implements it, and the Client is what connects the model's intent to the Server's execution.</p>
   </div>
 </section>
 
@@ -119,8 +119,8 @@ await server.connect(transport);</code></pre>
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
     <figure>
-      <figcaption>Before — tool "implemented" in system prompt only, no executor</figcaption>
-      <pre><code>// ❌ Tool described in prompt — model generates JSON but nothing runs
+      <figcaption>Before: tool "implemented" in system prompt only, no executor</figcaption>
+      <pre><code>// ❌ Tool described in prompt: model generates JSON but nothing runs
 const systemPrompt = `
 You have access to a write_file tool.
 Call it with: {"tool": "write_file", "path": "...", "content": "..."}
@@ -131,8 +131,8 @@ Call it with: {"tool": "write_file", "path": "...", "content": "..."}
 // No automation possible.</code></pre>
     </figure>
     <figure>
-      <figcaption>After — Host + Client + Server: proper three-layer separation</figcaption>
-      <pre><code>// ✅ MCP Server process — implements the tool with real execution
+      <figcaption>After: Host + Client + Server, proper three-layer separation</figcaption>
+      <pre><code>// ✅ MCP Server process: implements the tool with real execution
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { writeFile } from "node:fs/promises";
@@ -159,7 +159,7 @@ await server.connect(new StdioServerTransport());</code></pre>
 <section class="case-chapter" data-chapter="demo">
   <h2>Watch it: a tool call through all three roles</h2>
   <div class="tone-junior"><p>The animation shows a single tool call flowing through all three roles: the Host sends the user's message to the model → the model emits a tool_use block → the Client routes it to your Server → your Server returns results → the Client passes them back → the model continues.</p></div>
-  <div class="tone-mid"><p>Watch the Client layer in the animation — it's translating between the model's tool_use format and the Server's JSON-RPC interface. This is the protocol adapter work the SDK handles for you. Your Server just gets a clean function call.</p></div>
+  <div class="tone-mid"><p>Watch the Client layer in the animation: it's translating between the model's tool_use format and the Server's JSON-RPC interface. This is the protocol adapter work the SDK handles for you. Your Server just gets a clean function call.</p></div>
   <div class="tone-staff"><p>The initialize handshake (not shown) happens before any tool calls: Host → Client → Server sends an initialize request; Server responds with its capabilities (tools, resources, prompts); Client stores the capability negotiation result. This is where version mismatches between SDK versions surface.</p></div>
 
   <section class="case-demo" aria-label="Watch: tool call through MCP roles" data-required="true" data-demo-type="animation" data-demo-slug="mcp-host-client-server">
@@ -168,10 +168,10 @@ await server.connect(new StdioServerTransport());</code></pre>
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Confused — wrong role</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Clear — three roles</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Confused (wrong role)</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Clear (three roles)</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Clear — three roles</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Clear, three roles</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
       </div>
     </div>
@@ -182,8 +182,8 @@ await server.connect(new StdioServerTransport());</code></pre>
 <section class="case-chapter" data-chapter="fe-depth">
   <h2>Implementation depth</h2>
   <div class="tone-mid">
-    <p>MCP uses JSON-RPC 2.0 as its wire format. Every tool call from the Client to the Server is a JSON-RPC request with <code>method: "tools/call"</code> and params containing the tool name and arguments. The Server responds with a JSON-RPC result containing the tool output. The schema for both is defined in the MCP spec — mismatches between the tool definition schema and the actual arguments the model sends are the most common source of silent failures.</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Tool definition — what the model sees (via ListTools)
+    <p>MCP uses JSON-RPC 2.0 as its wire format. Every tool call from the Client to the Server is a JSON-RPC request with <code>method: "tools/call"</code> and params containing the tool name and arguments. The Server responds with a JSON-RPC result containing the tool output. The schema for both is defined in the MCP spec; mismatches between the tool definition schema and the actual arguments the model sends are the most common source of silent failures.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Tool definition: what the model sees (via ListTools)
 {
   name: "write_file",
   description: "Write content to a file at the specified path",
@@ -208,35 +208,35 @@ await server.connect(new StdioServerTransport());</code></pre>
   <div class="tone-staff">
     <p>Common pitfalls when building MCP Servers:</p>
     <ul>
-      <li><strong>Mixing stdio and HTTP transports</strong> — stdio servers are launched as subprocesses by the Host; HTTP+SSE servers run independently and the Host connects to them by URL. Do not attempt to use both transports in the same server process.</li>
-      <li><strong>Forgetting the initialize handshake</strong> — the Host sends an <code>initialize</code> request before any tool calls. If your server doesn't implement the initialize handler, the Client will hang waiting for capability negotiation to complete.</li>
-      <li><strong>Tool definition vs tool execution drift</strong> — if you add a new tool to the ListTools response but forget the corresponding handler in CallTool, the model will call it and your server returns an error. Keep definitions and handlers co-located.</li>
-      <li><strong>Error propagation</strong> — return JSON-RPC error objects (not thrown exceptions) for tool-level errors. Thrown exceptions in the handler may crash the server process rather than returning a graceful error result to the Client.</li>
+      <li><strong>Mixing stdio and HTTP transports</strong>: stdio servers are launched as subprocesses by the Host; HTTP+SSE servers run independently and the Host connects to them by URL. Do not attempt to use both transports in the same server process.</li>
+      <li><strong>Forgetting the initialize handshake</strong>: the Host sends an <code>initialize</code> request before any tool calls. If your server doesn't implement the initialize handler, the Client will hang waiting for capability negotiation to complete.</li>
+      <li><strong>Tool definition vs tool execution drift</strong>: if you add a new tool to the ListTools response but forget the corresponding handler in CallTool, the model will call it and your server returns an error. Keep definitions and handlers co-located.</li>
+      <li><strong>Error propagation</strong>: return JSON-RPC error objects (not thrown exceptions) for tool-level errors. Thrown exceptions in the handler may crash the server process rather than returning a graceful error result to the Client.</li>
     </ul>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub: expand per case) ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://modelcontextprotocol.io/introduction" rel="noopener noreferrer">MCP — Introduction</a></li>
-      <li><a href="https://modelcontextprotocol.io/docs/concepts/architecture" rel="noopener noreferrer">MCP — Architecture</a></li>
+      <li><a href="https://modelcontextprotocol.io/introduction" rel="noopener noreferrer">MCP: Introduction</a></li>
+      <li><a href="https://modelcontextprotocol.io/docs/concepts/architecture" rel="noopener noreferrer">MCP: Architecture</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://modelcontextprotocol.io/docs/concepts/tools" rel="noopener noreferrer">MCP — Tools</a></li>
+      <li><a href="https://modelcontextprotocol.io/docs/concepts/tools" rel="noopener noreferrer">MCP: Tools</a></li>
       <li><a href="https://spec.modelcontextprotocol.io/" rel="noopener noreferrer">MCP specification</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://modelcontextprotocol.io/docs/concepts/transports" rel="noopener noreferrer">MCP — Transports</a></li>
+      <li><a href="https://modelcontextprotocol.io/docs/concepts/transports" rel="noopener noreferrer">MCP: Transports</a></li>
       <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="noopener noreferrer">OWASP LLM Top 10</a></li>
     </ol>
   </div>
@@ -249,13 +249,13 @@ await server.connect(new StdioServerTransport());</code></pre>
     <ul>
       <li>
         <div class="tone-junior">MCP has three roles: Host (the AI app), Client (the protocol adapter inside the Host), and Server (your tools and data). You almost always only build the Server.</div>
-        <div class="tone-mid">The Server is stateless and declarative — it lists tools and responds to JSON-RPC calls. It has no knowledge of the model, the conversation, or the Host's context. The SDK handles the protocol layer.</div>
+        <div class="tone-mid">The Server is stateless and declarative: it lists tools and responds to JSON-RPC calls. It has no knowledge of the model, the conversation, or the Host's context. The SDK handles the protocol layer.</div>
         <div class="tone-staff">Transport is pluggable: stdio for local subprocess servers, HTTP+SSE for remote servers. The protocol is the same over both transports. Build the logic once, deploy as local or remote based on your security and latency requirements.</div>
       </li>
       <li>
-        <div class="tone-junior">An MCP Server you build today works with any MCP Host — Claude Desktop, Cursor, any compliant application. The protocol is the interface; the model and Host are swappable.</div>
-        <div class="tone-mid">The initialize handshake is where capability negotiation happens. If your SDK version doesn't match the Host's expectations, this is where version mismatch errors surface — check SDK version compatibility first when debugging connection issues.</div>
-        <div class="tone-staff">Security: servers are process-isolated. They can't read the model's context window — only receive explicit tool call inputs. The Host controls server connections and permissions. Design servers to be minimal-privilege: only request the filesystem/network access the tool actually needs.</div>
+        <div class="tone-junior">An MCP Server you build today works with any MCP Host: Claude Desktop, Cursor, any compliant application. The protocol is the interface; the model and Host are swappable.</div>
+        <div class="tone-mid">The initialize handshake is where capability negotiation happens. If your SDK version doesn't match the Host's expectations, this is where version mismatch errors surface, so check SDK version compatibility first when debugging connection issues.</div>
+        <div class="tone-staff">Security: servers are process-isolated. They can't read the model's context window; they only receive explicit tool call inputs. The Host controls server connections and permissions. Design servers to be minimal-privilege: only request the filesystem/network access the tool actually needs.</div>
       </li>
     </ul>
   </div>

@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Keys Are Identity, Not Index"
-description: Why using array index as React key causes subtle input and animation bugs — and what to use instead.
+description: Why using array index as React key causes subtle input and animation bugs, and what to use instead.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: key-prop-identity
 track: react
@@ -26,12 +26,12 @@ ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
   <div class="tone-junior">
     <p>
       You build a to-do list. User types in the first input field. You sort the list alphabetically.
-      The text they typed doesn't move with the item — it stays in the first position.
+      The text they typed doesn't move with the item; it stays in the first position.
       You prepend a new item. All the checked checkboxes shift down by one.
     </p>
     <p>
       The bug isn't in your sort logic. It's in your <code>key</code> prop.
-      You used <code>index</code> as the key — and React thinks the first item is always
+      You used <code>index</code> as the key, and React thinks the first item is always
       the first item, even when the data changes.
     </p>
   </div>
@@ -39,7 +39,7 @@ ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
   <div class="tone-mid">
     <p>
       React uses the <code>key</code> prop as the identifier for a component instance across
-      renders. If an item's key doesn't change, React reuses its DOM node and state — even
+      renders. If an item's key doesn't change, React reuses its DOM node and state, even
       if the item's content changed. Using array index as key means an item's identity is
       its position, not its content.
     </p>
@@ -49,7 +49,7 @@ ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
     <p>
       The reconciliation algorithm is O(n) because it assumes keys are stable across the
       list. When keys are indices, any reorder, insert, or delete at position &lt; end causes
-      React to treat every subsequent element as changed — triggering unnecessary DOM updates
+      React to treat every subsequent element as changed, triggering unnecessary DOM updates
       and discarding existing DOM state (input values, focus, scroll position).
     </p>
   </div>
@@ -63,15 +63,15 @@ ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
     <p>
       React's reconciliation is like comparing two shopping lists. It tries to reuse items
       that already exist rather than rebuild everything from scratch. The <code>key</code>
-      prop is the item's name tag — it tells React "this is the same item as before, just
+      prop is the item's name tag: it tells React "this is the same item as before, just
       update it" vs "this is a new item, create a fresh one."
     </p>
     <p>
       When keys are indices:
     </p>
     <ul>
-      <li>Item at position 0 is always "item 0" — even if a different todo moved there</li>
-      <li>React reuses the input at position 0 — but it now belongs to a different todo</li>
+      <li>Item at position 0 is always "item 0," even if a different todo moved there</li>
+      <li>React reuses the input at position 0, but it now belongs to a different todo</li>
       <li>The user's typed text stays with the position, not the todo item it belongs to</li>
     </ul>
   </div>
@@ -84,9 +84,9 @@ ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
     </p>
     <p>
       With index keys, inserting at position 0 means every subsequent element has a "changed"
-      key — React updates all of them in-place rather than shifting them. Uncontrolled input
+      key; React updates all of them in-place rather than shifting them. Uncontrolled input
       values, CSS transitions in-progress, and scroll positions all belong to the DOM node,
-      not to React state — so they don't follow the data when reused incorrectly.
+      not to React state, so they don't follow the data when reused incorrectly.
     </p>
   </div>
 
@@ -100,12 +100,12 @@ ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
   </div>
 </section>
 
-{# ── Chapter: Story — bad pattern ── #}
+{# ── Chapter: Story - bad pattern ── #}
 <section class="case-chapter" data-chapter="story-1">
   <h2>Three ways index keys bite</h2>
 
   <div class="tone-junior">
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Using index as key — common mistake
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Using index as key: common mistake
 {todos.map((todo, index) => (
   &lt;TodoItem key={index} todo={todo} /&gt;
 ))}</code></pre>
@@ -113,20 +113,20 @@ ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
     <ul>
       <li><strong>Uncontrolled inputs lose their content</strong> when items reorder</li>
       <li><strong>Checkboxes shift</strong> when an item is prepended or inserted</li>
-      <li><strong>Animations break</strong> — enter/exit CSS transitions fire on the wrong element</li>
+      <li><strong>Animations break</strong>: enter/exit CSS transitions fire on the wrong element</li>
     </ul>
   </div>
 
   <div class="tone-mid">
     <p>
       The input value bug is the most confusing because it appears to be a React bug, not
-      a user error. The input IS controlled — but <code>defaultValue</code> on an input
+      a user error. The input IS controlled, but <code>defaultValue</code> on an input
       is only read once at mount. If React reuses the input DOM node (because the key didn't
-      change), the <code>defaultValue</code> doesn't update — the DOM value stays.
+      change), the <code>defaultValue</code> doesn't update: the DOM value stays.
     </p>
     <p>
       The animation bug is harder to see: React reuses the element, so a "new" list item
-      entering never fires a CSS enter animation — React thinks it was there all along.
+      entering never fires a CSS enter animation; React thinks it was there all along.
     </p>
   </div>
 
@@ -134,13 +134,13 @@ ogImage: https://anmshpndy.com/brand/cases/key-prop-identity-og.png
     <p>
       The performance cost: with index keys, any mutation to the list head triggers
       <code>key: 0</code> through <code>key: n-1</code> to all be "changed" keys on
-      subsequent renders — React diffs all of them against the new props even though
+      subsequent renders. React diffs all of them against the new props even though
       most data didn't change. Stable keys allow React to skip unchanged elements entirely.
     </p>
   </div>
 </section>
 
-{# ── Chapter: Story — good pattern ── #}
+{# ── Chapter: Story - good pattern ── #}
 <section class="case-chapter" data-chapter="story-2">
   <h2>Stable, unique keys from your data</h2>
 
@@ -165,19 +165,19 @@ function createTodo(text) {
       What to use as a key:
     </p>
     <ul>
-      <li><strong>Database ID</strong> — always stable, always unique. Best choice.</li>
-      <li><strong>crypto.randomUUID()</strong> — stable within a session; generate once on item creation, not on render.</li>
-      <li><strong>Composite key</strong> — <code>{`${type}-${id}`}</code> when IDs collide across types in the same list.</li>
-      <li><strong>Content hash</strong> — for static, immutable lists with no IDs. Stable as long as content doesn't change.</li>
+      <li><strong>Database ID</strong>: always stable, always unique. Best choice.</li>
+      <li><strong>crypto.randomUUID()</strong>: stable within a session; generate once on item creation, not on render.</li>
+      <li><strong>Composite key</strong>: <code>{`${type}-${id}`}</code> when IDs collide across types in the same list.</li>
+      <li><strong>Content hash</strong>: for static, immutable lists with no IDs. Stable as long as content doesn't change.</li>
     </ul>
     <p>What NOT to use: index, Math.random() on each render, Date.now() on each render.</p>
   </div>
 
   <div class="tone-staff">
     <p>
-      One valid use of index: purely static lists with no reorder, filter, or sort — e.g.
+      One valid use of index: purely static lists with no reorder, filter, or sort, e.g.
       a static navigation menu. Even then, a semantic key is clearer. The lint rule
-      <code>react/no-array-index-key</code> (eslint-plugin-react) flags index keys —
+      <code>react/no-array-index-key</code> (eslint-plugin-react) flags index keys;
       enabling it in your team's config prevents the pattern from accidentally entering codebases.
     </p>
   </div>
@@ -188,7 +188,7 @@ function createTodo(text) {
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
-    <p class="case-ui-strip__label">Annotated example: React list key prop — index vs stable ID</p>
+    <p class="case-ui-strip__label">Annotated example: React list key prop, index vs stable ID</p>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
@@ -215,13 +215,13 @@ function createTodo(text) {
   <h2>Try it: index key vs stable key</h2>
 
   <div class="tone-junior">
-    <p>Type something in the first input. Click "Prepend item." In "Broken" mode, your text stays at position 0 — but the item it was attached to moved. In "Fixed" mode, your text moves with the item.</p>
+    <p>Type something in the first input. Click "Prepend item." In "Broken" mode, your text stays at position 0, but the item it was attached to moved. In "Fixed" mode, your text moves with the item.</p>
   </div>
   <div class="tone-mid">
     <p>Notice the component mount/unmount behavior in fixed mode: prepending creates a new DOM node for the new item, and the existing nodes shift. In broken mode, all nodes are updated in-place.</p>
   </div>
   <div class="tone-staff">
-    <p>Open DevTools Elements panel. Inspect the input elements' "id" attributes before and after prepending. In broken mode you'll see the same DOM nodes reused with different data props — that's the reconciliation reuse in action.</p>
+    <p>Open DevTools Elements panel. Inspect the input elements' "id" attributes before and after prepending. In broken mode you'll see the same DOM nodes reused with different data props: that's the reconciliation reuse in action.</p>
   </div>
 
   <section class="case-demo"
@@ -237,20 +237,20 @@ function createTodo(text) {
     <div class="case-demo__body">
       <noscript>
         <div class="case-demo__noscript">
-          <p><strong>Demo requires JavaScript.</strong> Shows a list with inputs — index key vs stable ID key — and how prepending an item affects input state.</p>
+          <p><strong>Demo requires JavaScript.</strong> Shows a list with inputs, index key vs stable ID key, and how prepending an item affects input state.</p>
         </div>
       </noscript>
 
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
           <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
-            Broken — index key
+            Broken: index key
           </button>
           <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
-            Fixed — stable ID key
+            Fixed: stable ID key
           </button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — stable ID key</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed, stable ID key</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
       </div>
     </div>
@@ -263,10 +263,10 @@ function createTodo(text) {
 
   <div class="tone-junior">
     <p>
-      Keys aren't just for lists — you can use them to intentionally reset a component's
+      Keys aren't just for lists; you can use them to intentionally reset a component's
       state. Change the key → React unmounts old, mounts new → all state resets.
     </p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Reset a form when userId changes — no useEffect needed
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Reset a form when userId changes: no useEffect needed
 &lt;UserProfile key={userId} userId={userId} /&gt;</code></pre>
   </div>
 
@@ -274,7 +274,7 @@ function createTodo(text) {
     <p>
       The key-as-reset trick is cleaner than managing a reset flag in state or firing a
       <code>useEffect</code> to clear fields. It guarantees a fresh mount with no stale
-      state — useful for profile pages, wizard steps, and any "load a different entity"
+      state; useful for profile pages, wizard steps, and any "load a different entity"
       pattern.
     </p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Wizard: each step is a fresh form
@@ -294,7 +294,7 @@ function Wizard({ steps, currentStep }) {
     </p>
     <p>
       Enable <code>react/no-array-index-key</code> in eslint-plugin-react to prevent index
-      keys in codebases. Exception: truly static lists with no mutation — allow only with
+      keys in codebases. Exception: truly static lists with no mutation, allow only with
       inline comment documenting why.
     </p>
   </div>
@@ -307,19 +307,19 @@ function Wizard({ steps, currentStep }) {
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key" rel="noopener noreferrer">React — Keys in lists</a></li>
+      <li><a href="https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key" rel="noopener noreferrer">React: Keys in lists</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://react.dev/reference/react/useId" rel="noopener noreferrer">React — useId</a></li>
-      <li><a href="https://react.dev/learn/preserving-and-resetting-state" rel="noopener noreferrer">React — Preserving state</a></li>
+      <li><a href="https://react.dev/reference/react/useId" rel="noopener noreferrer">React: useId</a></li>
+      <li><a href="https://react.dev/learn/preserving-and-resetting-state" rel="noopener noreferrer">React: Preserving state</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://react.dev/learn/reconciliation" rel="noopener noreferrer">React — Reconciliation</a></li>
-      <li><a href="https://overreacted.io/why-do-react-elements-have-type/" rel="noopener noreferrer">Dan Abramov — Element types</a></li>
+      <li><a href="https://react.dev/learn/reconciliation" rel="noopener noreferrer">React: Reconciliation</a></li>
+      <li><a href="https://overreacted.io/why-do-react-elements-have-type/" rel="noopener noreferrer">Dan Abramov: Element types</a></li>
     </ol>
   </div>
 </section>
@@ -332,19 +332,19 @@ function Wizard({ steps, currentStep }) {
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">React uses key as an item's name tag — same key means "same item, update it"; different key means "new item, mount fresh."</div>
+        <div class="tone-junior">React uses key as an item's name tag: same key means "same item, update it"; different key means "new item, mount fresh."</div>
         <div class="tone-mid">Index keys cause uncontrolled inputs, checkboxes, and animations to stick to position rather than move with their data item.</div>
-        <div class="tone-staff">Index keys degrade reconciliation from O(n) skips to O(n) updates on list mutations — stable keys allow React to skip unchanged items entirely.</div>
+        <div class="tone-staff">Index keys degrade reconciliation from O(n) skips to O(n) updates on list mutations; stable keys allow React to skip unchanged items entirely.</div>
       </li>
       <li>
-        <div class="tone-junior">Use a stable ID from your data as the key — not index, not Math.random(), not Date.now() on each render.</div>
-        <div class="tone-mid">Generate IDs with crypto.randomUUID() at item creation time, not render time — once generated, the ID should never change.</div>
+        <div class="tone-junior">Use a stable ID from your data as the key, not index, not Math.random(), not Date.now() on each render.</div>
+        <div class="tone-mid">Generate IDs with crypto.randomUUID() at item creation time, not render time; once generated, the ID should never change.</div>
         <div class="tone-staff">Enable react/no-array-index-key in your lint config to prevent this pattern at the PR level; document intentional exceptions inline.</div>
       </li>
       <li>
-        <div class="tone-junior">You can intentionally change a key to reset a component's state — this is cleaner than a useEffect reset for "load a new entity" patterns.</div>
-        <div class="tone-mid">key-as-reset is the idiomatic React pattern for wizard steps and profile pages — no useEffect needed to clear form state on entity change.</div>
-        <div class="tone-staff">Key is identity in the reconciliation algorithm — using it as a reset mechanism is leveraging the algorithm's contract, not fighting it.</div>
+        <div class="tone-junior">You can intentionally change a key to reset a component's state. This is cleaner than a useEffect reset for "load a new entity" patterns.</div>
+        <div class="tone-mid">key-as-reset is the idiomatic React pattern for wizard steps and profile pages: no useEffect needed to clear form state on entity change.</div>
+        <div class="tone-staff">Key is identity in the reconciliation algorithm; using it as a reset mechanism is leveraging the algorithm's contract, not fighting it.</div>
       </li>
     </ul>
   </div>

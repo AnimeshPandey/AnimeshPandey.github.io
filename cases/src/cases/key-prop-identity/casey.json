@@ -4,25 +4,25 @@
     {
       "chapter": "hook",
       "junior": "The input-stays-at-position-0 bug is almost always an index key. Your data moved; React's DOM node didn't follow it because the key didn't change.",
-      "mid": "The key prop isn't just a React requirement — it's the identity contract that makes reconciliation O(n) instead of O(n²). It matters at scale.",
+      "mid": "The key prop isn't just a React requirement: it's the identity contract that makes reconciliation O(n) instead of O(n²). It matters at scale.",
       "staff": "Enable react/no-array-index-key lint rule before the next code review. Index keys are the kind of bug that appears subtle in dev and painful in prod."
     },
     {
       "chapter": "demo",
       "junior": "Type your name in the first box before clicking 'Prepend item'. In broken mode your name stays at position 0. In fixed mode it moves with the item. That's the key difference.",
-      "mid": "Open Elements tab while clicking. In broken mode watch the DOM nodes get reused — same elements, updated props. In fixed mode watch the new node enter and existing ones shift.",
-      "staff": "The DOM reuse in broken mode is visible in the Elements panel — no mount animation fires on a node that's reused, even if it now represents a completely different list item."
+      "mid": "Open Elements tab while clicking. In broken mode watch the DOM nodes get reused (same elements, updated props). In fixed mode watch the new node enter and existing ones shift.",
+      "staff": "The DOM reuse in broken mode is visible in the Elements panel: no mount animation fires on a node that's reused, even if it now represents a completely different list item."
     },
     {
       "chapter": "fe-depth",
       "junior": "Changing a key to reset a component is a useful trick! It's cleaner than using useEffect to clear form state when the user switches to a different profile.",
-      "mid": "key-as-reset is idiomatic React — the React docs actually recommend it for profile-switching patterns. It gives you a clean mount/unmount without lifting state.",
-      "staff": "The key contract is: same key = same instance. Anything attached to the instance — state, refs, DOM nodes, uncontrolled input values — follows the key, not the props."
+      "mid": "key-as-reset is idiomatic React: the React docs actually recommend it for profile-switching patterns. It gives you a clean mount/unmount without lifting state.",
+      "staff": "The key contract is: same key = same instance. Anything attached to the instance (state, refs, DOM nodes, uncontrolled input values) follows the key, not the props."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     }
   ],
@@ -30,8 +30,8 @@
     {
       "chapter": "concept",
       "junior": "I once had a drag-and-drop list where dragged items would 'lose' their input content on drop. Fixed by adding stable IDs. Hours of debugging, one-line fix.",
-      "mid": "The animation break is subtle — enter/exit CSS transitions never fire on a reused DOM node. Teams often debug this as a Framer Motion or CSS issue when it's actually key identity.",
-      "staff": "I've seen teams add 'key={Math.random()}' to force re-renders, which works — but creates a new instance every render, defeating any memoization and causing focus loss."
+      "mid": "The animation break is subtle: enter/exit CSS transitions never fire on a reused DOM node. Teams often debug this as a Framer Motion or CSS issue when it's actually key identity.",
+      "staff": "I've seen teams add 'key={Math.random()}' to force re-renders, which works, but creates a new instance every render, defeating any memoization and causing focus loss."
     }
   ],
   "voice": {
@@ -39,21 +39,21 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Hey! Today we're fixing that weird bug where to-do items lose their input text when you reorder the list. It's all about the key prop — promise it's simple once you see it.",
-        "mid": "This case covers React reconciliation and key identity — why index keys cause input, checkbox, and animation bugs, and how to use stable IDs instead.",
+        "junior": "Hey! Today we're fixing that weird bug where to-do items lose their input text when you reorder the list. It's all about the key prop, promise it's simple once you see it.",
+        "mid": "This case covers React reconciliation and key identity: why index keys cause input, checkbox, and animation bugs, and how to use stable IDs instead.",
         "staff": "We're covering the reconciliation algorithm's key contract, performance implications of unstable keys, and the key-as-reset escape hatch pattern."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
         "junior": "Type your name in the first box before clicking 'Prepend item'. In broken mode your name stays at position 0. In fixed mode it moves with the item. That's the key difference.",
-        "mid": "Open Elements tab while clicking. In broken mode watch the DOM nodes get reused — same elements, updated props. In fixed mode watch the new node enter and existing ones shift.",
-        "staff": "The DOM reuse in broken mode is visible in the Elements panel — no mount animation fires on a node that's reused, even if it now represents a completely different list item."
+        "mid": "Open Elements tab while clicking. In broken mode watch the DOM nodes get reused (same elements, updated props). In fixed mode watch the new node enter and existing ones shift.",
+        "staff": "The DOM reuse in broken mode is visible in the Elements panel: no mount animation fires on a node that's reused, even if it now represents a completely different list item."
       },
       {
         "chapter": "takeaway",

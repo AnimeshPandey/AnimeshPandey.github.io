@@ -23,13 +23,13 @@ ogImage: https://anmshpndy.com/brand/cases/fetch-race-abort-og.png
 <section class="case-chapter" data-chapter="hook">
   <h2>The request you can't stop</h2>
   <div class="tone-junior">
-    <p>User navigates to a product page. A large product details fetch starts. They immediately click away to another page. The original fetch is still running — it will complete, call your state setter, and maybe crash the app ("can't update state on unmounted component"). You need to cancel it. <code>AbortController</code> is how.</p>
+    <p>User navigates to a product page. A large product details fetch starts. They immediately click away to another page. The original fetch is still running; it will complete, call your state setter, and maybe crash the app ("can't update state on unmounted component"). You need to cancel it. <code>AbortController</code> is how.</p>
   </div>
   <div class="tone-mid">
     <p>Every fetch request you start should have a cancellation strategy. The two common triggers: (1) the component unmounted before the response arrived, or (2) a new request superseded the old one. Without cancellation, both result in stale-data updates, wasted bandwidth, and potential state corruption.</p>
   </div>
   <div class="tone-staff">
-    <p>This case is the networking companion to the abort-controller-ghost-updates case — focused on the raw fetch pattern without React context. The same AbortController API, applied in vanilla JS, custom hooks, and service layers.</p>
+    <p>This case is the networking companion to the abort-controller-ghost-updates case, focused on the raw fetch pattern without React context. The same AbortController API, applied in vanilla JS, custom hooks, and service layers.</p>
   </div>
 </section>
 
@@ -45,7 +45,7 @@ const res = await fetch('/api/data', { signal: controller.signal });
 
 // 3. Cancel when needed
 controller.abort(); // network connection dropped immediately</code></pre>
-    <p>When <code>abort()</code> is called, the fetch rejects with a <code>DOMException</code> named <code>AbortError</code>. Catch it and return — it's not a real error.</p>
+    <p>When <code>abort()</code> is called, the fetch rejects with a <code>DOMException</code> named <code>AbortError</code>. Catch it and return: it's not a real error.</p>
   </div>
   <div class="tone-mid">
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Complete fetch wrapper with cancellation
@@ -55,8 +55,8 @@ async function fetchWithAbort(url, signal) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
   } catch (err) {
-    if (err.name === 'AbortError') return null; // cancelled — not an error
-    throw err; // real error — re-throw
+    if (err.name === 'AbortError') return null; // cancelled, not an error
+    throw err; // real error, re-throw
   }
 }
 
@@ -74,7 +74,7 @@ async function loadData(id) {
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const controller = new AbortController();
 const { signal } = controller;
 
-// All three requests share one signal — one abort() cancels all
+// All three requests share one signal: one abort() cancels all
 const [user, posts, comments] = await Promise.all([
   fetch('/api/user', { signal }).then(r => r.json()),
   fetch('/api/posts', { signal }).then(r => r.json()),
@@ -87,13 +87,13 @@ const [user, posts, comments] = await Promise.all([
 <section class="case-chapter" data-chapter="story-1">
   <h2>The search that showed the wrong results</h2>
   <div class="tone-junior">
-    <p>David is searching for "react hooks" in a developer docs search box. He types quickly — "r", "re", "rea", "reac", "react", "react ", "react h", "react ho", "react hoo", "react hook", "react hooks". Each keystroke fires a fetch to the search API. Then something strange happens: the results flash to "react" results momentarily, then settle on "react hooks." He types again — same thing. The results briefly show something wrong before correcting. It's disorienting and makes the search feel broken.</p>
+    <p>David is searching for "react hooks" in a developer docs search box. He types quickly: "r", "re", "rea", "reac", "react", "react ", "react h", "react ho", "react hoo", "react hook", "react hooks". Each keystroke fires a fetch to the search API. Then something strange happens: the results flash to "react" results momentarily, then settle on "react hooks." He types again, same thing. The results briefly show something wrong before correcting. It's disorienting and makes the search feel broken.</p>
   </div>
   <div class="tone-mid">
-    <p>What happened technically: each keystroke fired a fetch with no cancellation of the previous request. The network isn't orderly — the response for "react" (a shorter, more cached query) arrived 200ms after the response for "react hooks." JavaScript ran the state update for "react" last, overwriting the "react hooks" results. This is a race condition: two async operations competing to write the same state, where "last to resolve" wins regardless of which request was sent most recently.</p>
+    <p>What happened technically: each keystroke fired a fetch with no cancellation of the previous request. The network isn't orderly; the response for "react" (a shorter, more cached query) arrived 200ms after the response for "react hooks." JavaScript ran the state update for "react" last, overwriting the "react hooks" results. This is a race condition: two async operations competing to write the same state, where "last to resolve" wins regardless of which request was sent most recently.</p>
   </div>
   <div class="tone-staff">
-    <p>This pattern causes invisible data corruption in production. Users rarely report "stale results" explicitly — they just think search is unreliable. It's especially common on: typeahead search, paginated tables with rapid sort/filter changes, and tab-switching that triggers data loads. On slower connections or high-latency APIs, the race window is longer and the bug manifests more frequently. Monitoring won't catch it — the state update succeeds, just with wrong data.</p>
+    <p>This pattern causes invisible data corruption in production. Users rarely report "stale results" explicitly; they just think search is unreliable. It's especially common on: typeahead search, paginated tables with rapid sort/filter changes, and tab-switching that triggers data loads. On slower connections or high-latency APIs, the race window is longer and the bug manifests more frequently. Monitoring won't catch it: the state update succeeds, just with wrong data.</p>
   </div>
 </section>
 
@@ -101,7 +101,7 @@ const [user, posts, comments] = await Promise.all([
 <section class="case-chapter" data-chapter="story-2">
   <h2>Abort the old request before starting the new one</h2>
   <div class="tone-junior">
-    <p>The fix: every time a new search query fires, cancel the previous fetch before starting the new one. <code>AbortController</code> does this — you call <code>abort()</code> on the previous controller, and the browser drops the network connection. The aborted fetch rejects with an <code>AbortError</code>, which you catch and ignore (it's not a real error). Only the most recent fetch can update results.</p>
+    <p>The fix: every time a new search query fires, cancel the previous fetch before starting the new one. <code>AbortController</code> does this: you call <code>abort()</code> on the previous controller, and the browser drops the network connection. The aborted fetch rejects with an <code>AbortError</code>, which you catch and ignore (it's not a real error). Only the most recent fetch can update results.</p>
   </div>
   <div class="tone-mid">
     <p>The team replaced the raw fetch with a controlled pattern:</p>
@@ -120,14 +120,14 @@ async function search(query) {
     const data = await res.json();
     renderResults(data); // only reaches here if not aborted
   } catch (err) {
-    if (err.name === 'AbortError') return; // expected — ignore
+    if (err.name === 'AbortError') return; // expected, ignore
     showError(err); // real network error
   }
 }</code></pre>
-    <p>The race condition was eliminated. Results now always match the most recent query. Open the Network panel — aborted requests show as "cancelled" with a strikethrough, confirming the connection was truly dropped.</p>
+    <p>The race condition was eliminated. Results now always match the most recent query. Open the Network panel: aborted requests show as "cancelled" with a strikethrough, confirming the connection was truly dropped.</p>
   </div>
   <div class="tone-staff">
-    <p>They also added debounce (300ms) on top of the abort pattern — debounce reduces how many requests fire, abort handles the ones that slip through during fast typing. These are complementary tools, not alternatives: debounce reduces API cost, abort guarantees data integrity. Post-fix, they migrated to TanStack Query which handles both automatically via its built-in request cancellation and deduplication. The search component dropped from 80 lines to 20.</p>
+    <p>They also added debounce (300ms) on top of the abort pattern: debounce reduces how many requests fire, abort handles the ones that slip through during fast typing. These are complementary tools, not alternatives: debounce reduces API cost, abort guarantees data integrity. Post-fix, they migrated to TanStack Query which handles both automatically via its built-in request cancellation and deduplication. The search component dropped from 80 lines to 20.</p>
   </div>
 </section>
 
@@ -138,15 +138,15 @@ async function search(query) {
     <p class="case-ui-strip__label">Annotated example: overlapping fetches vs AbortController cancellation</p>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
-        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ RACE CONDITION — LAST RESOLVES WINS</p>
-        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Naive — no cancellation
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ RACE CONDITION: LAST RESOLVES WINS</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Naive: no cancellation
 input.addEventListener('input', async (e) =&gt; {
   const res = await fetch(
     `/api/search?q=${e.target.value}`
   );
   const data = await res.json();
   // BUG: whichever response arrives last
-  // updates the UI — not the latest query
+  // updates the UI, not the latest query
   renderResults(data);
 });
 
@@ -154,11 +154,11 @@ input.addEventListener('input', async (e) =&gt; {
 // t=0ms   fetch("react h")  started
 // t=10ms  fetch("react ho") started
 // t=200ms fetch("react ho") resolves ✓
-// t=300ms fetch("react h")  resolves — OVERWRITES!</code></pre>
+// t=300ms fetch("react h")  resolves: OVERWRITES!</code></pre>
         <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Stale response overwrites fresh results</p>
       </div>
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
-        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ ABORTCONTROLLER — ONLY LATEST WINS</p>
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ ABORTCONTROLLER: ONLY LATEST WINS</p>
         <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>let controller = null;
 
 input.addEventListener('input', async (e) =&gt; {
@@ -180,7 +180,7 @@ input.addEventListener('input', async (e) =&gt; {
 });
 
 // Old requests cancelled in Network panel</code></pre>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Previous fetch aborted — only latest query renders</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Previous fetch aborted; only latest query renders</p>
       </div>
     </div>
   </div>
@@ -188,8 +188,8 @@ input.addEventListener('input', async (e) =&gt; {
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: uncancelled vs cancelled fetch</h2>
-  <div class="tone-junior"><p>Start a slow fetch then immediately click Cancel. "Broken" — the fetch completes and updates state anyway. "Fixed" — the fetch is aborted, no state update, no error.</p></div>
-  <div class="tone-mid"><p>Open the Network panel. "Fixed" shows the request as "cancelled" with a strikethrough — the connection was actually dropped, not just ignored.</p></div>
+  <div class="tone-junior"><p>Start a slow fetch then immediately click Cancel. "Broken": the fetch completes and updates state anyway. "Fixed": the fetch is aborted, no state update, no error.</p></div>
+  <div class="tone-mid"><p>Open the Network panel. "Fixed" shows the request as "cancelled" with a strikethrough; the connection was actually dropped, not just ignored.</p></div>
   <div class="tone-staff"><p>Compare request duration in Network panel: cancelled requests in fixed mode terminate immediately. Broken mode requests run to completion, wasting bandwidth and triggering unnecessary state updates.</p></div>
 
   <section class="case-demo" aria-label="Try it: fetch cancellation" data-required="true" data-demo-type="toggle" data-demo-slug="fetch-race-abort">
@@ -198,10 +198,10 @@ input.addEventListener('input', async (e) =&gt; {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — no cancel</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — AbortController</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken (no cancel)</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed (AbortController)</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — AbortController</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed, AbortController</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
       </div>
     </div>
@@ -221,7 +221,7 @@ const res = await fetch(url, { signal: controller.signal });
 
 // 3. Cancel when needed (new request, component unmount, etc.)
 controller.abort();</code></pre>
-    <p>Key pitfall: <code>AbortError</code> is not a real error — always check <code>err.name === 'AbortError'</code> and return early. Re-throwing it will trigger your global error handler unnecessarily.</p>
+    <p>Key pitfall: <code>AbortError</code> is not a real error; always check <code>err.name === 'AbortError'</code> and return early. Re-throwing it will trigger your global error handler unnecessarily.</p>
   </div>
   <div class="tone-mid">
     <p>React <code>useEffect</code> cleanup is the canonical place to call <code>abort()</code>:</p>
@@ -254,9 +254,9 @@ controller.abort();</code></pre>
     <p>Implementation notes:</p>
     <ul>
       <li><strong>Debounce vs abort</strong>: debounce reduces how often fetch fires (fewer requests); abort ensures stale requests can't corrupt state (data integrity). Use both</li>
-      <li><strong>AbortSignal.timeout(ms)</strong>: creates a signal that auto-aborts after N ms — no controller needed for simple fetch timeouts</li>
-      <li><strong>One signal, many fetches</strong>: pass the same signal to multiple <code>fetch()</code> calls in a <code>Promise.all</code> — one <code>abort()</code> cancels all of them</li>
-      <li><strong>TanStack Query</strong>: passes <code>AbortSignal</code> to query functions automatically in v5 — thread it to <code>fetch()</code> inside your query function</li>
+      <li><strong>AbortSignal.timeout(ms)</strong>: creates a signal that auto-aborts after N ms, no controller needed for simple fetch timeouts</li>
+      <li><strong>One signal, many fetches</strong>: pass the same signal to multiple <code>fetch()</code> calls in a <code>Promise.all</code>; one <code>abort()</code> cancels all of them</li>
+      <li><strong>TanStack Query</strong>: passes <code>AbortSignal</code> to query functions automatically in v5, then thread it to <code>fetch()</code> inside your query function</li>
     </ul>
   </div>
   <div class="tone-staff">
@@ -288,32 +288,32 @@ class ApiService {
     this.#controllers.delete(key);
   }
 }</code></pre>
-    <p>This pattern gives you named cancellation — cancel all "search" requests without affecting "user-profile" requests. Useful in tab-based UIs or wizard flows where navigating away should cancel only the relevant data loads. React Query and SWR provide this at the hook level; the service pattern is for non-React contexts or custom fetch layers below the framework.</p>
+    <p>This pattern gives you named cancellation: cancel all "search" requests without affecting "user-profile" requests. Useful in tab-based UIs or wizard flows where navigating away should cancel only the relevant data loads. React Query and SWR provide this at the hook level; the service pattern is for non-React contexts or custom fetch layers below the framework.</p>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub: expand per case) ── #}
 {# ── Chapter: References ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/fetch" rel="noopener noreferrer">MDN — fetch()</a></li>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">MDN — AbortController</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/fetch" rel="noopener noreferrer">MDN: fetch()</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">MDN: AbortController</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://web.dev/articles/optimizing-web-workers" rel="noopener noreferrer">web.dev — Async patterns</a></li>
+      <li><a href="https://web.dev/articles/optimizing-web-workers" rel="noopener noreferrer">web.dev: Async patterns</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/AbortController" rel="noopener noreferrer">AbortController</a></li>
-      <li><a href="https://stripe.com/blog/idempotent-requests" rel="noopener noreferrer">Stripe — Idempotent requests</a></li>
+      <li><a href="https://stripe.com/blog/idempotent-requests" rel="noopener noreferrer">Stripe: Idempotent requests</a></li>
     </ol>
   </div>
 </section>
@@ -325,13 +325,13 @@ class ApiService {
     <ul>
       <li>
         <div class="tone-junior">Every fetch that can be superseded or outlive its context needs an AbortController. Create controller, pass signal, call abort() on cleanup.</div>
-        <div class="tone-mid">AbortError is not a real error — catch it and return null. Only re-throw non-abort errors to your error handler.</div>
-        <div class="tone-staff">One controller can cancel many parallel fetches — pass the same signal to all fetch calls in a Promise.all to abort the whole batch at once.</div>
+        <div class="tone-mid">AbortError is not a real error: catch it and return null. Only re-throw non-abort errors to your error handler.</div>
+        <div class="tone-staff">One controller can cancel many parallel fetches; pass the same signal to all fetch calls in a Promise.all to abort the whole batch at once.</div>
       </li>
       <li>
-        <div class="tone-junior">AbortSignal.timeout(ms) creates an auto-cancelling signal — no manual controller needed for simple fetch timeouts.</div>
-        <div class="tone-mid">In React useEffect, the cleanup function (return () => ...) is where abort() belongs — it runs on component unmount and on every effect re-run.</div>
-        <div class="tone-staff">TanStack Query v5 passes AbortSignal automatically to query functions — thread it to fetch. SWR does the same. Using these libraries correctly is using AbortController correctly.</div>
+        <div class="tone-junior">AbortSignal.timeout(ms) creates an auto-cancelling signal, no manual controller needed for simple fetch timeouts.</div>
+        <div class="tone-mid">In React useEffect, the cleanup function (return () => ...) is where abort() belongs: it runs on component unmount and on every effect re-run.</div>
+        <div class="tone-staff">TanStack Query v5 passes AbortSignal automatically to query functions, then thread it to fetch. SWR does the same. Using these libraries correctly is using AbortController correctly.</div>
       </li>
     </ul>
   </div>

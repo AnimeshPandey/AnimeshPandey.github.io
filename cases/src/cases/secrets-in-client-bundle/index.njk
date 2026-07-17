@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Secrets in the Client Bundle (Never)
-description: Why API keys in your frontend JavaScript are public keys — and the three patterns that keep secrets on the server where they belong.
+description: Why API keys in your frontend JavaScript are public keys, and the three patterns that keep secrets on the server where they belong.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: secrets-in-client-bundle
 track: security
@@ -27,10 +27,10 @@ ogImage: https://anmshpndy.com/brand/cases/secrets-in-client-bundle-og.png
     <p>Any environment variable that starts with <code>REACT_APP_</code>, <code>VITE_</code>, or <code>NEXT_PUBLIC_</code> is baked into your frontend JavaScript. Anyone can read it. Always.</p>
   </div>
   <div class="tone-mid">
-    <p>Frontend JavaScript is public. Your bundle is served to every browser that visits your site — and it's readable by anyone with DevTools, or by downloading the bundle directly. There is no obfuscation, minification, or encryption that makes a secret safe in client-side code. The only safe place for API keys is the server.</p>
+    <p>Frontend JavaScript is public. Your bundle is served to every browser that visits your site, and it's readable by anyone with DevTools, or by downloading the bundle directly. There is no obfuscation, minification, or encryption that makes a secret safe in client-side code. The only safe place for API keys is the server.</p>
   </div>
   <div class="tone-staff">
-    <p>The class of vulnerability is OWASP A02:2021 — Cryptographic Failures, specifically "transmitting sensitive data in cleartext." The vector: client-side JavaScript is public code. Any "secret" in it is public by definition. Obfuscation is not security; it's security theater that adds minutes of difficulty, not meaningful protection.</p>
+    <p>The class of vulnerability is OWASP A02:2021, Cryptographic Failures, specifically "transmitting sensitive data in cleartext." The vector: client-side JavaScript is public code. Any "secret" in it is public by definition. Obfuscation is not security; it's security theater that adds minutes of difficulty, not meaningful protection.</p>
   </div>
 </section>
 
@@ -38,31 +38,31 @@ ogImage: https://anmshpndy.com/brand/cases/secrets-in-client-bundle-og.png
 <section class="case-chapter" data-chapter="concept">
   <h2>Three patterns that keep secrets on the server</h2>
   <div class="tone-junior">
-    <p><strong>Pattern 1: API proxy (simplest)</strong> — your frontend calls your own backend; your backend calls the third-party API with the key.</p>
+    <p><strong>Pattern 1: API proxy (simplest)</strong>: your frontend calls your own backend; your backend calls the third-party API with the key.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Frontend calls third-party directly with key
 fetch(`https://api.weather.com?key=${process.env.REACT_APP_KEY}`)
 
 // ✅ Frontend calls your proxy; key lives on server
 fetch('/api/weather') // → your server → weather API with key</code></pre>
-    <p><strong>Pattern 2: serverless function</strong> — a Vercel/Netlify/Cloudflare function holds the key and proxies the request. Frontend calls the function URL.</p>
-    <p><strong>Pattern 3: BFF (Backend for Frontend)</strong> — a thin Express/Fastify server routes all third-party API calls, adds auth, and exposes a safe API surface to the frontend.</p>
+    <p><strong>Pattern 2: serverless function</strong>: a Vercel/Netlify/Cloudflare function holds the key and proxies the request. Frontend calls the function URL.</p>
+    <p><strong>Pattern 3: BFF (Backend for Frontend)</strong>: a thin Express/Fastify server routes all third-party API calls, adds auth, and exposes a safe API surface to the frontend.</p>
   </div>
   <div class="tone-mid">
     <p>Which pattern to use:</p>
     <ul>
       <li><strong>Static site (no server)</strong> → serverless function (Vercel API routes, Netlify Functions, Cloudflare Workers)</li>
-      <li><strong>Next.js / Remix</strong> → server-side data fetching (getServerSideProps, loader functions) — key never reaches the client</li>
+      <li><strong>Next.js / Remix</strong> → server-side data fetching (getServerSideProps, loader functions): key never reaches the client</li>
       <li><strong>SPA with existing backend</strong> → add a proxy endpoint to the backend</li>
     </ul>
-    <p>Environment variables without a public prefix (<code>API_KEY</code> vs <code>NEXT_PUBLIC_API_KEY</code>) are server-only — they never enter the bundle. This is the first line of defense.</p>
+    <p>Environment variables without a public prefix (<code>API_KEY</code> vs <code>NEXT_PUBLIC_API_KEY</code>) are server-only; they never enter the bundle. This is the first line of defense.</p>
   </div>
   <div class="tone-staff">
     <p>Additional server-side controls:</p>
     <ul>
-      <li><strong>Key rotation</strong> — treat any leaked key as permanently compromised; rotate immediately</li>
-      <li><strong>Rate limiting on your proxy</strong> — even if someone discovers your proxy endpoint, rate limiting caps abuse</li>
-      <li><strong>Allowlist origins</strong> — configure the third-party API to only accept requests from your server IP (not client IPs)</li>
-      <li><strong>Secret scanning in CI</strong> — tools like Gitleaks or GitHub's secret scanning detect keys in code before they ship</li>
+      <li><strong>Key rotation</strong>: treat any leaked key as permanently compromised; rotate immediately</li>
+      <li><strong>Rate limiting on your proxy</strong>: even if someone discovers your proxy endpoint, rate limiting caps abuse</li>
+      <li><strong>Allowlist origins</strong>: configure the third-party API to only accept requests from your server IP (not client IPs)</li>
+      <li><strong>Secret scanning in CI</strong>: tools like Gitleaks or GitHub's secret scanning detect keys in code before they ship</li>
     </ul>
   </div>
 </section>
@@ -72,11 +72,11 @@ fetch('/api/weather') // → your server → weather API with key</code></pre>
 <section class="case-chapter" data-chapter="story-1">
   <h2>The Stripe secret key in production JavaScript</h2>
   <div class="tone-junior">
-    <p>A startup built a Next.js checkout flow. The developer was new to the Stripe API and confused the publishable key (safe for the browser) with the secret key (never for the browser). They set <code>NEXT_PUBLIC_STRIPE_KEY=sk_live_...</code> in their environment file and used it in a client component to initialise a custom Stripe request. The app worked correctly in development and production — Stripe accepted the secret key from client calls.</p>
-    <p>Three weeks after launch, the Stripe account received a fraud alert: the secret key had been used to create test charges and enumerate customer data from a different IP. A security researcher had downloaded the production JS bundle, searched for "sk_live" using browser DevTools, and found the key in under two minutes. The startup's entire Stripe account — customer cards, charge history, refund ability — was accessible to anyone with the key.</p>
+    <p>A startup built a Next.js checkout flow. The developer was new to the Stripe API and confused the publishable key (safe for the browser) with the secret key (never for the browser). They set <code>NEXT_PUBLIC_STRIPE_KEY=sk_live_...</code> in their environment file and used it in a client component to initialise a custom Stripe request. The app worked correctly in development and production, and Stripe accepted the secret key from client calls.</p>
+    <p>Three weeks after launch, the Stripe account received a fraud alert: the secret key had been used to create test charges and enumerate customer data from a different IP. A security researcher had downloaded the production JS bundle, searched for "sk_live" using browser DevTools, and found the key in under two minutes. The startup's entire Stripe account (customer cards, charge history, refund ability) was accessible to anyone with the key.</p>
   </div>
   <div class="tone-mid">
-    <p>The key was visible in the bundle because <code>NEXT_PUBLIC_</code> prefix is Next.js's explicit signal to bake a variable into client-side code. The developer used the prefix without understanding what it meant. The minifier did not obfuscate the key value. Any string literal baked into a JavaScript bundle at build time is visible in the shipped file — there is no transformation that makes it a secret.</p>
+    <p>The key was visible in the bundle because <code>NEXT_PUBLIC_</code> prefix is Next.js's explicit signal to bake a variable into client-side code. The developer used the prefix without understanding what it meant. The minifier did not obfuscate the key value. Any string literal baked into a JavaScript bundle at build time is visible in the shipped file; there is no transformation that makes it a secret.</p>
   </div>
 </section>
 
@@ -85,7 +85,7 @@ fetch('/api/weather') // → your server → weather API with key</code></pre>
   <h2>Secret keys belong exclusively in API routes</h2>
   <div class="tone-junior">
     <p>The fix was a complete separation: the Stripe secret key moved to an API route (<code>/api/create-payment-intent</code>). The client component calls the API route with the cart total and receives a payment intent client secret in response. The client then uses the Stripe publishable key (genuinely safe to expose) to confirm the payment. The secret key never appears in any client-side code or any bundle.</p>
-    <p>The correct environment variable convention: <code>STRIPE_SECRET_KEY</code> (no prefix) is server-only — Next.js never includes it in client bundles. <code>NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code> (with prefix) is safe to expose because Stripe publishable keys are designed to be public. The names encode their own security model once you understand the prefix convention.</p>
+    <p>The correct environment variable convention: <code>STRIPE_SECRET_KEY</code> (no prefix) is server-only, so Next.js never includes it in client bundles. <code>NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code> (with prefix) is safe to expose because Stripe publishable keys are designed to be public. The names encode their own security model once you understand the prefix convention.</p>
   </div>
   <div class="tone-mid">
     <p>The pattern generalises: any third-party API key that grants write access, billing access, or data access is a secret key. Only read-only, rate-limited, domain-restricted keys designed for client use should go into the browser. When in doubt, assume a key is secret and proxy it through your server. The proxy adds one network hop; a leaked secret key adds unlimited liability.</p>
@@ -97,11 +97,11 @@ fetch('/api/weather') // → your server → weather API with key</code></pre>
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
     <figure>
-      <figcaption>Before — secret key in client component, visible in bundle</figcaption>
+      <figcaption>Before: secret key in client component, visible in bundle</figcaption>
       <pre><code>// ❌ .env.local (or .env)
 NEXT_PUBLIC_STRIPE_KEY=sk_live_abc123secret
 
-// ❌ ClientComponent.tsx — key baked into JS bundle at build time
+// ❌ ClientComponent.tsx: key baked into JS bundle at build time
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_KEY!);
 
@@ -111,8 +111,8 @@ export async function createPaymentIntent(amount: number) {
 }</code></pre>
     </figure>
     <figure>
-      <figcaption>After — secret key in API route only; client calls the API route</figcaption>
-      <pre><code>// ✅ .env.local — no NEXT_PUBLIC_ prefix: server-only
+      <figcaption>After: secret key in API route only; client calls the API route</figcaption>
+      <pre><code>// ✅ .env.local, no NEXT_PUBLIC_ prefix: server-only
 STRIPE_SECRET_KEY=sk_live_abc123secret
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xyz789public
 
@@ -128,7 +128,7 @@ export async function POST(req: Request) {
   return Response.json({ clientSecret: intent.client_secret });
 }
 
-// ✅ ClientComponent.tsx — only publishable key reaches browser
+// ✅ ClientComponent.tsx: only publishable key reaches browser
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);</code></pre>
     </figure>
   </div>
@@ -136,8 +136,8 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: exposed vs proxied key</h2>
-  <div class="tone-junior"><p>Open DevTools → Sources → search for "KEY" in the "Broken" bundle. You'll find the fake key in plain text. The "Fixed" version makes the same API call through a proxy — no key in the bundle.</p></div>
-  <div class="tone-mid"><p>Open DevTools Network → compare the request URLs. Broken: the key is a query parameter visible in the URL (and in server logs). Fixed: request goes to /api/proxy — key is on the server.</p></div>
+  <div class="tone-junior"><p>Open DevTools → Sources → search for "KEY" in the "Broken" bundle. You'll find the fake key in plain text. The "Fixed" version makes the same API call through a proxy: no key in the bundle.</p></div>
+  <div class="tone-mid"><p>Open DevTools Network → compare the request URLs. Broken: the key is a query parameter visible in the URL (and in server logs). Fixed: request goes to /api/proxy, key is on the server.</p></div>
   <div class="tone-staff"><p>Run strings on the minified bundle (cat bundle.js | grep -o 'KEY[^&]*'). Even in production builds with dead-code elimination, environment-variable substitution bakes the key into the output at build time.</p></div>
 
   <section class="case-demo" aria-label="Try it: exposed vs proxied secret" data-required="true" data-demo-type="toggle" data-demo-slug="secrets-in-client-bundle">
@@ -146,10 +146,10 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — key in bundle</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — proxy pattern</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken: key in bundle</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed: proxy pattern</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — proxy pattern</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed, proxy pattern</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
       </div>
     </div>
@@ -161,12 +161,12 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
   <h2>Implementation depth</h2>
   <div class="tone-mid">
     <p>Bundle analysis is the most direct way to verify secrets are not in your client code. <code>source-map-explorer</code> and <code>@next/bundle-analyzer</code> both produce treemap views of your bundle contents. To check specifically for secrets, run <code>strings</code> on the production bundle output or search the built JS files for known key prefixes:</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code># Build and inspect — check that no secret key patterns appear
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code># Build and inspect: check that no secret key patterns appear
 npm run build
 
 # Search the built client JS for Stripe secret key prefix
 grep -r "sk_live\|sk_test" .next/static/ 2&gt;/dev/null
-# Should return nothing — if it returns a match, a secret is in the bundle
+# Should return nothing; if it returns a match, a secret is in the bundle
 
 # Alternatively, scan for any .env variable names
 grep -r "MY_SECRET_KEY\|DATABASE_URL\|PRIVATE_" .next/static/</code></pre>
@@ -174,36 +174,36 @@ grep -r "MY_SECRET_KEY\|DATABASE_URL\|PRIVATE_" .next/static/</code></pre>
   <div class="tone-staff">
     <p>Defence in depth for API key security:</p>
     <ul>
-      <li><strong>Secret scanning in CI</strong> — tools like Gitleaks, truffleHog, or GitHub's native secret scanning detect key patterns in committed code and build artifacts. Add as a required CI check. Treat any key found in git history as permanently compromised — rotation is required even if the commit was reverted.</li>
-      <li><strong>Environment variable prefixing conventions</strong> — <code>NEXT_PUBLIC_</code> (Next.js), <code>VITE_</code> (Vite), <code>REACT_APP_</code> (CRA) all signal "safe to expose." Variables without these prefixes are server-only. Never use a public prefix for a secret key, even if it seems convenient.</li>
-      <li><strong>Rate-limit proxy endpoints</strong> — even with server-side key storage, your proxy endpoint is a public surface. Add rate limiting (per-user or per-IP) so that a compromised user session cannot use your proxy to make unlimited third-party API calls on your behalf.</li>
-      <li><strong>API key scoping</strong> — most APIs allow creating keys with restricted permissions. Create Stripe restricted keys with only the permissions your server needs. A read-only webhook validation key should not also have permission to initiate refunds.</li>
+      <li><strong>Secret scanning in CI</strong>: tools like Gitleaks, truffleHog, or GitHub's native secret scanning detect key patterns in committed code and build artifacts. Add as a required CI check. Treat any key found in git history as permanently compromised; rotation is required even if the commit was reverted.</li>
+      <li><strong>Environment variable prefixing conventions</strong>: <code>NEXT_PUBLIC_</code> (Next.js), <code>VITE_</code> (Vite), <code>REACT_APP_</code> (CRA) all signal "safe to expose." Variables without these prefixes are server-only. Never use a public prefix for a secret key, even if it seems convenient.</li>
+      <li><strong>Rate-limit proxy endpoints</strong>: even with server-side key storage, your proxy endpoint is a public surface. Add rate limiting (per-user or per-IP) so that a compromised user session cannot use your proxy to make unlimited third-party API calls on your behalf.</li>
+      <li><strong>API key scoping</strong>: most APIs allow creating keys with restricted permissions. Create Stripe restricted keys with only the permissions your server needs. A read-only webhook validation key should not also have permission to initiate refunds.</li>
     </ul>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub, expand per case) ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
       <li><a href="https://owasp.org/www-project-top-ten/" rel="noopener noreferrer">OWASP Top 10</a></li>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security" rel="noopener noreferrer">MDN — Web security</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/Security" rel="noopener noreferrer">MDN: Web security</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html" rel="noopener noreferrer">OWASP — HTML5 security</a></li>
-      <li><a href="https://webpack.js.org/guides/production/" rel="noopener noreferrer">webpack — Production</a></li>
+      <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html" rel="noopener noreferrer">OWASP: HTML5 security</a></li>
+      <li><a href="https://webpack.js.org/guides/production/" rel="noopener noreferrer">webpack: Production</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
       <li><a href="https://owasp.org/www-project-api-security/" rel="noopener noreferrer">OWASP API Security Top 10</a></li>
-      <li><a href="https://web.dev/articles/secure-app-with-audits" rel="noopener noreferrer">web.dev — Security audits</a></li>
+      <li><a href="https://web.dev/articles/secure-app-with-audits" rel="noopener noreferrer">web.dev: Security audits</a></li>
     </ol>
   </div>
 </section>
@@ -215,12 +215,12 @@ grep -r "MY_SECRET_KEY\|DATABASE_URL\|PRIVATE_" .next/static/</code></pre>
     <ul>
       <li>
         <div class="tone-junior">REACT_APP_*, VITE_*, and NEXT_PUBLIC_* variables are baked into your JavaScript. They're public. Never put real secrets in them.</div>
-        <div class="tone-mid">The proxy pattern is the fundamental fix: your frontend calls your backend, your backend calls the third-party API with the key — key never reaches the client.</div>
-        <div class="tone-staff">Add Gitleaks or GitHub secret scanning to CI — catch keys before they ship. Treat any key committed to git or shipped in a bundle as permanently compromised.</div>
+        <div class="tone-mid">The proxy pattern is the fundamental fix: your frontend calls your backend, your backend calls the third-party API with the key, and the key never reaches the client.</div>
+        <div class="tone-staff">Add Gitleaks or GitHub secret scanning to CI to catch keys before they ship. Treat any key committed to git or shipped in a bundle as permanently compromised.</div>
       </li>
       <li>
-        <div class="tone-junior">Serverless functions (Vercel API routes, Netlify Functions) are the easiest proxy for static sites — no full backend needed.</div>
-        <div class="tone-mid">In Next.js, use server-side data fetching (Server Components, getServerSideProps) — the API key is only used server-side and never serialized to the client.</div>
+        <div class="tone-junior">Serverless functions (Vercel API routes, Netlify Functions) are the easiest proxy for static sites; no full backend needed.</div>
+        <div class="tone-mid">In Next.js, use server-side data fetching (Server Components, getServerSideProps): the API key is only used server-side and never serialized to the client.</div>
         <div class="tone-staff">Defense in depth: rotate leaked keys immediately, rate-limit proxy endpoints, and configure third-party APIs to allowlist only your server IP.</div>
       </li>
     </ul>

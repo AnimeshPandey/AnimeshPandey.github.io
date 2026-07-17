@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Cognitive Load and Error Recovery UX
-description: "Why error summaries at the top of forms are cruel — and how inline errors with actionable copy reduce recovery time by 60%."
+description: "Why error summaries at the top of forms are cruel, and how inline errors with actionable copy reduce recovery time by 60%."
 publishedAt: "2026-06-01T00:00:00Z"
 slug: cognitive-load-error-recovery
 track: psychology-perception
@@ -23,14 +23,14 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
 <section class="case-chapter" data-chapter="hook">
   <h2>Four errors at the top, zero idea where to fix them</h2>
   <div class="tone-junior">
-    <p>A checkout form showed all validation errors in a red summary box at the top of the page on submit. The box listed: "Email is invalid. Phone number is required. Card number is incorrect format. Billing address required." The user who submitted the form had just filled in 12 fields. Their working memory was empty — everything they'd typed was now "saved" in the form.</p>
-    <p>Reading the error box meant re-loading 4 new facts into working memory, then scrolling down to find each of the 4 fields, then reinterpreting what they'd entered, then fixing each one. Support called it "form rage." Switching to inline errors — red text appearing immediately below the offending field — cut form-related support tickets by 60%.</p>
+    <p>A checkout form showed all validation errors in a red summary box at the top of the page on submit. The box listed: "Email is invalid. Phone number is required. Card number is incorrect format. Billing address required." The user who submitted the form had just filled in 12 fields. Their working memory was empty; everything they'd typed was now "saved" in the form.</p>
+    <p>Reading the error box meant re-loading 4 new facts into working memory, then scrolling down to find each of the 4 fields, then reinterpreting what they'd entered, then fixing each one. Support called it "form rage." Switching to inline errors (red text appearing immediately below the offending field) cut form-related support tickets by 60%.</p>
   </div>
   <div class="tone-mid">
-    <p>Cognitive Load Theory (John Sweller, 1988) distinguishes three types of load: intrinsic (the task itself — filling in the form), extraneous (caused by poor UI design — finding and interpreting errors), and germane (learning and understanding). Error messages are extraneous load — they redirect working memory from the goal to debugging the UI. Inline errors reduce extraneous load by presenting the error adjacent to the cause.</p>
+    <p>Cognitive Load Theory (John Sweller, 1988) distinguishes three types of load: intrinsic (the task itself, filling in the form), extraneous (caused by poor UI design, finding and interpreting errors), and germane (learning and understanding). Error messages are extraneous load: they redirect working memory from the goal to debugging the UI. Inline errors reduce extraneous load by presenting the error adjacent to the cause.</p>
   </div>
   <div class="tone-staff">
-    <p>The two distinct sub-problems in error recovery: <strong>discoverability</strong> (user notices an error exists) and <strong>actionability</strong> (user knows how to fix it). A red border fails discoverability on mobile (color alone is insufficient per WCAG 1.4.1). "Invalid email" fails actionability — it describes the problem but doesn't prescribe the fix. "Enter a valid email like name@example.com" solves both.</p>
+    <p>The two distinct sub-problems in error recovery: <strong>discoverability</strong> (user notices an error exists) and <strong>actionability</strong> (user knows how to fix it). A red border fails discoverability on mobile (color alone is insufficient per WCAG 1.4.1). "Invalid email" fails actionability, since it describes the problem but doesn't prescribe the fix. "Enter a valid email like name@example.com" solves both.</p>
   </div>
 </section>
 
@@ -38,7 +38,7 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
 <section class="case-chapter" data-chapter="concept">
   <h2>The inline error pattern</h2>
   <div class="tone-junior">
-    <p>The pattern: validate on blur (when the user leaves a field), not on submit and not on every keystroke. Validating on submit is too late — the user has lost context. Validating on keystroke is too aggressive — it marks fields invalid before the user has had a chance to finish typing.</p>
+    <p>The pattern: validate on blur (when the user leaves a field), not on submit and not on every keystroke. Validating on submit is too late, since the user has lost context. Validating on keystroke is too aggressive: it marks fields invalid before the user has had a chance to finish typing.</p>
 {% raw %}<pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>function EmailField() {
   const [error, setError] = useState('');
 
@@ -66,25 +66,25 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
     &lt;/div&gt;
   );
 }</code></pre>{% endraw %}
-    <p>The <code>aria-invalid</code> and <code>aria-describedby</code> attributes link the error to the field for screen readers — visual proximity isn't enough for non-visual users.</p>
+    <p>The <code>aria-invalid</code> and <code>aria-describedby</code> attributes link the error to the field for screen readers; visual proximity isn't enough for non-visual users.</p>
   </div>
   <div class="tone-mid">
     <p>Actionable error copy follows a simple pattern: describe what's wrong + provide an example of what's right.</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Non-actionable errors — describe the violation, not the fix
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ Non-actionable errors: describe the violation, not the fix
 'Invalid email'
 'Phone number format incorrect'
 'This field is required'
 
-// ✅ Actionable errors — describe + prescribe
+// ✅ Actionable errors: describe + prescribe
 'Enter a valid email like name@example.com'
 'Enter a 10-digit phone number like 9876543210'
 'Your name is required to complete your order'
 
 // Pattern: [what to do] + [example/reason]</code></pre>
-    <p>The reason/example component is the key difference — users know what they did wrong (the form rejected their input) but need to know exactly what "correct" looks like.</p>
+    <p>The reason/example component is the key difference: users know what they did wrong (the form rejected their input) but need to know exactly what "correct" looks like.</p>
   </div>
   <div class="tone-staff">
-    <p>The API contract matters for error recovery quality. A 422 response with <code>{ field: 'email', code: 'ALREADY_EXISTS', message: 'An account with this email already exists. Try signing in instead.' }</code> enables a precise, actionable inline error. A generic 500 with no field mapping forces a top-level "Something went wrong" — the API design failure pays its cost in UX.</p>
+    <p>The API contract matters for error recovery quality. A 422 response with <code>{ field: 'email', code: 'ALREADY_EXISTS', message: 'An account with this email already exists. Try signing in instead.' }</code> enables a precise, actionable inline error. A generic 500 with no field mapping forces a top-level "Something went wrong," and the API design failure pays its cost in UX.</p>
     <p>When you must show a top-level error (generic server failure), anchor focus to the error and include a recovery path: "We couldn't save your changes. <a href='#retry'>Try again</a>, or <a href='/contact'>contact support</a> if this continues." A top-level error with no recovery path is a dead end.</p>
   </div>
 </section>
@@ -94,28 +94,28 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
 <section class="case-chapter" data-chapter="story-1">
   <h2>The checkout that just said "Error 422"</h2>
   <div class="tone-junior">
-    <p>Priya spent ten minutes filling out a checkout form — name, address, card number, everything. She hit "Place Order." The page reloaded and a red box at the top read: <strong>Error 422.</strong> That's all. No field highlighted. No explanation. No suggestion for what to do next.</p>
+    <p>Priya spent ten minutes filling out a checkout form: name, address, card number, everything. She hit "Place Order." The page reloaded and a red box at the top read: <strong>Error 422.</strong> That's all. No field highlighted. No explanation. No suggestion for what to do next.</p>
     <p>She scrolled up and down looking for something wrong. Nothing looked wrong to her. She tried submitting again. Same message. She closed the tab and bought from a competitor. The session recording showed 23 other users doing exactly the same thing that week.</p>
   </div>
   <div class="tone-mid">
-    <p>The technical cause: a server-side 422 Unprocessable Entity fired because the card number failed a Luhn check. But the frontend swallowed the API error body and displayed only the HTTP status code. No field was marked invalid, no message was rendered inline, and no action was offered. The error was correct at the API layer — the failure was purely in the UI's error-handling contract.</p>
+    <p>The technical cause: a server-side 422 Unprocessable Entity fired because the card number failed a Luhn check. But the frontend swallowed the API error body and displayed only the HTTP status code. No field was marked invalid, no message was rendered inline, and no action was offered. The error was correct at the API layer; the failure was purely in the UI's error-handling contract.</p>
   </div>
   <div class="tone-staff">
-    <p>In production analytics, "Error 422" checkout abandonment had been logged as "payment failure" — masking the UX root cause in the data. The real failure rate was 18% of checkout attempts. Because no error-specific funnel existed, the team had spent two quarters investigating payment provider issues instead of the display layer. The systemic lesson: vague error messages corrupt your analytics as much as they frustrate your users.</p>
+    <p>In production analytics, "Error 422" checkout abandonment had been logged as "payment failure," masking the UX root cause in the data. The real failure rate was 18% of checkout attempts. Because no error-specific funnel existed, the team had spent two quarters investigating payment provider issues instead of the display layer. The systemic lesson: vague error messages corrupt your analytics as much as they frustrate your users.</p>
   </div>
 </section>
 
 <section class="case-chapter" data-chapter="story-2">
   <h2>The message that showed exactly what to do</h2>
   <div class="tone-junior">
-    <p>After the redesign, the same card failure scenario showed a message directly below the card number field: <strong>"Your card was declined. Try a different card or contact your bank."</strong> Below the message, a button: "Try a different card." The field was highlighted with a red border and an error icon — not just color alone.</p>
+    <p>After the redesign, the same card failure scenario showed a message directly below the card number field: <strong>"Your card was declined. Try a different card or contact your bank."</strong> Below the message, a button: "Try a different card." The field was highlighted with a red border and an error icon, not just color alone.</p>
     <p>Priya's scenario now resolved in under 30 seconds. She saw the message, understood what happened, switched to her other card, and completed the purchase. Support tickets for checkout errors dropped 60% in the first month.</p>
   </div>
   <div class="tone-mid">
-    <p>The fix involved two changes: (1) the API contract was updated to return structured errors — <code>{ field: "cardNumber", code: "CARD_DECLINED", message: "Your card was declined. Try a different card or contact your bank." }</code>; (2) the frontend error handler mapped field codes to inline error placement with ARIA attributes. Neither change alone would have worked — the UX fix required both the API signal and the rendering logic.</p>
+    <p>The fix involved two changes: (1) the API contract was updated to return structured errors, namely <code>{ field: "cardNumber", code: "CARD_DECLINED", message: "Your card was declined. Try a different card or contact your bank." }</code>; (2) the frontend error handler mapped field codes to inline error placement with ARIA attributes. Neither change alone would have worked; the UX fix required both the API signal and the rendering logic.</p>
   </div>
   <div class="tone-staff">
-    <p>Post-fix measurement: median error-to-resubmit time fell from 94 seconds to 18 seconds. The funnel now had an "error recovery" step tracked separately from "payment failure." The analytics improvement was as valuable as the UX improvement — teams could now distinguish card-declined-recovered from card-declined-abandoned, enabling targeted recovery flows like "try saved card" suggestions on repeat declines.</p>
+    <p>Post-fix measurement: median error-to-resubmit time fell from 94 seconds to 18 seconds. The funnel now had an "error recovery" step tracked separately from "payment failure." The analytics improvement was as valuable as the UX improvement: teams could now distinguish card-declined-recovered from card-declined-abandoned, enabling targeted recovery flows like "try saved card" suggestions on repeat declines.</p>
   </div>
 </section>
 
@@ -154,8 +154,8 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: summary errors vs inline errors</h2>
   <div class="tone-junior"><p>Fill out both forms incompletely and hit submit. The "Summary" mode shows all errors at the top in a red box. The "Inline" mode shows errors directly below the offending field. Notice how much easier it is to find and fix errors in the inline version.</p></div>
-  <div class="tone-mid"><p>The demo measures time-to-successful-resubmit from the first failed submit attempt. Inline errors are typically 55–70% faster on recovery — users don't need to context-switch between the error list and the fields.</p></div>
-  <div class="tone-staff"><p>Pay attention to the error copy in both modes. The summary mode uses short labels ("Invalid email"). The inline mode uses actionable copy with examples. Even if both were inline, the actionable copy would be faster — discoverability and actionability are separate dimensions.</p></div>
+  <div class="tone-mid"><p>The demo measures time-to-successful-resubmit from the first failed submit attempt. Inline errors are typically 55–70% faster on recovery, since users don't need to context-switch between the error list and the fields.</p></div>
+  <div class="tone-staff"><p>Pay attention to the error copy in both modes. The summary mode uses short labels ("Invalid email"). The inline mode uses actionable copy with examples. Even if both were inline, the actionable copy would be faster, since discoverability and actionability are separate dimensions.</p></div>
 
   <section class="case-demo" aria-label="Try it: summary vs inline form errors" data-required="true" data-demo-type="toggle" data-demo-slug="cognitive-load-error-recovery">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -163,10 +163,10 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Summary — errors at top</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Inline — errors on blur</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Summary: errors at top</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Inline: errors on blur</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Inline — errors on blur</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Inline, errors on blur</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
       </div>
     </div>
@@ -203,9 +203,9 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
     <p>In React Hook Form, wire inline errors through the <code>errors</code> object from <code>useFormState</code> and display them in a consistent <code>&lt;FieldError&gt;</code> component. Four implementation rules:</p>
     <ol>
       <li><strong>Validate on blur, not change.</strong> Use <code>mode: 'onBlur'</code> in <code>useForm</code>. <code>mode: 'onChange'</code> marks fields invalid before the user finishes typing.</li>
-      <li><strong>Revalidate on change after first blur.</strong> Use <code>reValidateMode: 'onChange'</code> so the error clears as soon as the user fixes it — don't wait for another blur.</li>
-      <li><strong>Keep error IDs stable.</strong> Use <code>id={`${fieldName}-error`}</code> consistently — <code>aria-describedby</code> must match the exact error element ID.</li>
-      <li><strong>Server errors need manual setError.</strong> Call <code>setError('cardNumber', { message: data.message })</code> from your API error handler — React Hook Form doesn't automatically handle server-returned field errors.</li>
+      <li><strong>Revalidate on change after first blur.</strong> Use <code>reValidateMode: 'onChange'</code> so the error clears as soon as the user fixes it; don't wait for another blur.</li>
+      <li><strong>Keep error IDs stable.</strong> Use <code>id={`${fieldName}-error`}</code> consistently: <code>aria-describedby</code> must match the exact error element ID.</li>
+      <li><strong>Server errors need manual setError.</strong> Call <code>setError('cardNumber', { message: data.message })</code> from your API error handler, since React Hook Form doesn't automatically handle server-returned field errors.</li>
     </ol>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const { register, formState: { errors }, setError } = useForm({
   mode: 'onBlur',
@@ -216,33 +216,33 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
 // setError('cardNumber', { message: apiError.message });</code></pre>
   </div>
   <div class="tone-staff">
-    <p>At design system scale, error messages need a typed contract between API and UI. The API should return a structured error schema: <code>{ errors: [{ field: string, code: string, message: string }] }</code>. The UI maps <code>field</code> to a form field name and renders <code>message</code> inline. This contract prevents the "something went wrong" fallback from being the only error state. Enforce the contract with a shared TypeScript type in a monorepo package, and write a Zod schema for runtime validation at the API boundary. For lint tooling, add an ESLint rule (or Biome custom rule) that warns when <code>aria-describedby</code> is set without a corresponding element ID — this catches the most common ARIA wiring mistake at authoring time.</p>
+    <p>At design system scale, error messages need a typed contract between API and UI. The API should return a structured error schema: <code>{ errors: [{ field: string, code: string, message: string }] }</code>. The UI maps <code>field</code> to a form field name and renders <code>message</code> inline. This contract prevents the "something went wrong" fallback from being the only error state. Enforce the contract with a shared TypeScript type in a monorepo package, and write a Zod schema for runtime validation at the API boundary. For lint tooling, add an ESLint rule (or Biome custom rule) that warns when <code>aria-describedby</code> is set without a corresponding element ID. This catches the most common ARIA wiring mistake at authoring time.</p>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub, expand per case) ── #}
 {# ── Chapter: References ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://www.nngroup.com/articles/ten-usability-heuristics/" rel="noopener noreferrer">NN/g — Usability heuristics (error recovery)</a></li>
+      <li><a href="https://www.nngroup.com/articles/ten-usability-heuristics/" rel="noopener noreferrer">NN/g: Usability heuristics (error recovery)</a></li>
       <li><a href="https://www.gov.uk/service-manual" rel="noopener noreferrer">GOV.UK Service Manual</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard — Form UX research</a></li>
-      <li><a href="https://designsystem.service.gov.uk/components/error-message/" rel="noopener noreferrer">GOV.UK — Error messages</a></li>
+      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard: Form UX research</a></li>
+      <li><a href="https://designsystem.service.gov.uk/components/error-message/" rel="noopener noreferrer">GOV.UK: Error messages</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html" rel="noopener noreferrer">WCAG 2.2 — Error suggestion</a></li>
-      <li><a href="https://polaris.shopify.com/components/feedback-indicators/banner" rel="noopener noreferrer">Shopify Polaris — Banners</a></li>
+      <li><a href="https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html" rel="noopener noreferrer">WCAG 2.2: Error suggestion</a></li>
+      <li><a href="https://polaris.shopify.com/components/feedback-indicators/banner" rel="noopener noreferrer">Shopify Polaris: Banners</a></li>
     </ol>
   </div>
 </section>
@@ -255,11 +255,11 @@ ogImage: https://anmshpndy.com/brand/cases/cognitive-load-error-recovery-og.png
       <li>
         <div class="tone-junior">Validate on blur, not on submit and not on every keystroke. Inline errors that appear when you leave a field are the least disruptive and easiest to act on.</div>
         <div class="tone-mid">Actionable error copy: describe what to do + provide an example. "Enter a valid email like name@example.com" solves both discoverability and actionability. "Invalid email" solves neither.</div>
-        <div class="tone-staff">Link the error to the field with aria-invalid and aria-describedby — visual proximity works for sighted users but not for screen reader users. Both attributes are required for accessible error recovery.</div>
+        <div class="tone-staff">Link the error to the field with aria-invalid and aria-describedby: visual proximity works for sighted users but not for screen reader users. Both attributes are required for accessible error recovery.</div>
       </li>
       <li>
         <div class="tone-junior">Error messages that don't tell you how to fix the problem just add frustration on top of frustration. Every error message should answer "what should I type instead?"</div>
-        <div class="tone-mid">API error contracts matter. A 422 with field + code + actionable message enables precise inline errors. A generic 500 forces a top-level "Something went wrong" — the UX cost is paid by the user but the root cause is in the API design.</div>
+        <div class="tone-mid">API error contracts matter. A 422 with field + code + actionable message enables precise inline errors. A generic 500 forces a top-level "Something went wrong," and the UX cost is paid by the user but the root cause is in the API design.</div>
         <div class="tone-staff">Error recovery has two sub-problems: discoverability (user notices an error) and actionability (user knows how to fix it). Inline placement solves discoverability; actionable copy solves actionability. Both are required for fast recovery.</div>
       </li>
     </ul>
