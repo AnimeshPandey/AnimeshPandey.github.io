@@ -6,3 +6,4 @@ tests/playwright-report/
 tests/test-results/
 cases/_site/
 site/_site/
+_deploy/

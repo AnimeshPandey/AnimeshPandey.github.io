@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "One Listener, Thousand Rows"
-description: Why adding an event listener per table row destroys performance — and how event delegation handles thousands of rows with a single listener.
+description: Why adding an event listener per table row destroys performance, and how event delegation handles thousands of rows with a single listener.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: event-delegation-one-listener
 track: browser-dom
@@ -23,10 +23,10 @@ ogImage: https://anmshpndy.com/brand/cases/event-delegation-one-listener-og.png
 <section class="case-chapter" data-chapter="hook">
   <h2>The table that slows down at 500 rows</h2>
   <div class="tone-junior">
-    <p>You build a data table. 100 rows load fine. At 500 rows, adding new rows takes 300ms. At 1000 rows, clicking a row handler feels laggy. You check the code — you're attaching a click listener to every row as it mounts. That's 1000 DOM event listeners. The fix is one listener on the table instead.</p>
+    <p>You build a data table. 100 rows load fine. At 500 rows, adding new rows takes 300ms. At 1000 rows, clicking a row handler feels laggy. You check the code: you're attaching a click listener to every row as it mounts. That's 1000 DOM event listeners. The fix is one listener on the table instead.</p>
   </div>
   <div class="tone-mid">
-    <p>Event delegation is the pattern of attaching one listener to a parent element and using <code>event.target</code> to determine which child was clicked. It works because of event bubbling — events propagate up from the target element to the root. One listener on <code>&lt;table&gt;</code> handles clicks on any <code>&lt;tr&gt;</code>, <code>&lt;td&gt;</code>, or <code>&lt;button&gt;</code> inside it.</p>
+    <p>Event delegation is the pattern of attaching one listener to a parent element and using <code>event.target</code> to determine which child was clicked. It works because of event bubbling: events propagate up from the target element to the root. One listener on <code>&lt;table&gt;</code> handles clicks on any <code>&lt;tr&gt;</code>, <code>&lt;td&gt;</code>, or <code>&lt;button&gt;</code> inside it.</p>
   </div>
   <div class="tone-staff">
     <p>Beyond performance: event delegation handles dynamically-added elements automatically. A listener attached to a parent catches events on children that didn't exist when the listener was added. This eliminates the need to re-bind listeners after table rows are added, filtered, sorted, or virtualized.</p>
@@ -38,14 +38,14 @@ ogImage: https://anmshpndy.com/brand/cases/event-delegation-one-listener-og.png
   <h2>Event bubbling and closest()</h2>
   <div class="tone-junior">
     <p>When you click a <code>&lt;button&gt;</code> inside a <code>&lt;tr&gt;</code> inside a <code>&lt;table&gt;</code>, the click event fires on the button, then bubbles up to the tr, then the table, then body, then document. Every element in the chain can listen for it.</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ One listener handles all rows — present and future
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ✅ One listener handles all rows (present and future)
 table.addEventListener('click', (event) => {
   const row = event.target.closest('tr[data-id]');
   if (!row) return; // click wasn't on a row
   const id = row.dataset.id;
   handleRowClick(id);
 });</code></pre>
-    <p><code>closest()</code> walks up the DOM from the clicked element and returns the first ancestor matching the selector — or null if none found. It's the key to event delegation with nested elements.</p>
+    <p><code>closest()</code> walks up the DOM from the clicked element and returns the first ancestor matching the selector, or null if none found. It's the key to event delegation with nested elements.</p>
   </div>
   <div class="tone-mid">
     <p>Three delegation patterns for different use cases:</p>
@@ -67,7 +67,7 @@ container.addEventListener('click', (e) => {
 });</code></pre>
   </div>
   <div class="tone-staff">
-    <p>When NOT to use delegation: when you need to listen to non-bubbling events (focus, blur — use focusin/focusout instead), or when the parent element has <code>pointer-events: none</code>, or in virtual DOM frameworks where the framework already delegates (React's synthetic event system delegates to the root — adding native listeners per-item fights the framework).</p>
+    <p>When NOT to use delegation: when you need to listen to non-bubbling events (focus, blur; use focusin/focusout instead), or when the parent element has <code>pointer-events: none</code>, or in virtual DOM frameworks where the framework already delegates (React's synthetic event system delegates to the root, so adding native listeners per-item fights the framework).</p>
   </div>
 </section>
 
@@ -75,10 +75,10 @@ container.addEventListener('click', (e) => {
 <section class="case-chapter" data-chapter="story-1">
   <h2>The table that got slower every sort</h2>
   <div class="tone-junior">
-    <p>Alex built an admin panel with a 1000-row activity log table. Each row had a "View details" button. He attached a click listener to every button in a loop when the table mounted. It worked fine. Then the team added filter and sort controls. Every time you filtered or sorted, the table re-rendered — the old rows were removed from the DOM, new rows were created, and the loop ran again to attach 1000 new listeners. After three filter operations, the page was noticeably sluggish. In Firefox's memory profiler, detached DOM nodes were accumulating — old row elements that had been removed from the DOM but not garbage collected because their listener references kept them alive.</p>
+    <p>Alex built an admin panel with a 1000-row activity log table. Each row had a "View details" button. He attached a click listener to every button in a loop when the table mounted. It worked fine. Then the team added filter and sort controls. Every time you filtered or sorted, the table re-rendered: the old rows were removed from the DOM, new rows were created, and the loop ran again to attach 1000 new listeners. After three filter operations, the page was noticeably sluggish. In Firefox's memory profiler, detached DOM nodes were accumulating, old row elements that had been removed from the DOM but not garbage collected because their listener references kept them alive.</p>
   </div>
   <div class="tone-mid">
-    <p>The root cause: 1000 calls to <code>addEventListener</code> on mount, no calls to <code>removeEventListener</code> on unmount/re-render. Each listener holds a reference to its row element. When rows were re-created after sort, the old elements became "detached DOM nodes" — no longer in the tree, but still in memory because the JavaScript listener closure referenced them. This is the classic event listener memory leak pattern, amplified by the re-render cycle.</p>
+    <p>The root cause: 1000 calls to <code>addEventListener</code> on mount, no calls to <code>removeEventListener</code> on unmount/re-render. Each listener holds a reference to its row element. When rows were re-created after sort, the old elements became "detached DOM nodes": no longer in the tree, but still in memory because the JavaScript listener closure referenced them. This is the classic event listener memory leak pattern, amplified by the re-render cycle.</p>
   </div>
   <div class="tone-staff">
     <p>Memory profiling showed ~4MB of detached DOM nodes after 10 sort operations on a 1000-row table. The leak was proportional: each row's listener held a reference to its <code>&lt;tr&gt;</code> element plus the row's data object. Multiplied by 1000 rows, 10 re-renders, this created 10,000 unreachable but uncollected element references. On Safari iOS (which has a smaller JS heap limit), this was causing tab crashes on the activity log page after extended sessions.</p>
@@ -89,7 +89,7 @@ container.addEventListener('click', (e) => {
 <section class="case-chapter" data-chapter="story-2">
   <h2>One listener on the table, zero leaks</h2>
   <div class="tone-junior">
-    <p>The fix was a single listener on the <code>&lt;tbody&gt;</code> element instead of one per row. When any row's button is clicked, the event bubbles up to the <code>&lt;tbody&gt;</code> listener. Using <code>event.target.closest('[data-row-id]')</code>, the handler finds which row was clicked and extracts the ID. The loop was deleted. Memory leak gone. Sort and filter re-renders are now instant — rows are created and destroyed freely because there are no per-row listeners to manage.</p>
+    <p>The fix was a single listener on the <code>&lt;tbody&gt;</code> element instead of one per row. When any row's button is clicked, the event bubbles up to the <code>&lt;tbody&gt;</code> listener. Using <code>event.target.closest('[data-row-id]')</code>, the handler finds which row was clicked and extracts the ID. The loop was deleted. Memory leak gone. Sort and filter re-renders are now instant, since rows are created and destroyed freely because there are no per-row listeners to manage.</p>
   </div>
   <div class="tone-mid">
     <p>The migration removed ~40 lines and simplified the render logic:</p>
@@ -108,7 +108,7 @@ tbody.addEventListener('click', (event) =&gt; {
   if (!row) return;
   openDetail(row.dataset.rowId);
 });</code></pre>
-    <p>The listener is attached once when the component mounts and never removed — because removing the <code>&lt;tbody&gt;</code> removes the listener automatically. New rows added after sort or filter work without any re-binding because the parent listener catches all clicks regardless of when the child was added.</p>
+    <p>The listener is attached once when the component mounts and never removed, because removing the <code>&lt;tbody&gt;</code> removes the listener automatically. New rows added after sort or filter work without any re-binding because the parent listener catches all clicks regardless of when the child was added.</p>
   </div>
   <div class="tone-staff">
     <p>The memory profile after the fix: zero detached DOM nodes after 50 sort operations. The single <code>&lt;tbody&gt;</code> listener adds ~200 bytes. The 1000-listener approach was adding ~400KB per render cycle. The fix also eliminated a class of bugs where newly-added rows (from "Load more" pagination) had no click handlers until a manual re-bind was called. Delegation handles dynamic children automatically by definition.</p>
@@ -123,7 +123,7 @@ tbody.addEventListener('click', (event) =&gt; {
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
         <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ ONE LISTENER PER ROW</p>
-        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Called for every render — O(n) listeners
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Called for every render: O(n) listeners
 const rows = document.querySelectorAll('tr');
 rows.forEach(row =&gt; {
   row.addEventListener('click', () =&gt; {
@@ -133,11 +133,11 @@ rows.forEach(row =&gt; {
 // 1000 rows = 1000 addEventListener calls
 // Re-render after sort = another 1000 calls
 // Old rows: detached but not GC'd (leak)</code></pre>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">O(n) listeners — grows with list, leaks on re-render</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">O(n) listeners, grows with list, leaks on re-render</p>
       </div>
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
         <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ ONE DELEGATED LISTENER ON PARENT</p>
-        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Set once — handles all rows, present and future
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Set once: handles all rows, present and future
 const tbody = document.querySelector('tbody');
 tbody.addEventListener('click', (event) =&gt; {
   const row = event.target.closest('tr[data-id]');
@@ -146,8 +146,8 @@ tbody.addEventListener('click', (event) =&gt; {
 });
 // 1000 rows = 1 addEventListener call
 // Re-render after sort = 0 additional calls
-// Old rows: GC'd immediately — no leak</code></pre>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">O(1) listeners — constant cost regardless of row count</p>
+// Old rows: GC'd immediately, no leak</code></pre>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">O(1) listeners: constant cost regardless of row count</p>
       </div>
     </div>
   </div>
@@ -155,7 +155,7 @@ tbody.addEventListener('click', (event) =&gt; {
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: per-row vs delegated listener</h2>
-  <div class="tone-junior"><p>Add 200 rows in "Broken" mode — notice the slowdown. Same action in "Fixed" mode is instant. The fixed version has exactly one listener regardless of row count.</p></div>
+  <div class="tone-junior"><p>Add 200 rows in "Broken" mode; notice the slowdown. Same action in "Fixed" mode is instant. The fixed version has exactly one listener regardless of row count.</p></div>
   <div class="tone-mid"><p>Open DevTools Performance → record → add rows in both modes. The broken version shows layout + listener-attach cost growing linearly. Fixed mode is constant time.</p></div>
   <div class="tone-staff"><p>Check DevTools Elements → Event Listeners panel on the table in both modes. Broken: n listeners on n rows. Fixed: 1 listener on the table element.</p></div>
 
@@ -165,10 +165,10 @@ tbody.addEventListener('click', (event) =&gt; {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — listener per row</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — delegated listener</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken: listener per row</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed: delegated listener</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — delegated listener</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed, delegated listener</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
       </div>
     </div>
@@ -179,8 +179,8 @@ tbody.addEventListener('click', (event) =&gt; {
 <section class="case-chapter" data-chapter="fe-depth">
   <h2>Event delegation: three patterns and their limits</h2>
   <div class="tone-junior">
-    <p>The core pattern — one listener, <code>closest()</code> to identify the target:</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Attach to parent — catches all child clicks via bubbling
+    <p>The core pattern: one listener, <code>closest()</code> to identify the target:</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Attach to parent: catches all child clicks via bubbling
 document.querySelector('#list').addEventListener('click', (event) =&gt; {
   // closest() walks UP the DOM from event.target
   // Returns first ancestor matching selector, or null
@@ -188,25 +188,25 @@ document.querySelector('#list').addEventListener('click', (event) =&gt; {
   if (!item) return; // click was on the list but not on an item
   console.log('Clicked item:', item.dataset.itemId);
 });</code></pre>
-    <p>Key distinction: <code>event.target</code> is what was actually clicked (the innermost element); <code>event.currentTarget</code> is where the listener is attached (the parent). You almost always want <code>event.target.closest()</code>, not <code>event.target</code> directly — a click on a <code>&lt;span&gt;</code> inside your <code>&lt;button&gt;</code> will have the <code>&lt;span&gt;</code> as <code>event.target</code>.</p>
+    <p>Key distinction: <code>event.target</code> is what was actually clicked (the innermost element); <code>event.currentTarget</code> is where the listener is attached (the parent). You almost always want <code>event.target.closest()</code>, not <code>event.target</code> directly: a click on a <code>&lt;span&gt;</code> inside your <code>&lt;button&gt;</code> will have the <code>&lt;span&gt;</code> as <code>event.target</code>.</p>
   </div>
   <div class="tone-mid">
     <p>Three delegation patterns for different scenarios:</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Pattern 1: closest() — nested elements (most common)
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Pattern 1: closest(), nested elements (most common)
 container.addEventListener('click', (e) =&gt; {
   const btn = e.target.closest('[data-action]');
   if (!btn) return;
   handleAction(btn.dataset.action);
 });
 
-// Pattern 2: matches() — simple flat lists
+// Pattern 2: matches(), simple flat lists
 container.addEventListener('click', (e) =&gt; {
   if (e.target.matches('.list-item')) {
     handleItem(e.target);
   }
 });
 
-// Pattern 3: data-action dispatch — multi-action parents
+// Pattern 3: data-action dispatch, multi-action parents
 container.addEventListener('click', (e) =&gt; {
   const el = e.target.closest('[data-action]');
   if (!el) return;
@@ -219,15 +219,15 @@ container.addEventListener('click', (e) =&gt; {
 });</code></pre>
     <p>Implementation notes:</p>
     <ul>
-      <li><strong>When delegation fails</strong>: <code>focus</code> and <code>blur</code> do not bubble — use <code>focusin</code>/<code>focusout</code> instead, which do bubble</li>
-      <li><strong>stopPropagation</strong>: any child that calls <code>event.stopPropagation()</code> will prevent the event reaching your delegated parent listener — avoid stopPropagation in component libraries</li>
-      <li><strong>pointer-events: none</strong>: if the parent has this CSS, it won't receive clicks — check the computed style if delegation mysteriously stops working</li>
-      <li><strong>Shadow DOM</strong>: events don't bubble across shadow boundaries by default — delegation only works within the same shadow root</li>
+      <li><strong>When delegation fails</strong>: <code>focus</code> and <code>blur</code> do not bubble; use <code>focusin</code>/<code>focusout</code> instead, which do bubble</li>
+      <li><strong>stopPropagation</strong>: any child that calls <code>event.stopPropagation()</code> will prevent the event reaching your delegated parent listener, so avoid stopPropagation in component libraries</li>
+      <li><strong>pointer-events: none</strong>: if the parent has this CSS, it won't receive clicks, so check the computed style if delegation mysteriously stops working</li>
+      <li><strong>Shadow DOM</strong>: events don't bubble across shadow boundaries by default, so delegation only works within the same shadow root</li>
     </ul>
   </div>
   <div class="tone-staff">
-    <p>React's synthetic event system already does delegation — all events are delegated to the root container (the React root DOM node), not attached to individual elements. This means adding native <code>addEventListener</code> per item in React fights the framework: you're paying the per-item cost while React's delegation handles the same events at root anyway.</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// In React — just use JSX event props
+    <p>React's synthetic event system already does delegation: all events are delegated to the root container (the React root DOM node), not attached to individual elements. This means adding native <code>addEventListener</code> per item in React fights the framework: you're paying the per-item cost while React's delegation handles the same events at root anyway.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// In React: just use JSX event props
 // React delegates onClick to the root automatically
 function Row({ id, onSelect }) {
   return &lt;tr onClick={() =&gt; onSelect(id)}&gt;...&lt;/tr&gt;;
@@ -242,32 +242,32 @@ React.useEffect(() =&gt; {
 // The only case for native delegation in React: when you need to
 // intercept events outside React's tree (portals, third-party widgets)
 // or listen on window/document</code></pre>
-    <p>For virtual lists (react-window, react-virtual): the component only renders visible rows, so per-row listeners are re-attached on every scroll. Delegation on the scroller container is essential here — the container is always mounted, rows come and go. Pass <code>data-id</code> attributes to virtual row elements and delegate from the container.</p>
+    <p>For virtual lists (react-window, react-virtual): the component only renders visible rows, so per-row listeners are re-attached on every scroll. Delegation on the scroller container is essential here: the container is always mounted, rows come and go. Pass <code>data-id</code> attributes to virtual row elements and delegate from the container.</p>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub, expand per case) ── #}
 {# ── Chapter: References ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events" rel="noopener noreferrer">MDN — Events</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events" rel="noopener noreferrer">MDN: Events</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://javascript.info/event-delegation" rel="noopener noreferrer">javascript.info — Event delegation</a></li>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener" rel="noopener noreferrer">MDN — addEventListener</a></li>
+      <li><a href="https://javascript.info/event-delegation" rel="noopener noreferrer">javascript.info: Event delegation</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener" rel="noopener noreferrer">MDN: addEventListener</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget" rel="noopener noreferrer">MDN — EventTarget</a></li>
-      <li><a href="https://react.dev/learn/responding-to-events" rel="noopener noreferrer">React — Synthetic events context</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget" rel="noopener noreferrer">MDN: EventTarget</a></li>
+      <li><a href="https://react.dev/learn/responding-to-events" rel="noopener noreferrer">React: Synthetic events context</a></li>
     </ol>
   </div>
 </section>
@@ -278,13 +278,13 @@ React.useEffect(() =&gt; {
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">Attach one listener to the parent, not one listener per child — events bubble up, so the parent hears all clicks from its descendants.</div>
-        <div class="tone-mid">event.target.closest(selector) is the delegation primitive — it finds the nearest ancestor matching your selector from the clicked element up.</div>
-        <div class="tone-staff">React delegates all events to the root already — adding native addEventListener per item fights the framework. Use React event props and rely on its delegation.</div>
+        <div class="tone-junior">Attach one listener to the parent, not one listener per child: events bubble up, so the parent hears all clicks from its descendants.</div>
+        <div class="tone-mid">event.target.closest(selector) is the delegation primitive; it finds the nearest ancestor matching your selector from the clicked element up.</div>
+        <div class="tone-staff">React delegates all events to the root already, so adding native addEventListener per item fights the framework. Use React event props and rely on its delegation.</div>
       </li>
       <li>
-        <div class="tone-junior">Delegation handles dynamically-added elements automatically — no need to re-bind when adding, filtering, or sorting rows.</div>
-        <div class="tone-mid">For non-bubbling events (focus, blur): use focusin/focusout instead — they bubble and are delegation-compatible.</div>
+        <div class="tone-junior">Delegation handles dynamically-added elements automatically; no need to re-bind when adding, filtering, or sorting rows.</div>
+        <div class="tone-mid">For non-bubbling events (focus, blur): use focusin/focusout instead, since they bubble and are delegation-compatible.</div>
         <div class="tone-staff">Memory leak prevention: removing the parent container removes the single listener. Per-row listeners require explicit cleanup on each removed row to avoid leaks.</div>
       </li>
     </ul>

@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: The One Pixel That Broke the Layout
-description: Why your page has a horizontal scrollbar you can't find — and the CSS overflow debugging toolkit that kills it in minutes.
+description: Why your page has a horizontal scrollbar you can't find, and the CSS overflow debugging toolkit that kills it in minutes.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: horizontal-scroll-one-pixel
 track: css-layout
@@ -23,13 +23,13 @@ ogImage: https://anmshpndy.com/brand/cases/horizontal-scroll-one-pixel-og.png
 <section class="case-chapter" data-chapter="hook">
   <h2>The invisible scroll</h2>
   <div class="tone-junior">
-    <p>You deploy your site. On mobile, there's a horizontal scrollbar. The page can scroll right by about 15 pixels — revealing nothing but empty white space. You can't find what's causing it. You inspect every element. You add <code>overflow: hidden</code> to body. The scrollbar disappears — but something breaks on another page. There's a better way.</p>
+    <p>You deploy your site. On mobile, there's a horizontal scrollbar. The page can scroll right by about 15 pixels, revealing nothing but empty white space. You can't find what's causing it. You inspect every element. You add <code>overflow: hidden</code> to body. The scrollbar disappears, but something breaks on another page. There's a better way.</p>
   </div>
   <div class="tone-mid">
-    <p>Horizontal overflow is almost always caused by an element that is wider than the viewport. The challenge is finding which element — browser DevTools don't highlight overflowing elements by default. A one-line JavaScript snippet and a few CSS patterns will find it in under a minute.</p>
+    <p>Horizontal overflow is almost always caused by an element that is wider than the viewport. The challenge is finding which element: browser DevTools don't highlight overflowing elements by default. A one-line JavaScript snippet and a few CSS patterns will find it in under a minute.</p>
   </div>
   <div class="tone-staff">
-    <p>Horizontal overflow is a CLS-adjacent issue — it causes visual instability and breaks mobile UX. The correct fix is eliminating the overflowing element, not hiding overflow at the body level (which breaks <code>position: sticky</code> among other things).</p>
+    <p>Horizontal overflow is a CLS-adjacent issue: it causes visual instability and breaks mobile UX. The correct fix is eliminating the overflowing element, not hiding overflow at the body level (which breaks <code>position: sticky</code> among other things).</p>
   </div>
 </section>
 
@@ -38,25 +38,25 @@ ogImage: https://anmshpndy.com/brand/cases/horizontal-scroll-one-pixel-og.png
   <h2>Common overflow culprits</h2>
   <div class="tone-junior">
     <ul>
-      <li><strong>Fixed-width elements</strong> — <code>width: 400px</code> on a 375px viewport</li>
-      <li><strong>Long unbreakable strings</strong> — URLs, code, emails without <code>word-break: break-all</code></li>
-      <li><strong>Negative margins</strong> — <code>margin-left: -20px</code> can push content right</li>
-      <li><strong>Absolute-positioned elements</strong> — positioned relative to a container but visually wider</li>
-      <li><strong>SVGs without <code>viewBox</code></strong> — SVGs have intrinsic dimensions; without viewBox they ignore container width</li>
+      <li><strong>Fixed-width elements</strong>: <code>width: 400px</code> on a 375px viewport</li>
+      <li><strong>Long unbreakable strings</strong>: URLs, code, emails without <code>word-break: break-all</code></li>
+      <li><strong>Negative margins</strong>: <code>margin-left: -20px</code> can push content right</li>
+      <li><strong>Absolute-positioned elements</strong>: positioned relative to a container but visually wider</li>
+      <li><strong>SVGs without <code>viewBox</code></strong>: SVGs have intrinsic dimensions; without viewBox they ignore container width</li>
     </ul>
   </div>
   <div class="tone-mid">
-    <p>The debugger snippet — paste in DevTools console:</p>
+    <p>The debugger snippet, paste in DevTools console:</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Find all elements wider than the viewport
 document.querySelectorAll('*').forEach(el => {
   if (el.getBoundingClientRect().right > window.innerWidth) {
     console.log(el, el.getBoundingClientRect().right - window.innerWidth, 'px overflow');
   }
 });</code></pre>
-    <p>This logs every element whose right edge exceeds the viewport — sorted by how much they overflow.</p>
+    <p>This logs every element whose right edge exceeds the viewport, sorted by how much they overflow.</p>
   </div>
   <div class="tone-staff">
-    <p>The CSS audit approach — add to DevTools styles:</p>
+    <p>The CSS audit approach, add to DevTools styles:</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* Temporary audit: outline every element */
 * { outline: 1px solid red; }
 
@@ -65,11 +65,11 @@ document.querySelectorAll('*').forEach(el => {
   </div>
 </section>
 
-{# ── Chapter: Story — bad + good ── #}
+{# ── Chapter: Story: bad + good ── #}
 <section class="case-chapter" data-chapter="story-1">
   <h2>The fix hierarchy</h2>
   <div class="tone-junior">
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ❌ Nuclear option — breaks position: sticky */
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ❌ Nuclear option: breaks position: sticky */
 body { overflow-x: hidden; }
 
 /* ✅ Fix the element instead */
@@ -80,10 +80,10 @@ body { overflow-x: hidden; }
 /* ✅ Safe container default */
 *, *::before, *::after { box-sizing: border-box; }
 img, video, canvas { max-width: 100%; }</code></pre>
-    <p>The nuclear option (<code>overflow-x: hidden</code> on <code>html</code> or <code>body</code>) silently breaks <code>position: sticky</code> — a very common gotcha.</p>
+    <p>The nuclear option (<code>overflow-x: hidden</code> on <code>html</code> or <code>body</code>) silently breaks <code>position: sticky</code>, a very common gotcha.</p>
   </div>
   <div class="tone-mid">
-    <p>The real culprit is often a flex or grid child that refuses to shrink. Add <code>min-width: 0</code> to flex children — by default they have <code>min-width: auto</code> which prevents shrinking below content size.</p>
+    <p>The real culprit is often a flex or grid child that refuses to shrink. Add <code>min-width: 0</code> to flex children; by default they have <code>min-width: auto</code> which prevents shrinking below content size.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>/* ❌ flex child refuses to shrink, overflows container */
 .flex-container { display: flex; }
 .flex-child { } /* min-width: auto by default */
@@ -92,7 +92,7 @@ img, video, canvas { max-width: 100%; }</code></pre>
 .flex-child { min-width: 0; overflow: hidden; }</code></pre>
   </div>
   <div class="tone-staff">
-    <p><code>min-width: 0</code> on flex/grid children is a CSS spec quirk: the default <code>min-width: auto</code> means "at least as wide as the content." Combined with <code>flex: 1</code>, the element can still overflow if content is wider than the available space. This is per-spec behavior, not a bug — but it surprises nearly every developer the first time.</p>
+    <p><code>min-width: 0</code> on flex/grid children is a CSS spec quirk: the default <code>min-width: auto</code> means "at least as wide as the content." Combined with <code>flex: 1</code>, the element can still overflow if content is wider than the available space. This is per-spec behavior, not a bug, but it surprises nearly every developer the first time.</p>
   </div>
 </section>
 
@@ -102,10 +102,10 @@ img, video, canvas { max-width: 100%; }</code></pre>
   <h2>The 15-pixel phantom</h2>
   <div class="tone-junior">
     <p>A marketing team launched a landing page that passed every browser test: Chrome, Firefox, Safari desktop, and simulated mobile in DevTools. Real users on iOS Safari reported a thin strip of horizontal scroll. The page could scroll 15 pixels to the right revealing nothing but empty space. QA could not reproduce it on desktop simulators. The culprit was a single declaration on the hero section: <code>width: 100vw</code>.</p>
-    <p>On desktop browsers where the scrollbar overlays the viewport, <code>100vw</code> and <code>100%</code> are the same width. On iOS Safari, <code>100vw</code> includes the scrollbar gutter even though iOS uses overlay scrollbars — making the hero 15px wider than the actual viewport and creating exactly enough horizontal overflow to scroll without showing any meaningful content.</p>
+    <p>On desktop browsers where the scrollbar overlays the viewport, <code>100vw</code> and <code>100%</code> are the same width. On iOS Safari, <code>100vw</code> includes the scrollbar gutter even though iOS uses overlay scrollbars, making the hero 15px wider than the actual viewport and creating exactly enough horizontal overflow to scroll without showing any meaningful content.</p>
   </div>
   <div class="tone-mid">
-    <p>The pattern recurs across many projects. Other common sources of the same invisible overflow: a utility class applying <code>margin-inline: -1rem</code> on a full-width element, a <code>translateX()</code> value that pushes decorative content past the viewport edge without a clipping ancestor, or an SVG without a <code>viewBox</code> that renders at its intrinsic pixel dimensions. All produce the same symptom — a thin, useless horizontal scroll that only appears on real mobile devices.</p>
+    <p>The pattern recurs across many projects. Other common sources of the same invisible overflow: a utility class applying <code>margin-inline: -1rem</code> on a full-width element, a <code>translateX()</code> value that pushes decorative content past the viewport edge without a clipping ancestor, or an SVG without a <code>viewBox</code> that renders at its intrinsic pixel dimensions. All produce the same symptom: a thin, useless horizontal scroll that only appears on real mobile devices.</p>
   </div>
 </section>
 
@@ -114,7 +114,7 @@ img, video, canvas { max-width: 100%; }</code></pre>
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
     <figure>
-      <figcaption>Before — 100vw includes scrollbar gutter on iOS Safari, causes overflow</figcaption>
+      <figcaption>Before: 100vw includes scrollbar gutter on iOS Safari, causes overflow</figcaption>
       <pre><code>/* ❌ 100vw = viewport width including scrollbar gutter
    On iOS Safari this is wider than the actual content area */
 .hero {
@@ -127,7 +127,7 @@ img, video, canvas { max-width: 100%; }</code></pre>
    Horizontal scroll appears; page slides right to white */</code></pre>
     </figure>
     <figure>
-      <figcaption>After — 100% stays within the parent (no scrollbar gutter issue)</figcaption>
+      <figcaption>After: 100% stays within the parent (no scrollbar gutter issue)</figcaption>
       <pre><code>/* ✅ 100% = 100% of the parent block, never includes gutter */
 .hero {
   width: 100%;        /* always fits the content area */
@@ -152,8 +152,8 @@ img, video, svg { max-width: 100%; }</code></pre>
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: overflow culprit finder</h2>
   <div class="tone-junior"><p>Toggle between "Broken" (an element wider than its container) and "Fixed" (with max-width: 100% and box-sizing applied correctly).</p></div>
-  <div class="tone-mid"><p>Notice how a single element wider than the viewport causes the entire page horizontal scroll — even if the viewport is much larger on desktop.</p></div>
-  <div class="tone-staff"><p>The fixed state uses <code>max-width: 100%</code> on the image and <code>min-width: 0</code> on the flex child — two properties that together handle 95% of horizontal overflow cases.</p></div>
+  <div class="tone-mid"><p>Notice how a single element wider than the viewport causes the entire page horizontal scroll, even if the viewport is much larger on desktop.</p></div>
+  <div class="tone-staff"><p>The fixed state uses <code>max-width: 100%</code> on the image and <code>min-width: 0</code> on the flex child: two properties that together handle 95% of horizontal overflow cases.</p></div>
 
   <section class="case-demo" aria-label="Try it: horizontal overflow" data-required="true" data-demo-type="toggle" data-demo-slug="horizontal-scroll-one-pixel">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -161,10 +161,10 @@ img, video, svg { max-width: 100%; }</code></pre>
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken — overflow</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed — contained</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Broken (overflow)</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fixed (contained)</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed — contained</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed, contained</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;overflow-x:auto;"></div>
       </div>
     </div>
@@ -190,36 +190,36 @@ document.querySelectorAll('*').forEach(el =&gt; {
   <div class="tone-staff">
     <p>Overflow debugging toolkit and prevention patterns:</p>
     <ul>
-      <li><strong><code>overflow-x: clip</code> vs <code>hidden</code></strong> — <code>clip</code> prevents scrolling without establishing a new block formatting context, so it does not break <code>position: sticky</code>. Prefer <code>clip</code> over <code>hidden</code> when you need to clip decorative content at the viewport edge without affecting sticky headers.</li>
-      <li><strong><code>overscroll-behavior-x: none</code></strong> — prevents horizontal elastic overscroll on iOS but does not prevent actual overflow. Use alongside fixing the overflowing element, not as a substitute.</li>
-      <li><strong>CSS audit: <code>* { outline: 1px solid red }</code></strong> — pasting this into DevTools Styles instantly makes every element's box visible. The element whose box extends past the viewport edge is the culprit.</li>
-      <li><strong>Visual regression CI</strong> — a Playwright test that checks <code>document.body.scrollWidth &gt; document.body.clientWidth</code> on every page catches horizontal overflow before it reaches production. One assertion prevents the entire class of bug.</li>
-      <li><strong>Flex children: <code>min-width: 0</code></strong> — flex items have <code>min-width: auto</code> by default, preventing shrinkage below content width. Adding <code>min-width: 0</code> to flex children allows them to shrink as expected and resolves a large proportion of flex-related overflow bugs.</li>
+      <li><strong><code>overflow-x: clip</code> vs <code>hidden</code></strong>: <code>clip</code> prevents scrolling without establishing a new block formatting context, so it does not break <code>position: sticky</code>. Prefer <code>clip</code> over <code>hidden</code> when you need to clip decorative content at the viewport edge without affecting sticky headers.</li>
+      <li><strong><code>overscroll-behavior-x: none</code></strong>: prevents horizontal elastic overscroll on iOS but does not prevent actual overflow. Use alongside fixing the overflowing element, not as a substitute.</li>
+      <li><strong>CSS audit: <code>* { outline: 1px solid red }</code></strong>: pasting this into DevTools Styles instantly makes every element's box visible. The element whose box extends past the viewport edge is the culprit.</li>
+      <li><strong>Visual regression CI</strong>: a Playwright test that checks <code>document.body.scrollWidth &gt; document.body.clientWidth</code> on every page catches horizontal overflow before it reaches production. One assertion prevents the entire class of bug.</li>
+      <li><strong>Flex children: <code>min-width: 0</code></strong>: flex items have <code>min-width: auto</code> by default, preventing shrinkage below content width. Adding <code>min-width: 0</code> to flex children allows them to shrink as expected and resolves a large proportion of flex-related overflow bugs.</li>
     </ul>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub: expand per case) ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow" rel="noopener noreferrer">MDN — overflow</a></li>
-      <li><a href="https://web.dev/articles/cls" rel="noopener noreferrer">web.dev — CLS</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow" rel="noopener noreferrer">MDN: overflow</a></li>
+      <li><a href="https://web.dev/articles/cls" rel="noopener noreferrer">web.dev: CLS</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x" rel="noopener noreferrer">MDN — overflow-x</a></li>
-      <li><a href="https://css-tricks.com/findingfixing-unintended-body-overflow/" rel="noopener noreferrer">CSS-Tricks — Body overflow</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-x" rel="noopener noreferrer">MDN: overflow-x</a></li>
+      <li><a href="https://css-tricks.com/findingfixing-unintended-body-overflow/" rel="noopener noreferrer">CSS-Tricks: Body overflow</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev — Core Web Vitals</a></li>
+      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev: Core Web Vitals</a></li>
       <li><a href="https://www.w3.org/TR/css-overflow-3/" rel="noopener noreferrer">CSS Overflow Module Level 3</a></li>
     </ol>
   </div>
@@ -231,14 +231,14 @@ document.querySelectorAll('*').forEach(el =&gt; {
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">Don't add overflow-x: hidden to body — it breaks position: sticky. Find and fix the overflowing element instead.</div>
+        <div class="tone-junior">Don't add overflow-x: hidden to body: it breaks position: sticky. Find and fix the overflowing element instead.</div>
         <div class="tone-mid">The console snippet (check getBoundingClientRect().right > innerWidth) finds the offending element in seconds on any page.</div>
         <div class="tone-staff">min-width: 0 on flex/grid children is the spec-correct fix for elements that refuse to shrink below their content size.</div>
       </li>
       <li>
         <div class="tone-junior">Three CSS defaults that prevent most horizontal overflow: box-sizing: border-box, max-width: 100% on images, min-width: 0 on flex children.</div>
-        <div class="tone-mid">CSS resets like modern-normalize.css include these defaults — using one prevents 80% of horizontal overflow bugs from ever appearing.</div>
-        <div class="tone-staff">Include a horizontal overflow audit script in your visual regression CI — one line of JS can catch this before it ships to users.</div>
+        <div class="tone-mid">CSS resets like modern-normalize.css include these defaults; using one prevents 80% of horizontal overflow bugs from ever appearing.</div>
+        <div class="tone-staff">Include a horizontal overflow audit script in your visual regression CI: one line of JS can catch this before it ships to users.</div>
       </li>
     </ul>
   </div>

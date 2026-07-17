@@ -15,14 +15,14 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "junior": "Skim the code patterns here: you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation; the diff is usually smaller than you expect.",
       "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
@@ -31,7 +31,7 @@
       "chapter": "concept",
       "junior": "When I first read the MCP docs, I thought I needed to build all three. I only needed to build the Server. The Host was Claude Desktop; the Client was the MCP SDK. Server = your tools and data. That's the part you own.",
       "mid": "Building an MCP server for an internal knowledge base: the server exposes two tools (search_docs and get_doc) and one resource (docs://index). The host (Claude Desktop) discovers them at startup via the initialize handshake. Users in Claude can ask questions that route through to real docs.",
-      "staff": "MCP's security model: servers are process-isolated from the host. A server cannot read the model's context, only respond to explicit tool calls. This is intentional — it limits the blast radius of a compromised or malicious server. The host controls which servers are connected and what permissions they have."
+      "staff": "MCP's security model: servers are process-isolated from the host. A server cannot read the model's context, only respond to explicit tool calls. This is intentional; it limits the blast radius of a compromised or malicious server. The host controls which servers are connected and what permissions they have."
     }
   ],
   "voice": {
@@ -39,14 +39,14 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Hey! Today we're mapping out MCP — the Model Context Protocol — and its three roles: Host, Client, and Server. Knowing which is which tells you what you need to build.",
+        "junior": "Hey! Today we're mapping out MCP (the Model Context Protocol) and its three roles: Host, Client, and Server. Knowing which is which tells you what you need to build.",
         "mid": "This case covers the MCP architecture: how the three roles separate concerns, the JSON-RPC transport, capability negotiation, and where you as a developer typically operate.",
         "staff": "We're covering the full MCP role model, the initialize handshake, bidirectional communication via sampling and resource subscriptions, the security isolation model, and the tooling ecosystem."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {

@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "Miller's Rule: Chunking Long Forms"
-description: Why a 14-field single-page form feels overwhelming while the same fields in 3 steps feel easy — and how to apply chunking to any form.
+description: Why a 14-field single-page form feels overwhelming while the same fields in 3 steps feel easy, and how to apply chunking to any form.
 publishedAt: "2026-06-01T00:00:00Z"
 slug: miller-chunking-forms
 track: patterns-ux
@@ -19,30 +19,30 @@ relatedCases:
 ogImage: https://anmshpndy.com/brand/cases/miller-chunking-forms-og.png
 ---
 
-{# ── Chapter: Hook ── #}
+{# -- Chapter: Hook -- #}
 <section class="case-chapter" data-chapter="hook">
   <h2>The form that looked like homework</h2>
   <div class="tone-junior">
     <p>A checkout flow had 14 fields on one page: name, email, phone, address line 1, address line 2, city, state, zip, country, card number, expiry, CVV, billing address toggle, and a promo code. The design team had validated each field as necessary. Yet cart abandonment at checkout was 67%.</p>
-    <p>The same 14 fields, reorganized into 3 steps — Contact (3 fields), Shipping (6 fields), Payment (5 fields) — reduced abandonment to 41%. The work was identical. The perception of difficulty was completely different. Users could hold 3–5 fields in working memory at a time; 14 overloaded them before they'd filled in a single value.</p>
+    <p>The same 14 fields, reorganized into 3 steps (Contact: 3 fields, Shipping: 6 fields, Payment: 5 fields), reduced abandonment to 41%. The work was identical. The perception of difficulty was completely different. Users could hold 3–5 fields in working memory at a time; 14 overloaded them before they'd filled in a single value.</p>
   </div>
   <div class="tone-mid">
-    <p>Miller's Law (1956): working memory can hold approximately 7±2 items at once. The "magical number" is applied to form design as: the number of fields visible at one time should stay below 7. Modern research by Cowan (2001) suggests the actual capacity is closer to 4 items — the 7±2 figure is a useful upper bound, not an optimum.</p>
+    <p>Miller's Law (1956): working memory can hold approximately 7±2 items at once. The "magical number" is applied to form design as: the number of fields visible at one time should stay below 7. Modern research by Cowan (2001) suggests the actual capacity is closer to 4 items; the 7±2 figure is a useful upper bound, not an optimum.</p>
   </div>
   <div class="tone-staff">
-    <p>The mechanism isn't just visual overwhelm — it's cognitive pre-commitment. When users see a long form, they estimate completion cost before starting. A 14-field form signals a high cost; users who are low-intent abandon before filling field 1. A 3-step form with 4 fields first signals a low entry cost — users start, and completion inertia carries them through.</p>
+    <p>The mechanism isn't just visual overwhelm. It's cognitive pre-commitment. When users see a long form, they estimate completion cost before starting. A 14-field form signals a high cost; users who are low-intent abandon before filling field 1. A 3-step form with 4 fields first signals a low entry cost: users start, and completion inertia carries them through.</p>
   </div>
 </section>
 
-{# ── Chapter: Concept ── #}
+{# -- Chapter: Concept -- #}
 <section class="case-chapter" data-chapter="concept">
   <h2>When to chunk and how to do it</h2>
   <div class="tone-junior">
     <p><strong>The 5-field threshold:</strong> If your form has more than 5 visible fields, consider chunking. The groupings should reflect natural semantic breaks, not arbitrary splits:</p>
     <ul>
-      <li><strong>Identity chunk</strong>: name, email, phone — who you are</li>
-      <li><strong>Location chunk</strong>: address, city, state, zip — where you are</li>
-      <li><strong>Payment chunk</strong>: card details, billing — how you pay</li>
+      <li><strong>Identity chunk</strong>: name, email, phone (who you are)</li>
+      <li><strong>Location chunk</strong>: address, city, state, zip (where you are)</li>
+      <li><strong>Payment chunk</strong>: card details, billing (how you pay)</li>
     </ul>
     <p>Users understand these semantic groups intuitively. Splitting "address" across chunks (street in step 1, city/state in step 2) breaks the mental model and adds cognitive work.</p>
   </div>
@@ -55,7 +55,7 @@ function CheckoutForm() {
   const advance = async () => {
     const valid = await validateCurrentStep(step);
     if (valid) setStep(s => s + 1);
-    // Validate NOW, not on final submit — errors are cheapest to fix inline
+    // Validate NOW, not on final submit: errors are cheapest to fix inline
   };
 
   return (
@@ -70,45 +70,45 @@ function CheckoutForm() {
     &lt;/form&gt;
   );
 }</code></pre>
-    <p>Validate each step before advancing — don't defer all validation to the final submit. Early errors are cheap; late errors are expensive.</p>
+    <p>Validate each step before advancing. Don't defer all validation to the final submit. Early errors are cheap; late errors are expensive.</p>
   </div>
   <div class="tone-staff">
     <p>Two patterns that compound with chunking:</p>
     <ol>
-      <li><strong>Smart defaults</strong>: auto-detect country from IP, pre-fill city/state from zip code, remember address from previous order. Each pre-filled field reduces cognitive load per step — a 6-field step with 3 pre-filled fields presents effective n=3.</li>
+      <li><strong>Smart defaults</strong>: auto-detect country from IP, pre-fill city/state from zip code, remember address from previous order. Each pre-filled field reduces cognitive load per step: a 6-field step with 3 pre-filled fields presents effective n=3.</li>
       <li><strong>Progress anchoring</strong>: show "Step 2 of 3", not "67% complete". Concrete step counts reduce anxiety better than percentages because they imply a finite, manageable task. "2 of 3" says you're nearly done; "67%" implies mathematical work.</li>
     </ol>
-    <p>The completion inertia effect: users who complete step 1 of a 3-step form have a 78% completion rate for steps 2 and 3 combined. The hard part is getting them to start — chunking lowers the entry barrier.</p>
+    <p>The completion inertia effect: users who complete step 1 of a 3-step form have a 78% completion rate for steps 2 and 3 combined. The hard part is getting them to start; chunking lowers the entry barrier.</p>
   </div>
 </section>
 
-{# ── Chapter: Demo ── #}
-{# ── Chapter: UI Strip ── #}
+{# -- Chapter: Demo -- #}
+{# -- Chapter: UI Strip -- #}
 <section class="case-chapter" data-chapter="story-1">
   <h2>The 15-field form that users abandoned before field 4</h2>
   <div class="tone-junior">
     <p>A B2B SaaS registration form had 15 fields: first name, last name, work email, company name, company size, industry, phone, job title, country, city, how did you hear about us, use case, number of team members, billing contact email, and a terms checkbox. Every field had been justified in a planning meeting. The form launched. Signups dropped 44% compared to the previous lighter form.</p>
-    <p>Session recordings showed the same pattern over and over: users would scroll the entire form before typing anything, pause, and then either start slowly or close the tab. The median field where users abandoned: field 4. They rarely even reached the middle of the form. The problem wasn't any individual field — it was the scroll to the bottom before starting.</p>
+    <p>Session recordings showed the same pattern over and over: users would scroll the entire form before typing anything, pause, and then either start slowly or close the tab. The median field where users abandoned: field 4. They rarely even reached the middle of the form. The problem wasn't any individual field; it was the scroll to the bottom before starting.</p>
   </div>
   <div class="tone-mid">
-    <p>The abandonment mechanism wasn't cognitive fatigue from filling fields — it was cognitive pre-commitment cost. Before entering a single character, users estimated the total effort of the form. A visible 15-field block signaled a high effort cost. Low-intent users — who had not yet decided to commit — weighed that cost and left. Miller's research on working memory capacity (7±2 items) is often cited as the cause, but the more direct mechanism here was the visual scope signal: users saw "15 fields of work" as a unit, not 15 individual simple tasks.</p>
+    <p>The abandonment mechanism wasn't cognitive fatigue from filling fields; it was cognitive pre-commitment cost. Before entering a single character, users estimated the total effort of the form. A visible 15-field block signaled a high effort cost. Low-intent users, who had not yet decided to commit, weighed that cost and left. Miller's research on working memory capacity (7±2 items) is often cited as the cause, but the more direct mechanism here was the visual scope signal: users saw "15 fields of work" as a unit, not 15 individual simple tasks.</p>
   </div>
   <div class="tone-staff">
-    <p>The form had a 23% overall completion rate but a 78% completion rate among users who reached field 6. The top-of-funnel loss was the entire problem. This is a common pattern in long-form data: the metric "form completion rate" averaged over all starts obscures that the form has two distinct populations — users who commit early and complete at high rates, and users who leave before starting. Chunking addresses the second population by reducing the perceived entry cost; it does almost nothing for the first population, who would have completed regardless.</p>
+    <p>The form had a 23% overall completion rate but a 78% completion rate among users who reached field 6. The top-of-funnel loss was the entire problem. This is a common pattern in long-form data: the metric "form completion rate" averaged over all starts obscures that the form has two distinct populations: users who commit early and complete at high rates, and users who leave before starting. Chunking addresses the second population by reducing the perceived entry cost; it does almost nothing for the first population, who would have completed regardless.</p>
   </div>
 </section>
 
 <section class="case-chapter" data-chapter="story-2">
   <h2>Three steps, same 15 fields, 26-point conversion lift</h2>
   <div class="tone-junior">
-    <p>The same 15 fields were reorganized into three steps: "About you" (name, work email, job title — 3 fields), "About your company" (company name, size, industry, country, city — 5 fields), and "Getting started" (use case, team size, billing email, how did you hear, terms — 5 fields + checkbox). A progress bar showed "Step 1 of 3."</p>
-    <p>Signups recovered to 69% above the broken form — 26 percentage points higher than the 15-field single-page version. Users didn't type more slowly or make fewer errors. They just didn't abandon before starting. The entry to step 1 went up 61% because the first thing users saw was three fields, not fifteen.</p>
+    <p>The same 15 fields were reorganized into three steps: "About you" (name, work email, job title: 3 fields), "About your company" (company name, size, industry, country, city: 5 fields), and "Getting started" (use case, team size, billing email, how did you hear, terms: 5 fields + checkbox). A progress bar showed "Step 1 of 3."</p>
+    <p>Signups recovered to 69% above the broken form, 26 percentage points higher than the 15-field single-page version. Users didn't type more slowly or make fewer errors. They just didn't abandon before starting. The entry to step 1 went up 61% because the first thing users saw was three fields, not fifteen.</p>
   </div>
   <div class="tone-mid">
-    <p>Implementation changes: each step was a separate React component rendered conditionally on a <code>step</code> state variable. Validation ran on "Continue" click for each step, not on final submit. This meant card errors surfaced at step 3, not in a 15-field error summary at the end. Step navigation preserved field values in a shared form state object — stepping back showed previously entered data. The progress bar used "Step 2 of 3" copy rather than a percentage, matching research showing concrete step counts reduce anxiety better than abstract percentages.</p>
+    <p>Implementation changes: each step was a separate React component rendered conditionally on a <code>step</code> state variable. Validation ran on "Continue" click for each step, not on final submit. This meant card errors surfaced at step 3, not in a 15-field error summary at the end. Step navigation preserved field values in a shared form state object, so stepping back showed previously entered data. The progress bar used "Step 2 of 3" copy rather than a percentage, matching research showing concrete step counts reduce anxiety better than abstract percentages.</p>
   </div>
   <div class="tone-staff">
-    <p>Post-launch measurement split three metrics: step-1 start rate (proxy for perceived entry cost), per-step completion rate (identifies which step has UX problems), and overall completion rate. Step-1 start rate improved 61%, confirming the chunking hypothesis. Step-2 completion was 91% — consistent with the "completion inertia" pattern, where users who finish step 1 are high-intent and self-selecting. The data also identified that step 3 had a 12% drop-off on the billing email field — a follow-up iteration that removed that field in favor of defaulting to the work email already captured in step 1.</p>
+    <p>Post-launch measurement split three metrics: step-1 start rate (proxy for perceived entry cost), per-step completion rate (identifies which step has UX problems), and overall completion rate. Step-1 start rate improved 61%, confirming the chunking hypothesis. Step-2 completion was 91%, consistent with the "completion inertia" pattern, where users who finish step 1 are high-intent and self-selecting. The data also identified that step 3 had a 12% drop-off on the billing email field, prompting a follow-up iteration that removed that field in favor of defaulting to the work email already captured in step 1.</p>
   </div>
 </section>
 
@@ -118,7 +118,7 @@ function CheckoutForm() {
     <p class="case-ui-strip__label">Annotated example: 15 fields single-page vs 3-step chunked form</p>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
-        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ SINGLE PAGE — 15 FIELDS</p>
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ SINGLE PAGE: 15 FIELDS</p>
         <div style="font-size: 11px; color: var(--casebook-ink-muted);">
           <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">First name</div>
           <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">Last name</div>
@@ -128,23 +128,23 @@ function CheckoutForm() {
           <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px; opacity: 0.5;">Industry ...</div>
           <div style="text-align: center; font-size: 10px; color: var(--casebook-ink-faint); padding: 4px 0;">&#x2193; 9 more fields below</div>
         </div>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Scroll preview signals high effort — users leave before field 1</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">Scroll preview signals high effort: users leave before field 1</p>
       </div>
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
-        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ CHUNKED — STEP 1 OF 3</p>
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ CHUNKED: STEP 1 OF 3</p>
         <div style="display: flex; gap: 4px; margin-bottom: 12px;">
           <div style="flex: 1; height: 4px; background: var(--casebook-accent); border-radius: 2px;"></div>
           <div style="flex: 1; height: 4px; background: var(--casebook-border); border-radius: 2px;"></div>
           <div style="flex: 1; height: 4px; background: var(--casebook-border); border-radius: 2px;"></div>
         </div>
-        <p style="font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 8px;">Step 1 of 3 — About you</p>
+        <p style="font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 8px;">Step 1 of 3: About you</p>
         <div style="font-size: 11px; color: var(--casebook-ink-muted);">
           <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">First name</div>
           <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 5px;">Work email</div>
           <div style="border: 1px solid var(--casebook-border); border-radius: 3px; padding: 5px 8px; margin-bottom: 10px;">Job title</div>
         </div>
         <button style="background: var(--casebook-accent); color: #fff; border: none; border-radius: 4px; padding: 7px 14px; font-size: 12px; cursor: pointer; width: 100%;">Continue &#x2192;</button>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">3 fields visible — low entry cost, high start rate</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">3 fields visible: low entry cost, high start rate</p>
       </div>
     </div>
   </div>
@@ -152,9 +152,9 @@ function CheckoutForm() {
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: one page vs three steps</h2>
-  <div class="tone-junior"><p>The "Single page" mode shows all fields at once. The "Chunked" mode shows 4–5 fields per step with a progress indicator. Start filling in both — notice when you feel the completion anxiety begin in the single-page version.</p></div>
-  <div class="tone-mid"><p>The demo measures time-to-first-field-interaction. The chunked form has a median time of ~800ms; the single-page form has a median time of ~2400ms. Users are deciding whether to start — and the long form gives them more reason to hesitate.</p></div>
-  <div class="tone-staff"><p>Notice the step-advance validation in the chunked version — errors surface on "Continue", not on final submit. Compare the error discovery experience: inline per-step errors vs a 14-field error summary at the bottom.</p></div>
+  <div class="tone-junior"><p>The "Single page" mode shows all fields at once. The "Chunked" mode shows 4–5 fields per step with a progress indicator. Start filling in both, and notice when you feel the completion anxiety begin in the single-page version.</p></div>
+  <div class="tone-mid"><p>The demo measures time-to-first-field-interaction. The chunked form has a median time of ~800ms; the single-page form has a median time of ~2400ms. Users are deciding whether to start, and the long form gives them more reason to hesitate.</p></div>
+  <div class="tone-staff"><p>Notice the step-advance validation in the chunked version: errors surface on "Continue", not on final submit. Compare the error discovery experience: inline per-step errors vs a 14-field error summary at the bottom.</p></div>
 
   <section class="case-demo" aria-label="Try it: single page vs chunked form" data-required="true" data-demo-type="toggle" data-demo-slug="miller-chunking-forms">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -162,10 +162,10 @@ function CheckoutForm() {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Single page — 14 fields</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Chunked — 3 steps</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Single page: 14 fields</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Chunked: 3 steps</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Chunked — 3 steps</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Chunked, 3 steps</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:280px;"></div>
       </div>
     </div>
@@ -208,15 +208,15 @@ function CheckoutForm() {
     &lt;/form&gt;
   );
 }</code></pre>
-    <p>Key pitfall: not validating before advancing. Always validate the current step's fields before calling <code>setStep(s => s + 1)</code>. Deferring to final submit means errors surface after the user has already left the relevant step — recovery is expensive.</p>
+    <p>Key pitfall: not validating before advancing. Always validate the current step's fields before calling <code>setStep(s => s + 1)</code>. Deferring to final submit means errors surface after the user has already left the relevant step, making recovery expensive.</p>
   </div>
   <div class="tone-mid">
     <p>With React Hook Form, use a single <code>useForm</code> instance shared across steps. Trigger step-level validation with <code>trigger(fieldsInCurrentStep)</code> before advancing. Four implementation notes:</p>
     <ol>
-      <li><strong>Fieldset + legend is semantic grouping.</strong> It provides accessible group labeling for screen readers — use it even if you override the default fieldset border with CSS.</li>
-      <li><strong>Persist state on back navigation.</strong> Store all fields in the shared <code>useForm</code> register — data is preserved when users navigate back to a previous step without re-entering values.</li>
+      <li><strong>Fieldset + legend is semantic grouping.</strong> It provides accessible group labeling for screen readers; use it even if you override the default fieldset border with CSS.</li>
+      <li><strong>Persist state on back navigation.</strong> Store all fields in the shared <code>useForm</code> register, so data is preserved when users navigate back to a previous step without re-entering values.</li>
       <li><strong>Progress: "Step N of M" beats percentages.</strong> Concrete step counts signal a finite task; percentages feel abstract and often underestimate remaining work.</li>
-      <li><strong>Keep steps semantically coherent.</strong> Don't split a related group (address line 1 in step 2, city/state in step 3) — chunking should match the user's mental model of what belongs together.</li>
+      <li><strong>Keep steps semantically coherent.</strong> Don't split a related group (address line 1 in step 2, city/state in step 3). Chunking should match the user's mental model of what belongs together.</li>
     </ol>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const { register, trigger, formState: { errors } } = useForm();
 const STEP_FIELDS = {
@@ -231,33 +231,33 @@ const advance = async () => {
 };</code></pre>
   </div>
   <div class="tone-staff">
-    <p>At design system scale, multi-step forms need a typed step schema: each step defines its fields, validation rules, and accessible legend. A <code>&lt;FormWizard steps={schema} /&gt;</code> component consumes the schema and handles step rendering, progress display, and per-step validation automatically. This prevents the common regression where a developer adds a field to a step array without adding its validation rules. For measurement, instrument three separate events: <code>form_step_started</code>, <code>form_step_completed</code>, and <code>form_abandoned</code> with a <code>step</code> property — this gives you per-step funnel data and pinpoints where users drop. Without per-step instrumentation, you can only see overall completion rate, which masks which step is the actual problem. Add a Storybook interaction test that steps through all steps and asserts the final submit fires correctly — this catches step-skip regressions that unit tests miss.</p>
+    <p>At design system scale, multi-step forms need a typed step schema: each step defines its fields, validation rules, and accessible legend. A <code>&lt;FormWizard steps={schema} /&gt;</code> component consumes the schema and handles step rendering, progress display, and per-step validation automatically. This prevents the common regression where a developer adds a field to a step array without adding its validation rules. For measurement, instrument three separate events: <code>form_step_started</code>, <code>form_step_completed</code>, and <code>form_abandoned</code> with a <code>step</code> property. This gives you per-step funnel data and pinpoints where users drop. Without per-step instrumentation, you can only see overall completion rate, which masks which step is the actual problem. Add a Storybook interaction test that steps through all steps and asserts the final submit fires correctly, catching step-skip regressions that unit tests miss.</p>
   </div>
 </section>
 
-{# ── Chapter: Takeaway ── #}
+{# -- Chapter: Takeaway -- #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
-{# ── Chapter: References ── #}
-{# ── Chapter: References ── #}
+{# -- Chapter: References (stub, expand per case) -- #}
+{# -- Chapter: References -- #}
+{# -- Chapter: References -- #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://lawsofux.com/millers-law/" rel="noopener noreferrer">Laws of UX — Miller's Law</a></li>
-      <li><a href="https://www.nngroup.com/articles/progressive-disclosure/" rel="noopener noreferrer">NN/g — Progressive disclosure</a></li>
+      <li><a href="https://lawsofux.com/millers-law/" rel="noopener noreferrer">Laws of UX: Miller's Law</a></li>
+      <li><a href="https://www.nngroup.com/articles/progressive-disclosure/" rel="noopener noreferrer">NN/g: Progressive disclosure</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard — Checkout fields study</a></li>
-      <li><a href="https://designsystem.service.gov.uk/patterns/" rel="noopener noreferrer">GOV.UK — Form patterns</a></li>
+      <li><a href="https://baymard.com/blog/checkout-flow-average-form-fields" rel="noopener noreferrer">Baymard: Checkout fields study</a></li>
+      <li><a href="https://designsystem.service.gov.uk/patterns/" rel="noopener noreferrer">GOV.UK: Form patterns</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/" rel="noopener noreferrer">WAI-ARIA APG — Patterns</a></li>
-      <li><a href="https://www.smashingmagazine.com/2017/06/designing-efficient-web-forms/" rel="noopener noreferrer">Smashing — Efficient web forms</a></li>
+      <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/" rel="noopener noreferrer">WAI-ARIA APG: Patterns</a></li>
+      <li><a href="https://www.smashingmagazine.com/2017/06/designing-efficient-web-forms/" rel="noopener noreferrer">Smashing: Efficient web forms</a></li>
     </ol>
   </div>
 </section>
@@ -270,12 +270,12 @@ const advance = async () => {
       <li>
         <div class="tone-junior">If your form has more than 5–7 visible fields, split it into steps grouped by semantic theme. The work doesn't change; the perceived difficulty drops dramatically.</div>
         <div class="tone-mid">Chunk semantically (who you are → where you are → how you pay), not arbitrarily. Users understand natural groupings; arbitrary splits add cognitive work rather than reducing it.</div>
-        <div class="tone-staff">Pre-fill and smart defaults compound with chunking — each auto-filled field reduces effective n per step. A 6-field step with 3 pre-filled fields presents effective n=3, well within working memory capacity.</div>
+        <div class="tone-staff">Pre-fill and smart defaults compound with chunking: each auto-filled field reduces effective n per step. A 6-field step with 3 pre-filled fields presents effective n=3, well within working memory capacity.</div>
       </li>
       <li>
         <div class="tone-junior">Validate on step advance, not on final submit. Early errors are cheap; late errors destroy completion momentum.</div>
         <div class="tone-mid">Use "Step 2 of 3" progress indicators rather than percentages. Concrete step counts are more reassuring than percentages because they imply a finite, manageable task.</div>
-        <div class="tone-staff">The completion inertia effect: users who complete step 1 finish at ~78% rate. The entry barrier is the primary abandonment point — chunking's main job is lowering the perceived cost of starting, not making the middle easier.</div>
+        <div class="tone-staff">The completion inertia effect: users who complete step 1 finish at ~78% rate. The entry barrier is the primary abandonment point; chunking's main job is lowering the perceived cost of starting, not making the middle easier.</div>
       </li>
     </ul>
   </div>

@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: "The 400ms Rule: Doherty Threshold"
-description: How a 600ms search debounce quietly destroys the feeling that your app is alive — and the optimistic update pattern that bypasses the problem.
+description: How a 600ms search debounce quietly destroys the feeling that your app is alive, and the optimistic update pattern that bypasses the problem.
 publishedAt: "2026-06-01T00:00:00Z"
 slug: doherty-threshold-input-latency
 track: psychology-perception
@@ -19,22 +19,22 @@ relatedCases:
 ogImage: https://anmshpndy.com/brand/cases/doherty-threshold-input-latency-og.png
 ---
 
-{# ── Chapter: Hook ── #}
+{# -- Chapter: Hook -- #}
 <section class="case-chapter" data-chapter="hook">
   <h2>The search that felt broken</h2>
   <div class="tone-junior">
     <p>A live-search input had a 500ms debounce and a server that took 400–600ms to respond. Total latency: 900–1100ms. Users typed a character, waited nearly a second, then saw results that no longer matched what they'd typed because they'd continued typing during the wait.</p>
-    <p>The developer thought 500ms debounce was being kind — "don't hammer the server with every keystroke." But the user experienced it as: "I type. Nothing happens. The app is slow." The app wasn't slow — the latency was engineered in. The fix was 200ms debounce + an optimistic "searching…" state at 50ms. Same API speed. Completely different perception.</p>
+    <p>The developer thought 500ms debounce was being kind: "don't hammer the server with every keystroke." But the user experienced it as: "I type. Nothing happens. The app is slow." The app wasn't slow; the latency was engineered in. The fix was 200ms debounce + an optimistic "searching…" state at 50ms. Same API speed. Completely different perception.</p>
   </div>
   <div class="tone-mid">
-    <p>The Doherty Threshold (Walter Doherty, IBM, 1982): when system response time falls below 400ms, users stay in a "flow" state — they feel like they're operating through the system, not waiting on it. Above 400ms, users shift mental modes. They look away, start a second task, or lose the thread of what they were doing.</p>
+    <p>The Doherty Threshold (Walter Doherty, IBM, 1982): when system response time falls below 400ms, users stay in a "flow" state: they feel like they're operating through the system, not waiting on it. Above 400ms, users shift mental modes. They look away, start a second task, or lose the thread of what they were doing.</p>
   </div>
   <div class="tone-staff">
-    <p>Three distinct latency tiers from Nielsen's research: &lt;100ms feels instantaneous (the system responds as fast as you think), 100–400ms is noticeable but doesn't break flow (you see the gap but stay engaged), 400ms–1000ms breaks flow (the Doherty zone — this is where most modern SPAs accidentally live), &gt;1000ms requires explicit feedback (spinner, progress) or users conclude the action failed.</p>
+    <p>Three distinct latency tiers from Nielsen's research: &lt;100ms feels instantaneous (the system responds as fast as you think), 100–400ms is noticeable but doesn't break flow (you see the gap but stay engaged), 400ms–1000ms breaks flow (the Doherty zone, where most modern SPAs accidentally live), &gt;1000ms requires explicit feedback (spinner, progress) or users conclude the action failed.</p>
   </div>
 </section>
 
-{# ── Chapter: Concept ── #}
+{# -- Chapter: Concept -- #}
 <section class="case-chapter" data-chapter="concept">
   <h2>The three tools for staying below 400ms</h2>
   <div class="tone-junior">
@@ -51,7 +51,7 @@ const debouncedSearch = useMemo(
   </div>
   <div class="tone-mid">
     <p><strong>2. Optimistic updates.</strong> For mutations (save, toggle, delete), apply the state change immediately and roll back on failure. The user sees the result before the server responds:</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Optimistic toggle — state change is immediate
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Optimistic toggle: state change is immediate
 async function toggleFavorite(itemId) {
   // Apply immediately (optimistic)
   setItems(items => items.map(i =>
@@ -59,7 +59,7 @@ async function toggleFavorite(itemId) {
   ));
   try {
     await api.toggleFavorite(itemId);
-    // Server confirmed — do nothing, state is already correct
+    // Server confirmed, so do nothing; state is already correct
   } catch (err) {
     // Rollback only on failure
     setItems(items => items.map(i =>
@@ -71,13 +71,13 @@ async function toggleFavorite(itemId) {
     <p>Failure rates for toggle operations are typically under 0.1% on stable connections. The UX cost of waiting for server confirmation on every toggle is paid by 100% of users; the rollback cost is paid by 0.1%.</p>
   </div>
   <div class="tone-staff">
-    <p><strong>3. 50ms feedback threshold.</strong> Even when you can't respond under 400ms (large queries, complex computations), you can show a response under 50ms. Show "searching…", disable the button, or animate the input border at 50ms — these signals tell the brain "the system received your input" and reset the latency clock psychologically:</p>
+    <p><strong>3. 50ms feedback threshold.</strong> Even when you can't respond under 400ms (large queries, complex computations), you can show a response under 50ms. Show "searching…", disable the button, or animate the input border at 50ms: these signals tell the brain "the system received your input" and reset the latency clock psychologically.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Show immediate feedback; actual response can take longer
 function SearchInput({ onSearch }) {
   const [isSearching, setIsSearching] = useState(false);
 
   const handleChange = (e) => {
-    setIsSearching(true); // immediate — resets perception clock
+    setIsSearching(true); // immediate, resets perception clock
     debouncedSearch(e.target.value, () => setIsSearching(false));
   };
 
@@ -88,47 +88,47 @@ function SearchInput({ onSearch }) {
     &lt;/div&gt;
   );
 }</code></pre>
-    <p>IME (Input Method Editor) composition events must gate debounce for CJK languages. Fire search only after <code>compositionend</code>, not on every <code>input</code> event during composition — otherwise you interrupt character assembly mid-composition.</p>
+    <p>IME (Input Method Editor) composition events must gate debounce for CJK languages. Fire search only after <code>compositionend</code>, not on every <code>input</code> event during composition, otherwise you interrupt character assembly mid-composition.</p>
   </div>
 </section>
 
-{# ── Chapter: Demo ── #}
-{# ── Chapter: Story 1 ── #}
+{# -- Chapter: Demo -- #}
+{# -- Chapter: Story 1 -- #}
 <section class="case-chapter" data-chapter="story-1">
   <h2>The search that users abandoned after three keystrokes</h2>
   <div class="tone-junior">
-    <p>A documentation site added a search-as-you-type component. The developer set a 600ms debounce — "conservative, to avoid server load" — and the search API averaged 300ms response time. Total latency from keystroke to results: 900ms. On fast connections, which most users had, 900ms felt like a full second of nothing happening after each word. Users saw the cursor blinking in an empty input while results they had already typed ahead of appeared.</p>
-    <p>Session analytics showed that 23% of search sessions ended after 1–3 keystrokes with no click — far higher than comparable documentation sites. Exit rate on the search page was 41% within 10 seconds. The team had attributed this to poor content relevance. A latency analysis revealed the real cause: users gave up because the search felt broken, not because results were irrelevant.</p>
+    <p>A documentation site added a search-as-you-type component. The developer set a 600ms debounce ("conservative, to avoid server load") and the search API averaged 300ms response time. Total latency from keystroke to results: 900ms. On fast connections, which most users had, 900ms felt like a full second of nothing happening after each word. Users saw the cursor blinking in an empty input while results they had already typed ahead of appeared.</p>
+    <p>Session analytics showed that 23% of search sessions ended after 1–3 keystrokes with no click, far higher than comparable documentation sites. Exit rate on the search page was 41% within 10 seconds. The team had attributed this to poor content relevance. A latency analysis revealed the real cause: users gave up because the search felt broken, not because results were irrelevant.</p>
   </div>
   <div class="tone-mid">
-    <p>The 600ms debounce was a copy-paste from a tutorial written in 2016 for slow mobile connections and servers with 400ms+ response times. Modern documentation stacks on fast CDN infrastructure have API response times of 50–150ms. A 600ms debounce on a 100ms API means the user waits 700ms by design — well above the 400ms Doherty Threshold — because of a configuration value that was never revisited. The server was not slow; the client was engineered to feel slow.</p>
+    <p>The 600ms debounce was a copy-paste from a tutorial written in 2016 for slow mobile connections and servers with 400ms+ response times. Modern documentation stacks on fast CDN infrastructure have API response times of 50–150ms. A 600ms debounce on a 100ms API means the user waits 700ms by design, well above the 400ms Doherty Threshold, because of a configuration value that was never revisited. The server was not slow; the client was engineered to feel slow.</p>
   </div>
 </section>
 
-{# ── Chapter: Story 2 ── #}
+{# -- Chapter: Story 2 -- #}
 <section class="case-chapter" data-chapter="story-2">
   <h2>Optimistic local index: instant first, accurate last</h2>
   <div class="tone-junior">
-    <p>The fix had two parts. First, the debounce was reduced to 200ms — matching the actual server RTT plus a buffer. Second, and more impactfully, a lightweight local index was built at page load using <code>requestIdleCallback</code>. The local index held the titles, headings, and short descriptions of the top 200 most-visited docs pages. When a user typed, local results appeared in under 10ms. The API call with full-text search results overlaid them 250ms later.</p>
-    <p>Users saw results immediately on every keystroke — local results, clearly labelled as "Quick results." When the API results arrived, they replaced the local results smoothly. Abandonment rate on search dropped from 23% to 8%. Exit rate within 10 seconds dropped from 41% to 19%. Perceived response was immediate even though the full-fidelity results still took 250ms — because the first visible response happened in under 50ms.</p>
+    <p>The fix had two parts. First, the debounce was reduced to 200ms, matching the actual server RTT plus a buffer. Second, and more impactfully, a lightweight local index was built at page load using <code>requestIdleCallback</code>. The local index held the titles, headings, and short descriptions of the top 200 most-visited docs pages. When a user typed, local results appeared in under 10ms. The API call with full-text search results overlaid them 250ms later.</p>
+    <p>Users saw results immediately on every keystroke: local results, clearly labelled as "Quick results." When the API results arrived, they replaced the local results smoothly. Abandonment rate on search dropped from 23% to 8%. Exit rate within 10 seconds dropped from 41% to 19%. Perceived response was immediate even though the full-fidelity results still took 250ms, because the first visible response happened in under 50ms.</p>
   </div>
   <div class="tone-mid">
-    <p>The architectural insight: the Doherty Threshold applies to the first perceptible response, not the final response. A user who sees partial results in 10ms and accurate results in 250ms experiences 10ms latency psychologically — their attention is engaged from the first keystroke. A user who sees nothing for 600ms and then sees results experiences 600ms latency — a full stop, a moment of wondering if the input registered. Same final results; completely different perception of responsiveness.</p>
+    <p>The architectural insight: the Doherty Threshold applies to the first perceptible response, not the final response. A user who sees partial results in 10ms and accurate results in 250ms experiences 10ms latency psychologically; their attention is engaged from the first keystroke. A user who sees nothing for 600ms and then sees results experiences 600ms latency: a full stop, a moment of wondering if the input registered. Same final results; completely different perception of responsiveness.</p>
   </div>
 </section>
 
-{# ── Chapter: UI Strip ── #}
+{# -- Chapter: UI Strip -- #}
 <section class="case-chapter" data-chapter="ui-strip">
   <h2>Pattern at a glance</h2>
   <div class="case-ui-strip">
     <figure>
-      <figcaption>Before — 600ms debounce + API only; 900ms total before any result</figcaption>
+      <figcaption>Before: 600ms debounce + API only; 900ms total before any result</figcaption>
       <pre><code>// ❌ Debounce 600ms + 300ms API = 900ms total latency
 // Users experience: type → 900ms silence → results (or wrong results)
 const debouncedSearch = debounce(async (query) =&gt; {
   const results = await searchAPI(query); // ~300ms RTT
   setResults(results);
-}, 600); // 600ms debounce — too slow for modern servers
+}, 600); // 600ms debounce, too slow for modern servers
 
 function SearchInput() {
   return (
@@ -140,7 +140,7 @@ function SearchInput() {
 }</code></pre>
     </figure>
     <figure>
-      <figcaption>After — local index for instant first results; API for full results</figcaption>
+      <figcaption>After: local index for instant first results; API for full results</figcaption>
       <pre><code>// ✅ Local index (10ms) + debounce 200ms + API 300ms = 200ms perceived
 // Users see instant local results; accurate API results follow smoothly
 const localIndex = buildLocalIndex(TOP_200_DOCS); // built at idle time
@@ -148,14 +148,14 @@ const localIndex = buildLocalIndex(TOP_200_DOCS); // built at idle time
 const debouncedAPISearch = debounce(async (query) =&gt; {
   const results = await searchAPI(query);
   setResults(results); // replaces local results with accurate results
-}, 200); // 200ms debounce — matches actual server RTT
+}, 200); // 200ms debounce, matches actual server RTT
 
 function SearchInput() {
   const handleChange = (e) =&gt; {
     const q = e.target.value;
-    // Instant local results — under 10ms
+    // Instant local results, under 10ms
     setResults(localIndex.search(q));
-    // Full API results follow — 200ms + 300ms = 500ms
+    // Full API results follow: 200ms + 300ms = 500ms
     debouncedAPISearch(q);
   };
   return &lt;input onChange={handleChange} placeholder="Search docs…" /&gt;;
@@ -166,9 +166,9 @@ function SearchInput() {
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: fast vs slow input response</h2>
-  <div class="tone-junior"><p>Both inputs accept the same typing. The "Slow" input has a 700ms artificial delay before showing any response. The "Fast" input shows immediate feedback at 50ms and results at ~200ms. Type a few words in each and notice the psychological difference — the slow one feels like something might be wrong.</p></div>
-  <div class="tone-mid"><p>The demo asks you to complete a quick lookup task in both modes and rates your perceived frustration. 700ms inputs score 2–3/10 on satisfaction; sub-200ms inputs score 8–9/10. Same task, same result — different latency.</p></div>
-  <div class="tone-staff"><p>Observe the "searching…" indicator in the fast input — it appears within 50ms of your first keystroke, before any API call completes. This immediate acknowledgement is why the fast input feels responsive even though the actual data arrives 150ms later.</p></div>
+  <div class="tone-junior"><p>Both inputs accept the same typing. The "Slow" input has a 700ms artificial delay before showing any response. The "Fast" input shows immediate feedback at 50ms and results at ~200ms. Type a few words in each and notice the psychological difference: the slow one feels like something might be wrong.</p></div>
+  <div class="tone-mid"><p>The demo asks you to complete a quick lookup task in both modes and rates your perceived frustration. 700ms inputs score 2–3/10 on satisfaction; sub-200ms inputs score 8–9/10. Same task, same result, different latency.</p></div>
+  <div class="tone-staff"><p>Observe the "searching…" indicator in the fast input: it appears within 50ms of your first keystroke, before any API call completes. This immediate acknowledgement is why the fast input feels responsive even though the actual data arrives 150ms later.</p></div>
 
   <section class="case-demo" aria-label="Try it: slow vs fast input response" data-required="true" data-demo-type="toggle" data-demo-slug="doherty-threshold-input-latency">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -176,26 +176,26 @@ function SearchInput() {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Slow — 700ms delay</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fast — 50ms feedback</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Slow: 700ms delay</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Fast: 50ms feedback</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Fast — 50ms feedback</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fast, 50ms feedback</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
       </div>
     </div>
   </section>
 </section>
 
-{# ── Chapter: FE Depth ── #}
+{# -- Chapter: FE Depth -- #}
 <section class="case-chapter" data-chapter="fe-depth">
   <h2>Implementation depth</h2>
   <div class="tone-mid">
-    <p>Building a local search index at idle time with <code>requestIdleCallback</code> ensures the index build does not compete with the initial page render or user interaction. The index should be capped in size — 200–500 documents is enough for instant-feeling results without noticeable memory cost. Libraries like <code>lunr.js</code> (small, no dependencies) or <code>Pagefind</code> (WASM-based, pre-built at static site generation time) are the two most practical choices for documentation sites.</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Build local index at idle — does not block interaction
+    <p>Building a local search index at idle time with <code>requestIdleCallback</code> ensures the index build does not compete with the initial page render or user interaction. The index should be capped in size: 200–500 documents is enough for instant-feeling results without noticeable memory cost. Libraries like <code>lunr.js</code> (small, no dependencies) or <code>Pagefind</code> (WASM-based, pre-built at static site generation time) are the two most practical choices for documentation sites.</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Build local index at idle, does not block interaction
 let localIndex = null;
 
 requestIdleCallback(() =&gt; {
-  // lunr.js — lightweight, synchronous indexing
+  // lunr.js: lightweight, synchronous indexing
   localIndex = lunr(function () {
     this.ref('id');
     this.field('title', { boost: 10 });
@@ -213,37 +213,37 @@ function searchLocal(query) {
   <div class="tone-staff">
     <p>Debounce and search latency implementation pitfalls:</p>
     <ul>
-      <li><strong>Debounce value must be measured, not guessed</strong> — measure your actual API p50 and p95 response times. Set debounce to roughly 2x p50 RTT. If p50 RTT is 80ms, debounce at 150–200ms. Recalibrate when your infrastructure changes.</li>
-      <li><strong>Cancel in-flight requests on new input</strong> — debounce prevents sending too many requests, but if a user types slowly, you may have multiple requests in flight. Use <code>AbortController</code> to cancel the previous request when a new debounced call fires.</li>
-      <li><strong>IME composition for CJK languages</strong> — debounce and local search must gate on <code>compositionend</code>, not <code>input</code> event. During CJK character composition, <code>input</code> fires for each intermediate keystroke before the character is assembled. Triggering search on each fires on partial characters.</li>
-      <li><strong>Stale results from out-of-order API responses</strong> — if the 200ms debounce fires twice in quick succession, two API requests are in flight. The second request may resolve before the first. Use a request ID or abort controller to ensure only the most recent result is shown.</li>
-      <li><strong><code>requestIdleCallback</code> fallback</strong> — Safari did not support <code>requestIdleCallback</code> until 2023. Use <code>setTimeout(fn, 200)</code> as a fallback: <code>const schedule = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : (fn) =&gt; setTimeout(fn, 200)</code>.</li>
+      <li><strong>Debounce value must be measured, not guessed.</strong> Measure your actual API p50 and p95 response times. Set debounce to roughly 2x p50 RTT. If p50 RTT is 80ms, debounce at 150–200ms. Recalibrate when your infrastructure changes.</li>
+      <li><strong>Cancel in-flight requests on new input.</strong> Debounce prevents sending too many requests, but if a user types slowly, you may have multiple requests in flight. Use <code>AbortController</code> to cancel the previous request when a new debounced call fires.</li>
+      <li><strong>IME composition for CJK languages.</strong> Debounce and local search must gate on <code>compositionend</code>, not <code>input</code> event. During CJK character composition, <code>input</code> fires for each intermediate keystroke before the character is assembled. Triggering search on each fires on partial characters.</li>
+      <li><strong>Stale results from out-of-order API responses.</strong> If the 200ms debounce fires twice in quick succession, two API requests are in flight. The second request may resolve before the first. Use a request ID or abort controller to ensure only the most recent result is shown.</li>
+      <li><strong><code>requestIdleCallback</code> fallback.</strong> Safari did not support <code>requestIdleCallback</code> until 2023. Use <code>setTimeout(fn, 200)</code> as a fallback: <code>const schedule = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : (fn) =&gt; setTimeout(fn, 200)</code>.</li>
     </ul>
   </div>
 </section>
 
-{# ── Chapter: Takeaway ── #}
+{# -- Chapter: Takeaway -- #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
-{# ── Chapter: References ── #}
+{# -- Chapter: References (stub, expand per case) -- #}
+{# -- Chapter: References -- #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://www.nngroup.com/articles/response-time-limits/" rel="noopener noreferrer">NN/g — Response time limits</a></li>
-      <li><a href="https://lawsofux.com/doherty-threshold/" rel="noopener noreferrer">Laws of UX — Doherty threshold</a></li>
+      <li><a href="https://www.nngroup.com/articles/response-time-limits/" rel="noopener noreferrer">NN/g: Response time limits</a></li>
+      <li><a href="https://lawsofux.com/doherty-threshold/" rel="noopener noreferrer">Laws of UX: Doherty threshold</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://web.dev/articles/rail" rel="noopener noreferrer">web.dev — RAIL model</a></li>
-      <li><a href="https://web.dev/articles/inp" rel="noopener noreferrer">web.dev — INP</a></li>
+      <li><a href="https://web.dev/articles/rail" rel="noopener noreferrer">web.dev: RAIL model</a></li>
+      <li><a href="https://web.dev/articles/inp" rel="noopener noreferrer">web.dev: INP</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev — Core Web Vitals</a></li>
-      <li><a href="https://www.w3.org/TR/input-events/" rel="noopener noreferrer">W3C — Input Events</a></li>
+      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev: Core Web Vitals</a></li>
+      <li><a href="https://www.w3.org/TR/input-events/" rel="noopener noreferrer">W3C: Input Events</a></li>
     </ol>
   </div>
 </section>
@@ -254,13 +254,13 @@ function searchLocal(query) {
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">400ms is the threshold between "feels alive" and "feels slow." Even if you can't get a full API response in 400ms, show some feedback within 50ms — it resets the perception clock.</div>
-        <div class="tone-mid">Match your debounce to your actual server RTT. If server RTT is 100ms, debounce to 200ms = 300ms total (under threshold). The old 500ms default was for slow connections — recalibrate for your stack.</div>
-        <div class="tone-staff">Optimistic updates bypass the Doherty Threshold for mutations by applying state changes immediately. Failure rates on stable connections are typically under 0.1% — the rollback cost is worth the universal latency improvement.</div>
+        <div class="tone-junior">400ms is the threshold between "feels alive" and "feels slow." Even if you can't get a full API response in 400ms, show some feedback within 50ms; it resets the perception clock.</div>
+        <div class="tone-mid">Match your debounce to your actual server RTT. If server RTT is 100ms, debounce to 200ms = 300ms total (under threshold). The old 500ms default was for slow connections; recalibrate for your stack.</div>
+        <div class="tone-staff">Optimistic updates bypass the Doherty Threshold for mutations by applying state changes immediately. Failure rates on stable connections are typically under 0.1%, and the rollback cost is worth the universal latency improvement.</div>
       </li>
       <li>
         <div class="tone-junior">The three latency tiers: &lt;100ms (instantaneous), 100–400ms (noticeable but fine), 400ms–1000ms (breaks flow), &gt;1000ms (requires explicit feedback). Most SPAs accidentally live in the 400–1000ms zone due to waterfall requests and generous debounce values.</div>
-        <div class="tone-mid">IME composition events: fire your search/debounce logic only after <code>compositionend</code>, not on every <code>input</code> event. CJK users compose multi-keystroke characters before submitting — debouncing during composition breaks character input.</div>
+        <div class="tone-mid">IME composition events: fire your search/debounce logic only after <code>compositionend</code>, not on every <code>input</code> event. CJK users compose multi-keystroke characters before submitting, and debouncing during composition breaks character input.</div>
         <div class="tone-staff">Combine all three strategies: immediate 50ms visual feedback + debounce tuned to RTT + optimistic updates for mutations. Each one independently keeps you below the Doherty Threshold; together they make interactions feel native-app responsive.</div>
       </li>
     </ul>

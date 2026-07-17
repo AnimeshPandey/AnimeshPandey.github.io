@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Why Skeleton Screens Beat Spinners
-description: "A case study on perceived performance — why skeleton screens often feel faster than spinners even at identical load times, with an interactive demo and junior-to-staff tone switcher."
+description: "A case study on perceived performance: why skeleton screens often feel faster than spinners even at identical load times, with an interactive demo and junior-to-staff tone switcher."
 publishedAt: "2026-05-31T00:00:00Z"
 slug: skeleton-screens-perceived-speed
 track: psychology-perception
@@ -27,25 +27,25 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
     <p>
       You open an app. A spinner appears. You wait. And wait. The spinner keeps going.
       You start wondering: <em>is it broken? Should I refresh?</em> By the time the content
-      loads, you're already frustrated — even if it only took 2 seconds.
+      loads, you're already frustrated, even if it only took 2 seconds.
     </p>
     <p>
       Now imagine the same app. But instead of a spinner, you see grey placeholder shapes
-      that match where the content will appear. The same 2 seconds pass — but somehow
+      that match where the content will appear. The same 2 seconds pass, but somehow
       it feels shorter. You weren't left in the dark. You could see the layout forming.
     </p>
-    <p>That's the skeleton screen difference. And it's not magic — it's psychology.</p>
+    <p>That's the skeleton screen difference. And it's not magic: it's psychology.</p>
   </div>
 
   <div class="tone-mid">
     <p>
       Perceived performance is distinct from measured performance. A 2-second TTFB feels
       very different when users see a spinner versus a skeleton layout. The key variable
-      isn't load time — it's <em>uncertainty</em>.
+      isn't load time; it's <em>uncertainty</em>.
     </p>
     <p>
       Spinners communicate "I'm working, please wait." Skeletons communicate "here's the
-      layout — content is arriving." That shift from uncertainty to progress is measurable
+      layout: content is arriving." That shift from uncertainty to progress is measurable
       in user perception studies.
     </p>
   </div>
@@ -70,13 +70,13 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
 
   <div class="tone-junior">
     <p>
-      Psychologists call it <strong>labor perception</strong> — when we see progress or
+      Psychologists call it <strong>labor perception</strong>: when we see progress or
       effort happening, we feel less impatient. It's why progress bars on downloads feel
       better than just a "loading…" message, even if both take the same time.
     </p>
     <p>
       Skeleton screens apply this to UI loading. The grey placeholders show where content
-      will go — they look like effort is happening, layout is building. Users become
+      will go; they look like effort is happening, layout is building. Users become
       observers of a process rather than victims of a black box.
     </p>
   </div>
@@ -92,7 +92,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
     </ul>
     <p>
       A/B tests at companies like Facebook and LinkedIn showed meaningful improvements
-      in perceived load time with skeletons — without changing actual load time.
+      in perceived load time with skeletons, without changing actual load time.
     </p>
   </div>
 
@@ -100,7 +100,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
     <p>
       Beyond perception: skeleton screens have a secondary benefit for CLS. A well-designed
       skeleton preserves final layout geometry, meaning content slots directly into place.
-      Spinners often cause content pop-in with CLS > 0.1 — measurable in CrUX.
+      Spinners often cause content pop-in with CLS > 0.1, measurable in CrUX.
     </p>
     <p>
       Implementation tradeoffs: skeletons require layout contract between skeleton and
@@ -110,7 +110,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
   </div>
 </section>
 
-{# ── Chapter: Story 1 — Bad pattern ── #}
+{# ── Chapter: Story 1: Bad pattern ── #}
 <section class="case-chapter" data-chapter="story-1">
   <h2>The spinner problem</h2>
 
@@ -122,9 +122,9 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
     </p>
     <p>Three things make spinners feel slow:</p>
     <ul>
-      <li><strong>No layout preview</strong> — users don't know what to expect</li>
-      <li><strong>Content pop-in</strong> — when content appears, it shifts the page (CLS)</li>
-      <li><strong>No "almost there" signal</strong> — the spinner looks the same at 0.1s and 5s</li>
+      <li><strong>No layout preview</strong>: users don't know what to expect</li>
+      <li><strong>Content pop-in</strong>: when content appears, it shifts the page (CLS)</li>
+      <li><strong>No "almost there" signal</strong>: the spinner looks the same at 0.1s and 5s</li>
     </ul>
   </div>
 
@@ -132,7 +132,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
     <p>
       The root issue: spinners are content-agnostic. They don't reflect what's loading,
       making them feel like a stall rather than progress. When content arrives, it jumps
-      into place — causing CLS and a cognitive jolt.
+      into place, causing CLS and a cognitive jolt.
     </p>
     <p>
       For data-heavy dashboards (tables, charts, feed cards), spinners force users to
@@ -143,7 +143,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
   <div class="tone-staff">
     <p>
       Spinners are a symptom of treating loading as a single-phase event. Modern data
-      fetching (streaming, suspense, partial hydration) makes phased loading natural —
+      fetching (streaming, suspense, partial hydration) makes phased loading natural;
       skeletons map cleanly to partial data states.
     </p>
     <p>
@@ -154,7 +154,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
   </div>
 </section>
 
-{# ── Chapter: Story 2 — Better ── #}
+{# ── Chapter: Story 2: Better ── #}
 <section class="case-chapter" data-chapter="story-2">
   <h2>The skeleton approach</h2>
 
@@ -170,7 +170,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
       <li>They prevent <strong>layout shift</strong> when content loads in</li>
     </ul>
     <p>
-      The shimmer animation is optional but helpful — it signals that something is actively
+      The shimmer animation is optional but helpful: it signals that something is actively
       happening. Without it, a static skeleton can feel like a broken render.
     </p>
   </div>
@@ -180,10 +180,10 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
       Implementation best practices:
     </p>
     <ul>
-      <li><strong>Match geometry</strong> — skeleton blocks should match real content dimensions</li>
-      <li><strong>Use CSS shimmer</strong> — background gradient + animation, no JS required</li>
-      <li><strong>Respect PRM</strong> — disable shimmer under <code>prefers-reduced-motion</code></li>
-      <li><strong>Progressive reveal</strong> — show known-first content (title, avatar) before detail</li>
+      <li><strong>Match geometry</strong>: skeleton blocks should match real content dimensions</li>
+      <li><strong>Use CSS shimmer</strong>: background gradient + animation, no JS required</li>
+      <li><strong>Respect PRM</strong>: disable shimmer under <code>prefers-reduced-motion</code></li>
+      <li><strong>Progressive reveal</strong>: show known-first content (title, avatar) before detail</li>
     </ul>
     <p>
       In React: use Suspense with skeleton fallback. Component isolation makes per-section
@@ -193,7 +193,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
 
   <div class="tone-staff">
     <p>
-      At component library scale, define skeleton as a first-class component variant —
+      At component library scale, define skeleton as a first-class component variant:
       <code>&lt;Card skeleton /&gt;</code> rather than ad hoc grey rectangles. This ensures
       geometry consistency and makes storybook states easy.
     </p>
@@ -239,7 +239,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
   <h2>Try it: spinner vs. skeleton</h2>
 
   <div class="tone-junior">
-    <p>Toggle between broken (spinner) and fixed (skeleton) below. Same simulated wait — different feel.</p>
+    <p>Toggle between broken (spinner) and fixed (skeleton) below. Same simulated wait, different feel.</p>
   </div>
   <div class="tone-mid">
     <p>Notice how the skeleton anchors your expectation of the layout even before data arrives.</p>
@@ -262,7 +262,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
     <div class="case-demo__body">
       <noscript>
         <div class="case-demo__noscript">
-          <p><strong>Demo requires JavaScript</strong> — here's the recommended skeleton state:</p>
+          <p><strong>Demo requires JavaScript</strong>: here's the recommended skeleton state:</p>
           <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px;">
             <div style="height: 14px; border-radius: 7px; background: var(--casebook-surface-2); width: 45%;"></div>
             <div style="height: 10px; border-radius: 5px; background: var(--casebook-surface-2);"></div>
@@ -277,14 +277,14 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
           <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
-            Broken — spinner
+            Broken (spinner)
           </button>
           <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
-            Fixed — skeleton
+            Fixed (skeleton)
           </button>
         </div>
         <p class="case-demo__state-label" aria-live="polite" id="demo-state-label">
-          Showing: Fixed (skeleton) — recommended
+          Showing: Fixed (skeleton), recommended
         </p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height: 120px;"></div>
       </div>
@@ -297,7 +297,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
   <h2>Implementation notes</h2>
 
   <div class="tone-junior">
-    <p>The shimmer animation is pure CSS — no library needed:</p>
+    <p>The shimmer animation is pure CSS, no library needed:</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>@keyframes shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
@@ -326,7 +326,7 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
   );
 }</code></pre>
     <p>
-      <code>DashboardSkeleton</code> uses the same layout tokens as <code>DashboardContent</code> —
+      <code>DashboardSkeleton</code> uses the same layout tokens as <code>DashboardContent</code>,
       ensuring geometry matches on swap.
     </p>
   </div>
@@ -352,21 +352,21 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://growth.design/case-studies/labor-perception-bias" rel="noopener noreferrer">Growth.Design — Labor perception bias</a></li>
-      <li><a href="https://www.lukew.com/ff/entry.asp?1797" rel="noopener noreferrer">Luke Wroblewski — Skeleton screens</a></li>
+      <li><a href="https://growth.design/case-studies/labor-perception-bias" rel="noopener noreferrer">Growth.Design: Labor perception bias</a></li>
+      <li><a href="https://www.lukew.com/ff/entry.asp?1797" rel="noopener noreferrer">Luke Wroblewski: Skeleton screens</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://ux.shopify.com/skeleton-screens-a-design-problem-b5fc9dc2c55c" rel="noopener noreferrer">Shopify UX — Skeleton screens</a></li>
-      <li><a href="https://web.dev/articles/cls" rel="noopener noreferrer">web.dev — Cumulative Layout Shift</a></li>
+      <li><a href="https://ux.shopify.com/skeleton-screens-a-design-problem-b5fc9dc2c55c" rel="noopener noreferrer">Shopify UX: Skeleton screens</a></li>
+      <li><a href="https://web.dev/articles/cls" rel="noopener noreferrer">web.dev: Cumulative Layout Shift</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li>Buell & Norton (2011) — Labor illusion, <em>Management Science</em></li>
-      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev — Core Web Vitals</a></li>
-      <li><a href="https://react.dev/reference/react/Suspense" rel="noopener noreferrer">React — Suspense</a></li>
+      <li>Buell & Norton (2011): Labor illusion, <em>Management Science</em></li>
+      <li><a href="https://web.dev/articles/vitals" rel="noopener noreferrer">web.dev: Core Web Vitals</a></li>
+      <li><a href="https://react.dev/reference/react/Suspense" rel="noopener noreferrer">React: Suspense</a></li>
     </ol>
   </div>
 </section>
@@ -379,19 +379,19 @@ ogImage: https://anmshpndy.com/brand/cases/skeleton-screens-perceived-speed-og.p
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">Skeleton screens feel faster even when they're not — it's psychology, not magic.</div>
+        <div class="tone-junior">Skeleton screens feel faster even when they're not: it's psychology, not magic.</div>
         <div class="tone-mid">Perceived wait ≠ measured wait: reduce uncertainty, not just TTFB.</div>
         <div class="tone-staff">Skeleton geometry must contract with live content to avoid CLS on swap.</div>
       </li>
       <li>
-        <div class="tone-junior">Match the skeleton shape to where real content will go — size matters.</div>
+        <div class="tone-junior">Match the skeleton shape to where real content will go; size matters.</div>
         <div class="tone-mid">Use Suspense boundaries in React to isolate skeleton fallbacks per data dependency.</div>
-        <div class="tone-staff">Measure perceived performance separately from lab metrics — user satisfaction surveys at 60s post-load.</div>
+        <div class="tone-staff">Measure perceived performance separately from lab metrics: user satisfaction surveys at 60s post-load.</div>
       </li>
       <li>
         <div class="tone-junior">Always turn off shimmer animation when the user has "reduce motion" turned on.</div>
-        <div class="tone-mid">Disable shimmer under <code>prefers-reduced-motion</code> — static skeleton is still better than a spinner.</div>
-        <div class="tone-staff">Define skeleton variants as first-class design system components — not one-off grey boxes.</div>
+        <div class="tone-mid">Disable shimmer under <code>prefers-reduced-motion</code>; static skeleton is still better than a spinner.</div>
+        <div class="tone-staff">Define skeleton variants as first-class design system components, not one-off grey boxes.</div>
       </li>
     </ul>
   </div>

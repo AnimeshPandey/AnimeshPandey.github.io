@@ -3,35 +3,35 @@
   "hints": [
     {
       "chapter": "hook",
-      "junior": "More nav items always feels like more helpful — users have more to choose from. But the research says the opposite: more choices increase decision time and create paralysis. Fewer, well-labeled items outperform longer nav lists.",
-      "mid": "Hick's Law: RT = b·log2(n + 1). Every time you double the number of choices, you add a fixed amount of reaction time. A nav with 7 items isn't just 40% slower than one with 5 — it's logarithmically slower AND cognitively heavier.",
-      "staff": "Hick's Law is a good predictor for simple forced-choice tasks (navigation items). For complex, hierarchical choices (mega-menus), the law breaks down — grouping and categorization can reduce effective n below the literal count."
+      "junior": "More nav items always feels like more helpful; users have more to choose from. But the research says the opposite: more choices increase decision time and create paralysis. Fewer, well-labeled items outperform longer nav lists.",
+      "mid": "Hick's Law: RT = b·log2(n + 1). Every time you double the number of choices, you add a fixed amount of reaction time. A nav with 7 items isn't just 40% slower than one with 5: it's logarithmically slower AND cognitively heavier.",
+      "staff": "Hick's Law is a good predictor for simple forced-choice tasks (navigation items). For complex, hierarchical choices (mega-menus), the law breaks down: grouping and categorization can reduce effective n below the literal count."
     },
     {
       "chapter": "demo",
       "junior": "Try finding 'Account Settings' in both navs. The long nav takes measurably more time even though the target is in the same position. Your brain has to scan and reject every other option first.",
-      "mid": "The demo measures time-to-click. Notice that even when you 'know' where the target is, the presence of more options still adds latency — the visual scan is not optional.",
+      "mid": "The demo measures time-to-click. Notice that even when you 'know' where the target is, the presence of more options still adds latency: the visual scan is not optional.",
       "staff": "Grouping nav items into categories (like a mega-menu) reduces effective n for Hick's Law from total items to items per group. But this only works when the categorization matches the user's mental model."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation. The diff is usually smaller than you expect.",
       "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
     {
       "chapter": "concept",
-      "junior": "A client's top nav had 11 items including 'Resources', 'Learn', 'Blog', and 'Documentation' — four items that all meant 'content'. Collapsing them into one 'Learn' dropdown reduced bounce rate from the nav by 22%.",
+      "junior": "A client's top nav had 11 items including 'Resources', 'Learn', 'Blog', and 'Documentation': four items that all meant 'content'. Collapsing them into one 'Learn' dropdown reduced bounce rate from the nav by 22%.",
       "mid": "The pattern I see most: a nav that starts with 5 items, then has 3 features added over two years until it hits 9 or 10 items. Each addition was independently justified; nobody audited the cumulative cognitive load. Run a card sort on your current nav every year.",
-      "staff": "Miller's 7±2 and Hick's Law are distinct: Miller is about working memory capacity (how many things you can hold at once), Hick's is about choice reaction time (how long choosing takes). They compound — a nav with 9 items both slows decisions AND risks overflowing working memory."
+      "staff": "Miller's 7±2 and Hick's Law are distinct: Miller is about working memory capacity (how many things you can hold at once), Hick's is about choice reaction time (how long choosing takes). They compound: a nav with 9 items both slows decisions AND risks overflowing working memory."
     }
   ],
   "voice": {
@@ -39,20 +39,20 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Today we're covering Hick's Law — why adding more nav items actually makes navigation slower, not faster.",
+        "junior": "Today we're covering Hick's Law: why adding more nav items actually makes navigation slower, not faster.",
         "mid": "This case covers the RT = b·log2(n+1) formula, how it applies to navigation design, and when grouping overrides the raw item count.",
         "staff": "We're covering Hick's Law, its interaction with Miller's 7±2, mega-menu grouping as a cognitive hack, and empirical nav audit methods."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
         "junior": "Try finding 'Account Settings' in both navs. The long nav takes measurably more time even though the target is in the same position. Your brain has to scan and reject every other option first.",
-        "mid": "The demo measures time-to-click. Notice that even when you 'know' where the target is, the presence of more options still adds latency — the visual scan is not optional.",
+        "mid": "The demo measures time-to-click. Notice that even when you 'know' where the target is, the presence of more options still adds latency: the visual scan is not optional.",
         "staff": "Grouping nav items into categories (like a mega-menu) reduces effective n for Hick's Law from total items to items per group. But this only works when the categorization matches the user's mental model."
       },
       {

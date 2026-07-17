@@ -3,26 +3,26 @@
   "hints": [
     {
       "chapter": "hook",
-      "junior": "The 44px minimum for touch targets isn't arbitrary — it maps to the average adult fingertip contact area. Anything smaller and users have to aim, which causes errors and frustration.",
+      "junior": "The 44px minimum for touch targets isn't arbitrary: it maps to the average adult fingertip contact area. Anything smaller and users have to aim, which causes errors and frustration.",
       "mid": "Fitts's Law quantifies this: MT = a + b·log2(1 + D/W). Bigger target (W) and shorter distance (D) both reduce movement time. In UI terms: large, nearby targets are fast; small, distant targets are slow and error-prone.",
-      "staff": "The WCAG 2.5.5 Success Criterion (AA, 44×44 CSS pixels) is derived from Fitts's Law research. Mobile browsers apply tap-target heuristics that can misfire on clustered small elements — the browser expands the hit area, often hitting the wrong target."
+      "staff": "The WCAG 2.5.5 Success Criterion (AA, 44×44 CSS pixels) is derived from Fitts's Law research. Mobile browsers apply tap-target heuristics that can misfire on clustered small elements: the browser expands the hit area, often hitting the wrong target."
     },
     {
       "chapter": "demo",
-      "junior": "Try clicking the small targets precisely. Now try the large ones. Notice how much less mental effort the large targets require — you don't have to aim, you just tap.",
+      "junior": "Try clicking the small targets precisely. Now try the large ones. Notice how much less mental effort the large targets require: you don't have to aim, you just tap.",
       "mid": "The demo measures your tap accuracy rate. Small targets (<24px) typically show 15–30% error rates on mobile. Targets ≥44px drop below 2%. That 15x difference directly maps to user frustration.",
-      "staff": "The spacing between targets matters as much as target size — a cluster of 44px targets with 0px gap effectively reduces the actionable area. WCAG 2.5.8 (Level AA, WCAG 2.2) accounts for this with a spacing requirement."
+      "staff": "The spacing between targets matters as much as target size: a cluster of 44px targets with 0px gap effectively reduces the actionable area. WCAG 2.5.8 (Level AA, WCAG 2.2) accounts for this with a spacing requirement."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
       "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
@@ -39,21 +39,21 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Let's talk about Fitts's Law — why small touch targets cause errors, and the 44px rule that fixes it.",
+        "junior": "Let's talk about Fitts's Law: why small touch targets cause errors, and the 44px rule that fixes it.",
         "mid": "This case covers the math behind tap target sizing, how Fitts's Law translates to CSS pixels, and common patterns where developers get it wrong.",
         "staff": "We're covering WCAG 2.5.5 and 2.5.8, Fitts's Law's MT formula applied to mobile UI, and the OS gesture zone conflict in bottom navigation."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
-        "junior": "Try clicking the small targets precisely. Now try the large ones. Notice how much less mental effort the large targets require — you don't have to aim, you just tap.",
+        "junior": "Try clicking the small targets precisely. Now try the large ones. Notice how much less mental effort the large targets require: you don't have to aim, you just tap.",
         "mid": "The demo measures your tap accuracy rate. Small targets (<24px) typically show 15–30% error rates on mobile. Targets ≥44px drop below 2%. That 15x difference directly maps to user frustration.",
-        "staff": "The spacing between targets matters as much as target size — a cluster of 44px targets with 0px gap effectively reduces the actionable area. WCAG 2.5.8 (Level AA, WCAG 2.2) accounts for this with a spacing requirement."
+        "staff": "The spacing between targets matters as much as target size: a cluster of 44px targets with 0px gap effectively reduces the actionable area. WCAG 2.5.8 (Level AA, WCAG 2.2) accounts for this with a spacing requirement."
       },
       {
         "chapter": "takeaway",

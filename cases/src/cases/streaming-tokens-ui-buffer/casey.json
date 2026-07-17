@@ -3,35 +3,35 @@
   "hints": [
     {
       "chapter": "hook",
-      "junior": "When an LLM streams tokens, you get a character every few milliseconds. Appending each token directly to the DOM fires a layout recalculation on every character — on a 500-token response, that's 500 forced layouts.",
+      "junior": "When an LLM streams tokens, you get a character every few milliseconds. Appending each token directly to the DOM fires a layout recalculation on every character. On a 500-token response, that's 500 forced layouts.",
       "mid": "The fix is a requestAnimationFrame buffer: accumulate tokens in a string, flush to the DOM at 60fps. Users see smooth streaming; the browser batches the reflows to once per frame.",
-      "staff": "Token streaming UI is an I/O-bound vs CPU-bound mismatch. The LLM can emit 30–80 tokens/sec; the browser can paint 60fps. Without buffering, you're forcing 80 DOM mutations/sec when 60 paints/sec is the display ceiling — the extras are wasted CPU."
+      "staff": "Token streaming UI is an I/O-bound vs CPU-bound mismatch. The LLM can emit 30–80 tokens/sec; the browser can paint 60fps. Without buffering, you're forcing 80 DOM mutations/sec when 60 paints/sec is the display ceiling; the extras are wasted CPU."
     },
     {
       "chapter": "demo",
-      "junior": "Watch the 'Unbuffered' animation: each token causes a visible layout shift. The 'Buffered' animation streams smoothly — same token rate, different DOM update strategy.",
+      "junior": "Watch the 'Unbuffered' animation: each token causes a visible layout shift. The 'Buffered' animation streams smoothly (same token rate, different DOM update strategy).",
       "mid": "Open the Performance panel on the unbuffered demo. You'll see a wall of purple 'Recalculate Style' tasks. The buffered demo shows clean 16ms frame blocks with one layout per frame.",
       "staff": "The buffer accumulates tokens in a module-level string. requestAnimationFrame reads from the string and flushes to the DOM, then schedules the next frame. On idle (stream end), cancel the animation frame handle. This is the minimal correct implementation."
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
       "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here — you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation — the diff is usually smaller than you expect.",
+      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
+      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
       "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
     }
   ],
   "anecdotes": [
     {
       "chapter": "concept",
-      "junior": "My first AI chat UI appended every token directly. On a phone, it lagged badly — the CPU was maxed out doing a DOM mutation 60 times a second. Adding a 16ms rAF buffer made it buttery smooth.",
-      "mid": "Most AI UI frameworks (Vercel AI SDK, Langchain streaming helpers) return async iterables for token streams. The cursor/word boundary buffering is still your responsibility — the framework gives you the stream, you own the render loop.",
-      "staff": "Advanced pattern: buffer to word boundaries (space or punctuation), not frame boundaries. This makes the streaming feel more natural — full words appear at once rather than character-by-character. Combine with rAF to ensure the word-boundary flush still happens at most 60 times/sec."
+      "junior": "My first AI chat UI appended every token directly. On a phone, it lagged badly; the CPU was maxed out doing a DOM mutation 60 times a second. Adding a 16ms rAF buffer made it buttery smooth.",
+      "mid": "Most AI UI frameworks (Vercel AI SDK, Langchain streaming helpers) return async iterables for token streams. The cursor/word boundary buffering is still your responsibility: the framework gives you the stream, you own the render loop.",
+      "staff": "Advanced pattern: buffer to word boundaries (space or punctuation), not frame boundaries. This makes the streaming feel more natural: full words appear at once rather than character-by-character. Combine with rAF to ensure the word-boundary flush still happens at most 60 times/sec."
     }
   ],
   "voice": {
@@ -39,19 +39,19 @@
     "sections": [
       {
         "chapter": "hook",
-        "junior": "Hey! Today we're fixing a performance problem with AI streaming UIs — why appending every token to the DOM is slow, and how to buffer for smooth rendering.",
+        "junior": "Hey! Today we're fixing a performance problem with AI streaming UIs: why appending every token to the DOM is slow, and how to buffer for smooth rendering.",
         "mid": "This case covers the requestAnimationFrame buffering pattern for token streams, the mismatch between LLM emission rate and browser paint rate, and word-boundary flush strategies.",
         "staff": "We're covering the I/O vs CPU budget mismatch, rAF loop implementation, word-boundary buffering, and how Vercel AI SDK and Langchain streaming iterables interact with the render layer."
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle — read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API — what prop or CSS change encodes the fix?",
+        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
         "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
       },
       {
         "chapter": "demo",
-        "junior": "Watch the 'Unbuffered' animation: each token causes a visible layout shift. The 'Buffered' animation streams smoothly — same token rate, different DOM update strategy.",
+        "junior": "Watch the 'Unbuffered' animation: each token causes a visible layout shift. The 'Buffered' animation streams smoothly (same token rate, different DOM update strategy).",
         "mid": "Open the Performance panel on the unbuffered demo. You'll see a wall of purple 'Recalculate Style' tasks. The buffered demo shows clean 16ms frame blocks with one layout per frame.",
         "staff": "The buffer accumulates tokens in a module-level string. requestAnimationFrame reads from the string and flushes to the DOM, then schedules the next frame. On idle (stream end), cancel the animation frame handle. This is the minimal correct implementation."
       },

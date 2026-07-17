@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Context Window Budget for FE Tasks
-description: "How to give AI coding assistants exactly the right context — and why pasting your whole file makes answers worse, not better."
+description: "How to give AI coding assistants exactly the right context, and why pasting your whole file makes answers worse, not better."
 publishedAt: "2026-05-31T00:00:00Z"
 slug: context-window-budget
 track: agentic-ai
@@ -23,7 +23,7 @@ ogImage: https://anmshpndy.com/brand/cases/context-window-budget-og.png
 <section class="case-chapter" data-chapter="hook">
   <h2>The more you paste, the worse the answer</h2>
   <div class="tone-junior">
-    <p>You have a bug on line 47 of a 400-line component. You select all, paste the entire file into the AI chat, and ask "what's wrong?" The model gives you a generic answer — or worse, starts suggesting a refactor. You try again with just the broken function and the error message. The model gives you an exact fix in one shot. Same model, same question, different context.</p>
+    <p>You have a bug on line 47 of a 400-line component. You select all, paste the entire file into the AI chat, and ask "what's wrong?" The model gives you a generic answer, or worse, starts suggesting a refactor. You try again with just the broken function and the error message. The model gives you an exact fix in one shot. Same model, same question, different context.</p>
     <p>Context windows are not buckets you fill to the top for best results. The signal-to-noise ratio matters. The right context is surgical, not exhaustive.</p>
   </div>
   <div class="tone-mid">
@@ -35,9 +35,9 @@ ogImage: https://anmshpndy.com/brand/cases/context-window-budget-og.png
     <ul>
       <li><strong>System prompt</strong>: 2–8k tokens (fixed)</li>
       <li><strong>Retrieved context</strong>: 8–20k tokens (dynamic, RAG output)</li>
-      <li><strong>Conversation history</strong>: grows per turn — summarize or truncate old turns</li>
+      <li><strong>Conversation history</strong>: grows per turn, summarize or truncate old turns</li>
       <li><strong>Chain-of-thought reasoning</strong>: 2–8k for complex tasks</li>
-      <li><strong>Tool outputs</strong>: variable — truncate long outputs</li>
+      <li><strong>Tool outputs</strong>: variable, truncate long outputs</li>
     </ul>
     <p>For single-shot code tasks, the principle is simpler: send the minimum sufficient context. Error + stack trace + relevant function + interface types = correct answer 80% of the time.</p>
   </div>
@@ -45,7 +45,7 @@ ogImage: https://anmshpndy.com/brand/cases/context-window-budget-og.png
 
 {# ── Chapter: Concept ── #}
 <section class="case-chapter" data-chapter="concept">
-  <h2>What to include — and what to leave out</h2>
+  <h2>What to include, and what to leave out</h2>
   <div class="tone-junior">
     <p><strong>Always include:</strong></p>
     <ul>
@@ -78,18 +78,18 @@ function ProductList({ products }) {
   );
 }
 
-// Called from: Dashboard.tsx — products comes from useProducts() hook
+// Called from: Dashboard.tsx; products comes from useProducts() hook
 // useProducts returns: { data, isLoading, error } from React Query
 // Question: why is products undefined on first render?</code></pre>
-    <p>This context is 12 lines — enough for the model to diagnose that <code>products</code> is <code>undefined</code> before React Query resolves, and suggest <code>products ?? []</code> as a default.</p>
+    <p>This context is 12 lines: enough for the model to diagnose that <code>products</code> is <code>undefined</code> before React Query resolves, and suggest <code>products ?? []</code> as a default.</p>
   </div>
   <div class="tone-staff">
     <p>For agentic tasks (not single-shot debugging), context assembly should be programmatic:</p>
     <ul>
-      <li><strong>Embedding search</strong> — retrieve the N most-relevant chunks by cosine similarity to the task description</li>
-      <li><strong>Re-ranking</strong> — a second pass (cross-encoder or LLM-based) to reorder retrieved chunks by actual relevance</li>
-      <li><strong>Summarization</strong> — compress long files to summaries before including them (file structure + exported API surface, not implementation)</li>
-      <li><strong>Instruction position</strong> — put the most important instructions at the start or end of the context, not in the middle, to exploit positional recall</li>
+      <li><strong>Embedding search</strong>: retrieve the N most-relevant chunks by cosine similarity to the task description</li>
+      <li><strong>Re-ranking</strong>: a second pass (cross-encoder or LLM-based) to reorder retrieved chunks by actual relevance</li>
+      <li><strong>Summarization</strong>: compress long files to summaries before including them (file structure + exported API surface, not implementation)</li>
+      <li><strong>Instruction position</strong>: put the most important instructions at the start or end of the context, not in the middle, to exploit positional recall</li>
     </ul>
     <p>The cost of context is not just tokens: it's latency (more tokens = slower TTFT) and quality (signal dilution). Design for minimum sufficient context as a hard constraint.</p>
   </div>
@@ -99,14 +99,14 @@ function ProductList({ products }) {
 <section class="case-chapter" data-chapter="story-1">
   <h2>10,000 lines for a 5-line bug</h2>
   <div class="tone-junior">
-    <p>Marcus had a bug: a React component was crashing on undefined data. He copied his entire 10,000-line codebase — every component, every utility, every config file — pasted it into a single AI prompt, and asked "what's wrong?" The model gave a generic answer about null checks. It wasn't wrong, exactly, but it wasn't specific to his component either. He tried adding more context. Still generic. The bug shipped to staging.</p>
-    <p>A colleague looked over his shoulder, selected the 15 lines of the broken function, the error message, and the hook that called it — and pasted just that. The model identified the exact issue (missing default on a destructured prop) in one sentence. Same model, three minutes later.</p>
+    <p>Marcus had a bug: a React component was crashing on undefined data. He copied his entire 10,000-line codebase (every component, every utility, every config file), pasted it into a single AI prompt, and asked "what's wrong?" The model gave a generic answer about null checks. It wasn't wrong, exactly, but it wasn't specific to his component either. He tried adding more context. Still generic. The bug shipped to staging.</p>
+    <p>A colleague looked over his shoulder, selected the 15 lines of the broken function, the error message, and the hook that called it, and pasted just that. The model identified the exact issue (missing default on a destructured prop) in one sentence. Same model, three minutes later.</p>
   </div>
   <div class="tone-mid">
-    <p>What went wrong technically: the model's 10,000-line paste used most of the context window before the actual question even started. The relevant function was on line 4,847 — roughly in the middle of the context. The "lost in the middle" effect (Liu et al., 2023) shows that retrieval accuracy for facts placed in the middle of long contexts drops significantly compared to facts placed at the start or end. The bug was there — but positionally disadvantaged. The model's attention was spread across thousands of unrelated lines.</p>
+    <p>What went wrong technically: the model's 10,000-line paste used most of the context window before the actual question even started. The relevant function was on line 4,847, roughly in the middle of the context. The "lost in the middle" effect (Liu et al., 2023) shows that retrieval accuracy for facts placed in the middle of long contexts drops significantly compared to facts placed at the start or end. The bug was there, but positionally disadvantaged. The model's attention was spread across thousands of unrelated lines.</p>
   </div>
   <div class="tone-staff">
-    <p>Systemic impact: in a team of 10, if every developer is habitually pasting full files into AI sessions, you are burning collective context budget on noise at scale. More practically: large context pastes push the actual task content toward the middle of the window, reduce chain-of-thought headroom, and increase latency (TTFT scales with input token count). The result is systematically worse answers that take longer to arrive — a compounding tax on every AI-assisted debugging session.</p>
+    <p>Systemic impact: in a team of 10, if every developer is habitually pasting full files into AI sessions, you are burning collective context budget on noise at scale. More practically: large context pastes push the actual task content toward the middle of the window, reduce chain-of-thought headroom, and increase latency (TTFT scales with input token count). The result is systematically worse answers that take longer to arrive: a compounding tax on every AI-assisted debugging session.</p>
   </div>
 </section>
 
@@ -118,7 +118,7 @@ function ProductList({ products }) {
     <p>The rule he tells his team: "If you can't explain why every line you're pasting is necessary to answer the question, remove it."</p>
   </div>
   <div class="tone-mid">
-    <p>The curated context for his bug report looked like this: error message (3 lines), the crashing component function (12 lines), the TypeScript interface for its props (6 lines), the one hook call that feeds it (4 lines), and the question. Total: ~180 tokens vs ~7,800 tokens for the full file dump. The model answered correctly on the first attempt. The delta wasn't model capability — it was signal clarity. Relevant information at the start of a short context outperforms the same information buried in the middle of a large one, every time.</p>
+    <p>The curated context for his bug report looked like this: error message (3 lines), the crashing component function (12 lines), the TypeScript interface for its props (6 lines), the one hook call that feeds it (4 lines), and the question. Total: ~180 tokens vs ~7,800 tokens for the full file dump. The model answered correctly on the first attempt. The delta wasn't model capability; it was signal clarity. Relevant information at the start of a short context outperforms the same information buried in the middle of a large one, every time.</p>
   </div>
   <div class="tone-staff">
     <p>Measurement angle: instrument your AI-assisted workflows with token counts (use <code>tiktoken</code> or the model API's usage response field). Track average input tokens per session and answer quality (proxied by "accepted first suggestion" rate). Teams that audit context discipline typically find a 5–10× difference in average input tokens between high-signal and low-signal prompters, with no corresponding quality improvement for larger inputs. Budget context as a first-class metric alongside latency and cost.</p>
@@ -140,7 +140,7 @@ function ProductList({ products }) {
 function ProductList({ products }) {
   return products.map(p =&gt; ...);
 }</code></pre>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">~7,800 tokens — relevant function buried in middle; generic, non-specific answer</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">~7,800 tokens: relevant function buried in middle; generic, non-specific answer</p>
       </div>
       <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
         <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ FOCUSED SNIPPET</p>
@@ -153,7 +153,7 @@ function ProductList({ products }) {
 }
 // Props type: { products: Product[] }
 // Caller: &lt;ProductList {...useProducts()}/&gt;</code></pre>
-        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">~180 tokens — error + function + types + caller; exact diagnosis on first attempt</p>
+        <p style="font-size: 11px; color: var(--casebook-ink-faint); text-align: center; margin-top: 8px;">~180 tokens: error + function + types + caller; exact diagnosis on first attempt</p>
       </div>
     </div>
   </div>
@@ -162,7 +162,7 @@ function ProductList({ products }) {
 <section class="case-chapter" data-chapter="demo">
   <h2>Try it: overloaded vs curated context</h2>
   <div class="tone-junior"><p>The "Overloaded" mode pastes a full 300-line component to ask about a 5-line bug. Watch the model's answer quality. The "Curated" mode sends the same question with just the relevant excerpt. Compare the specificity of the answers.</p></div>
-  <div class="tone-mid"><p>Count the tokens in each mode. The overloaded context uses ~2,400 tokens; the curated context uses ~180 tokens — 13× less. The answer quality is equal or better because the model isn't distracted by irrelevant code.</p></div>
+  <div class="tone-mid"><p>Count the tokens in each mode. The overloaded context uses ~2,400 tokens; the curated context uses ~180 tokens, 13× less. The answer quality is equal or better because the model isn't distracted by irrelevant code.</p></div>
   <div class="tone-staff"><p>This simulates the retrieval degradation effect: in the overloaded context, the bug is on line 47 of 300. In a real 128k window, burying the relevant code in the middle of a large context produces exactly this answer quality difference.</p></div>
 
   <section class="case-demo" aria-label="Try it: overloaded vs curated context" data-required="true" data-demo-type="toggle" data-demo-slug="context-window-budget">
@@ -171,10 +171,10 @@ function ProductList({ products }) {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Overloaded — file dump</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Curated — targeted context</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Overloaded: file dump</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Curated: targeted context</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Curated — targeted context</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Curated, targeted context</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:120px;"></div>
       </div>
     </div>
@@ -185,7 +185,7 @@ function ProductList({ products }) {
 <section class="case-chapter" data-chapter="fe-depth">
   <h2>Counting tokens and chunking context programmatically</h2>
   <div class="tone-junior">
-    <p>To count tokens before you send a prompt, use the <code>tiktoken</code> library (for OpenAI-family models) or the <code>anthropic.messages.count_tokens</code> API method. The key pitfall: whitespace and comments cost tokens too — stripping them from code snippets before pasting can reduce token count by 15–30% with no loss of meaning for the model.</p>
+    <p>To count tokens before you send a prompt, use the <code>tiktoken</code> library (for OpenAI-family models) or the <code>anthropic.messages.count_tokens</code> API method. The key pitfall: whitespace and comments cost tokens too. Stripping them from code snippets before pasting can reduce token count by 15 to 30% with no loss of meaning for the model.</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Count tokens before sending (Node.js, tiktoken)
 import { encoding_for_model } from 'tiktoken';
 const enc = encoding_for_model('gpt-4o');
@@ -195,9 +195,9 @@ console.log(`Token count: ${tokens}`);</code></pre>
   <div class="tone-mid">
     <p>Three chunking strategies for larger codebases in AI workflows:</p>
     <ul>
-      <li><strong>File-per-turn</strong> — send one file per message in a multi-turn conversation. The model builds understanding incrementally without window saturation.</li>
-      <li><strong>Semantic relevance chunking</strong> — embed all files, cosine-search against the task description, send only the top-N chunks. Works well for RAG-style code assistants.</li>
-      <li><strong>API surface only</strong> — for dependencies, send only exported function signatures and their JSDoc — not the full implementation. The model needs the contract, not the code.</li>
+      <li><strong>File-per-turn</strong>: send one file per message in a multi-turn conversation. The model builds understanding incrementally without window saturation.</li>
+      <li><strong>Semantic relevance chunking</strong>: embed all files, cosine-search against the task description, send only the top-N chunks. Works well for RAG-style code assistants.</li>
+      <li><strong>API surface only</strong>: for dependencies, send only exported function signatures and their JSDoc, not the full implementation. The model needs the contract, not the code.</li>
     </ul>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Tool call pattern: incremental context in agentic loop
 const tools = [{
@@ -208,31 +208,31 @@ const tools = [{
 // Instead of: stuffing all files upfront</code></pre>
   </div>
   <div class="tone-staff">
-    <p>At scale, context assembly should be a pipeline stage, not a manual step. The production pattern: (1) embed all source files at build time, (2) on each task, semantic-search the index for relevant chunks, (3) re-rank with a cross-encoder or second LLM pass, (4) trim to a hard token budget (e.g. 8k for code context, reserving 4k for reasoning and output). Instrument <code>usage.input_tokens</code> from every API response to track actual spend vs budget. Track "accepted first suggestion" rate as a proxy for context quality — it should improve as context discipline improves. Tooling: LangSmith, Braintrust, or custom logging to a time-series store for per-session token metrics.</p>
+    <p>At scale, context assembly should be a pipeline stage, not a manual step. The production pattern: (1) embed all source files at build time, (2) on each task, semantic-search the index for relevant chunks, (3) re-rank with a cross-encoder or second LLM pass, (4) trim to a hard token budget (e.g. 8k for code context, reserving 4k for reasoning and output). Instrument <code>usage.input_tokens</code> from every API response to track actual spend vs budget. Track "accepted first suggestion" rate as a proxy for context quality: it should improve as context discipline improves. Tooling: LangSmith, Braintrust, or custom logging to a time-series store for per-session token metrics.</p>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub, expand per case) ── #}
 {# ── Chapter: References ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://platform.openai.com/docs/guides/text-generation" rel="noopener noreferrer">OpenAI — Text generation</a></li>
+      <li><a href="https://platform.openai.com/docs/guides/text-generation" rel="noopener noreferrer">OpenAI: Text generation</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching" rel="noopener noreferrer">Anthropic — Prompt caching</a></li>
+      <li><a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching" rel="noopener noreferrer">Anthropic: Prompt caching</a></li>
       <li><a href="https://modelcontextprotocol.io/" rel="noopener noreferrer">Model Context Protocol</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://platform.openai.com/docs/guides/production-best-practices" rel="noopener noreferrer">OpenAI — Production best practices</a></li>
+      <li><a href="https://platform.openai.com/docs/guides/production-best-practices" rel="noopener noreferrer">OpenAI: Production best practices</a></li>
       <li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="noopener noreferrer">OWASP LLM Top 10</a></li>
     </ol>
   </div>
@@ -244,14 +244,14 @@ const tools = [{
     <h3>Key takeaways</h3>
     <ul>
       <li>
-        <div class="tone-junior">Send the error, the relevant function, and what you expected — not the whole file. 20 lines beats 400 lines for debugging tasks.</div>
-        <div class="tone-mid">Context window quality degrades with noise. The signal-to-noise ratio of your context directly affects answer specificity — more is not better.</div>
+        <div class="tone-junior">Send the error, the relevant function, and what you expected, not the whole file. 20 lines beats 400 lines for debugging tasks.</div>
+        <div class="tone-mid">Context window quality degrades with noise. The signal-to-noise ratio of your context directly affects answer specificity: more is not better.</div>
         <div class="tone-staff">In agentic pipelines, budget context by role: system prompt, retrieved docs, history, reasoning, tool output. Reserve headroom. Overfilling the window degrades recall on middle-positioned content.</div>
       </li>
       <li>
         <div class="tone-junior">Before pasting, ask: "does the model need this to answer my question?" If not, remove it.</div>
-        <div class="tone-mid">Use embedding search + re-ranking for programmatic context assembly in pipelines — don't stuff all relevant files, rank and trim to the top N chunks.</div>
-        <div class="tone-staff">Position matters: critical instructions and key facts belong at the start or end of the context window — not buried in the middle where recall degrades ("lost in the middle" effect).</div>
+        <div class="tone-mid">Use embedding search + re-ranking for programmatic context assembly in pipelines; don't stuff all relevant files, rank and trim to the top N chunks.</div>
+        <div class="tone-staff">Position matters: critical instructions and key facts belong at the start or end of the context window, not buried in the middle where recall degrades ("lost in the middle" effect).</div>
       </li>
     </ul>
   </div>

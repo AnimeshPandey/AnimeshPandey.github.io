@@ -2,7 +2,7 @@
 layout: layouts/case-layout.njk
 permalink: "/{{ slug }}/index.html"
 title: Streaming Tokens Without Layout Thrash
-description: Why appending every LLM token directly to the DOM kills performance — and the requestAnimationFrame buffer pattern for smooth AI streaming UIs.
+description: Why appending every LLM token directly to the DOM kills performance, and the requestAnimationFrame buffer pattern for smooth AI streaming UIs.
 publishedAt: "2026-05-31T00:00:00Z"
 slug: streaming-tokens-ui-buffer
 track: ai-frontend-integration
@@ -23,14 +23,14 @@ ogImage: https://anmshpndy.com/brand/cases/streaming-tokens-ui-buffer-og.png
 <section class="case-chapter" data-chapter="hook">
   <h2>60 tokens per second, 500 layout recalculations</h2>
   <div class="tone-junior">
-    <p>You're building an AI chat interface. The LLM streams its response token by token — every character fires a React state update, which triggers a re-render, which calculates a new layout. On a typical 200-word response at 50 tokens/second, that's 50 DOM mutations per second. On a phone, the page stutters. The CPU is maxed. The battery drains faster than it should.</p>
+    <p>You're building an AI chat interface. The LLM streams its response token by token, and every character fires a React state update, which triggers a re-render, which calculates a new layout. On a typical 200-word response at 50 tokens/second, that's 50 DOM mutations per second. On a phone, the page stutters. The CPU is maxed. The battery drains faster than it should.</p>
     <p>The fix is a render buffer: accumulate tokens in memory, flush to the DOM at 60fps via <code>requestAnimationFrame</code>. Same tokens, smoother experience, 90% less CPU for the rendering work.</p>
   </div>
   <div class="tone-mid">
-    <p>The mismatch: LLMs emit 30–80 tokens/second. Displays refresh at 60fps (16ms/frame). Without buffering, you're forcing 30–80 DOM mutations/second when the display can only show 60 frames/second. The excess mutations are wasted CPU that never produce visible output — they happen between frames and are immediately overwritten by the next mutation.</p>
+    <p>The mismatch: LLMs emit 30–80 tokens/second. Displays refresh at 60fps (16ms/frame). Without buffering, you're forcing 30–80 DOM mutations/second when the display can only show 60 frames/second. The excess mutations are wasted CPU that never produce visible output: they happen between frames and are immediately overwritten by the next mutation.</p>
   </div>
   <div class="tone-staff">
-    <p>The performance model: each DOM mutation triggers a potential style recalculation and layout reflow. In streaming text rendering, appending a character to a text node forces the browser to recalculate the width of the container and potentially reflow siblings. At 60 mutations/second, you're triggering 60 potential reflows/second — the browser's style recalculation budget is 16ms/frame, shared across all work. You're burning most of it on work that has no visible output.</p>
+    <p>The performance model: each DOM mutation triggers a potential style recalculation and layout reflow. In streaming text rendering, appending a character to a text node forces the browser to recalculate the width of the container and potentially reflow siblings. At 60 mutations/second, you're triggering 60 potential reflows/second, and the browser's style recalculation budget is 16ms/frame, shared across all work. You're burning most of it on work that has no visible output.</p>
   </div>
 </section>
 
@@ -39,7 +39,7 @@ ogImage: https://anmshpndy.com/brand/cases/streaming-tokens-ui-buffer-og.png
   <h2>The requestAnimationFrame buffer pattern</h2>
   <div class="tone-junior">
     <p>The idea: collect all tokens that arrive between frames into a string, then flush the whole string to the DOM in one update at the start of the next frame. One DOM update per frame instead of one per token.</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ One DOM update per token — thrashes layout
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// ❌ One DOM update per token: thrashes layout
 for await (const chunk of stream) {
   setContent(prev =&gt; prev + chunk); // re-renders on every token
 }
@@ -62,7 +62,7 @@ for await (const chunk of stream) {
 }</code></pre>
   </div>
   <div class="tone-mid">
-    <p>The word-boundary variant flushes at word boundaries (space or punctuation) instead of frame boundaries — this makes streaming feel more natural, since full words appear at once rather than character by character:</p>
+    <p>The word-boundary variant flushes at word boundaries (space or punctuation) instead of frame boundaries. This makes streaming feel more natural, since full words appear at once rather than character by character:</p>
     <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>let wordBuffer = '';
 let rafId = null;
 
@@ -84,9 +84,9 @@ if (wordBuffer) setContent(prev =&gt; prev + wordBuffer);</code></pre>
   <div class="tone-staff">
     <p>Framework integration notes:</p>
     <ul>
-      <li><strong>Vercel AI SDK</strong> — <code>useChat</code> and <code>useCompletion</code> return <code>isLoading</code> and <code>content</code>; the buffer is your responsibility. Wrap the <code>onChunk</code> callback with the rAF pattern.</li>
-      <li><strong>React 18 concurrent mode</strong> — <code>startTransition</code> can defer streaming updates as non-urgent, letting React batch them with other state updates. Combine with the rAF buffer for optimal scheduling.</li>
-      <li><strong>Virtualized lists</strong> — if streaming into a long conversation, ensure the scroll-to-bottom behavior uses <code>scrollIntoView</code> inside a <code>useEffect</code> keyed to content length, not on every token.</li>
+      <li><strong>Vercel AI SDK</strong>: <code>useChat</code> and <code>useCompletion</code> return <code>isLoading</code> and <code>content</code>; the buffer is your responsibility. Wrap the <code>onChunk</code> callback with the rAF pattern.</li>
+      <li><strong>React 18 concurrent mode</strong>: <code>startTransition</code> can defer streaming updates as non-urgent, letting React batch them with other state updates. Combine with the rAF buffer for optimal scheduling.</li>
+      <li><strong>Virtualized lists</strong>: if streaming into a long conversation, ensure the scroll-to-bottom behavior uses <code>scrollIntoView</code> inside a <code>useEffect</code> keyed to content length, not on every token.</li>
     </ul>
     <p>Cleanup: cancel the rAF handle when the component unmounts or the stream ends, to avoid a dangling animation frame attempting to update unmounted state.</p>
   </div>
@@ -96,14 +96,14 @@ if (wordBuffer) setContent(prev =&gt; prev + wordBuffer);</code></pre>
 <section class="case-chapter" data-chapter="story-1">
   <h2>A chat that stutters at 50 tokens per second</h2>
   <div class="tone-junior">
-    <p>Priya built a chat interface for a GPT-4 integration. It worked — the AI responded, text appeared. But on fast connections the page flickered. On mobile, it stuttered. Users on slower laptops saw the browser tab go unresponsive mid-stream. Scroll position jumped as new tokens pushed content down. She hadn't changed anything about the AI — just how she displayed its output.</p>
+    <p>Priya built a chat interface for a GPT-4 integration. It worked: the AI responded, text appeared. But on fast connections the page flickered. On mobile, it stuttered. Users on slower laptops saw the browser tab go unresponsive mid-stream. Scroll position jumped as new tokens pushed content down. She hadn't changed anything about the AI, just how she displayed its output.</p>
     <p>The implementation was simple: every SSE message called <code>element.textContent += token</code>. On a fast model at 60 tokens/second, that was 60 DOM writes per second. The browser tried to reflow the page layout on every single one.</p>
   </div>
   <div class="tone-mid">
-    <p>The technical cause: each call to set <code>textContent</code> invalidates the element's layout box. The browser schedules a style recalculation and potential reflow. At 60 mutations/second, that's 60 scheduled reflows per second in a 16ms/frame budget — consuming effectively all available CPU for layout work, leaving nothing for user input handling, scroll, or other animations. On a 4-core machine this is survivable; on a 2-core phone, it jank-locks the thread. The frame rate collapses from 60fps to under 20fps during streaming.</p>
+    <p>The technical cause: each call to set <code>textContent</code> invalidates the element's layout box. The browser schedules a style recalculation and potential reflow. At 60 mutations/second, that's 60 scheduled reflows per second in a 16ms/frame budget, consuming effectively all available CPU for layout work and leaving nothing for user input handling, scroll, or other animations. On a 4-core machine this is survivable; on a 2-core phone, it jank-locks the thread. The frame rate collapses from 60fps to under 20fps during streaming.</p>
   </div>
   <div class="tone-staff">
-    <p>Systemic impact: this pattern scales badly across product surfaces. In a customer-facing AI product serving thousands of concurrent streams, 60 mutations/second per user means you are competing with the browser's own rendering pipeline on every device, including the weakest ones in your user base. Perceived quality regresses linearly with token rate — the faster the model, the worse the experience — which is precisely backwards. The faster the model should be, the smoother the display should feel. Token-rate DOM mutations invert this relationship.</p>
+    <p>Systemic impact: this pattern scales badly across product surfaces. In a customer-facing AI product serving thousands of concurrent streams, 60 mutations/second per user means you are competing with the browser's own rendering pipeline on every device, including the weakest ones in your user base. Perceived quality regresses linearly with token rate: the faster the model, the worse the experience, which is precisely backwards. The faster the model should be, the smoother the display should feel. Token-rate DOM mutations invert this relationship.</p>
   </div>
 </section>
 
@@ -112,10 +112,10 @@ if (wordBuffer) setContent(prev =&gt; prev + wordBuffer);</code></pre>
   <h2>One DOM write per frame, not per token</h2>
   <div class="tone-junior">
     <p>Priya added a two-line buffer: accumulate incoming tokens in a string variable, schedule a <code>requestAnimationFrame</code> callback if one isn't already scheduled, and in that callback flush the buffered string to the DOM. Frame fires, DOM updates once, buffer clears. The next batch of tokens accumulates until the following frame.</p>
-    <p>The stutter disappeared. Scroll stopped jumping. Mobile felt smooth. The content of the stream was identical — only the display rhythm changed. One DOM mutation per frame instead of one per token.</p>
+    <p>The stutter disappeared. Scroll stopped jumping. Mobile felt smooth. The content of the stream was identical; only the display rhythm changed. One DOM mutation per frame instead of one per token.</p>
   </div>
   <div class="tone-mid">
-    <p>Implementation changes: the critical detail is the <code>if (!rafId)</code> guard — only one rAF is queued at a time, regardless of how many tokens arrive between frames. Without the guard, you queue one rAF per token and recreate the original problem. The buffer itself is a module-scoped string variable (or a React ref), not state — writing to a ref doesn't trigger a re-render, which is the point. The rAF callback is the only place that writes to state, gating re-renders to 60fps maximum.</p>
+    <p>Implementation changes: the critical detail is the <code>if (!rafId)</code> guard. Only one rAF is queued at a time, regardless of how many tokens arrive between frames. Without the guard, you queue one rAF per token and recreate the original problem. The buffer itself is a module-scoped string variable (or a React ref), not state; writing to a ref doesn't trigger a re-render, which is the point. The rAF callback is the only place that writes to state, gating re-renders to 60fps maximum.</p>
   </div>
   <div class="tone-staff">
     <p>Measurement: instrument with a <code>PerformanceObserver</code> watching <code>longtask</code> entries during a stream. Before the fix: multiple long tasks (>50ms) per second during active streaming. After: zero or near-zero long tasks during streaming. Use Chrome DevTools → Performance → record a 5-second stream, count "Recalculate Style" events in the flame chart. Before: one per token (50–80). After: one per frame (8–12 for a 2-second stream). The visual difference is directly measurable in the flame chart before any user testing.</p>
@@ -156,9 +156,9 @@ for await (const chunk of stream) {
 
 <section class="case-chapter" data-chapter="demo">
   <h2>Watch it: unbuffered vs buffered token streaming</h2>
-  <div class="tone-junior"><p>The "Unbuffered" animation shows tokens arriving one at a time, each causing a visible reflow. Notice the jank. The "Buffered" animation shows the same token stream but flushes to the DOM once per animation frame — smooth, no jank.</p></div>
+  <div class="tone-junior"><p>The "Unbuffered" animation shows tokens arriving one at a time, each causing a visible reflow. Notice the jank. The "Buffered" animation shows the same token stream but flushes to the DOM once per animation frame: smooth, no jank.</p></div>
   <div class="tone-mid"><p>Open DevTools → Performance and record while each mode streams a 150-token response. In unbuffered mode, you'll see 150 "Recalculate Style" tasks. In buffered mode, about 12 (one per frame at 60fps for a 2-second stream).</p></div>
-  <div class="tone-staff"><p>The third mode in the demo shows the word-boundary pattern: flush on whitespace, not on every token. Compare the visual rhythm — words popping in feels more natural than characters trickling, even at the same underlying stream rate.</p></div>
+  <div class="tone-staff"><p>The third mode in the demo shows the word-boundary pattern: flush on whitespace, not on every token. Compare the visual rhythm: words popping in feels more natural than characters trickling, even at the same underlying stream rate.</p></div>
 
   <section class="case-demo" aria-label="Watch: unbuffered vs buffered token streaming" data-required="true" data-demo-type="animation" data-demo-slug="streaming-tokens-ui-buffer">
     <div class="case-demo__header"><span class="case-demo__title">⚡ Interactive demo</span></div>
@@ -166,10 +166,10 @@ for await (const chunk of stream) {
       <noscript><div class="case-demo__noscript"><p><strong>Demo requires JavaScript.</strong></p></div></noscript>
       <div class="case-demo__interactive" hidden>
         <div class="case-demo__controls" role="group" aria-label="Demo controls">
-          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Unbuffered — token per render</button>
-          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Buffered — rAF flush</button>
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">Unbuffered (token per render)</button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">Buffered (rAF flush)</button>
         </div>
-        <p class="case-demo__state-label" aria-live="polite">Showing: Buffered — rAF flush</p>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Buffered (rAF flush)</p>
         <div class="case-demo__viewport" id="demo-viewport" style="min-height:140px;"></div>
       </div>
     </div>
@@ -180,8 +180,8 @@ for await (const chunk of stream) {
 <section class="case-chapter" data-chapter="fe-depth">
   <h2>SSE parsing, rAF buffers, and streaming markdown</h2>
   <div class="tone-junior">
-    <p>Two ways to consume a streaming LLM response in the browser. The simplest is <code>EventSource</code> — built-in SSE support, auto-reconnects, no setup. The limitation: GET requests only, no custom headers (so no Authorization Bearer token).</p>
-    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// EventSource — simplest, GET only
+    <p>Two ways to consume a streaming LLM response in the browser. The simplest is <code>EventSource</code>: built-in SSE support, auto-reconnects, no setup. The limitation: GET requests only, no custom headers (so no Authorization Bearer token).</p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// EventSource: simplest, GET only
 const es = new EventSource('/api/stream');
 es.onmessage = (e) =&gt; {
   buffer += e.data;
@@ -221,35 +221,35 @@ while (true) {
     }
   }
 }</code></pre>
-    <p>Markdown consideration: streaming markdown mid-parse can produce invalid intermediate states (e.g., a half-rendered code fence). Use a streaming markdown parser like <code>marked</code> with incremental input, or buffer until a complete "block" (double newline) before rendering markdown — rendering raw text until the stream ends, then switching to rendered HTML, is often the simplest correct approach.</p>
+    <p>Markdown consideration: streaming markdown mid-parse can produce invalid intermediate states (e.g., a half-rendered code fence). Use a streaming markdown parser like <code>marked</code> with incremental input, or buffer until a complete "block" (double newline) before rendering markdown. Rendering raw text until the stream ends, then switching to rendered HTML, is often the simplest correct approach.</p>
   </div>
   <div class="tone-staff">
-    <p>At product scale, the rAF buffer pattern needs a few additions. First, cleanup: store the rAF ID in a ref and call <code>cancelAnimationFrame</code> in the component's cleanup function to prevent state updates on unmounted components. Second, scroll anchoring: <code>scroll-anchor</code> CSS or a <code>useEffect</code> on content length that calls <code>scrollIntoView</code> inside the rAF callback — not on every token — prevents scroll thrash. Third, React 18 concurrent mode: wrapping the buffer flush in <code>startTransition</code> marks the streaming update as non-urgent, letting React defer it during user interactions (typing, scrolling) and batch it with other low-priority updates. This is the correct model for production chat UIs where the stream should never block user input. Combine: <code>startTransition(() =&gt; setContent(...))</code> inside the rAF callback, not instead of it.</p>
+    <p>At product scale, the rAF buffer pattern needs a few additions. First, cleanup: store the rAF ID in a ref and call <code>cancelAnimationFrame</code> in the component's cleanup function to prevent state updates on unmounted components. Second, scroll anchoring: <code>scroll-anchor</code> CSS or a <code>useEffect</code> on content length that calls <code>scrollIntoView</code> inside the rAF callback, not on every token, prevents scroll thrash. Third, React 18 concurrent mode: wrapping the buffer flush in <code>startTransition</code> marks the streaming update as non-urgent, letting React defer it during user interactions (typing, scrolling) and batch it with other low-priority updates. This is the correct model for production chat UIs where the stream should never block user input. Combine: <code>startTransition(() =&gt; setContent(...))</code> inside the rAF callback, not instead of it.</p>
   </div>
 </section>
 
 {# ── Chapter: Takeaway ── #}
 
-{# ── Chapter: References (stub — expand per case) ── #}
+{# ── Chapter: References (stub, expand per case) ── #}
 {# ── Chapter: References ── #}
 {# ── Chapter: References ── #}
 <section class="case-chapter case-references" data-chapter="references">
   <h3>References</h3>
   <div class="tone-junior">
     <ol>
-      <li><a href="https://platform.openai.com/docs/api-reference/streaming" rel="noopener noreferrer">OpenAI — Streaming</a></li>
+      <li><a href="https://platform.openai.com/docs/api-reference/streaming" rel="noopener noreferrer">OpenAI: Streaming</a></li>
     </ol>
   </div>
   <div class="tone-mid">
     <ol>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API" rel="noopener noreferrer">MDN — Streams API</a></li>
-      <li><a href="https://web.dev/articles/optimize-inp" rel="noopener noreferrer">web.dev — INP</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API" rel="noopener noreferrer">MDN: Streams API</a></li>
+      <li><a href="https://web.dev/articles/optimize-inp" rel="noopener noreferrer">web.dev: INP</a></li>
     </ol>
   </div>
   <div class="tone-staff">
     <ol>
-      <li><a href="https://platform.openai.com/docs/guides/streaming-responses" rel="noopener noreferrer">OpenAI — Streaming responses</a></li>
-      <li><a href="https://react.dev/reference/react-dom/server/renderToReadableStream" rel="noopener noreferrer">React — renderToReadableStream</a></li>
+      <li><a href="https://platform.openai.com/docs/guides/streaming-responses" rel="noopener noreferrer">OpenAI: Streaming responses</a></li>
+      <li><a href="https://react.dev/reference/react-dom/server/renderToReadableStream" rel="noopener noreferrer">React: renderToReadableStream</a></li>
     </ol>
   </div>
 </section>
@@ -261,13 +261,13 @@ while (true) {
     <ul>
       <li>
         <div class="tone-junior">Don't append each token directly to the DOM. Buffer tokens in a string and flush to the DOM once per animation frame using requestAnimationFrame.</div>
-        <div class="tone-mid">The mismatch: LLMs emit 30–80 tokens/second; displays refresh at 60fps. Extra mutations between frames are wasted CPU — they never produce visible output. Buffer to frame rate.</div>
+        <div class="tone-mid">The mismatch: LLMs emit 30–80 tokens/second; displays refresh at 60fps. Extra mutations between frames are wasted CPU: they never produce visible output. Buffer to frame rate.</div>
         <div class="tone-staff">Each token-level DOM mutation triggers a potential style recalculation. At 60 mutations/second, you consume the browser's entire 16ms style-recalc budget on invisible work. One rAF flush per frame reduces this by 95%.</div>
       </li>
       <li>
-        <div class="tone-junior">Clean up the rAF handle when the stream ends or the component unmounts — use the return value of requestAnimationFrame with cancelAnimationFrame in cleanup.</div>
+        <div class="tone-junior">Clean up the rAF handle when the stream ends or the component unmounts, using the return value of requestAnimationFrame with cancelAnimationFrame in cleanup.</div>
         <div class="tone-mid">Word-boundary flushing (flush on space/punctuation) feels more natural than frame-boundary flushing. Combine both: flush at word boundaries but only once per rAF to cap at 60fps.</div>
-        <div class="tone-staff">React 18 startTransition + concurrent mode can handle buffering at the framework level for streaming updates — mark streaming state updates as non-urgent transitions to let React batch them. This is complementary to, not a replacement for, the rAF buffer.</div>
+        <div class="tone-staff">React 18 startTransition + concurrent mode can handle buffering at the framework level for streaming updates: mark streaming state updates as non-urgent transitions to let React batch them. This is complementary to, not a replacement for, the rAF buffer.</div>
       </li>
     </ul>
   </div>
