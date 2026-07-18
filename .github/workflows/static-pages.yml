@@ -72,11 +72,12 @@ jobs:
         run: |
           set -euo pipefail
           BUILD_ID="${GITHUB_SHA:0:7}"
-          echo "Asset build id: ${BUILD_ID}"
+          BUILD_TIME="$(date -u +"%Y-%m-%d %H:%M UTC")"
+          echo "Asset build id: ${BUILD_ID} / build time: ${BUILD_TIME}"
           find _deploy -type f \( -name '*.html' -o -name '*.js' \) -print0 \
-            | xargs -0 sed -i "s|__AP_BUILD_ID__|${BUILD_ID}|g"
-          if grep -rq '__AP_BUILD_ID__' _deploy 2>/dev/null; then
-            echo "::warning::Some __AP_BUILD_ID__ placeholders remain (non-html/js assets are OK)"
+            | xargs -0 sed -i "s|__AP_BUILD_ID__|${BUILD_ID}|g; s|__AP_BUILD_TIME__|${BUILD_TIME}|g"
+          if grep -rq '__AP_BUILD_ID__\|__AP_BUILD_TIME__' _deploy 2>/dev/null; then
+            echo "::warning::Some __AP_BUILD_ID__/__AP_BUILD_TIME__ placeholders remain (non-html/js assets are OK)"
           fi
 
       - name: Minify CSS and JS in staged artifact
