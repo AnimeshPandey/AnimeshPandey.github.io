@@ -101,7 +101,10 @@ module.exports = function (eleventyConfig) {
   return {
     dir: {
       input: 'src',
-      output: '_site',
+      // See site/.eleventy.js for why this env var exists: lets local dev
+      // builds escape a synced ~/Documents-style folder without changing
+      // the default output path CI and the deploy workflow expect.
+      output: process.env.ELEVENTY_OUTPUT_DIR || '_site',
       includes: '_includes',
       data: '_data',
     },

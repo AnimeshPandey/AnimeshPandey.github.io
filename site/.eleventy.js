@@ -15,7 +15,14 @@ module.exports = function (eleventyConfig) {
   return {
     dir: {
       input: 'src',
-      output: '_site',
+      // Local-dev escape hatch: on machines where the repo lives under a
+      // synced folder (e.g. iCloud Drive's ~/Documents), rapid rebuilds of
+      // the default in-tree `_site` can race the sync daemon and leave
+      // "conflict copy" junk files behind. Set ELEVENTY_OUTPUT_DIR to an
+      // unsynced path (e.g. /tmp/...) to build there instead. Unset in CI
+      // and for anyone else cloning the repo, so the default `_site` output
+      // (what the deploy workflow expects) is unchanged.
+      output: process.env.ELEVENTY_OUTPUT_DIR || '_site',
       includes: '_includes',
       data: '_data',
     },
