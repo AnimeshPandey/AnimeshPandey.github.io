@@ -109,6 +109,15 @@
     );
     var rail = document.querySelector('.section-rail');
 
+    /* IntersectionObserver-driven instead of a raw `scroll` listener: a plain
+       scroll handler re-reads every section's offsetTop on every scroll
+       event, which both thrashes layout and — on real mobile hardware —
+       can lag or stall during momentum/inertial scrolling because the
+       browser is free to throttle `scroll` event dispatch under load. IO
+       callbacks run off that same contention and fire reliably as each
+       section crosses the detection band below, so the active indicator
+       stays in sync with manual scrolling, not just click-driven jumps. */
+
     function getTopOffset() {
       var navH = parseInt(
         getComputedStyle(document.documentElement).getPropertyValue('--nav-h') || '56', 10
@@ -117,27 +126,78 @@
       return navH + railH + 16;
     }
 
-    function onScroll() {
-      var topOffset = getTopOffset();
-      var current = '';
-      sections.forEach(function (s) {
-        if (window.scrollY >= s.offsetTop - topOffset) current = s.id;
-      });
+    var activeId = '';
+    var visibleTops = {};
+    var observer = null;
+
+    function setActive(id) {
+      if (!id || id === activeId) return;
+      activeId = id;
       navLinks.forEach(function (a) {
         var href = a.getAttribute('href') || '';
         var hash = href.indexOf('#') >= 0 ? href.substring(href.indexOf('#')) : href;
-        var active = hash === '#' + current;
-        a.setAttribute('aria-current', active ? 'true' : 'false');
+        a.setAttribute('aria-current', hash === '#' + id ? 'true' : 'false');
       });
-      if (current) {
-        var newHash = '#' + current;
-        if (window.location.hash !== newHash) {
-          setActiveHash(newHash, true);
-        }
+      var newHash = '#' + id;
+      if (window.location.hash !== newHash) {
+        setActiveHash(newHash, true);
       }
     }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+
+    function pickActive() {
+      var bestId = '';
+      var bestTop = Infinity;
+      Object.keys(visibleTops).forEach(function (id) {
+        var top = visibleTops[id];
+        if (top <= bestTop) { bestTop = top; bestId = id; }
+      });
+      if (bestId) setActive(bestId);
+    }
+
+    function createObserver() {
+      if (observer) observer.disconnect();
+      visibleTops = {};
+      var topOffset = getTopOffset();
+      /* Detection band: from just below the sticky header/rail down to the
+         vertical mid-point of the viewport — whichever section currently
+         occupies that band is "active". Recreated on resize since topOffset
+         and the band's percentage split both depend on viewport metrics. */
+      observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            visibleTops[entry.target.id] = entry.boundingClientRect.top;
+          } else {
+            delete visibleTops[entry.target.id];
+          }
+        });
+        pickActive();
+      }, { rootMargin: '-' + topOffset + 'px 0px -55% 0px', threshold: [0, 1] });
+      sections.forEach(function (s) { observer.observe(s); });
+    }
+
+    if (typeof IntersectionObserver !== 'function') {
+      /* Ancient-browser fallback: keep the old scroll-listener behavior
+         rather than silently dropping scroll-spy entirely. */
+      var onScroll = function () {
+        var topOffset = getTopOffset();
+        var current = '';
+        sections.forEach(function (s) {
+          if (window.scrollY >= s.offsetTop - topOffset) current = s.id;
+        });
+        setActive(current);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      return;
+    }
+
+    createObserver();
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(createObserver, 200);
+    }, { passive: true });
   }
 
   function initSectionRail() {
