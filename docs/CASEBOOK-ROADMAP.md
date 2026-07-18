@@ -3,9 +3,11 @@
 **Repo:** `AnimeshPandey/AnimeshPandey.github.io`  
 **Live:** https://anmshpndy.com/cases/  
 **Tracking doc:** `ideas/projects/case-studies/DEVELOPMENT-PLAN.md`  
-**Last updated:** June 2026
+**Last updated:** June 2026 (statuses re-verified July 2026 — see note below)
 
 This document covers features that are **planned but not yet built** for The Frontend Casebook — organized by theme with enough implementation detail to pick up and build directly.
+
+> **Staleness note (July 2026):** a design-backlog execution pass (`docs/DESIGN-IDEAS-BACKLOG.md`) re-checked every item below against the actual codebase and found several marked "planned" here were already shipped, some via a different (often better) implementation than originally scoped. Corrected inline below rather than left silently wrong — treat any section without a "✅ Shipped" callout as still accurate/pending.
 
 ---
 
@@ -55,6 +57,8 @@ This document covers features that are **planned but not yet built** for The Fro
 ---
 
 ## 2 · Casey smart guide / suggestion system
+
+> **✅ Shipped** (commit `2e36b70`) — `casey-guide.js` and `guide-lines.json` both exist exactly as scoped below, and are wired into `casey-hub.js` (`suggest('hub')`, `suggest('hub-zero')` on the real `casey-hub-filter` zero-results event) and `casey-coach.js` (`recordEvent`/`suggest('case-start' | 'case-completed')`). The streak figure is genuinely computed from real `completedAt` timestamps in the last 7 days, not a placeholder. Unit-tested in `tests/unit/casey-guide.test.mjs` (14 passing sub-tests). No action needed.
 
 **What:** An intelligent companion recommendation layer on top of the existing `casebook-companion-v1` progress store. The current system records progress passively; this system makes proactive suggestions.
 
@@ -185,6 +189,8 @@ A lightweight changelog listing new live cases, feature drops, and content addit
 
 ### 7b · "New" badge on hub cards
 
+> **✅ Shipped**, via a deliberately different mechanism than scoped below: the badge is injected **client-side** from `data-published-at` (see `index.njk`'s inline script, `newDays` defaulting to 14) instead of the build-time `isRecent` filter — the code's own comment notes why: "no server-side guess," since a build-time check can only be as fresh as the last deploy, while comparing against `Date.now()` client-side stays accurate between deploys. The `isRecent` Eleventy filter described below does exist in `.eleventy.js` but is unused dead code now that the client-side path shipped — worth deleting in a future cleanup pass, not urgent.
+
 Hub cards should show a "New" chip when `publishedAt` is within 14 days.
 
 **Implementation:** In `index.njk` case card loop — `{% if case.publishedAt | isRecent(14) %}` — add `case-card__badge--new` chip. Add `isRecent` Eleventy filter in `.eleventy.js`.
@@ -229,12 +235,12 @@ Small, independent improvements that collectively raise the quality ceiling.
 | Item | Files | Notes |
 |------|-------|-------|
 | Case OG images | `cases/src/cases/{slug}/og.png` | 1200×630 WebP per case; use UI-strip screenshot as base |
-| Hub card hover state | `casebook.css` `.case-card` | Add subtle lift (`translateY(-2px)` + shadow) on hover; match card-tilt feel from portfolio |
+| ~~Hub card hover state~~ | `casebook-layout.css` | **✅ Shipped** — `.case-card:hover` already has `translateY(-2px)` + shadow lift |
 | Smooth scroll to next chapter | `case-scroll.js` | Already exists; verify no jank on iOS Safari |
 | Casey voice speed control | `casey-voice.js` | Add `playbackRate` slider in `casey-companion-prefs.njk` (0.75× / 1× / 1.25×) |
 | Dark/high-contrast toggle shortcut | `casebook-preferences.js` | Keyboard shortcut `D` to toggle dark mode on Casebook (matches portfolio `hire` shortcut pattern) |
-| Chapter progress dots | `case-layout.njk` | Show 5 dots (story / demo / depth / takeaway / refs) with `filled` state via `IntersectionObserver`; mirrors Growth.Design pill nav |
-| Skeleton on library card load | `hub-filters.js` | Show `.library-grid__item--skeleton` placeholder while filtering (fade in on `transitionend`) |
+| ~~Chapter progress dots~~ | `chapter-progress.js` | **✅ Shipped**, and better than scoped: dots are built from whichever real `.case-chapter[data-chapter]` elements are actually present on the page (capped at 5), not a hardcoded 5-dot set — `IntersectionObserver`-driven active state as planned |
+| Skeleton on library card load | `hub-filters.js` | Still genuinely pending — current code only dims cards to 40% opacity during filtering (`.hub-grid--filtering`), not a content-shaped skeleton placeholder. Real gap, worth doing per the original scope |
 | Confetti on Pro unlock | `pro-gate.js` | Fire confetti (same system as case completion) when user first unlocks Pro |
 | Resume CTA on hub 404 | `cases/src/404.njk` | Add Casey `curious` pose + "Explore all cases" CTA |
 

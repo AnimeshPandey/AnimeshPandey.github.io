@@ -28,8 +28,11 @@ const scripts = [
   'assert-case-continue.mjs',
   'assert-manifest-consistency.mjs',
   'assert-reading-time-honesty.mjs',
+  'assert-portfolio-reading-time-honesty.mjs',
   'assert-internal-links-sample.mjs',
   'assert-json-embeds.mjs',
+  'assert-no-hardcoded-metrics.mjs',
+  'assert-library-slug-uniqueness.mjs',
 ];
 
 let failed = 0;

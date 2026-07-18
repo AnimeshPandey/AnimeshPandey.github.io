@@ -80,7 +80,11 @@ const swRoot = path.join(ROOT, 'sw.js');
 if (fs.existsSync(swRoot)) fs.copyFileSync(swRoot, path.join(DEPLOY, 'sw.js'));
 
 const buildId = process.env.GITHUB_SHA?.slice(0, 7) || 'localdev';
-console.log('→ Stamping build id:', buildId);
+// Real deploy timestamp for the homepage footer's build stamp (design-backlog
+// idea #7) — shown alongside buildId so "Build <sha> · deployed <time>" is a
+// genuine fact pair, not a static copyright line pretending to be current.
+const buildTime = `${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC`;
+console.log('→ Stamping build id:', buildId, '/ build time:', buildTime);
 const stampExt = new Set(['.html', '.js']);
 function walk(dir) {
   for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -88,8 +92,9 @@ function walk(dir) {
     if (ent.isDirectory()) walk(p);
     else if (stampExt.has(path.extname(ent.name))) {
       let txt = fs.readFileSync(p, 'utf8');
-      if (txt.includes('__AP_BUILD_ID__')) {
-        fs.writeFileSync(p, txt.replaceAll('__AP_BUILD_ID__', buildId));
+      if (txt.includes('__AP_BUILD_ID__') || txt.includes('__AP_BUILD_TIME__')) {
+        txt = txt.replaceAll('__AP_BUILD_ID__', buildId).replaceAll('__AP_BUILD_TIME__', buildTime);
+        fs.writeFileSync(p, txt);
       }
     }
   }
