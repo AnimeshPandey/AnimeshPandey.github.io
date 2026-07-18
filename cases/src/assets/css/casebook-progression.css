@@ -215,7 +215,11 @@
 }
 
 .case-continue__signed-out a {
-  color: var(--casebook-accent);
+  /* color: --casebook-accent-ink, not --casebook-accent — this link sits
+     directly on the card's surface background (accent-as-body-text), and
+     *-accent-ink is the token engineered for that pairing. Raw
+     --casebook-accent measured 3.81:1 here, failing WCAG 1.4.3's 4.5:1. */
+  color: var(--casebook-accent-ink);
 }
 
 /* Account page */

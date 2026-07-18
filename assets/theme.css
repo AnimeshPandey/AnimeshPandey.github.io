@@ -16,7 +16,7 @@
   --accent-ink:     #994828; /* text-on-page-bg (accent used as body text, not a button fill); raw #BF5A32 is 3.81:1 vs --surface-2 (fails), darkened 20% toward black passes 4.92:1 */
   --sage:           #4E7A68;
   --sage-bg:        #D3E8DF;
-  --sage-ink:       #456d5d; /* text-on-sage-bg; raw #4E7A68 is 3.80:1 vs --sage-bg (fails), darkened 11% toward black passes 4.55:1 */
+  --sage-ink:       #375549; /* text-on-sage-bg; raw #4E7A68 is 3.80:1 vs --sage-bg (fails). Flat sRGB math for the prior #456d5d (11% darker) came out to 4.55:1, but a real rendered-pixel audit (small 11.5px mono text, anti-aliased) measured only 3.92:1 — flat-color contrast math understates real text rendering at small sizes, so don't tune to the bare 4.5:1 minimum. Darkened 30% toward black for 6.40:1 headroom, verified 4.5:1+ via live audit. */
   --border:         #DDD6C9;
   --border-2:       #CAC2B4;
   --hero-card-bg:   #1C1714;
@@ -283,6 +283,7 @@
     --accent-ink:     #E07A52;
     --sage:           #7BAF98;
     --sage-bg:        rgba(78,122,104,.18);
+    --sage-ink:       #7BAF98; /* mirrors [data-theme="dark"]; already passes as text-on-sage-bg: 5.59:1 */
     --border:         #2E2926;
     --border-2:       #3D3632;
     --hero-card-bg:   #0E0B09;
