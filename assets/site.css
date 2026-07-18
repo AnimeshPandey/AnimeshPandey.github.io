@@ -214,12 +214,24 @@ h2 > button {
   all: unset; font: inherit; color: inherit; cursor: pointer;
 }
 
-/* ── Hero — mobile-first ── */
+/* ── Hero — mobile-first ──
+   #hero is a full-bleed positioning shell (backgrounds + canvas span the
+   whole viewport); .hero-inner is the centered readable-content column,
+   same split as header/.nav-inner further down this file. */
 #hero {
   --mx: 5%;
   --my: 60%;
-  min-height: auto;
   position: relative;
+  overflow: clip; /* prevents entrance-animation scroll without clipping ascenders */
+  /* #hero is a <section>, so it would otherwise inherit the generic
+     `section { max-width / margin / padding }` rule above — explicitly
+     reset all three so this section stays full-bleed and .hero-inner is
+     the only box that carries the centered-column constraint. */
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.hero-inner {
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -229,7 +241,6 @@ h2 > button {
   padding-right: var(--page-pad);
   max-width: var(--max);
   margin: 0 auto;
-  overflow: clip; /* prevents entrance-animation scroll without clipping ascenders */
 }
 .hero-left { position: relative; z-index: 1; }
 
@@ -1396,11 +1407,18 @@ html.theme-transitioning footer {
   .nav-links { display: flex; }
 
   #hero {
+    /* capped so very tall/large-monitor viewports don't stretch the hero
+       into a wall of empty space above/below the content */
+    min-height: clamp(560px, 100svh, 880px);
+    display: flex;
+    flex-direction: column;
+  }
+  .hero-inner {
+    flex: 1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 270px;
     gap: clamp(32px, 4vw, 48px);
     align-items: center;
-    min-height: 100svh;
   }
   .hero-card { display: flex; flex-direction: column; }
   .hero-facts { display: none; }
@@ -1429,7 +1447,7 @@ html.theme-transitioning footer {
   .nav-links a { font-size: 12px; }
 
   /* ── Hero ── */
-  #hero {
+  .hero-inner {
     grid-template-columns: minmax(0, 1fr) 340px;
     gap: clamp(48px, 4.5vw, 64px);
   }
@@ -1476,7 +1494,7 @@ html.theme-transitioning footer {
   :root { --max: 1200px; }
 
   /* ── Hero ── */
-  #hero {
+  .hero-inner {
     grid-template-columns: minmax(0, 1fr) 390px;
     gap: clamp(56px, 5vw, 72px);
   }
