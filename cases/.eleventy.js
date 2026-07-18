@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const nunjucks = require('nunjucks');
 const site = require('./src/_data/site.json');
@@ -54,6 +55,100 @@ hubFacets.companies.forEach((company) => {
   }
 });
 
+/* Compute a real, build-time reading-time figure for every live case, from
+   that case's actual chapter prose — replacing two independent hand-typed
+   numbers: manifest.json's `readMin` (a flat 10 for all 229 cases, live or
+   not) shown on the hub card, and each case's own front-matter `readMin`
+   (varies per case but is still a guess) shown on the case cover. Same bug
+   class PR #17 fixed for portfolio articles ("18 min read" that drifted
+   from the real prose), computed once here and read by both surfaces so
+   they can't drift from each other.
+
+   Only the default tone's prose is counted (all 31 live cases render all
+   three tones — junior/mid/staff — into the DOM simultaneously and toggle
+   visibility client-side; counting all three would overcount by ~3x
+   relative to what a reader on one tone actually reads). All 31 cases
+   currently set defaultTone: "junior". */
+function stripBalancedToneBlocks(html, tonesToStrip) {
+  let result = html;
+  tonesToStrip.forEach((tone) => {
+    const marker = `class="tone-${tone}"`;
+    let searchFrom = 0;
+    for (;;) {
+      const markerIdx = result.indexOf(marker, searchFrom);
+      if (markerIdx === -1) break;
+      const divStart = result.lastIndexOf('<div', markerIdx);
+      if (divStart === -1) {
+        searchFrom = markerIdx + marker.length;
+        continue;
+      }
+      // Walk forward counting <div>/</div> depth to find the true matching
+      // close, rather than a naive non-greedy regex that would stop at the
+      // first </div> even if this tone block contains a nested <div>.
+      let depth = 0;
+      let pos = divStart;
+      let closeEnd = -1;
+      while (pos < result.length) {
+        const nextOpen = result.indexOf('<div', pos);
+        const nextClose = result.indexOf('</div>', pos);
+        if (nextClose === -1) break;
+        if (nextOpen !== -1 && nextOpen < nextClose) {
+          depth += 1;
+          pos = nextOpen + 4;
+        } else {
+          depth -= 1;
+          pos = nextClose + 6;
+          if (depth === 0) {
+            closeEnd = pos;
+            break;
+          }
+        }
+      }
+      if (closeEnd === -1) break;
+      result = result.slice(0, divStart) + result.slice(closeEnd);
+      searchFrom = divStart;
+    }
+  });
+  return result;
+}
+
+function countRealWords(rawTemplateSource) {
+  const text = String(rawTemplateSource || '')
+    .replace(/\{#[\s\S]*?#\}/g, ' ') // nunjucks comments
+    .replace(/\{\{[\s\S]*?\}\}/g, ' ') // nunjucks output tags
+    .replace(/\{%[\s\S]*?%\}/g, ' ') // nunjucks logic tags
+    .replace(/<[^>]*>/g, ' '); // html tags
+  return (text.match(/\S+/g) || []).length;
+}
+
+const caseReadingStats = {};
+liveCases.forEach((c) => {
+  const filePath = path.join(__dirname, 'src/cases', c.slug, 'index.njk');
+  let raw;
+  try {
+    raw = fs.readFileSync(filePath, 'utf8');
+  } catch (e) {
+    return; // no source file — leave the hand-typed readMin as a fallback
+  }
+  const body = raw.replace(/^---[\s\S]*?---\s*/, ''); // drop front matter
+  const tone = c.defaultTone || 'junior';
+  const otherTones = ['junior', 'mid', 'staff'].filter((t) => t !== tone);
+  const onlyDefaultTone = stripBalancedToneBlocks(body, otherTones);
+  const words = countRealWords(onlyDefaultTone);
+  const minutes = Math.max(1, Math.ceil(words / 200));
+  caseReadingStats[c.slug] = { words: words, minutes: minutes };
+});
+/* Deliberately NOT mutating `c.readMin` on the manifest case object here:
+   Eleventy's automatic `_data/manifest.json` loading parses that file
+   independently of this module's own `require('./src/_data/manifest.json')`
+   above — they are two distinct objects, not a shared require-cache
+   reference (unlike hubFacets/libraryEntries, which templates only ever see
+   via this file's explicit addGlobalData registration, never Eleventy's
+   auto-loading, so there's no second copy to drift from). Mutating this
+   copy would silently do nothing to what index.njk reads. Templates look up
+   caseReadingStats[slug] directly instead — see index.njk and
+   case-layout.njk. */
+
 module.exports = function (eleventyConfig) {
   const nunjucksEnvironment = nunjucks.configure(
     [
@@ -75,6 +170,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/cases/**/casey.json');
 
   /* ── Global data ── */
+  eleventyConfig.addGlobalData('caseReadingStats', caseReadingStats);
   eleventyConfig.addGlobalData('libraryEntries', libraryEntries);
   eleventyConfig.addGlobalData('hubFacets', hubFacets);
   eleventyConfig.addGlobalData('hubIndex', hubIndex);

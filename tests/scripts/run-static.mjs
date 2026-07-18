@@ -27,6 +27,7 @@ const scripts = [
   'assert-seo-structured-data.mjs',
   'assert-case-continue.mjs',
   'assert-manifest-consistency.mjs',
+  'assert-reading-time-honesty.mjs',
   'assert-internal-links-sample.mjs',
   'assert-json-embeds.mjs',
 ];
