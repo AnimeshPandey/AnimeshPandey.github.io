@@ -766,6 +766,16 @@
   align-items: center;
 }
 
+.reading-card__catalog-no {
+  font-family: var(--mono, monospace);
+  font-size: 0.68rem;
+  letter-spacing: .03em;
+  /* --casebook-ink-muted measured below 4.5:1 elsewhere on this same surface
+     (see .reading-card__ours--coming / __fcs-link above) — use full ink. */
+  color: var(--casebook-ink);
+  white-space: nowrap;
+}
+
 .reading-card__company-chip {
   display: inline-block;
   padding: 0.15rem 0.5rem;
@@ -851,6 +861,15 @@
 
 .reading-card__ours--linked a:hover {
   text-decoration: underline;
+}
+
+/* Real case-number cross-reference — same live-case stamp shown on the hub
+   grid card and case cover, surfaced here as a citation rather than a boxed
+   stamp since it sits inline inside a link. Inherits the link's color, so no
+   new contrast pair to verify. */
+.reading-card__case-ref {
+  font-family: var(--mono, monospace);
+  letter-spacing: .03em;
 }
 
 .reading-card__footer {

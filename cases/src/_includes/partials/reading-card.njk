@@ -11,6 +11,12 @@
          data-priority="{{ entry.priority }}">
 
   <header class="reading-card__header">
+    {# Real catalog number — this entry's actual 1-based position in the
+       library's canonical order (libraryEntries, sourced from the Frontend
+       Case Studies index), not a fabricated count. Same "real number, not
+       decoration" idiom as the hub's case stamp, styled for a card-catalog
+       rather than a case-file. #}
+    <span class="reading-card__catalog-no" aria-hidden="true">No. {{ (loop.index0 + 1) | pad3 }}</span>
     {% if entry.company %}
       <span class="reading-card__company-chip">{{ entry.company }}</span>
     {% endif %}
@@ -37,8 +43,14 @@
   </h3>
 
   {% if entry.mapsToSlug %}
+    {# Cross-reference the real case number already shown on that case's hub
+       card and cover (cases/lib/case-navigation.js's liveIndex) — the same
+       live-case ordering, not a separate count. #}
+    {% set mappedNav = entry.mapsToSlug | caseNav %}
     <p class="reading-card__ours reading-card__ours--linked">
-      <a href="{{ ('/' ~ entry.mapsToSlug ~ '/') | url }}">Casebook version available →</a>
+      <a href="{{ ('/' ~ entry.mapsToSlug ~ '/') | url }}">
+        Casebook version available{% if mappedNav %} <span class="reading-card__case-ref">· Case No. {{ mappedNav.liveIndex | pad3 }}</span>{% endif %} →
+      </a>
     </p>
   {% else %}
     <p class="reading-card__ours reading-card__ours--coming">Our take coming</p>
