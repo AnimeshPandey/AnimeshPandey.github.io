@@ -28,6 +28,32 @@ libraryEntries.forEach((entry, i) => {
   entry.catalogNo = i + 1;
 });
 
+/* Stamp each company facet with the real published-year span of its
+   library entries (min/max of entry.publishedYear across that company's
+   articles) — a real, build-time-derived fact about the company's coverage
+   in this library, not a fabricated figure. Mutates the same hubFacets.companies
+   objects that company-detail.njk's pagination iterates over, so both the
+   companies index and each company's detail page read from one computed
+   value. */
+const companyYearSpans = {};
+libraryEntries.forEach((entry) => {
+  if (!entry.companySlug || !entry.publishedYear) return;
+  const span = companyYearSpans[entry.companySlug];
+  if (!span) {
+    companyYearSpans[entry.companySlug] = { minYear: entry.publishedYear, maxYear: entry.publishedYear };
+  } else {
+    if (entry.publishedYear < span.minYear) span.minYear = entry.publishedYear;
+    if (entry.publishedYear > span.maxYear) span.maxYear = entry.publishedYear;
+  }
+});
+hubFacets.companies.forEach((company) => {
+  const span = companyYearSpans[company.slug];
+  if (span) {
+    company.minYear = span.minYear;
+    company.maxYear = span.maxYear;
+  }
+});
+
 module.exports = function (eleventyConfig) {
   const nunjucksEnvironment = nunjucks.configure(
     [

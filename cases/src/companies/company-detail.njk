@@ -26,6 +26,11 @@ permalink: /companies/{{ company.slug }}/index.html
     <h1 class="casebook-hub__title">{{ company.name }}</h1>
     <p class="casebook-hub__subtitle">
       {{ companyEntries | length }} article{{ 's' if companyEntries | length != 1 else '' }} in the reading library
+      {% if company.minYear %}
+        {# Same real coverage span shown on the companies index card —
+           the actual min/max publishedYear across this company's entries. #}
+        <span class="company-detail__years">· {{ company.minYear }}{% if company.maxYear != company.minYear %}–{{ company.maxYear }}{% endif %} coverage</span>
+      {% endif %}
     </p>
   </header>
 

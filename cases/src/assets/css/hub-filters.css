@@ -1160,6 +1160,21 @@
   color: var(--casebook-ink-muted);
 }
 
+.company-card__years {
+  font-family: var(--mono, monospace);
+  font-size: 0.68rem;
+  letter-spacing: .02em;
+  /* Small text on this surface — full ink, not ink-muted, per the
+     4.5:1 contrast precedent already documented elsewhere in this file
+     (see .reading-card__catalog-no above). */
+  color: var(--casebook-ink);
+}
+
+.company-detail__years {
+  font-family: var(--mono, monospace);
+  letter-spacing: .02em;
+}
+
 .casebook-hub__breadcrumb {
   font-size: 0.82rem;
   color: var(--casebook-ink-muted);
