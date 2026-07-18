@@ -123,7 +123,15 @@ permalink: /index.html
                 {% elif not isLive and not isScheduled %}
                   <span class="case-card__badge case-card__badge--soon">Coming soon</span>
                 {% endif %}
-                <span class="case-card__read">{{ case.readMin }}m</span>
+                {# Real reading time for live cases, computed at build time
+                   from each case's actual default-tone prose
+                   (cases/.eleventy.js's caseReadingStats) — manifest.json's
+                   readMin is a flat, hand-typed placeholder (10 for every
+                   case, live or not), so it's only used as a fallback for
+                   not-yet-written cases where there's no real prose to
+                   measure. #}
+                {% set caseStats = caseReadingStats[case.slug] %}
+                <span class="case-card__read">{{ caseStats.minutes if caseStats else case.readMin }}m</span>
               </div>
 
         {% if isLive %}

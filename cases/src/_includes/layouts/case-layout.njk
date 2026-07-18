@@ -22,7 +22,16 @@ layout: layouts/casebook-layout.njk
         {% if nav %}
           <span class="case-cover__stamp">No. {{ nav.liveIndex | pad3 }}</span>
         {% endif %}
-        <span>{{ readMin | default(10) }} min read</span>
+        {# Real reading time, computed at build time from this case's actual
+           default-tone prose (cases/.eleventy.js's caseReadingStats), not
+           the hand-typed readMin front-matter field — same idiom as the
+           hub card's "Nm", sourced from the same computed value. #}
+        {% set readStats = caseReadingStats[slug] %}
+        {% if readStats %}
+          <span title="{{ readStats.words }} words, measured from this case's actual prose">{{ readStats.minutes }} min read</span>
+        {% else %}
+          <span>{{ readMin | default(10) }} min read</span>
+        {% endif %}
         {% if publishedAt %}
           <span>· {{ publishedAt | readableDate }}</span>
         {% endif %}
