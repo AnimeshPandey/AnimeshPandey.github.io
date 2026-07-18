@@ -9,27 +9,9 @@ publishedAt: 2026-05-31
 <main id="article-content">
   <div class="article-shell">
 
-    <nav class="breadcrumbs" aria-label="Breadcrumb">
-      <a href="/">Home</a>
-      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
-      <a href="/#writing">Writing</a>
-      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
-      <span aria-current="page">Streaming Agent UI Without the Chatbot Clipart</span>
-    </nav>
-
-    <header class="article-header">
-      <p class="article-label">Frontend Architecture · AI · SSE</p>
-      <h1 class="article-title-main">Streaming Agent UI Without the Chatbot Clipart</h1>
-      <div class="article-byline">
-        <span>Animesh Pandey</span>
-        <span>·</span>
-        <time datetime="2026-05-31">May 31, 2026</time>
-        <span>·</span>
-        <span>18 min read</span>
-      </div>
-    </header>
-
-    <div class="article-prose">
+    {# Real reading time, computed from the actual prose below — not hand-typed —
+       via the wordStats filter (site/.eleventy.js). #}
+    {% set articleProseHtml %}
 
       <p>Teams add a chat bubble to their product and call it an AI feature. Users click it once, get a spinner for seven seconds, then go back to whatever they were doing. The problem isn't the model - it's the gap between what the model is doing and what the UI is showing. An opaque wait is indistinguishable from a broken request.</p>
 
@@ -279,6 +261,31 @@ function useAgentStream() {
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream" target="_blank" rel="noopener noreferrer">MDN - ReadableStream</a> - the Streams API used to consume the SSE byte stream</li>
       </ul>
 
+    {% endset %}
+    {% set stats = articleProseHtml | wordStats %}
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
+      <a href="/#writing">Writing</a>
+      <span class="breadcrumbs-sep" aria-hidden="true">›</span>
+      <span aria-current="page">Streaming Agent UI Without the Chatbot Clipart</span>
+    </nav>
+
+    <header class="article-header">
+      <p class="article-label">Frontend Architecture · AI · SSE</p>
+      <h1 class="article-title-main">Streaming Agent UI Without the Chatbot Clipart</h1>
+      <div class="article-byline">
+        <span>Animesh Pandey</span>
+        <span>·</span>
+        <time datetime="2026-05-31">May 31, 2026</time>
+        <span>·</span>
+        <span title="{{ stats.words }} words, measured from this article's actual prose">{{ stats.minutes }} min read</span>
+      </div>
+    </header>
+
+    <div class="article-prose">
+      {{ articleProseHtml | safe }}
     </div>
 
     <div class="article-cta">

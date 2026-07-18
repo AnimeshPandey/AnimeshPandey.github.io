@@ -2,6 +2,16 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 
 module.exports = function (eleventyConfig) {
+  /* Real word-count + reading-time readout for the article byline — computed
+     from the actual prose HTML passed in, not hand-typed. ~200wpm, rounded
+     up so a 90-second read doesn't show "0 min". */
+  eleventyConfig.addFilter('wordStats', (html) => {
+    const text = String(html || '').replace(/<[^>]*>/g, ' ');
+    const words = (text.match(/\S+/g) || []).length;
+    const minutes = Math.max(1, Math.ceil(words / 200));
+    return { words: words, minutes: minutes };
+  });
+
   eleventyConfig.addPassthroughCopy({ '../assets': 'assets' });
   eleventyConfig.addPassthroughCopy({ '../favicon.svg': 'favicon.svg' });
   eleventyConfig.addPassthroughCopy({ '../resume.pdf': 'resume.pdf' });
