@@ -56,6 +56,15 @@ permalink: /companies/index.html
           <span class="company-card__count" aria-label="{{ company.count }} articles">
             {{ company.count }} article{{ 's' if company.count != 1 else '' }}
           </span>
+          {% if company.minYear %}
+            {# Real coverage span — the actual min/max publishedYear across this
+               company's library entries, not a fabricated "since" date. Same
+               "real number, not decoration" idiom as the case-file stamp and
+               reading-card catalog number, applied here as a case-file's date
+               range on its folder tab. #}
+            <span class="company-card__years"
+                  aria-label="{% if company.maxYear != company.minYear %}Coverage {{ company.minYear }} to {{ company.maxYear }}{% else %}Coverage in {{ company.minYear }}{% endif %}">{{ company.minYear }}{% if company.maxYear != company.minYear %}–{{ company.maxYear }}{% endif %}</span>
+          {% endif %}
         </a>
       </li>
     {% endfor %}
