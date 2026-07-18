@@ -6,6 +6,7 @@ import { spawnSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { excludeFromICloudSync } from './icloud-exclude.mjs';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
 // DEPLOY_DIR lets local dev point the staged artifact outside a synced
@@ -55,16 +56,19 @@ run('npm', ['install'], path.join(ROOT, 'cases'));
 
 console.log('→ Building casebook…');
 run('npm', ['run', 'build'], path.join(ROOT, 'cases'), { ELEVENTY_OUTPUT_DIR: CASES_OUT });
+excludeFromICloudSync(CASES_OUT);
 
 console.log('→ Installing portfolio site dependencies…');
 run('npm', ['install'], path.join(ROOT, 'site'));
 
 console.log('→ Building portfolio site…');
 run('npm', ['run', 'build'], path.join(ROOT, 'site'), { ELEVENTY_OUTPUT_DIR: SITE_OUT });
+excludeFromICloudSync(SITE_OUT);
 
 console.log('→ Staging _deploy…');
 rmrf(DEPLOY);
 fs.mkdirSync(DEPLOY, { recursive: true });
+excludeFromICloudSync(DEPLOY);
 copyDir(SITE_OUT, DEPLOY);
 fs.mkdirSync(path.join(DEPLOY, 'cases'), { recursive: true });
 copyDir(CASES_OUT, path.join(DEPLOY, 'cases'));
