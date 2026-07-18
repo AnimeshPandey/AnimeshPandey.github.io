@@ -11,10 +11,17 @@ layout: layouts/casebook-layout.njk
     {% include 'partials/case-header.njk' %}
 
     {# ── Cover ── #}
+    {% set nav = slug | caseNav %}
     <header class="case-cover">
       <p class="case-cover__track">{{ track | replace("-", " ") | title }}</p>
       <h1 class="case-cover__title">{{ title }}</h1>
       <div class="case-cover__meta">
+        {# Same real "No. 0NN" live-case position shown on the hub card
+           (case-navigation.js's liveIndex) — carries the case-file identity
+           from the hub grid onto the case's own page. #}
+        {% if nav %}
+          <span class="case-cover__stamp">No. {{ nav.liveIndex | pad3 }}</span>
+        {% endif %}
         <span>{{ readMin | default(10) }} min read</span>
         {% if publishedAt %}
           <span>· {{ publishedAt | readableDate }}</span>

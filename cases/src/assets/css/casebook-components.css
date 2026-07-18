@@ -23,6 +23,24 @@
   font-family: var(--mono, monospace); font-size: 11px;
   color: var(--casebook-ink-faint);
 }
+/* Case-cover stamp — carries the hub grid's real "No. 0NN" live-case position
+   (case-navigation.js's liveIndex) onto the case's own page, so the case-file
+   identity persists past the click-through. Same ink-stamp visual language as
+   .case-card__stamp; no new color tokens. */
+.case-cover__stamp {
+  display: inline-flex; align-items: center;
+  font-family: var(--mono, monospace);
+  font-size: 10px; font-weight: 600; letter-spacing: .08em;
+  color: var(--casebook-accent-ink);
+  border: 1.5px solid var(--casebook-accent-ink);
+  border-radius: 3px;
+  padding: 2px 7px;
+  transform: rotate(-3deg);
+  mix-blend-mode: multiply;
+}
+[data-theme="dark"] .case-cover__stamp {
+  mix-blend-mode: screen;
+}
 .case-cover__badge {
   display: inline-flex; align-items: center; gap: 5px;
   background: var(--casebook-surface-2);
