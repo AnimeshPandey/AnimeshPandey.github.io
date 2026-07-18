@@ -8,10 +8,28 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const DEPLOY = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '_deploy');
+// DEPLOY_DIR lets local dev point the staged artifact outside a synced
+// ~/Documents-style folder (see serve-deploy.mjs, which already honors this
+// same env var). Unset in CI, so the default in-repo tests/_deploy is used.
+const DEPLOY =
+  process.env.DEPLOY_DIR ||
+  path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '_deploy');
+// Eleventy output dirs, similarly overridable so `site/_site` and
+// `cases/_site` themselves aren't rewritten in-place inside the synced tree.
+const SITE_OUT = process.env.ELEVENTY_OUTPUT_DIR
+  ? path.join(process.env.ELEVENTY_OUTPUT_DIR, 'site')
+  : path.join(ROOT, 'site', '_site');
+const CASES_OUT = process.env.ELEVENTY_OUTPUT_DIR
+  ? path.join(process.env.ELEVENTY_OUTPUT_DIR, 'cases')
+  : path.join(ROOT, 'cases', '_site');
 
-function run(cmd, args, cwd) {
-  const r = spawnSync(cmd, args, { cwd, stdio: 'inherit', shell: process.platform === 'win32' });
+function run(cmd, args, cwd, env) {
+  const r = spawnSync(cmd, args, {
+    cwd,
+    stdio: 'inherit',
+    shell: process.platform === 'win32',
+    env: env ? { ...process.env, ...env } : process.env,
+  });
   if (r.status !== 0) process.exit(r.status ?? 1);
 }
 
@@ -36,20 +54,20 @@ console.log('→ Installing casebook dependencies…');
 run('npm', ['install'], path.join(ROOT, 'cases'));
 
 console.log('→ Building casebook…');
-run('npm', ['run', 'build'], path.join(ROOT, 'cases'));
+run('npm', ['run', 'build'], path.join(ROOT, 'cases'), { ELEVENTY_OUTPUT_DIR: CASES_OUT });
 
 console.log('→ Installing portfolio site dependencies…');
 run('npm', ['install'], path.join(ROOT, 'site'));
 
 console.log('→ Building portfolio site…');
-run('npm', ['run', 'build'], path.join(ROOT, 'site'));
+run('npm', ['run', 'build'], path.join(ROOT, 'site'), { ELEVENTY_OUTPUT_DIR: SITE_OUT });
 
 console.log('→ Staging _deploy…');
 rmrf(DEPLOY);
 fs.mkdirSync(DEPLOY, { recursive: true });
-copyDir(path.join(ROOT, 'site', '_site'), DEPLOY);
+copyDir(SITE_OUT, DEPLOY);
 fs.mkdirSync(path.join(DEPLOY, 'cases'), { recursive: true });
-copyDir(path.join(ROOT, 'cases', '_site'), path.join(DEPLOY, 'cases'));
+copyDir(CASES_OUT, path.join(DEPLOY, 'cases'));
 
 const headers = path.join(ROOT, '_headers');
 if (fs.existsSync(headers)) fs.copyFileSync(headers, path.join(DEPLOY, '_headers'));
