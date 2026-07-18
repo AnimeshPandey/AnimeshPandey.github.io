@@ -158,6 +158,28 @@ body {
 .case-card--soon .case-card { border-style: dashed; }
 .case-card--scheduled { opacity: 0.85; cursor: default; }
 .case-card--scheduled .case-card { border-style: dashed; border-color: var(--casebook-accent); }
+/* Case-file stamp — "No. 007" is this case's real position among live cases
+   (see index.njk's liveTally counter), not a decorative fake number. Reuses
+   --casebook-accent-ink and mix-blend-mode for an inked-stamp look with zero
+   new color tokens. */
+.case-card__stamp {
+  position: absolute;
+  top: 14px; right: 14px;
+  font-family: var(--mono, monospace);
+  font-size: 10px; font-weight: 600; letter-spacing: .08em;
+  color: var(--casebook-accent-ink);
+  border: 1.5px solid var(--casebook-accent-ink);
+  border-radius: 3px;
+  padding: 2px 7px;
+  transform: rotate(-5deg);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  white-space: nowrap;
+}
+[data-theme="dark"] .case-card__stamp {
+  mix-blend-mode: screen;
+}
+
 .case-card__track {
   font-family: var(--mono, monospace);
   font-size: 10px; letter-spacing: .12em;
