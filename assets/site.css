@@ -425,6 +425,32 @@ h2 > button {
     border-color: rgba(191,90,50,.14);
   }
 }
+/* Boot-sequence stagger: each labeled line prints in like a terminal log,
+   in reading order via the --boot-i custom property set inline per element —
+   distinct from the uniform single fade-up used elsewhere on the hero, and
+   diegetic to the card's own "console readout" styling (hc-comment/hc-val). */
+.hc-boot .hc-comment,
+.hc-boot .hc-val,
+.hc-boot .hc-stack,
+.hc-boot .hc-vitals,
+.hc-boot .hc-status,
+.hc-boot .hc-dl {
+  animation: hc-boot-line .4s ease both;
+  animation-delay: calc(var(--boot-i, 0) * 45ms + .5s);
+}
+@keyframes hc-boot-line {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-boot .hc-comment,
+  .hc-boot .hc-val,
+  .hc-boot .hc-stack,
+  .hc-boot .hc-vitals,
+  .hc-boot .hc-status,
+  .hc-boot .hc-dl { animation: none; }
+}
+
 .hc-comment {
   display: block; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em;
   text-transform: uppercase; color: rgba(155,140,132,.6); margin-bottom: 6px;
@@ -439,6 +465,27 @@ h2 > button {
   background: rgba(255,255,255,.07); color: rgba(250,248,244,.72);
   padding: 3px 9px; border-radius: 4px;
 }
+.hc-vitals {
+  display: flex; gap: 14px; margin: 0;
+}
+.hc-vital {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.hc-vital dt {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(155,140,132,.55);
+}
+.hc-vital dd {
+  margin: 0; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums;
+  color: rgba(250,248,244,.82);
+}
+/* Thresholds mirror the standard Web Vitals bands (good / needs-improvement / poor).
+   Colors are scoped to this one always-dark card (see --hero-card-bg, color-scheme:dark
+   above), not new site-wide tokens — #6db899 already exists here as the hc-pulse green. */
+.hc-vital dd.hc-vital--good  { color: #6db899; }
+.hc-vital dd.hc-vital--ok    { color: #d3a15a; }
+.hc-vital dd.hc-vital--poor  { color: #e0806b; }
+
 .hc-status {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--mono); font-size: 12.5px; color: #6db899;

@@ -620,34 +620,42 @@
     </div>
 
     <!-- Right column: info card — desktop only -->
-    <div class="hero-card" aria-label="Quick facts">
-      <span class="hc-comment" data-i18n="hero.cardCommentRole">// frontend lead · measurement &amp; AI</span>
+    <div class="hero-card hc-boot" aria-label="Quick facts">
+      <span class="hc-comment" style="--boot-i:0" data-i18n="hero.cardCommentRole">// frontend lead · measurement &amp; AI</span>
       <hr class="hc-divider" />
-      <span class="hc-comment" data-i18n="hero.cardCommentCurrently">// currently</span>
-      <p class="hc-val">Senior Software Engineer at <a href="https://lifesight.io" class="hc-link" target="_blank" rel="noopener noreferrer">Lifesight</a></p>
-      <hr class="hc-divider" />
-
-      <span class="hc-comment" data-i18n="hero.cardCommentLocation">// location</span>
-      <p class="hc-val">Bangalore, India</p>
+      <span class="hc-comment" style="--boot-i:1" data-i18n="hero.cardCommentCurrently">// currently</span>
+      <p class="hc-val" style="--boot-i:2">Senior Software Engineer at <a href="https://lifesight.io" class="hc-link" target="_blank" rel="noopener noreferrer">Lifesight</a></p>
       <hr class="hc-divider" />
 
-      <span class="hc-comment" data-i18n="hero.cardCommentExperience">// experience</span>
-      <p class="hc-val">7+ years · SaaS &amp; GovTech</p>
+      <span class="hc-comment" style="--boot-i:3" data-i18n="hero.cardCommentLocation">// location</span>
+      <p class="hc-val" style="--boot-i:4">Bangalore, India</p>
       <hr class="hc-divider" />
 
-      <span class="hc-comment" data-i18n="hero.cardCommentStack">// core stack</span>
-      <div class="hc-stack">
+      <span class="hc-comment" style="--boot-i:5" data-i18n="hero.cardCommentExperience">// experience</span>
+      <p class="hc-val" style="--boot-i:6">7+ years · SaaS &amp; GovTech</p>
+      <hr class="hc-divider" />
+
+      <span class="hc-comment" style="--boot-i:7" data-i18n="hero.cardCommentStack">// core stack</span>
+      <div class="hc-stack" style="--boot-i:8">
         <span>React</span><span>TypeScript</span><span>Next.js</span>
         <span>Microfrontends</span><span>Node.js</span>
       </div>
       <hr class="hc-divider" />
 
-      <span class="hc-status">
+      <span class="hc-comment" style="--boot-i:9">// this page, live</span>
+      <dl class="hc-vitals" style="--boot-i:10" aria-label="Real-time performance of this page">
+        <div class="hc-vital"><dt>LCP</dt><dd id="hc-vital-lcp">—</dd></div>
+        <div class="hc-vital"><dt>CLS</dt><dd id="hc-vital-cls">—</dd></div>
+        <div class="hc-vital"><dt>TTFB</dt><dd id="hc-vital-ttfb">—</dd></div>
+      </dl>
+      <hr class="hc-divider" />
+
+      <span class="hc-status" style="--boot-i:11">
         <span class="hc-pulse" aria-hidden="true"></span>
         <span data-i18n="hero.cardOpenStatus">Open to new roles</span>
       </span>
 
-      <button type="button" class="hc-dl" id="resume-preview-hc" aria-haspopup="dialog"
+      <button type="button" class="hc-dl" id="resume-preview-hc" style="--boot-i:12" aria-haspopup="dialog"
               data-i18n-attr="aria-label" data-i18n="a11y.previewResumeHero">
         <svg class="icon-sm" aria-hidden="true"><use href="#i-download"/></svg>
         <span data-i18n="hero.viewResume">View resume</span>
@@ -1390,6 +1398,7 @@
 <script src="/assets/i18n/i18n.js" defer></script>
 <script src="/assets/nav.js" defer></script>
 <script src="/assets/visuals.js" defer></script>
+<script src="/assets/vitals-readout.js" defer></script>
 <script src="/assets/contact.js?v=__AP_BUILD_ID__" defer></script>
 <!-- ── Cloudflare Web Analytics ──────────────────────────────────
      SETUP: Create a site at https://dash.cloudflare.com → Web Analytics
