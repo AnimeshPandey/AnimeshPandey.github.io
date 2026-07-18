@@ -939,7 +939,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 
 .casey-hub__avatar-wrap:focus-visible {
-  box-shadow: 0 0 0 2px var(--casebook-bg, #0a0a0a), 0 0 0 4px var(--casebook-accent);
+  box-shadow: 0 0 0 2px var(--casebook-bg, #0a0a0a), 0 0 0 5px var(--casebook-accent);
 }
 
 .casey-hub__avatar-frame {
@@ -1014,7 +1014,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 
 .casey-hub__action:focus-visible {
-  outline: 2px solid var(--casebook-accent);
+  outline: 3px solid var(--casebook-accent);
   outline-offset: 2px;
 }
 
@@ -1171,7 +1171,7 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 
 .casey-coach__chip:focus-visible {
-  outline: 2px solid var(--casebook-accent);
+  outline: 3px solid var(--casebook-accent);
   outline-offset: 2px;
 }
 

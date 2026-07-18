@@ -174,7 +174,7 @@
   outline: none;
 }
 .rm-panel-btn:focus-visible {
-  outline: 2px solid var(--accent, #BF5A32);
+  outline: 3px solid var(--accent, #BF5A32);
   outline-offset: 1px;
 }
 /* .rm-panel-close-btn removed (R2 — single minimize control) */
@@ -251,7 +251,7 @@
   padding-top: 4px;
 }
 .rm-panel-body:focus {
-  outline: 2px solid var(--accent, #BF5A32);
+  outline: 3px solid var(--accent, #BF5A32);
   outline-offset: 0;
 }
 /* Scrollbar styling */
@@ -394,7 +394,7 @@
   outline: none;
 }
 .rm-card:focus-visible {
-  outline: 2px solid var(--accent, #BF5A32);
+  outline: 3px solid var(--accent, #BF5A32);
   outline-offset: 1px;
 }
 .rm-card.rm-in {
@@ -527,7 +527,7 @@
   outline: none;
 }
 .rm-explore-link:focus-visible {
-  outline: 2px solid var(--accent, #BF5A32);
+  outline: 3px solid var(--accent, #BF5A32);
   outline-offset: 1px;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -632,7 +632,7 @@
   outline: none;
 }
 .rm-foot-btn:focus-visible {
-  outline: 2px solid var(--accent, #BF5A32);
+  outline: 3px solid var(--accent, #BF5A32);
   outline-offset: 1px;
 }
 .rm-foot-prime {
@@ -708,6 +708,6 @@ body.recruiter-mode #skills {
 
 /* ── Ensure focus rings are always visible ── */
 .rm-panel *:focus-visible {
-  outline: 2px solid var(--accent, #BF5A32);
+  outline: 3px solid var(--accent, #BF5A32);
   outline-offset: 2px;
 }

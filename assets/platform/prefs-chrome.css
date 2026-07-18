@@ -442,6 +442,13 @@
   color: var(--ink, var(--casebook-ink));
 }
 
+/* Arrow-key navigation in prefs-chrome.js moves real DOM focus onto each
+   option — needs a visible ring, not just the background tint above. */
+.theme-menu-item:focus-visible {
+  outline: 3px solid var(--accent, var(--casebook-accent));
+  outline-offset: -2px;
+}
+
 .theme-menu-item[aria-selected="true"],
 .theme-menu-item[aria-checked="true"] {
   background: var(--accent-bg, var(--casebook-surface-2));
