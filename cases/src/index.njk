@@ -74,9 +74,16 @@ permalink: /index.html
   {# ── Case catalog (grid or empty state, never both) ── #}
   <div class="hub-catalog" id="hub-catalog">
   <ul class="casebook-hub__grid" id="hub-grid" role="list">
+    {% set liveTally = [] %}
     {% for case in manifest.cases %}
       {% set isLive = case.status == 'live' %}
       {% set isScheduled = case.status == 'scheduled' %}
+      {# Case No. is this case's real position among live/published cases, in
+         the same order the grid renders them — not a decorative fake number. #}
+      {% if isLive %}
+        {% set liveTally = (liveTally.push(1), liveTally) %}
+        {% set caseNo = liveTally.length %}
+      {% endif %}
 
       <li data-track="{{ case.track }}"
           data-status="{{ case.status }}"
@@ -86,6 +93,7 @@ permalink: /index.html
           <a href="{{ ('/' ~ case.slug ~ '/') | url }}"
              class="case-card__link">
             <article class="case-card" aria-label="{{ case.title }}">
+              <span class="case-card__stamp">No. {{ caseNo | pad3 }}</span>
         {% elif isScheduled %}
           <article class="case-card case-card--scheduled"
                    aria-label="{{ case.title }} — Scheduled"

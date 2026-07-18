@@ -98,6 +98,9 @@ module.exports = function (eleventyConfig) {
     }
   });
 
+  /* Zero-pad a number for the case-file "No." stamp (e.g. 7 -> "007") */
+  eleventyConfig.addFilter('pad3', (n) => String(n).padStart(3, '0'));
+
   return {
     dir: {
       input: 'src',
