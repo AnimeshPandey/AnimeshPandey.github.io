@@ -12,11 +12,15 @@
 
   <header class="reading-card__header">
     {# Real catalog number — this entry's actual 1-based position in the
-       library's canonical order (libraryEntries, sourced from the Frontend
-       Case Studies index), not a fabricated count. Same "real number, not
-       decoration" idiom as the hub's case stamp, styled for a card-catalog
-       rather than a case-file. #}
-    <span class="reading-card__catalog-no" aria-hidden="true">No. {{ (loop.index0 + 1) | pad3 }}</span>
+       library's canonical order (entry.catalogNo, stamped once onto each
+       entry object in .eleventy.js), not a fabricated count or a loop-local
+       index. This partial is also included from the company page's
+       filtered + re-sorted subset, where the ambient loop index would show
+       a different "No." for the same entry than the one on /library/, so
+       the real position travels with the entry object instead. Same "real
+       number, not decoration" idiom as the hub's case stamp, styled for a
+       card-catalog rather than a case-file. #}
+    <span class="reading-card__catalog-no" aria-hidden="true">No. {{ entry.catalogNo | pad3 }}</span>
     {% if entry.company %}
       <span class="reading-card__company-chip">{{ entry.company }}</span>
     {% endif %}

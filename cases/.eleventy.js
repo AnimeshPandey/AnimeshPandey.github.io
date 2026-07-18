@@ -14,6 +14,20 @@ const guideLines = require('./src/_data/guide-lines.json');
 const changelog = require('./src/_data/changelog.json');
 const { liveCases, liveCaseCount, caseNav } = require('./lib/case-navigation');
 
+/* Stamp each library entry with its real 1-based position in libraryEntries'
+   canonical order, once, on the shared object — so the reading-card catalog
+   number is always this entry's true global position no matter which
+   page/sort order the card is rendered under (e.g. the company page renders
+   a filtered + re-sorted subset that still holds references to these same
+   entry objects). Deliberately keyed by array position, not slug: the source
+   data has at least one genuine duplicate/truncated slug (two distinct
+   Financial Times articles both slugify to
+   "financial-times-improving-the-cache-performance-of-the-polyf"), which
+   would collide in a slug-keyed lookup. */
+libraryEntries.forEach((entry, i) => {
+  entry.catalogNo = i + 1;
+});
+
 module.exports = function (eleventyConfig) {
   const nunjucksEnvironment = nunjucks.configure(
     [
