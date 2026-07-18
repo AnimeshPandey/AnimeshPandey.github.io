@@ -8,7 +8,11 @@
   top: -100%;
   left: 16px;
   background: var(--casebook-accent, var(--accent));
-  color: var(--casebook-bg, var(--bg));
+  /* color: contrast token, not --bg/--casebook-bg — this is text-on-accent,
+     and *-accent-contrast is what's engineered per-theme for that pairing
+     (see casebook-tokens.css / theme.css). Raw bg reads as low as 4.19:1
+     in some themes, failing WCAG 1.4.3's 4.5:1. */
+  color: var(--casebook-accent-contrast, var(--accent-contrast));
   padding: 10px 20px;
   border-radius: 0 0 8px 8px;
   z-index: var(--z-skip, 10000);

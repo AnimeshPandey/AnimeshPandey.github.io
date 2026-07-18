@@ -34,7 +34,11 @@ body {
 /* ── Skip link ── */
 .skip-link {
   position: absolute; top: -100%; left: 16px;
-  background: var(--accent); color: var(--bg);
+  /* color: var(--accent-contrast), not --bg — this is text-on-accent, and
+     --accent-contrast is the token already engineered per-theme for that
+     exact pairing (see theme.css); --bg reads correctly in some themes but
+     fails WCAG 1.4.3 in others (e.g. 4.19:1 in light, needs 4.5:1). */
+  background: var(--accent); color: var(--accent-contrast);
   padding: 10px 20px; border-radius: 0 0 8px 8px;
   z-index: var(--z-skip); font-family: var(--mono); font-size: 13px;
   text-decoration: none; transition: top 0.1s;
@@ -273,7 +277,10 @@ h2 > button {
 
 .badge {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--sage-bg); color: var(--sage);
+  /* color: var(--sage-ink), not --sage — text-on-sage-bg is exactly what
+     --sage-ink was engineered for (see theme.css); raw --sage reads as low
+     as 3.34:1 here in the light theme, failing WCAG 1.4.3's 4.5:1. */
+  background: var(--sage-bg); color: var(--sage-ink);
   font-family: var(--mono); font-size: 11.5px;
   padding: 5px 14px; border-radius: 100px;
   margin-bottom: 28px; width: fit-content;

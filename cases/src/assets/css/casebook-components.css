@@ -1019,7 +1019,13 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 
 .casey-hub__action--primary {
-  color: var(--casebook-accent);
+  /* color: --casebook-accent-ink, not --casebook-accent — this is
+     accent-as-body-text (accent color used directly as text on the page
+     background), and *-accent-ink is the token already engineered per-theme
+     for that pairing. Raw --casebook-accent measured 3.81:1 here, failing
+     WCAG 1.4.3's 4.5:1. border-color keeps the raw accent since a 1.5px
+     border only needs the 3:1 non-text UI-component threshold. */
+  color: var(--casebook-accent-ink);
   border-color: var(--casebook-accent);
   background: transparent;
 }
