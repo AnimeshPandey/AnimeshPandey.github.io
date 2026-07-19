@@ -37,6 +37,7 @@ loadLocalEnv();
 import { loadCase } from './lib/content.mjs';
 import { buildInstagramCaption } from './lib/compose.mjs';
 import { alreadyPosted, recordPost } from './lib/ledger.mjs';
+import { parseFlags } from './lib/cli-args.mjs';
 
 const GRAPH_VERSION = process.env.GRAPH_API_VERSION ?? 'v21.0';
 const GRAPH_BASE = `https://graph.facebook.com/${GRAPH_VERSION}`;
@@ -46,12 +47,7 @@ function parseArgs(argv) {
   const discover = maybeSlug === '--discover';
   const slug = discover ? null : maybeSlug;
   const args = discover ? argv : rest;
-  const kv = Object.fromEntries(
-    args.filter((a) => a.includes('=')).map((a) => {
-      const eq = a.indexOf('=');
-      return [a.slice(2, eq), a.slice(eq + 1)];
-    }),
-  );
+  const { kv } = parseFlags(args);
   return {
     discover,
     slug,

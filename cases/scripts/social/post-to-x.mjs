@@ -37,6 +37,7 @@ loadLocalEnv();
 import { loadCase } from './lib/content.mjs';
 import { buildXThread } from './lib/compose.mjs';
 import { alreadyPosted, recordPost } from './lib/ledger.mjs';
+import { parseFlags } from './lib/cli-args.mjs';
 
 const TWEETS_API = 'https://api.x.com/2/tweets';
 const COST_PER_TWEET = 0.015;
@@ -44,14 +45,20 @@ const COST_PER_TWEET_WITH_LINK = 0.2;
 
 function parseArgs(argv) {
   const [slug, ...rest] = argv;
-  const flags = new Set(rest.filter((a) => a.startsWith('--') && !a.includes('=')));
-  const kv = Object.fromEntries(
-    rest.filter((a) => a.includes('=')).map((a) => {
-      const eq = a.indexOf('=');
-      return [a.slice(2, eq), a.slice(eq + 1)];
-    }),
-  );
+  const { flags, kv } = parseFlags(rest);
   return { slug, force: flags.has('--force'), tone: kv.tone ?? 'junior' };
+}
+
+/**
+ * A ledger entry with no `complete` field is always from the pre-resumable
+ * code, which only ever wrote a ledger entry *after* the full thread
+ * posted successfully — so its absence means "complete", not "unknown".
+ * Treating it as incomplete would let a fully-posted thread be silently
+ * treated as resumable and get new tweets appended onto it.
+ */
+function isFullyPosted(existing) {
+  if (!existing) return false;
+  return existing.complete ?? true;
 }
 
 function containsLink(text) {
@@ -107,7 +114,7 @@ async function main() {
   const { X_ACCESS_TOKEN } = requireEnv(['X_ACCESS_TOKEN'], { dryRun });
 
   const existing = force ? null : alreadyPosted('x', slug);
-  if (existing?.complete) {
+  if (isFullyPosted(existing)) {
     console.log(`"${slug}" is already in the X ledger — pass --force to post again.`);
     return;
   }

@@ -28,6 +28,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadCase, loadSite, loadManifest, siteBaseUrl, VALID_TONES } from './lib/content.mjs';
 import { buildPrincipleCardHtml, CARD_WIDTH, CARD_HEIGHT } from './lib/card-template.mjs';
+import { parseFlags } from './lib/cli-args.mjs';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const CASES_ROOT = resolve(__dir, '../..');
@@ -39,12 +40,7 @@ function parseArgs(argv) {
   const [maybeSlug, ...rest] = argv;
   const all = maybeSlug === '--all';
   const args = all ? argv : rest;
-  const kv = Object.fromEntries(
-    args.filter((a) => a.includes('=')).map((a) => {
-      const eq = a.indexOf('=');
-      return [a.slice(2, eq), a.slice(eq + 1)];
-    }),
-  );
+  const { kv } = parseFlags(args);
   return { all, slug: all ? null : maybeSlug, tone: kv.tone ?? 'junior' };
 }
 

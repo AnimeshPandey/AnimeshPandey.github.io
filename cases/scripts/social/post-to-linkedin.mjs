@@ -37,19 +37,14 @@ loadLocalEnv();
 import { loadCase } from './lib/content.mjs';
 import { buildLinkedInPost } from './lib/compose.mjs';
 import { alreadyPosted, recordPost } from './lib/ledger.mjs';
+import { parseFlags } from './lib/cli-args.mjs';
 
 const API_VERSION = process.env.LINKEDIN_API_VERSION ?? '202401';
 const BASE = 'https://api.linkedin.com';
 
 function parseArgs(argv) {
   const [slug, ...rest] = argv;
-  const flags = new Set(rest.filter((a) => a.startsWith('--') && !a.includes('=')));
-  const kv = Object.fromEntries(
-    rest.filter((a) => a.includes('=')).map((a) => {
-      const eq = a.indexOf('=');
-      return [a.slice(2, eq), a.slice(eq + 1)];
-    }),
-  );
+  const { flags, kv } = parseFlags(rest);
   return { slug, force: flags.has('--force'), tone: kv.tone ?? 'staff' };
 }
 
