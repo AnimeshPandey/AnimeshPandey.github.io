@@ -1,0 +1,49 @@
+---
+layout: layouts/casebook-layout.njk
+title: Links
+description: Every way to follow The Frontend Casebook — the case hub, the newsletter, RSS, and social.
+slug: links
+permalink: /links/index.html
+---
+
+<div class="casebook-about">
+
+  <h1>Links</h1>
+
+  <p>
+    One page for every place to find <strong>The Frontend Casebook</strong> —
+    built for a social bio, not for browsing.
+  </p>
+
+  <h2>Read</h2>
+  <ul>
+    <li><a href="{{ '/' | url }}">All cases</a> — the hub, sorted newest first</li>
+    <li><a href="{{ '/library/' | url }}">Reading library</a> — the wider article archive</li>
+    <li><a href="{{ '/about/' | url }}">About the Casebook</a> — methodology, Casey, accessibility</li>
+  </ul>
+
+  {% include 'partials/subscribe-cta.njk' %}
+
+  <h2>Elsewhere</h2>
+  {% set hasSocial = site.social and (site.social.instagram or site.social.x or site.social.linkedin or site.social.devto or site.social.tiktok) %}
+  {% if hasSocial %}
+  <ul>
+    {% if site.social.instagram %}<li><a href="{{ site.social.instagram }}" rel="me noopener noreferrer">Instagram</a></li>{% endif %}
+    {% if site.social.x %}<li><a href="{{ site.social.x }}" rel="me noopener noreferrer">X</a></li>{% endif %}
+    {% if site.social.linkedin %}<li><a href="{{ site.social.linkedin }}" rel="me noopener noreferrer">LinkedIn</a></li>{% endif %}
+    {% if site.social.devto %}<li><a href="{{ site.social.devto }}" rel="me noopener noreferrer">Dev.to</a></li>{% endif %}
+    {% if site.social.tiktok %}<li><a href="{{ site.social.tiktok }}" rel="me noopener noreferrer">TikTok</a></li>{% endif %}
+  </ul>
+  {% else %}
+  <p class="casebook-subscribe__pending" role="status">
+    Not live yet — social accounts are being set up. RSS and email above are the reliable way to
+    hear about a new case first. (Fill in <code>site.social</code> in <code>site.json</code> once
+    handles are reserved — this list appears automatically.)
+  </p>
+  {% endif %}
+
+  <p>
+    <a href="/">← Animesh's portfolio</a>
+  </p>
+
+</div>
