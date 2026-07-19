@@ -144,7 +144,14 @@
             successEl.textContent = 'Check your email — link sent to ' + email;
           } else {
             errorEl.hidden = false;
-            errorEl.textContent = data.error || 'Something went wrong. Try again.';
+            /* design-backlog idea #43: the server's own `data.error` is shown
+               whenever present; this is only the last-resort case where the
+               API reported failure without a reason. A bare "Something went
+               wrong" is the exact anti-pattern this site's own
+               cognitive-load-error-recovery case argues against — vague,
+               unfalsifiable, no path forward. Say what didn't happen and
+               name the retry, same as the network-error fallback below. */
+            errorEl.textContent = data.error || "Couldn't send the sign-in link. Try again.";
             if (submitBtn) {
               submitBtn.disabled = false;
               submitBtn.textContent = 'Send sign-in link';
