@@ -50,7 +50,7 @@
 |---|------|--------|-------|
 | 22 | Tier-aware reference count callout | ⏳ Open | Real data exists (`mvp-references.json`), deferred as a feature build. |
 | 23 | Demo-type tag on case cover | ⏳ Open | Real field exists (`manifest.json`'s `demoType`), small addition, deferred. |
-| 24 | Flagship badge, audited for accuracy | 🔍 Audited — **real finding, flagged, not auto-fixed** | The badge *is* consistently driven by the real `flagship` field (no hardcoding) — but the underlying data itself makes the badge meaningless: all 31 live cases are flagged `flagship: true` (`manifest.json`'s own `stats.flagship: 31` — exactly the total live count). A badge shown on 100% of cards signals nothing. This is an editorial/content decision (which case is genuinely *the* signature one), not something to silently overwrite — needs a human call on which case(s), if any, should keep the flag. |
+| 24 | Flagship badge, audited for accuracy | ✅ Shipped | Repo owner picked `hydration-two-trees` as the genuine signature case. `manifest.json`'s `stats.flagship` corrected 31 → 1, `flagship: false` set on the other 30 live cases (both `manifest.json` and each case's own front matter, which had drifted independently), and `manifest.json` re-checked to confirm no not-yet-live case was ever flagged. Verified the badge now renders exactly once on the hub, Casey's "Start flagship case" CTA and `llms.txt`'s `(Flagship case)` tag both resolve to `hydration-two-trees`, and sitemap priority reflects it. |
 | 25 | Principle cross-reference chip | ⏳ Open | Real field exists (`manifest.json`'s `principle`), deferred as a feature build. |
 | 26 | Surface internal "priority" field to readers | 🚫 Recommended against | Per the original plan: this is a production-planning artifact, not a reader-relevant fact. No action, by design. |
 | 27 | Real git-based "case last updated" stamp | ⏳ Open | Deferred, medium effort (build-time git log per case). |
@@ -102,9 +102,8 @@
 
 ## Summary
 
-- **12 shipped this pass:** #1, #3, #7, #9, #19, #34, #46, #47, #48, #50 (docs/tests), plus the roadmap corrections themselves.
-- **10 audited and already done** (found already shipped by an earlier commit, no new code needed): #8, #13, #16, #17, #18, #20, #21, #28, #42, and #2's touch-target/focus-visible/motion-safe portion.
-- **1 audited with a real, flagged finding requiring a human editorial decision** (not auto-fixed): #24 (flagship badge on 100% of live cases).
+- **13 shipped this pass:** #1, #3, #7, #9, #19, #24, #34, #46, #47, #48, #50 (docs/tests), plus the roadmap corrections themselves.
+- **9 audited and already done** (found already shipped by an earlier commit, no new code needed): #8, #13, #16, #17, #18, #20, #21, #28, #42, and #2's touch-target/focus-visible/motion-safe portion.
 - **3 explicitly recommended against**, matching the original plan's own scope discipline: #12, #26, #38.
 - **1 note-only, no action needed:** #35.
-- **~23 remain genuinely open** — real, scoped backlog items, several with real data sources already identified in the plan text above (§A.4–6, §D.22/23/25/27/29, §E.30–33/39, §F.36/37/39, §G.40/41/43–45/49). None were abandoned; they're listed here specifically so they don't quietly disappear. **#24**'s editorial decision (which case, if any, should keep the flagship flag) still needs the repo owner, not more code.
+- **~23 remain genuinely open** — real, scoped backlog items, several with real data sources already identified in the plan text above (§A.4–6, §D.22/23/25/27/29, §E.30–33/39, §F.36/37/39, §G.40/41/43–45/49). None were abandoned; they're listed here specifically so they don't quietly disappear.

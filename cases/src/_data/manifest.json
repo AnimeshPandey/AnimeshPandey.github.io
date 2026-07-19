@@ -9,7 +9,7 @@
     "total": 229,
     "free": 148,
     "pro": 81,
-    "flagship": 31,
+    "flagship": 1,
     "warStory": 18
   },
   "cases": [
@@ -175,7 +175,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -284,7 +284,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -701,7 +701,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -1204,7 +1204,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -1508,7 +1508,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -1725,7 +1725,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -2292,7 +2292,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -2626,7 +2626,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -3023,7 +3023,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -3672,7 +3672,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -3961,7 +3961,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -4178,7 +4178,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -4215,7 +4215,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -4288,7 +4288,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -4325,7 +4325,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -4794,7 +4794,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -5407,7 +5407,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -5624,7 +5624,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -5733,7 +5733,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -6130,7 +6130,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -6311,7 +6311,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -6529,7 +6529,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -7178,7 +7178,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -7719,7 +7719,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -8188,7 +8188,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -8225,7 +8225,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -8262,7 +8262,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -8299,7 +8299,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -8336,7 +8336,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
@@ -8373,7 +8373,7 @@
         "staff"
       ],
       "defaultTone": "junior",
-      "flagship": true,
+      "flagship": false,
       "priority": "high",
       "chapters": [
         "hook",
