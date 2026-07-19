@@ -49,9 +49,9 @@
 | # | Idea | Status | Notes |
 |---|------|--------|-------|
 | 22 | Tier-aware reference count callout | ⏳ Open | Real data exists (`mvp-references.json`), deferred as a feature build. |
-| 23 | Demo-type tag on case cover | ⏳ Open | Real field exists (`manifest.json`'s `demoType`), small addition, deferred. |
+| 23 | Demo-type tag on case cover | ✅ Shipped | New chip in the cover meta row using each case's real `demoType` front-matter field, reusing the exact ⚡ (animation) / ▶ (toggle) icon convention already used inside the demo chapter itself (`case-demo-shell.njk`), so a reader knows what kind of demo is coming before they scroll. |
 | 24 | Flagship badge, audited for accuracy | ✅ Shipped | Repo owner picked `hydration-two-trees` as the genuine signature case. `manifest.json`'s `stats.flagship` corrected 31 → 1, `flagship: false` set on the other 30 live cases (both `manifest.json` and each case's own front matter, which had drifted independently), and `manifest.json` re-checked to confirm no not-yet-live case was ever flagged. Verified the badge now renders exactly once on the hub, Casey's "Start flagship case" CTA and `llms.txt`'s `(Flagship case)` tag both resolve to `hydration-two-trees`, and sitemap priority reflects it. |
-| 25 | Principle cross-reference chip | ⏳ Open | Real field exists (`manifest.json`'s `principle`), deferred as a feature build. |
+| 25 | Principle cross-reference chip | ✅ Shipped | New chip in the cover meta row showing each case's real `principle` field (previously only fed SEO keywords/JSON-LD, never shown to a reader). **Found a real, adjacent data-quality bug while shipping this:** `manifest.json`'s copy of `principle` had drifted from each case's own front-matter copy for 9 of 31 live cases (e.g. `micro-frontend-boundary-drift`: manifest said "Bounded context", the case's own page said "Design system governance") — same duplication class as the `readMin` and `flagship` drifts already documented. Fixed by syncing `manifest.json` to the front-matter (page-authored) value for all 9. New permanent guard: `tests/static/assert-manifest-frontmatter-parity.mjs`, checking `principle`/`demoType`/`flagship` parity across all 31 live cases (verified it actually catches a planted mismatch before wiring it in). |
 | 26 | Surface internal "priority" field to readers | 🚫 Recommended against | Per the original plan: this is a production-planning artifact, not a reader-relevant fact. No action, by design. |
 | 27 | Real git-based "case last updated" stamp | ⏳ Open | Deferred, medium effort (build-time git log per case). |
 | 28 | Confetti/celebrate tied to a real streak | 🔍 Audited | Already shipped — `casey-guide.js`'s `_recentStreak()` counts real `completedAt` timestamps within the last 7 days from local progress state; `return_streak` copy is genuinely conditional on `streak >= 3`, not a flat "nice job." No action needed. |
@@ -102,8 +102,8 @@
 
 ## Summary
 
-- **13 shipped this pass:** #1, #3, #7, #9, #19, #24, #34, #46, #47, #48, #50 (docs/tests), plus the roadmap corrections themselves.
+- **15 shipped this pass:** #1, #3, #7, #9, #19, #23, #24, #25, #34, #46, #47, #48, #50 (docs/tests), plus the roadmap corrections themselves.
 - **9 audited and already done** (found already shipped by an earlier commit, no new code needed): #8, #13, #16, #17, #18, #20, #21, #28, #42, and #2's touch-target/focus-visible/motion-safe portion.
 - **3 explicitly recommended against**, matching the original plan's own scope discipline: #12, #26, #38.
 - **1 note-only, no action needed:** #35.
-- **~23 remain genuinely open** — real, scoped backlog items, several with real data sources already identified in the plan text above (§A.4–6, §D.22/23/25/27/29, §E.30–33/39, §F.36/37/39, §G.40/41/43–45/49). None were abandoned; they're listed here specifically so they don't quietly disappear.
+- **~21 remain genuinely open** — real, scoped backlog items, several with real data sources already identified in the plan text above (§A.4–6, §D.22/27/29, §E.30–33/39, §F.36/37/39, §G.40/41/43–45/49). None were abandoned; they're listed here specifically so they don't quietly disappear.

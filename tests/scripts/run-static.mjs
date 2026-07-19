@@ -33,6 +33,7 @@ const scripts = [
   'assert-json-embeds.mjs',
   'assert-no-hardcoded-metrics.mjs',
   'assert-library-slug-uniqueness.mjs',
+  'assert-manifest-frontmatter-parity.mjs',
 ];
 
 let failed = 0;
