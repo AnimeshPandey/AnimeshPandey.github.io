@@ -64,7 +64,16 @@ permalink: /companies/{{ company.slug }}/index.html
       {% endfor %}
     </ul>
   {% else %}
-    <p class="hub-empty__text">No articles from {{ company.name }} in the reading library yet.</p>
+    {# Empty-state parity (design-backlog idea #39): the hub and reading
+       library both wrap their zero-result message in the styled `.hub-empty`
+       container (centered, padded, `--casebook-ink-faint`) with the message
+       text in `.hub-empty__msg`. This page previously used a one-off
+       `.hub-empty__text` class with no matching CSS rule anywhere, so it
+       rendered as an unstyled, left-aligned, default-margin paragraph —
+       the only empty state on the site that didn't match the other two. #}
+    <div class="hub-empty">
+      <p class="hub-empty__msg">No articles from {{ company.name }} in the reading library yet.</p>
+    </div>
   {% endif %}
 
   {# ── Back nav ── #}
