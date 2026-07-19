@@ -34,6 +34,7 @@ const scripts = [
   'assert-no-hardcoded-metrics.mjs',
   'assert-library-slug-uniqueness.mjs',
   'assert-manifest-frontmatter-parity.mjs',
+  'assert-category-chip-counts.mjs',
 ];
 
 let failed = 0;
