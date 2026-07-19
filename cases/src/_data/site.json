@@ -31,5 +31,12 @@
     "monthlyPrice": "$1/mo",
     "lifetimePrice": "$10"
   },
-  "googleVerification": "SkD-PLXWNLpDQJjZGUjJKzKM-pW0LwYGoIHnp2yDt8M"
+  "googleVerification": "SkD-PLXWNLpDQJjZGUjJKzKM-pW0LwYGoIHnp2yDt8M",
+  "social": {
+    "instagram": "",
+    "x": "",
+    "linkedin": "",
+    "devto": "",
+    "tiktok": ""
+  }
 }
