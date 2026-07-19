@@ -10,6 +10,20 @@
          data-track="{{ entry.track }}"
          data-priority="{{ entry.priority }}">
 
+  {# Content-shaped skeleton (design-backlog idea #19) — shown only while
+     an ancestor .hub-grid--filtering class is present (library/index.njk's
+     filter-in-flight flash), hidden the rest of the time. Its bars mirror
+     this card's own real layout (catalog stamp, chip row, two title lines,
+     one body line) instead of just dimming the real text, per what this
+     site's own skeleton-vs-spinner-choice case argues for. #}
+  <div class="reading-card__skeleton" aria-hidden="true">
+    <span class="reading-card__skel-bar reading-card__skel-bar--tag"></span>
+    <span class="reading-card__skel-bar reading-card__skel-bar--tag reading-card__skel-bar--tag-sm"></span>
+    <span class="reading-card__skel-bar reading-card__skel-bar--title"></span>
+    <span class="reading-card__skel-bar reading-card__skel-bar--title reading-card__skel-bar--title-sm"></span>
+    <span class="reading-card__skel-bar reading-card__skel-bar--line"></span>
+  </div>
+
   <header class="reading-card__header">
     {# Real catalog number — this entry's actual 1-based position in the
        library's canonical order (entry.catalogNo, stamped once onto each

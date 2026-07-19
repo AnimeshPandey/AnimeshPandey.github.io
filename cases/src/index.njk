@@ -161,6 +161,16 @@ permalink: /index.html
   </div>
   </div>
 
+  {# ── Real "next wave" teaser (design-backlog idea #3) — nextWave is
+       computed at build time from manifest.json's own wave/status fields
+       (lib/case-navigation.js), not a hand-typed "more coming soon" line. ── #}
+  {% if nextWave %}
+    <p class="hub-wave-teaser">
+      Wave {{ nextWave.number }} is next
+      <span class="hub-wave-teaser__count">{{ nextWave.count }} case{{ 's' if nextWave.count != 1 }} queued</span>
+    </p>
+  {% endif %}
+
   {# ── Subscribe CTA — after grid so user has context ── #}
   {% include 'partials/subscribe-cta.njk' %}
 

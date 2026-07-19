@@ -5,6 +5,28 @@ const manifest = require('../src/_data/manifest.json');
 
 const liveCases = manifest.cases.filter((c) => c.status === 'live');
 
+/**
+ * Real "next wave" teaser data (design-backlog idea #3). manifest.json's
+ * `wave` field isn't a clean partition of `status` — one case is
+ * status:"live" but wave:3, and one is status:"idea" but wave:1 — so this
+ * counts not-yet-live cases per wave, then picks the lowest wave number
+ * above 1 as "next" (wave 1 is the live wave overall; a lone straggler
+ * idea-case inside it shouldn't make wave 1 read as "still upcoming").
+ */
+const notLiveWaveCounts = {};
+manifest.cases
+  .filter((c) => c.status !== 'live')
+  .forEach((c) => {
+    notLiveWaveCounts[c.wave] = (notLiveWaveCounts[c.wave] || 0) + 1;
+  });
+const candidateWaves = Object.keys(notLiveWaveCounts)
+  .map(Number)
+  .filter((w) => w > 1);
+const nextWaveNumber = candidateWaves.length ? Math.min(...candidateWaves) : null;
+const nextWave = nextWaveNumber
+  ? { number: nextWaveNumber, count: notLiveWaveCounts[nextWaveNumber] }
+  : null;
+
 function titleCaseTrack(track) {
   return String(track || '')
     .replace(/-/g, ' ')
@@ -58,4 +80,5 @@ module.exports = {
   liveCases,
   liveCaseCount: liveCases.length,
   caseNav,
+  nextWave,
 };
