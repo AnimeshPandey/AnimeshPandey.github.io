@@ -28,13 +28,28 @@
   }
 
   function syncToneButtons(tone) {
+    var minutesForTone = null;
     document.querySelectorAll('.case-tone__btn[data-tone]').forEach(function (btn) {
-      btn.setAttribute('aria-pressed', btn.dataset.tone === tone ? 'true' : 'false');
+      var isActive = btn.dataset.tone === tone;
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      if (isActive && btn.dataset.minutes) minutesForTone = btn.dataset.minutes;
     });
     /* [data-casey-panel-tier] buttons use role="radio" + aria-checked (set by
        casey-companion-prefs.js's refreshPanel/bindPanel) — aria-pressed is not
        an allowed attribute on role="radio" per the ARIA spec, so this radiogroup
        is intentionally excluded here. */
+
+    /* Audience-level reading-time delta (design-backlog idea #29): update the
+       cover's reading-time figure to this tone's own real minutes
+       (case-tone-switcher.njk's data-minutes, from
+       cases/.eleventy.js's caseReadingStats[slug].byTone) instead of leaving
+       the default tone's number showing after a reader switches level. */
+    if (minutesForTone) {
+      var readingTimeEl = document.getElementById('case-reading-time');
+      if (readingTimeEl) {
+        readingTimeEl.textContent = minutesForTone + ' min read';
+      }
+    }
   }
 
   function setTone(tone) {

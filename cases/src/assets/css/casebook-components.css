@@ -242,6 +242,10 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
   color: var(--casebook-ink-faint); margin: 0 0 12px;
 }
+.case-references__count {
+  font-size: 12px; color: var(--casebook-ink-faint);
+  margin: 0 0 6px;
+}
 .case-references ol { padding-left: 1.4em; }
 .case-references li { color: var(--casebook-ink-muted); margin-bottom: 6px; }
 .case-references a { color: var(--casebook-accent); }
@@ -739,6 +743,12 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 }
 .casey-panel__progress {
   margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--casebook-ink-muted);
+  padding: 0 2px;
+}
+.casey-panel__motion-status {
+  margin: 0;
   font-size: 13px;
   color: var(--casebook-ink-muted);
   padding: 0 2px;

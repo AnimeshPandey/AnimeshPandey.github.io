@@ -13,7 +13,9 @@ const hubLiveCases = require('./src/_data/hub-live-cases.json');
 const mvpQuality = require('./src/_data/mvp-quality.json');
 const guideLines = require('./src/_data/guide-lines.json');
 const changelog = require('./src/_data/changelog.json');
+const mvpReferences = require('./src/_data/mvp-references.json');
 const { liveCases, liveCaseCount, caseNav, nextWave } = require('./lib/case-navigation');
+const { lastCommitDate } = require('./lib/git-dates');
 
 /* Stamp each library entry with its real 1-based position in libraryEntries'
    canonical order, once, on the shared object — so the reading-card catalog
@@ -53,6 +55,83 @@ hubFacets.companies.forEach((company) => {
     company.minYear = span.minYear;
     company.maxYear = span.maxYear;
   }
+});
+
+/* Real "most-covered companies" ranking (design-backlog idea #36) and
+   coverage-span outlier (idea #37) — both derived from the same per-company
+   `count`/`minYear`/`maxYear` facts already stamped onto hubFacets.companies
+   above, not a separately hand-picked list. Top 5 by article count, and the
+   single company with the widest real publishedYear span (ties broken by
+   earliest minYear, then name, so the result is deterministic). */
+const mostCoveredCompanies = hubFacets.companies
+  .slice()
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 5);
+
+let widestCoverageCompany = null;
+hubFacets.companies.forEach((company) => {
+  if (company.minYear == null || company.maxYear == null) return;
+  const span = company.maxYear - company.minYear;
+  if (
+    !widestCoverageCompany ||
+    span > widestCoverageCompany.span ||
+    (span === widestCoverageCompany.span && company.minYear < widestCoverageCompany.minYear) ||
+    (span === widestCoverageCompany.span &&
+      company.minYear === widestCoverageCompany.minYear &&
+      company.name < widestCoverageCompany.name)
+  ) {
+    widestCoverageCompany = {
+      name: company.name,
+      slug: company.slug,
+      minYear: company.minYear,
+      maxYear: company.maxYear,
+      span: span,
+    };
+  }
+});
+
+/* Real per-year article counts across the whole reading library
+   (design-backlog idea #31) — a plain tally of libraryEntries.publishedYear,
+   sorted ascending, used to render a real (not illustrative) per-year
+   coverage bar on the library page. */
+const libraryYearCounts = {};
+libraryEntries.forEach((entry) => {
+  if (!entry.publishedYear) return;
+  libraryYearCounts[entry.publishedYear] = (libraryYearCounts[entry.publishedYear] || 0) + 1;
+});
+const libraryYearCoverage = Object.keys(libraryYearCounts)
+  .map((y) => ({ year: Number(y), count: libraryYearCounts[y] }))
+  .sort((a, b) => a.year - b.year);
+const libraryYearCoverageMax = libraryYearCoverage.reduce((m, y) => Math.max(m, y.count), 0);
+
+/* Real clusterId-based "similar articles" grouping (design-backlog idea
+   #32). library-entries.json's clusterId groups entries into 24 real
+   clusters, but they're wildly uneven — one cluster (C25) alone holds 335
+   of the 779 entries (43%), clearly a catch-all/uncategorized bucket rather
+   than a genuine similarity signal. Showing "334 similar articles" would be
+   noise, not a fact a reader can use, so siblings are only computed for
+   clusters in a size band that plausibly means "genuinely related"
+   (2–40 entries) — below that there's nothing to relate to, above it the
+   grouping stops being meaningful. Capped at 4 siblings per entry so the
+   card stays a card, not a second list. */
+const MIN_MEANINGFUL_CLUSTER = 2;
+const MAX_MEANINGFUL_CLUSTER = 40;
+const MAX_SIBLINGS_SHOWN = 4;
+const entriesByCluster = {};
+libraryEntries.forEach((entry) => {
+  if (!entry.clusterId) return;
+  (entriesByCluster[entry.clusterId] = entriesByCluster[entry.clusterId] || []).push(entry);
+});
+libraryEntries.forEach((entry) => {
+  const siblings = entry.clusterId ? entriesByCluster[entry.clusterId] : null;
+  if (!siblings || siblings.length < MIN_MEANINGFUL_CLUSTER || siblings.length > MAX_MEANINGFUL_CLUSTER) {
+    return;
+  }
+  entry.clusterSiblings = siblings
+    .filter((other) => other !== entry)
+    .slice(0, MAX_SIBLINGS_SHOWN)
+    .map((other) => ({ title: other.title, primaryUrl: other.primaryUrl }));
+  entry.clusterSize = siblings.length;
 });
 
 /* Compute a real, build-time reading-time figure for every live case, from
@@ -122,6 +201,14 @@ function countRealWords(rawTemplateSource) {
 }
 
 const caseReadingStats = {};
+/* Real per-case "last updated" date (design-backlog idea #27), read from
+   this case's own index.njk git history rather than hand-typed. Idea #11
+   ("git-blame code-verified date") was folded into this one instead of
+   shipped separately: it only applies to the single case with a runnable
+   code sample (url-as-source-of-truth), and a file-level git date can't
+   distinguish "the code changed" from "the prose changed" within the same
+   file — it would be the identical date as this stamp, not a distinct fact. */
+const caseLastUpdated = {};
 liveCases.forEach((c) => {
   const filePath = path.join(__dirname, 'src/cases', c.slug, 'index.njk');
   let raw;
@@ -132,11 +219,26 @@ liveCases.forEach((c) => {
   }
   const body = raw.replace(/^---[\s\S]*?---\s*/, ''); // drop front matter
   const tone = c.defaultTone || 'junior';
-  const otherTones = ['junior', 'mid', 'staff'].filter((t) => t !== tone);
+  const allTones = ['junior', 'mid', 'staff'];
+  const otherTones = allTones.filter((t) => t !== tone);
   const onlyDefaultTone = stripBalancedToneBlocks(body, otherTones);
   const words = countRealWords(onlyDefaultTone);
   const minutes = Math.max(1, Math.ceil(words / 200));
   caseReadingStats[c.slug] = { words: words, minutes: minutes };
+
+  /* Per-tone reading-time delta (design-backlog idea #29) — same word-count
+     machinery, run once per tone instead of only the default, so switching
+     the reading-level control can show that tone's own real minutes rather
+     than reusing the default tone's number for all three. */
+  const byTone = {};
+  allTones.forEach((t) => {
+    const stripped = stripBalancedToneBlocks(body, allTones.filter((other) => other !== t));
+    const w = countRealWords(stripped);
+    byTone[t] = { words: w, minutes: Math.max(1, Math.ceil(w / 200)) };
+  });
+  caseReadingStats[c.slug].byTone = byTone;
+
+  caseLastUpdated[c.slug] = lastCommitDate(filePath);
 });
 /* Deliberately NOT mutating `c.readMin` on the manifest case object here:
    Eleventy's automatic `_data/manifest.json` loading parses that file
@@ -183,6 +285,12 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addGlobalData('changelog', changelog);
   eleventyConfig.addGlobalData('liveCases', liveCases);
   eleventyConfig.addGlobalData('liveCaseCount', liveCaseCount);
+  eleventyConfig.addGlobalData('mvpReferences', mvpReferences);
+  eleventyConfig.addGlobalData('caseLastUpdated', caseLastUpdated);
+  eleventyConfig.addGlobalData('mostCoveredCompanies', mostCoveredCompanies);
+  eleventyConfig.addGlobalData('widestCoverageCompany', widestCoverageCompany);
+  eleventyConfig.addGlobalData('libraryYearCoverage', libraryYearCoverage);
+  eleventyConfig.addGlobalData('libraryYearCoverageMax', libraryYearCoverageMax);
   // Real "next wave" roadmap teaser (design-backlog idea #3) — the lowest
   // not-yet-live wave number and its real count, computed from manifest.json
   // itself so it can't drift from the actual case pipeline (lib/case-navigation.js).

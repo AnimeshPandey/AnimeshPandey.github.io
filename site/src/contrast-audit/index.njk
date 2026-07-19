@@ -1,0 +1,254 @@
+---
+layout: layouts/article.njk
+permalink: /contrast-audit/index.html
+title: Theme Contrast Audit
+description: 'Live WCAG 2.1 contrast ratios computed from the actual CSS custom properties behind each of this site’s 6 themes — not a static report.'
+noindex: true
+---
+<main id="article-content">
+  <div class="article-shell contrast-audit-shell">
+
+    <header class="article-header">
+      <p class="article-label">Design diagnostics</p>
+      <h1 class="article-title-main">Theme contrast audit</h1>
+      <p class="article-byline">
+        Computed live from theme.css's actual custom properties, in your browser, right now —
+        <span data-contrast-audit-summary>checking 6 themes…</span>
+      </p>
+    </header>
+
+    <div class="article-prose">
+      <p>
+        Every color pair below is measured with the real WCAG 2.1 relative-luminance
+        formula against the CSS custom property values currently loaded from
+        <code>theme.css</code>. Nothing here is retyped from a comment or a past
+        audit — if a color changes, this page's numbers change with it.
+      </p>
+    </div>
+
+    <div class="contrast-audit" data-contrast-audit>
+      <div data-contrast-audit-grid class="contrast-audit__grid">
+        <p class="contrast-audit__loading">Reading theme.css…</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<style>
+  .contrast-audit-shell { max-width: 760px; }
+  .contrast-audit__grid {
+    display: flex; flex-direction: column; gap: 14px; margin-top: 32px;
+  }
+  .contrast-audit__theme {
+    border: 1px solid var(--border); border-radius: var(--radius, 12px);
+    background: var(--surface); overflow: hidden;
+  }
+  .contrast-audit__theme[open] { padding-bottom: 4px; }
+  .contrast-audit__theme > summary {
+    cursor: pointer; list-style: none; padding: 16px 20px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-family: var(--sans); font-weight: 600; color: var(--ink);
+  }
+  .contrast-audit__theme > summary::-webkit-details-marker { display: none; }
+  .contrast-audit__theme > summary::before {
+    content: '▸'; display: inline-block; transition: transform .15s;
+    color: var(--ink-3); font-size: 11px;
+  }
+  .contrast-audit__theme[open] > summary::before { transform: rotate(90deg); }
+  .contrast-audit__current-tag {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+    border: 1px solid var(--accent); border-radius: 999px; padding: 2px 8px;
+  }
+  .contrast-audit__table {
+    width: 100%; border-collapse: collapse; font-size: 13.5px;
+  }
+  .contrast-audit__table th, .contrast-audit__table td {
+    text-align: left; padding: 8px 20px; border-top: 1px solid var(--border);
+  }
+  .contrast-audit__table th {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-3); font-weight: 500;
+  }
+  .contrast-audit__swatch-pair { display: inline-flex; gap: 3px; margin-right: 8px; vertical-align: middle; }
+  .contrast-audit__swatch {
+    width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--border-2);
+    display: inline-block;
+  }
+  .contrast-audit__ratio { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .contrast-audit__badge {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .contrast-audit__badge--pass { color: var(--sage-ink, var(--sage)); background: var(--sage-bg); }
+  .contrast-audit__badge--fail { color: var(--error); background: var(--error-bg); }
+  .contrast-audit__loading { color: var(--ink-3); font-size: 13px; }
+</style>
+
+<script src="/assets/js/contrast.js" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.ContrastUtils) return;
+
+  var THEME_ORDER = ['light', 'dark', 'sage', 'slate', 'dusk', 'high-contrast'];
+  var THEME_LABEL = {
+    light: 'Warm paper (light, default)',
+    dark: 'Charcoal (dark)',
+    sage: 'Sage mist (light)',
+    slate: 'Slate studio (dark)',
+    dusk: 'Dusk editorial (dark)',
+    'high-contrast': 'High contrast',
+  };
+  var SELECTOR_FOR_THEME = {
+    light: ':root',
+    dark: '[data-theme="dark"]',
+    sage: '[data-theme="sage"]',
+    slate: '[data-theme="slate"]',
+    dusk: '[data-theme="dusk"]',
+    'high-contrast': '[data-theme="high-contrast"]',
+  };
+
+  // Real values, read straight from the loaded stylesheet rules — not
+  // retyped from theme.css's own comments, so this audit can't quietly
+  // drift out of sync with the CSS it's describing.
+  function collectThemeVars() {
+    var themes = {};
+    THEME_ORDER.forEach(function (t) { themes[t] = {}; });
+
+    Array.prototype.forEach.call(document.styleSheets, function (sheet) {
+      var rules;
+      try {
+        rules = sheet.cssRules || sheet.rules;
+      } catch (e) {
+        return; // cross-origin sheet; not applicable here, skip defensively
+      }
+      if (!rules) return;
+      Array.prototype.forEach.call(rules, function (rule) {
+        if (!rule.style || !rule.selectorText) return;
+        THEME_ORDER.forEach(function (themeKey) {
+          if (rule.selectorText !== SELECTOR_FOR_THEME[themeKey]) return;
+          for (var i = 0; i < rule.style.length; i++) {
+            var prop = rule.style.item(i);
+            if (prop.indexOf('--') === 0) {
+              themes[themeKey][prop] = rule.style.getPropertyValue(prop).trim();
+            }
+          }
+        });
+      });
+    });
+
+    // Resolve `var(--x)` references within the same theme's own map
+    // (theme.css only ever nests one level deep, e.g.
+    // `--skill-cat-frontend-ink: var(--accent-ink);`) — a few passes
+    // covers any deeper chaining safely.
+    THEME_ORDER.forEach(function (themeKey) {
+      var vars = themes[themeKey];
+      for (var pass = 0; pass < 3; pass++) {
+        Object.keys(vars).forEach(function (k) {
+          var m = /^var\((--[\w-]+)\)$/.exec(vars[k]);
+          if (m && vars[m[1]] !== undefined) vars[k] = vars[m[1]];
+        });
+      }
+    });
+
+    return themes;
+  }
+
+  function ratioRow(label, fg, bg, backdrop, isLarge) {
+    var ratio = window.ContrastUtils.contrastRatio(fg, bg, backdrop);
+    var pass = window.ContrastUtils.passesAA(ratio, isLarge);
+    return {
+      label: label,
+      fg: fg,
+      bg: bg,
+      ratio: ratio,
+      pass: pass,
+    };
+  }
+
+  function renderTheme(themeKey, vars, currentTheme) {
+    var v = vars;
+    var rows = [
+      ratioRow('Body text', v['--ink'], v['--bg'], v['--bg'], false),
+      ratioRow('Secondary text', v['--ink-2'], v['--bg'], v['--bg'], false),
+      ratioRow('Muted text (worst-case surface)', v['--ink-3'], v['--surface-2'], v['--surface-2'], false),
+      ratioRow('Accent used as body text', v['--accent-ink'], v['--surface-2'], v['--surface-2'], false),
+      ratioRow('Button text on accent fill', v['--accent-contrast'], v['--accent'], v['--accent'], false),
+      ratioRow('Sage tint text', v['--sage-ink'], v['--sage-bg'], v['--bg'], false),
+    ];
+    ['frontend', 'architecture', 'ai', 'testing', 'tooling', 'data', 'backend'].forEach(function (cat) {
+      var fg = v['--skill-cat-' + cat + '-ink'];
+      if (!fg) return;
+      rows.push(ratioRow('Skill tag: ' + cat, fg, v['--surface'], v['--surface'], false));
+    });
+
+    var passCount = rows.filter(function (r) { return r.pass; }).length;
+    var isCurrent = themeKey === currentTheme;
+
+    var rowsHtml = rows
+      .map(function (r) {
+        if (r.ratio == null) {
+          return (
+            '<tr><td>' + r.label + '</td><td colspan="2">value unavailable</td></tr>'
+          );
+        }
+        return (
+          '<tr>' +
+          '<td>' +
+          '<span class="contrast-audit__swatch-pair">' +
+          '<span class="contrast-audit__swatch" style="background:' + r.fg + '"></span>' +
+          '<span class="contrast-audit__swatch" style="background:' + r.bg + '"></span>' +
+          '</span>' +
+          r.label +
+          '</td>' +
+          '<td class="contrast-audit__ratio">' + r.ratio.toFixed(2) + ':1</td>' +
+          '<td><span class="contrast-audit__badge contrast-audit__badge--' + (r.pass ? 'pass' : 'fail') + '">' +
+          (r.pass ? 'AA pass' : 'AA fail') +
+          '</span></td>' +
+          '</tr>'
+        );
+      })
+      .join('');
+
+    var details = document.createElement('details');
+    details.className = 'contrast-audit__theme';
+    if (isCurrent) details.open = true;
+    details.innerHTML =
+      '<summary>' +
+      THEME_LABEL[themeKey] +
+      ' <span class="contrast-audit__ratio">(' + passCount + '/' + rows.length + ' pairs pass AA)</span>' +
+      (isCurrent ? ' <span class="contrast-audit__current-tag">Viewing now</span>' : '') +
+      '</summary>' +
+      '<table class="contrast-audit__table">' +
+      '<thead><tr><th>Pair</th><th>Ratio</th><th>WCAG AA</th></tr></thead>' +
+      '<tbody>' + rowsHtml + '</tbody>' +
+      '</table>';
+    return details;
+  }
+
+  var currentTheme = document.documentElement.dataset.theme || 'light';
+  var themes = collectThemeVars();
+  var grid = document.querySelector('[data-contrast-audit-grid]');
+  var summary = document.querySelector('[data-contrast-audit-summary]');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  var totalPass = 0;
+  var totalPairs = 0;
+  THEME_ORDER.forEach(function (themeKey) {
+    var vars = themes[themeKey];
+    if (!vars || !vars['--bg']) return; // stylesheet rule not found; skip rather than show zeros
+    var el = renderTheme(themeKey, vars, currentTheme);
+    grid.appendChild(el);
+    var rowCount = el.querySelectorAll('tbody tr').length;
+    var passRowCount = el.querySelectorAll('.contrast-audit__badge--pass').length;
+    totalPairs += rowCount;
+    totalPass += passRowCount;
+  });
+
+  if (summary) {
+    summary.textContent = totalPass + ' of ' + totalPairs + ' checked pairs pass WCAG AA across ' + THEME_ORDER.length + ' themes';
+  }
+});
+</script>

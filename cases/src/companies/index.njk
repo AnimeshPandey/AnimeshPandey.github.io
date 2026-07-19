@@ -17,6 +17,27 @@ permalink: /companies/index.html
       <a href="{{ '/library/' | url }}">Reading library</a> ·
       <a href="{{ '/index.html' | url }}">← Interactive cases</a>
     </p>
+    {% if widestCoverageCompany and widestCoverageCompany.span > 0 %}
+      {# Real coverage-span outlier (design-backlog idea #37) — the company
+         with the widest actual publishedYear spread across its library
+         entries (cases/.eleventy.js's widestCoverageCompany), not a
+         hand-picked "did you know" fact. #}
+      <p class="companies-fact">
+        Longest-running coverage:
+        <a href="{{ ('/companies/' ~ widestCoverageCompany.slug ~ '/') | url }}">{{ widestCoverageCompany.name }}</a>,
+        spanning {{ widestCoverageCompany.minYear }}–{{ widestCoverageCompany.maxYear }}
+        ({{ widestCoverageCompany.span }} years)
+      </p>
+    {% endif %}
+    {% if mostCoveredCompanies and mostCoveredCompanies.length %}
+      {# Real "most-covered companies" ranking (design-backlog idea #36) —
+         top 5 by actual article count (hubFacets.companies[].count), sorted
+         at build time in cases/.eleventy.js, not a curated list. #}
+      <p class="companies-fact companies-fact--ranking">
+        Most-covered:
+        {% for c in mostCoveredCompanies %}<a href="{{ ('/companies/' ~ c.slug ~ '/') | url }}">{{ c.name }} ({{ c.count }})</a>{% if not loop.last %}, {% endif %}{% endfor %}
+      </p>
+    {% endif %}
   </header>
 
   {# ── Search ── #}

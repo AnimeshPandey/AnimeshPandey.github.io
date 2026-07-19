@@ -7,3 +7,7 @@ tests/test-results/
 cases/_site/
 site/_site/
 _deploy/
+# Generated at build time by scripts/generate-casebook-stats.mjs from the
+# casebook's own hub-facets.json (design-backlog idea #5) — never committed,
+# so it can never silently drift out of sync with its source of truth.
+assets/casebook-stats.json

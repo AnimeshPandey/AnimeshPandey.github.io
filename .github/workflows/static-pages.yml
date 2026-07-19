@@ -23,6 +23,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history, not the default shallow (depth-1) clone — the case
+          # build reads real per-file last-commit dates via `git log`
+          # (design-backlog idea #27); a depth-1 checkout would make every
+          # file's "last commit" the same single checkout commit, turning a
+          # real fact into a fake one.
+          fetch-depth: 0
 
       # ── Build Casebook (Eleventy) ──────────────────────────────────────────
       - name: Setup Node.js
@@ -41,6 +48,12 @@ jobs:
       - name: Verify live case pages built
         working-directory: cases
         run: node scripts/assert-live-cases.mjs
+
+      # design-backlog idea #5: regenerate the portfolio's skill-tag
+      # cross-link stats from the casebook's own hub-facets.json before the
+      # portfolio site build below, which passthrough-copies assets/ as-is.
+      - name: Generate Casebook stats bridge for portfolio skill links
+        run: node scripts/generate-casebook-stats.mjs
 
       - name: Install portfolio site dependencies
         working-directory: site

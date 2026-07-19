@@ -72,6 +72,39 @@ body {
   color: var(--casebook-ink-faint);
 }
 
+/* ── Companies facts (design-backlog ideas #36, #37) ── */
+.companies-fact {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--casebook-ink-muted);
+  margin: 0 0 6px;
+}
+.companies-fact a { color: var(--casebook-accent); }
+.companies-fact--ranking { margin-bottom: var(--space-4, 16px); }
+
+/* ── Library per-year coverage (design-backlog idea #31) ── */
+.library-year-coverage {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 32px;
+  margin: 0 0 4px;
+  max-width: 480px;
+}
+.library-year-coverage__bar {
+  flex: 1 1 0;
+  height: var(--bar-pct);
+  min-height: 2px;
+  background: var(--casebook-accent);
+  border-radius: 1px 1px 0 0;
+  opacity: 0.75;
+}
+.library-year-coverage__bar:hover { opacity: 1; }
+.library-year-coverage__range {
+  font-size: var(--text-xs, 0.6875rem);
+  color: var(--casebook-ink-faint);
+  margin: 0 0 var(--space-4, 16px);
+}
+
 /* Hub filter */
 .casebook-hub__filter {
   display: flex; align-items: center; gap: 10px;

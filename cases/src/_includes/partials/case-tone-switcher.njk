@@ -1,7 +1,13 @@
-{# ── case-tone-switcher.njk ── Reading level segmented control ── #}
+{# ── case-tone-switcher.njk ── Reading level segmented control ──
+   `data-minutes` on each button (design-backlog idea #29) is that tone's
+   own real reading time — cases/.eleventy.js's caseReadingStats[slug].byTone,
+   counted from that tone's actual prose, not the default tone's number
+   reused for all three. casebook-tone.js reads these to update
+   #case-reading-time when the reader switches levels. #}
+{% set toneStats = caseReadingStats[slug].byTone %}
 <div class="case-tone" role="group" aria-label="Reading level" id="case-tone-switcher">
   <p class="case-tone__label visually-hidden">Reading level</p>
-  <button type="button" class="case-tone__btn" data-tone="junior" aria-pressed="true">Junior</button>
-  <button type="button" class="case-tone__btn" data-tone="mid"    aria-pressed="false">Mid</button>
-  <button type="button" class="case-tone__btn" data-tone="staff"  aria-pressed="false">Staff</button>
+  <button type="button" class="case-tone__btn" data-tone="junior" aria-pressed="true"  {% if toneStats %}data-minutes="{{ toneStats.junior.minutes }}"{% endif %}>Junior</button>
+  <button type="button" class="case-tone__btn" data-tone="mid"    aria-pressed="false" {% if toneStats %}data-minutes="{{ toneStats.mid.minutes }}"{% endif %}>Mid</button>
+  <button type="button" class="case-tone__btn" data-tone="staff"  aria-pressed="false" {% if toneStats %}data-minutes="{{ toneStats.staff.minutes }}"{% endif %}>Staff</button>
 </div>

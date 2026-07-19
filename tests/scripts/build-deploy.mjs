@@ -58,6 +58,13 @@ console.log('→ Building casebook…');
 run('npm', ['run', 'build'], path.join(ROOT, 'cases'), { ELEVENTY_OUTPUT_DIR: CASES_OUT });
 excludeFromICloudSync(CASES_OUT);
 
+// design-backlog idea #5: regenerate the portfolio's skill-tag cross-link
+// stats from the casebook's own hub-facets.json BEFORE the portfolio site
+// build below, since that build passthrough-copies assets/ verbatim — this
+// file must exist on disk first or the copy just won't include it.
+console.log('→ Generating Casebook stats bridge for portfolio skill links…');
+run('node', ['scripts/generate-casebook-stats.mjs'], ROOT);
+
 console.log('→ Installing portfolio site dependencies…');
 run('npm', ['install'], path.join(ROOT, 'site'));
 

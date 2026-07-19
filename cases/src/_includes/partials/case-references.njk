@@ -1,0 +1,32 @@
+{# ── case-references.njk ──
+   design-backlog idea #22 ("tier-aware reference count callout"): renders
+   the References chapter straight from mvp-references.json at build time,
+   replacing 31 hand-duplicated copies of the same per-tone link lists that
+   used to be baked directly into each case's own index.njk. Same "two
+   independent copies can silently drift" bug class this backlog has fixed
+   elsewhere (readMin, flagship, principle) — here caught before it ever
+   drifted (a full diff of all 31 cases found 0 mismatches against this
+   file), but the fix removes the possibility going forward rather than
+   leaving the duplication in place.
+
+   The per-tone count is real by construction: it's just that tone's array
+   length from the same data the list below it is rendered from, so it
+   can never say a number the list doesn't back up. #}
+{% set refs = mvpReferences[slug] %}
+{% if refs %}
+<section class="case-chapter case-references" data-chapter="references">
+  <h3>References</h3>
+  {% for tone in ["junior", "mid", "staff"] %}
+    {% if refs[tone] and refs[tone].length %}
+    <div class="tone-{{ tone }}">
+      <p class="case-references__count">{{ refs[tone].length }} reference{{ 's' if refs[tone].length != 1 else '' }} at this level</p>
+      <ol>
+        {% for link in refs[tone] %}
+          <li>{{ link | safe }}</li>
+        {% endfor %}
+      </ol>
+    </div>
+    {% endif %}
+  {% endfor %}
+</section>
+{% endif %}

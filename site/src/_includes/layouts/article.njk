@@ -9,9 +9,9 @@
   <title>{{ title }} · Animesh Pandey</title>
   <meta name="description" content="{{ description }}" />
   <meta name="author" content="Animesh Pandey" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="{{ 'noindex' if noindex else 'index, follow' }}" />
   <meta name="theme-color" content="#FAF8F4" />
-  <link rel="canonical" href="{{ canonical }}" />
+  {% if canonical %}<link rel="canonical" href="{{ canonical }}" />{% endif %}
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="manifest" href="/site.webmanifest" />
   {% include "partials/platform-fonts.njk" %}
