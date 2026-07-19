@@ -85,4 +85,21 @@
     </footer>
   {% endif %}
 
+  {% if entry.clusterSiblings and entry.clusterSiblings.length %}
+    {# Real "similar articles" grouping (design-backlog idea #32) — from
+       library-entries.json's clusterId, only surfaced for clusters sized
+       2–40 (cases/.eleventy.js's entriesByCluster). One cluster (C25) holds
+       335 of the 779 entries — a catch-all bucket, not a similarity signal
+       — so entries in it (and true 1-entry "clusters") get no callout here
+       rather than a meaningless "334 similar articles". #}
+    <details class="reading-card__similar">
+      <summary>{{ entry.clusterSize - 1 }} similar article{{ 's' if entry.clusterSize != 2 else '' }}</summary>
+      <ul class="reading-card__similar-list">
+        {% for sibling in entry.clusterSiblings %}
+          <li><a href="{{ sibling.primaryUrl }}" target="_blank" rel="noopener noreferrer">{{ sibling.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </details>
+  {% endif %}
+
 </article>

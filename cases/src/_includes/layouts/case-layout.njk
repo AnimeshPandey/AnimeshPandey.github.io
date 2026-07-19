@@ -28,12 +28,22 @@ layout: layouts/casebook-layout.njk
            hub card's "Nm", sourced from the same computed value. #}
         {% set readStats = caseReadingStats[slug] %}
         {% if readStats %}
-          <span title="{{ readStats.words }} words, measured from this case's actual prose">{{ readStats.minutes }} min read</span>
+          <span id="case-reading-time" title="{{ readStats.words }} words, measured from this case's actual prose">{{ readStats.minutes }} min read</span>
         {% else %}
-          <span>{{ readMin | default(10) }} min read</span>
+          <span id="case-reading-time">{{ readMin | default(10) }} min read</span>
         {% endif %}
         {% if publishedAt %}
           <span>· {{ publishedAt | readableDate }}</span>
+        {% endif %}
+        {# Real, git-derived "last updated" date (design-backlog idea #27) —
+           the actual last-commit date of this case's own content file
+           (cases/.eleventy.js's caseLastUpdated, cases/lib/git-dates.js),
+           not a guess. Only rendered when git history was actually
+           available at build time (see git-dates.js) so an unavailable
+           date is simply omitted rather than shown as a wrong one. #}
+        {% set lastUpdated = caseLastUpdated[slug] %}
+        {% if lastUpdated and lastUpdated != publishedAt %}
+          <span title="Real last-commit date for this case's content file">· Updated {{ lastUpdated | readableDate }}</span>
         {% endif %}
         {# Real "what you'll teach yourself" principle (design-backlog idea #25)
            — the same front-matter `principle` field already feeding this page's

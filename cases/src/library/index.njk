@@ -20,6 +20,26 @@ permalink: /library/index.html
     </p>
   </header>
 
+  {# ── Per-year coverage (design-backlog idea #31) ──
+     Real per-year article counts (cases/.eleventy.js's libraryYearCoverage,
+     a plain tally of libraryEntries.publishedYear), not an illustrative
+     chart — each bar's height is that year's actual share of the tallest
+     year, and the title attribute states the real count. #}
+  {% if libraryYearCoverage and libraryYearCoverage.length > 1 %}
+  <div class="library-year-coverage" role="img" aria-label="Articles per year, {{ libraryYearCoverage[0].year }} to {{ libraryYearCoverage[libraryYearCoverage.length - 1].year }}">
+    {% for y in libraryYearCoverage %}
+      <div class="library-year-coverage__bar"
+           style="--bar-pct: {{ (y.count / libraryYearCoverageMax * 100) | round(1) }}%"
+           title="{{ y.year }}: {{ y.count }} article{{ 's' if y.count != 1 else '' }}">
+        <span class="visually-hidden">{{ y.year }}: {{ y.count }} article{{ 's' if y.count != 1 else '' }}</span>
+      </div>
+    {% endfor %}
+  </div>
+  <p class="library-year-coverage__range">
+    Coverage spans {{ libraryYearCoverage[0].year }}–{{ libraryYearCoverage[libraryYearCoverage.length - 1].year }}
+  </p>
+  {% endif %}
+
   {% include 'partials/casey-library-strip.njk' %}
 
   {# ── Filter bar ── #}

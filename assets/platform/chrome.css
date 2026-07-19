@@ -148,6 +148,21 @@
   margin: 0 0 4px;
 }
 
+.nav-more__contrast-link {
+  display: block;
+  margin-top: 6px;
+  padding: 6px 2px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: color .15s;
+}
+.nav-more__contrast-link:hover,
+.nav-more__contrast-link:focus-visible {
+  color: var(--accent);
+}
+
 @media (max-width: 819px) {
   .nav-more--desktop {
     display: none;

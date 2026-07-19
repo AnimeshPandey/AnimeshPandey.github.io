@@ -122,6 +122,26 @@
     el.textContent = done + ' of ' + total + ' live cases completed';
   }
 
+  // Real prefers-reduced-motion disclosure (design-backlog idea #40) — reads
+  // the same OS-level media query casebook-preferences.js already applies as
+  // the `casebook--reduce-motion` class on <html>, so this panel reports
+  // that real live state rather than a Casey-specific toggle.
+  var mqReducedMotion = window.matchMedia
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : null;
+
+  function updateMotionStatus(root) {
+    var el = root.querySelector('[data-casey-panel-motion-status]');
+    if (!el) return;
+    if (!mqReducedMotion) {
+      el.textContent = 'Your browser doesn’t report a motion preference.';
+      return;
+    }
+    el.textContent = mqReducedMotion.matches
+      ? 'Reduced motion is on, matching your system setting. Casey’s animations are toned down.'
+      : 'Reduced motion is off, matching your system setting. Casey’s animations play in full.';
+  }
+
   function bindPanel(root) {
     if (!root || root.dataset.caseyPanelBound === '1') return;
     root.dataset.caseyPanelBound = '1';
@@ -179,6 +199,7 @@
     updatePanelLabels(root, tier);
     updatePanelAvatar(root, tier, intensity);
     updateProgress(root);
+    updateMotionStatus(root);
     var list = root.querySelector('[data-casey-milestones]');
     if (list) list.innerHTML = milestoneRows(state);
     root.querySelectorAll('[data-casey-panel-tier]').forEach(function (btn) {
@@ -204,6 +225,12 @@
   document.addEventListener('casey-companion-event', function () {
     document.querySelectorAll('[data-casey-prefs-root]').forEach(refreshPanel);
   });
+
+  if (mqReducedMotion) {
+    mqReducedMotion.addEventListener('change', function () {
+      document.querySelectorAll('[data-casey-prefs-root]').forEach(updateMotionStatus);
+    });
+  }
 
   function wireCaseyPrefsPopover() {
     var btn = document.getElementById('casebook-prefs-btn');

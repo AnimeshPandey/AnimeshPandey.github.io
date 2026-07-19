@@ -1041,15 +1041,34 @@ button.social-btn { background: transparent; border: none; cursor: pointer; font
 .sv-head svg { flex-shrink: 0; opacity: .85; color: var(--cat, var(--ink-2)); }
 .sv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .sv-chip {
+  display: inline-flex; align-items: center; gap: 5px;
   font-family: var(--mono); font-size: 10.5px; letter-spacing: .05em;
   padding: 3px 10px; border-radius: 100px;
   border: 1px solid var(--border-2); color: var(--ink-2);
   background: transparent;
+  text-decoration: none;
 }
 .sv-chip.sv-feat {
   border-color: var(--cat, var(--accent));
   color: var(--cat-ink, var(--accent-ink));
   font-weight: 500;
+}
+/* Chips upgraded to real links to the Casebook (design-backlog idea #5) —
+   the count is the actual article total for that skill's mapped category,
+   fetched from /assets/casebook-stats.json at runtime, not decoration. */
+a.sv-chip {
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+a.sv-chip:hover, a.sv-chip:focus-visible {
+  border-color: var(--accent); color: var(--accent-ink); background: var(--accent-dim);
+}
+.sv-chip-count {
+  font-size: 9px; line-height: 1; padding: 2px 5px; border-radius: 100px;
+  background: var(--surface-2); color: var(--ink-3);
+}
+a.sv-chip:hover .sv-chip-count, a.sv-chip:focus-visible .sv-chip-count {
+  background: var(--accent-bg); color: var(--accent-ink);
 }
 
 /* ── Hero bottom rail: ? hint + scroll cue (aligned) ── */

@@ -13,6 +13,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Full history so the case build's `git log`-based last-updated
+          # stamp (design-backlog idea #27) reflects real per-file commit
+          # dates in this test build too, not the depth-1 default.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

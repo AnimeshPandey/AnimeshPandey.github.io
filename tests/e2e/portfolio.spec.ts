@@ -37,3 +37,39 @@ test.describe('Portfolio home', () => {
     expect(res?.status()).toBe(404);
   });
 });
+
+// design-backlog idea #5: #skills chips for unambiguously-mapped skills get
+// upgraded, client-side, to real Casebook links + article counts sourced from
+// assets/casebook-stats.json (itself generated at build time from the
+// casebook's own hub-facets.json) — never a hand-typed number.
+test.describe('Skill chip Casebook cross-links', () => {
+  test('mapped skill chip becomes a real, counted Casebook link', async ({ page }) => {
+    const statsRes = await page.request.get('/assets/casebook-stats.json');
+    expect(statsRes.ok()).toBeTruthy();
+    const stats = await statsRes.json();
+    const reactCount = stats.categories.react.count;
+    expect(reactCount).toBeGreaterThan(0);
+
+    await page.goto('/');
+    // "React", "React Native" and "React Query" all map to the same
+    // Casebook category, so scope to the chip whose .sv-chip-text is
+    // exactly "React" — a plain hasText filter on the chip itself also
+    // matches the appended count span's text (e.g. "React" + "66").
+    const reactLink = page
+      .locator('a.sv-chip')
+      .filter({ has: page.locator('.sv-chip-text', { hasText: /^React$/ }) });
+    await expect(reactLink).toHaveAttribute('href', '/cases/library/?category=react');
+    await expect(reactLink).toHaveAttribute('data-skill-casebook-link', 'react');
+    await expect(reactLink.locator('.sv-chip-text')).toHaveText('React');
+    await expect(reactLink.locator('.sv-chip-count')).toHaveText(String(reactCount));
+  });
+
+  test('unmapped skill chip is left as plain text, not a link', async ({ page }) => {
+    await page.goto('/');
+    // "Design Systems" spans multiple ambiguous Casebook categories and is
+    // deliberately excluded from SKILL_TO_CATEGORY — it must stay a <span>.
+    const chip = page.locator('.sv-chip', { hasText: 'Design Systems' });
+    await expect(chip).toBeVisible();
+    await expect(page.locator('a.sv-chip', { hasText: 'Design Systems' })).toHaveCount(0);
+  });
+});
