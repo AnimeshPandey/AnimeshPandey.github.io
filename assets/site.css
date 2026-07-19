@@ -1265,7 +1265,7 @@ a.sv-chip:hover .sv-chip-count, a.sv-chip:focus-visible .sv-chip-count {
   .header-rm-exit { min-width: 44px; min-height: 44px; padding: 0 10px; }
 }
 /* recruiter-active: panel open — highlights toggle only */
-header.recruiter-active .header-rm-toggle[aria-pressed="true"] {
+.platform-header.recruiter-active .header-rm-toggle[aria-pressed="true"] {
   border-color: var(--sage);
   background: rgba(78,122,104,.12);
 }
@@ -1470,7 +1470,7 @@ html.theme-transitioning footer {
 
 /* ── Print ── */
 @media print {
-  header, .skip-link, .scroll-cue, .ctas, .contact-quick, .form,
+  .platform-header, .skip-link, .scroll-cue, .ctas, .contact-quick, .form,
   #mobile-nav, #nav-overlay, .hamburger, .theme-picker,
   .back-top, .progress-bar { display: none !important; }
   body { color: #000; background: #fff; }
@@ -1973,7 +1973,7 @@ html.theme-transitioning footer {
 
 /* F34 — Reduce backdrop blur for prefers-reduced-transparency */
 @media (prefers-reduced-transparency: reduce) {
-  header, .platform-header {
+  .platform-header {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     background: var(--bg) !important;
@@ -1987,7 +1987,7 @@ html.theme-transitioning footer {
 
 /* F35 — Enhanced print stylesheet */
 @media print {
-  header, .skip-link, .scroll-cue, .hero-ticker, .ctas,
+  .platform-header, .skip-link, .scroll-cue, .hero-ticker, .ctas,
   .contact-quick, .form, .form-privacy, #mobile-nav, #nav-overlay,
   .hamburger, .theme-picker, .lang-picker, .back-top, .progress-bar,
   .section-rail, #rm-panel, .rm-promo, .contact-fab, .cursor-spotlight,

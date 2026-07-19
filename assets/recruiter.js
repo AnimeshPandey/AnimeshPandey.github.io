@@ -676,7 +676,7 @@
         ? 'Close recruiter briefing'
         : 'Open recruiter briefing');
     });
-    var hdr = d.querySelector('header');
+    var hdr = d.querySelector('.platform-header');
     if (hdr) hdr.classList.toggle('recruiter-active', on);
   }
 
