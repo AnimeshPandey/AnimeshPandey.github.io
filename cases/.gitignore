@@ -3,3 +3,5 @@ _site/
 .cache/
 npm-debug.log*
 scripts/social/.env
+scripts/content/drafts/*.json
+scripts/content/drafts/REVIEW.md

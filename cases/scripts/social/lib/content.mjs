@@ -45,7 +45,7 @@ const DEVTO_TAG_MAP = {
 // than publish an obviously-templated sentence under a specific case's
 // name. This is a stopgap, not a fix for the underlying casey.json content
 // gap — see scripts/social/README.md "Known limitations".
-const KNOWN_BOILERPLATE_HINTS = new Set([
+export const KNOWN_BOILERPLATE_HINTS = new Set([
   'Map the pattern to observability: what would you measure in RUM or lab to prove the fix?',
   'Connect the principle to your component API: what prop or CSS change encodes the fix?',
   'Connect the principle to your component API. What prop or CSS change encodes the fix?',
