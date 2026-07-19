@@ -46,7 +46,13 @@ body {
 .skip-link:focus { top: 0; }
 
 /* ── Nav ── */
-header,
+/* Scoped to .platform-header (not a bare `header` type selector): every real
+   site-nav header already carries this class (site-header.njk /
+   platform-header.njk), but article pages also use a semantic <header
+   class="article-header"> for their own title block (article.njk-rendered
+   pages). A bare `header,` selector here was matching that too, forcing
+   `position: fixed; top: 0` onto the article title and pulling it out of
+   flow — see issue #7 surface 2 (Articles) regression. */
 .platform-header {
   position: fixed; inset: 0 0 auto 0; height: var(--nav-h);
   top: 0;
@@ -59,7 +65,7 @@ header,
   padding-top: env(safe-area-inset-top, 0);
   transition: top .35s var(--ease-out), box-shadow .2s;
 }
-header.scrolled {
+.platform-header.scrolled {
   box-shadow: var(--shadow-sm);
 }
 .nav-inner {
