@@ -24,19 +24,20 @@
  * See ./README.md for the full setup guide.
  */
 
+import { loadLocalEnv, requireEnv } from './lib/env.mjs';
+
+loadLocalEnv();
+
 import { loadCase } from './lib/content.mjs';
 import { buildDevtoArticle } from './lib/compose.mjs';
-import { loadLocalEnv, requireEnv } from './lib/env.mjs';
 import { alreadyPosted, recordPost } from './lib/ledger.mjs';
+import { parseFlags } from './lib/cli-args.mjs';
 
 const DEVTO_API = 'https://dev.to/api/articles';
 
 function parseArgs(argv) {
   const [slug, ...rest] = argv;
-  const flags = new Set(rest.filter((a) => a.startsWith('--') && !a.includes('=')));
-  const kv = Object.fromEntries(
-    rest.filter((a) => a.includes('=')).map((a) => a.replace(/^--/, '').split('=')),
-  );
+  const { flags, kv } = parseFlags(rest);
   return {
     slug,
     publish: flags.has('--publish'),
@@ -66,7 +67,6 @@ async function updateArticle(apiKey, id, article) {
 }
 
 async function main() {
-  loadLocalEnv();
   const { slug, publish, force, tone } = parseArgs(process.argv.slice(2));
   const dryRun = process.env.DRY_RUN === '1';
 

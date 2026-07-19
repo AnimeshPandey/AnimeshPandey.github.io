@@ -10,6 +10,14 @@ import { execFile } from 'node:child_process';
 
 export function waitForCallback({ port, path = '/callback', timeoutMs = 120000 }) {
   return new Promise((resolve, reject) => {
+    // Un-cleared, this timer keeps the event loop alive for the full
+    // timeoutMs even after a successful callback — the script prints its
+    // result but the shell prompt doesn't return until it fires.
+    const timer = setTimeout(() => {
+      server.close();
+      reject(new Error(`timed out waiting for OAuth callback on port ${port}`));
+    }, timeoutMs);
+
     const server = createServer((req, res) => {
       const url = new URL(req.url, `http://127.0.0.1:${port}`);
       if (url.pathname !== path) {
@@ -19,15 +27,12 @@ export function waitForCallback({ port, path = '/callback', timeoutMs = 120000 }
       const params = Object.fromEntries(url.searchParams);
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end('<html><body style="font-family:sans-serif;padding:2rem"><h1>Done — you can close this tab.</h1></body></html>');
+      clearTimeout(timer);
       server.close();
       resolve(params);
     });
     server.on('error', reject);
     server.listen(port, '127.0.0.1');
-    setTimeout(() => {
-      server.close();
-      reject(new Error(`timed out waiting for OAuth callback on port ${port}`));
-    }, timeoutMs);
   });
 }
 
