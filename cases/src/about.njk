@@ -23,6 +23,28 @@ permalink: /about/index.html
     staff engineers.
   </p>
 
+  <h2 id="progress">Progress</h2>
+  <p class="tracks-progress__summary" role="status">
+    <strong>{{ tracksProgressTotals.live }}</strong> of <strong>{{ tracksProgressTotals.total }}</strong> cases
+    live across {{ tracksProgress.length }} tracks. Computed at build time from the manifest — never
+    hand-typed, so it can't go stale the way a written-down number can.
+  </p>
+  <div class="tracks-progress__legend">
+    <span class="is-live">Live</span>
+    <span class="is-remaining">Planned</span>
+  </div>
+  <ul class="tracks-progress__list">
+    {% for t in tracksProgress %}
+    <li class="tracks-progress__row">
+      <span class="tracks-progress__label">{{ t.label }}</span>
+      <span class="tracks-progress__bar">
+        <span class="tracks-progress__fill" style="width: {{ (t.live / t.total * 100) | round(0) }}%"></span>
+      </span>
+      <span class="tracks-progress__count">{{ t.live }} of {{ t.total }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+
   <h2>Methodology</h2>
   <p>
     Story format inspired by <a href="https://growth.design/case-studies/" rel="noopener noreferrer">Growth.Design</a>.

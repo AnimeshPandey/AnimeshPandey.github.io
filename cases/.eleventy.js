@@ -251,6 +251,33 @@ liveCases.forEach((c) => {
    caseReadingStats[slug] directly instead — see index.njk and
    case-layout.njk. */
 
+/* Per-track live/planned counts (design-backlog: roadmap progress chart) —
+   computed once from manifest.cases so the /about/ progress section can
+   never drift the way a hand-typed case count already has (see BRANDING.md
+   decision log, 2026-07-19: three docs and the GitHub profile README all
+   said "223" after the real count moved to 229). Sorted alphabetically by
+   track slug for a stable render order across builds. */
+const TRACK_LABEL_OVERRIDES = { css: 'CSS', ux: 'UX', ai: 'AI', dom: 'DOM', cwv: 'CWV', javascript: 'JavaScript' };
+function trackLabel(slug) {
+  return slug
+    .split('-')
+    .map((word) => TRACK_LABEL_OVERRIDES[word] || word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+const tracksProgress = (() => {
+  const byTrack = {};
+  manifest.cases.forEach((c) => {
+    if (!byTrack[c.track]) byTrack[c.track] = { track: c.track, label: trackLabel(c.track), live: 0, total: 0 };
+    byTrack[c.track].total += 1;
+    if (c.status === 'live') byTrack[c.track].live += 1;
+  });
+  return Object.values(byTrack).sort((a, b) => a.track.localeCompare(b.track));
+})();
+const tracksProgressTotals = tracksProgress.reduce(
+  (acc, t) => ({ live: acc.live + t.live, total: acc.total + t.total }),
+  { live: 0, total: 0 },
+);
+
 module.exports = function (eleventyConfig) {
   const nunjucksEnvironment = nunjucks.configure(
     [
@@ -272,6 +299,8 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/cases/**/casey.json');
 
   /* ── Global data ── */
+  eleventyConfig.addGlobalData('tracksProgress', tracksProgress);
+  eleventyConfig.addGlobalData('tracksProgressTotals', tracksProgressTotals);
   eleventyConfig.addGlobalData('caseReadingStats', caseReadingStats);
   eleventyConfig.addGlobalData('libraryEntries', libraryEntries);
   eleventyConfig.addGlobalData('hubFacets', hubFacets);
