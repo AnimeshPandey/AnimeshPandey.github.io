@@ -70,19 +70,33 @@ permalink: /companies/index.html
     {% endfor %}
   </ul>
 
+  {# Zero-result state (design-backlog idea #39): the hub and reading
+     library both tell you when a filter/search matches nothing —
+     this search had no such message, so a query with zero matches
+     just silently emptied the list with no feedback at all. Same
+     `.hub-empty` container as the other two empty states. #}
+  <div class="hub-empty" id="companies-empty" role="status" hidden>
+    <p class="hub-empty__msg">No companies match your search.</p>
+    <button type="button" class="btn btn--ghost" id="companies-empty-clear">Clear search</button>
+  </div>
+
 </div>
 
 <script>
 (function () {
   var input = document.getElementById('company-search');
   var list = document.getElementById('companies-list');
+  var empty = document.getElementById('companies-empty');
+  var clearBtn = document.getElementById('companies-empty-clear');
   if (!input || !list) return;
 
-  input.addEventListener('input', function () {
+  function applyFilter() {
     var q = input.value.toLowerCase().trim();
+    var anyMatch = false;
     list.querySelectorAll('.companies-list__item[data-name]').forEach(function (li) {
       var match = !q || li.dataset.name.includes(q);
       li.hidden = !match;
+      if (match) anyMatch = true;
     });
     list.querySelectorAll('.companies-list__letter-divider').forEach(function (div) {
       var nextItems = [];
@@ -94,7 +108,17 @@ permalink: /companies/index.html
       var anyVisible = nextItems.some(function (i) { return !i.hidden; });
       div.hidden = !anyVisible;
     });
-  });
+    if (empty) empty.hidden = anyMatch;
+  }
+
+  input.addEventListener('input', applyFilter);
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      input.value = '';
+      applyFilter();
+      input.focus();
+    });
+  }
 }());
 </script>
 
