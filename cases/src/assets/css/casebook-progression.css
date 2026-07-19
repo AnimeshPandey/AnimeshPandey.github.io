@@ -361,3 +361,101 @@
   color: #dc2626;
   margin: 0.75rem 0 0;
 }
+
+/* ── Tracks progress (roadmap chart, /about/) ──────────────────────────────
+   Same fill/track visual language as .hub-progress above — accent = live,
+   a 10%-ink neutral = remaining — so this reads as the same "progress"
+   idiom rather than a second unrelated chart style. One row per track,
+   built as plain HTML (real text, not canvas/SVG) so screen readers get
+   "4 of 15 live" as text, not a shape needing separate ARIA labeling. */
+
+.tracks-progress__summary {
+  font-family: var(--mono, monospace);
+  font-size: 0.85rem;
+  color: var(--casebook-ink-muted);
+  margin: 0 0 1rem;
+}
+
+.tracks-progress__summary strong {
+  color: var(--casebook-ink);
+}
+
+.tracks-progress__legend {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.78rem;
+  color: var(--casebook-ink-muted);
+  margin: 0 0 0.75rem;
+}
+
+.tracks-progress__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.tracks-progress__legend span::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.tracks-progress__legend .is-live::before { background: var(--casebook-accent); }
+.tracks-progress__legend .is-remaining::before { background: color-mix(in srgb, var(--casebook-ink) 10%, transparent); }
+
+.tracks-progress__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tracks-progress__row {
+  display: grid;
+  grid-template-columns: minmax(120px, 9rem) 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tracks-progress__label {
+  font-size: 0.85rem;
+  color: var(--casebook-ink);
+}
+
+.tracks-progress__bar {
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--casebook-ink) 10%, transparent);
+  overflow: hidden;
+}
+
+.tracks-progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--casebook-accent);
+  transition: width 0.5s var(--casebook-ease-out);
+}
+
+.tracks-progress__count {
+  font-family: var(--mono, monospace);
+  font-size: 0.76rem;
+  color: var(--casebook-ink-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 480px) {
+  .tracks-progress__row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "label count" "bar bar";
+    row-gap: 0.3rem;
+  }
+  .tracks-progress__label { grid-area: label; }
+  .tracks-progress__count { grid-area: count; }
+  .tracks-progress__bar { grid-area: bar; }
+}
