@@ -35,6 +35,21 @@ layout: layouts/casebook-layout.njk
         {% if publishedAt %}
           <span>· {{ publishedAt | readableDate }}</span>
         {% endif %}
+        {# Real "what you'll teach yourself" principle (design-backlog idea #25)
+           — the same front-matter `principle` field already feeding this page's
+           SEO keywords/JSON-LD (partials/head-seo.njk) but, until now, never
+           shown to an actual reader. Real per-case fact, not a generic label. #}
+        {% if principle %}
+          <span class="case-cover__badge">{{ principle }}</span>
+        {% endif %}
+        {# Real demo-type tag (design-backlog idea #23) — same `demoType` field
+           and same ⚡/▶ icon convention already used inside the demo chapter
+           itself (partials/case-demo-shell.njk), surfaced here so a reader
+           knows before scrolling whether the case ends in an animation or an
+           interactive toggle demo. #}
+        {% if demoType %}
+          <span class="case-cover__badge">{% if demoType == 'animation' %}⚡ Animation demo{% else %}▶ Interactive demo{% endif %}</span>
+        {% endif %}
         {% if flagship %}
           <span class="case-cover__badge">★ Flagship</span>
         {% endif %}
