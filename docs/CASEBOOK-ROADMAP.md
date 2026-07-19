@@ -240,7 +240,7 @@ Small, independent improvements that collectively raise the quality ceiling.
 | Casey voice speed control | `casey-voice.js` | Add `playbackRate` slider in `casey-companion-prefs.njk` (0.75× / 1× / 1.25×) |
 | Dark/high-contrast toggle shortcut | `casebook-preferences.js` | Keyboard shortcut `D` to toggle dark mode on Casebook (matches portfolio `hire` shortcut pattern) |
 | ~~Chapter progress dots~~ | `chapter-progress.js` | **✅ Shipped**, and better than scoped: dots are built from whichever real `.case-chapter[data-chapter]` elements are actually present on the page (capped at 5), not a hardcoded 5-dot set — `IntersectionObserver`-driven active state as planned |
-| Skeleton on library card load | `hub-filters.js` | Still genuinely pending — current code only dims cards to 40% opacity during filtering (`.hub-grid--filtering`), not a content-shaped skeleton placeholder. Real gap, worth doing per the original scope |
+| ~~Skeleton on library card load~~ | `reading-card.njk`, `casebook-components.css` | **✅ Shipped** — the old `.hub-grid--filtering .case-card` rule was dead code (never matched; that class only toggles on `/library/`'s `.reading-card`, not the hub's `.case-card`). Replaced with a real content-shaped skeleton (catalog stamp, chip row, two title lines, one body line) on `.reading-card` itself, reusing the existing shimmer demo's technique |
 | Confetti on Pro unlock | `pro-gate.js` | Fire confetti (same system as case completion) when user first unlocks Pro |
 | Resume CTA on hub 404 | `cases/src/404.njk` | Add Casey `curious` pose + "Explore all cases" CTA |
 
