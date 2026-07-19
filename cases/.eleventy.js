@@ -13,7 +13,7 @@ const hubLiveCases = require('./src/_data/hub-live-cases.json');
 const mvpQuality = require('./src/_data/mvp-quality.json');
 const guideLines = require('./src/_data/guide-lines.json');
 const changelog = require('./src/_data/changelog.json');
-const { liveCases, liveCaseCount, caseNav } = require('./lib/case-navigation');
+const { liveCases, liveCaseCount, caseNav, nextWave } = require('./lib/case-navigation');
 
 /* Stamp each library entry with its real 1-based position in libraryEntries'
    canonical order, once, on the shared object — so the reading-card catalog
@@ -183,6 +183,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addGlobalData('changelog', changelog);
   eleventyConfig.addGlobalData('liveCases', liveCases);
   eleventyConfig.addGlobalData('liveCaseCount', liveCaseCount);
+  // Real "next wave" roadmap teaser (design-backlog idea #3) — the lowest
+  // not-yet-live wave number and its real count, computed from manifest.json
+  // itself so it can't drift from the actual case pipeline (lib/case-navigation.js).
+  eleventyConfig.addGlobalData('nextWave', nextWave);
   eleventyConfig.addGlobalData('hubCaseTitles', () => {
     const titles = {};
     manifest.cases.forEach((c) => {

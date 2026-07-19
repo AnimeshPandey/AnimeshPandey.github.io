@@ -1162,6 +1162,31 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   margin: 0;
 }
 
+/* === "Next wave" roadmap teaser (design-backlog idea #3) ===
+   Real pipeline fact — manifest.json's own wave/status fields, computed
+   once at build time in lib/case-navigation.js's nextWave — not a
+   hand-typed "more coming soon" placeholder. Sits quietly below the grid,
+   same restrained tone as .hub-empty__msg rather than a promotional banner. */
+.hub-wave-teaser {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 14px 16px;
+  margin: 4px 0 20px;
+  font-size: 13px;
+  color: var(--casebook-ink-faint);
+  text-align: center;
+}
+.hub-wave-teaser__count {
+  font-family: var(--mono, monospace);
+  font-size: 12px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--casebook-ink) 8%, transparent);
+  color: var(--casebook-ink-muted);
+}
+
 /* ── Casey coach action chips (case pages) ── */
 .casey-coach__actions {
   display: flex;
@@ -1331,13 +1356,54 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   }
 }
 
-/* === Hub filter skeleton === */
-.hub-grid--filtering .case-card {
-  opacity: 0.4;
-  transition: opacity 0.15s ease;
-}
-.hub-grid--filtering .case-card[hidden] {
+/* === Reading-library filter skeleton (design-backlog idea #19) ===
+   hub-filters.js toggles .hub-grid--filtering on #library-grid for the
+   ~150ms window it takes to re-sort/hide reading-card entries. Previously
+   this rule targeted .case-card, a different hub's card component that
+   never actually receives this class — so the "skeleton" was silently
+   inert on the one page that uses it. Fixed to target the real card
+   (.reading-card) and to show shaped placeholder bars instead of just
+   dimming real text, matching what the site's own
+   skeleton-vs-spinner-choice case argues for. */
+.hub-grid--filtering .reading-card[hidden] {
   display: none;
+}
+.reading-card__skeleton {
+  display: none;
+}
+.hub-grid--filtering .reading-card__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.hub-grid--filtering .reading-card > :not(.reading-card__skeleton) {
+  display: none;
+}
+.reading-card__skel-bar {
+  display: block;
+  height: 0.7rem;
+  border-radius: 4px;
+  background: linear-gradient(90deg,
+    var(--casebook-surface-2) 25%,
+    var(--casebook-border) 50%,
+    var(--casebook-surface-2) 75%);
+  background-size: 200% 100%;
+  animation: reading-card-skel-shimmer 1.4s ease-in-out infinite;
+}
+.reading-card__skel-bar--tag { width: 70px; display: inline-block; margin-right: 0.25rem; }
+.reading-card__skel-bar--tag-sm { width: 48px; }
+.reading-card__skel-bar--title { height: 0.925rem; width: 90%; margin-top: 0.25rem; }
+.reading-card__skel-bar--title-sm { width: 60%; }
+.reading-card__skel-bar--line { height: 0.78rem; width: 75%; }
+@keyframes reading-card-skel-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reading-card__skel-bar {
+    animation: none;
+    background: var(--casebook-surface-2);
+  }
 }
 
 /* ── Casey hub — mobile compact mode ── */
