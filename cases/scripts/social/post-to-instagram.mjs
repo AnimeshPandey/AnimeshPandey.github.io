@@ -30,9 +30,12 @@
  * See ./README.md for the full setup guide.
  */
 
+import { loadLocalEnv, requireEnv } from './lib/env.mjs';
+
+loadLocalEnv();
+
 import { loadCase } from './lib/content.mjs';
 import { buildInstagramCaption } from './lib/compose.mjs';
-import { loadLocalEnv, requireEnv } from './lib/env.mjs';
 import { alreadyPosted, recordPost } from './lib/ledger.mjs';
 
 const GRAPH_VERSION = process.env.GRAPH_API_VERSION ?? 'v21.0';
@@ -44,7 +47,10 @@ function parseArgs(argv) {
   const slug = discover ? null : maybeSlug;
   const args = discover ? argv : rest;
   const kv = Object.fromEntries(
-    args.filter((a) => a.includes('=')).map((a) => a.replace(/^--/, '').split('=')),
+    args.filter((a) => a.includes('=')).map((a) => {
+      const eq = a.indexOf('=');
+      return [a.slice(2, eq), a.slice(eq + 1)];
+    }),
   );
   return {
     discover,
@@ -88,12 +94,19 @@ async function discover(token) {
   }
 }
 
-async function waitUntilFinished(containerId, token) {
-  for (let i = 0; i < 30; i += 1) {
+// Video/Reels transcoding on Meta's side routinely takes longer than image
+// processing, especially for larger files — a fixed image-sized budget was
+// timing out still-in-flight video uploads and causing redundant retries.
+const POLL_INTERVAL_MS = 2000;
+const MAX_ATTEMPTS_IMAGE = 30; // 60s
+const MAX_ATTEMPTS_VIDEO = 90; // 180s
+
+async function waitUntilFinished(containerId, token, { maxAttempts = MAX_ATTEMPTS_IMAGE } = {}) {
+  for (let i = 0; i < maxAttempts; i += 1) {
     const status = await graphCall(`/${containerId}`, token, { params: { fields: 'status_code' } });
     if (status.status_code === 'FINISHED') return;
     if (status.status_code === 'ERROR') throw new Error(`container ${containerId} failed processing`);
-    await sleep(2000);
+    await sleep(POLL_INTERVAL_MS);
   }
   throw new Error(`timed out waiting for container ${containerId} to finish processing`);
 }
@@ -101,7 +114,8 @@ async function waitUntilFinished(containerId, token) {
 async function publishSingle({ igUserId, token, mediaType, url, caption }) {
   const params = mediaType === 'video' ? { video_url: url, caption, media_type: 'REELS' } : { image_url: url, caption };
   const container = await graphCall(`/${igUserId}/media`, token, { method: 'POST', params });
-  await waitUntilFinished(container.id, token);
+  const maxAttempts = mediaType === 'video' ? MAX_ATTEMPTS_VIDEO : MAX_ATTEMPTS_IMAGE;
+  await waitUntilFinished(container.id, token, { maxAttempts });
   const published = await graphCall(`/${igUserId}/media_publish`, token, {
     method: 'POST',
     params: { creation_id: container.id },
@@ -131,7 +145,6 @@ async function publishCarousel({ igUserId, token, imageUrls, caption }) {
 }
 
 async function main() {
-  loadLocalEnv();
   const { discover: discoverMode, slug, image, images, video, force, tone } = parseArgs(process.argv.slice(2));
   const dryRun = process.env.DRY_RUN === '1';
 

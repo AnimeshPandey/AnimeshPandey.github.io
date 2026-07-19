@@ -26,22 +26,41 @@ import { chromium } from 'playwright';
 import { mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadCase, loadSite, loadManifest, VALID_TONES } from './lib/content.mjs';
+import { loadCase, loadSite, loadManifest, siteBaseUrl, VALID_TONES } from './lib/content.mjs';
 import { buildPrincipleCardHtml, CARD_WIDTH, CARD_HEIGHT } from './lib/card-template.mjs';
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const CASES_ROOT = resolve(__dir, '../..');
 const OUT_ROOT = resolve(CASES_ROOT, 'src/assets/social');
 const CASEY_ROOT = resolve(CASES_ROOT, 'src/assets/casey');
+const RENDER_CONCURRENCY = 5;
 
 function parseArgs(argv) {
   const [maybeSlug, ...rest] = argv;
   const all = maybeSlug === '--all';
   const args = all ? argv : rest;
   const kv = Object.fromEntries(
-    args.filter((a) => a.includes('=')).map((a) => a.replace(/^--/, '').split('=')),
+    args.filter((a) => a.includes('=')).map((a) => {
+      const eq = a.indexOf('=');
+      return [a.slice(2, eq), a.slice(eq + 1)];
+    }),
   );
   return { all, slug: all ? null : maybeSlug, tone: kv.tone ?? 'junior' };
+}
+
+/** Runs `fn` over `items` with at most `limit` in flight at once. */
+async function mapWithConcurrency(items, limit, fn) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next;
+      next += 1;
+      results[i] = await fn(items[i], i);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
 }
 
 function readCaseySvg(tone) {
@@ -58,17 +77,19 @@ async function renderOne(browser, slug, tone) {
   const html = buildPrincipleCardHtml(c, caseySvg);
 
   const page = await browser.newPage({ viewport: { width: CARD_WIDTH, height: CARD_HEIGHT } });
-  await page.setContent(html, { waitUntil: 'load' });
+  try {
+    await page.setContent(html, { waitUntil: 'load' });
 
-  const outDir = resolve(OUT_ROOT, slug);
-  mkdirSync(outDir, { recursive: true });
-  const outPath = resolve(outDir, 'principle-card.png');
-  await page.screenshot({ path: outPath });
-  await page.close();
+    const outDir = resolve(OUT_ROOT, slug);
+    mkdirSync(outDir, { recursive: true });
+    const outPath = resolve(outDir, 'principle-card.png');
+    await page.screenshot({ path: outPath });
 
-  const site = loadSite();
-  const publicUrl = `${site.url}assets/social/${slug}/principle-card.png`;
-  return { slug, outPath, publicUrl };
+    const publicUrl = `${siteBaseUrl(loadSite())}assets/social/${slug}/principle-card.png`;
+    return { slug, outPath, publicUrl };
+  } finally {
+    await page.close();
+  }
 }
 
 async function main() {
@@ -89,17 +110,19 @@ async function main() {
     : [slug];
 
   const browser = await chromium.launch();
-  const results = [];
+  let results;
   try {
-    for (const s of slugs) {
+    const outcomes = await mapWithConcurrency(slugs, RENDER_CONCURRENCY, async (s) => {
       try {
         const result = await renderOne(browser, s, tone);
-        results.push(result);
         console.log(`rendered: ${result.outPath}`);
+        return result;
       } catch (err) {
         console.error(`error rendering ${s}: ${err.message}`);
+        return null;
       }
-    }
+    });
+    results = outcomes.filter(Boolean);
   } finally {
     await browser.close();
   }

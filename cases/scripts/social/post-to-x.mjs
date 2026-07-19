@@ -18,12 +18,24 @@
  *
  * DRY_RUN=1   print the thread and the cost estimate, make no network calls.
  *
+ * Resumable: each tweet is ledgered as soon as it posts, not just at the
+ * end of the thread. If a mid-thread call fails (rate limit, transient
+ * 5xx), re-running the same command resumes by replying to the last
+ * successfully-posted tweet instead of reposting the whole thread — X has
+ * no delete-and-retry-safe primitive here, so avoiding duplicate live
+ * tweets matters more than a clean restart. --force ignores any partial
+ * progress and posts the full thread fresh (accepting duplicates for
+ * whatever was already live).
+ *
  * See ./README.md for the full setup guide.
  */
 
+import { loadLocalEnv, requireEnv } from './lib/env.mjs';
+
+loadLocalEnv();
+
 import { loadCase } from './lib/content.mjs';
 import { buildXThread } from './lib/compose.mjs';
-import { loadLocalEnv, requireEnv } from './lib/env.mjs';
 import { alreadyPosted, recordPost } from './lib/ledger.mjs';
 
 const TWEETS_API = 'https://api.x.com/2/tweets';
@@ -34,7 +46,10 @@ function parseArgs(argv) {
   const [slug, ...rest] = argv;
   const flags = new Set(rest.filter((a) => a.startsWith('--') && !a.includes('=')));
   const kv = Object.fromEntries(
-    rest.filter((a) => a.includes('=')).map((a) => a.replace(/^--/, '').split('=')),
+    rest.filter((a) => a.includes('=')).map((a) => {
+      const eq = a.indexOf('=');
+      return [a.slice(2, eq), a.slice(eq + 1)];
+    }),
   );
   return { slug, force: flags.has('--force'), tone: kv.tone ?? 'junior' };
 }
@@ -63,20 +78,24 @@ async function postTweet(token, text, replyToId) {
   return data.id;
 }
 
-async function postThread(token, tweets) {
-  const ids = [];
-  let replyTo;
-  for (const text of tweets) {
-    const id = await postTweet(token, text, replyTo);
+/**
+ * Posts tweets[startIndex..] as replies continuing from ids already in
+ * `ids`, ledgering after every single tweet so a crash mid-thread leaves
+ * an accurate, resumable record rather than nothing at all.
+ */
+async function postThread(token, tweets, { slug, estimate, ids, startIndex }) {
+  let replyTo = ids[ids.length - 1];
+  for (let i = startIndex; i < tweets.length; i += 1) {
+    const id = await postTweet(token, tweets[i], replyTo);
     ids.push(id);
     replyTo = id;
+    recordPost('x', slug, { tweetIds: [...ids], estimatedCostUsd: estimate, complete: i === tweets.length - 1 });
     await sleep(1000); // stay well clear of burst rate limits
   }
   return ids;
 }
 
 async function main() {
-  loadLocalEnv();
   const { slug, force, tone } = parseArgs(process.argv.slice(2));
   const dryRun = process.env.DRY_RUN === '1';
 
@@ -87,7 +106,8 @@ async function main() {
 
   const { X_ACCESS_TOKEN } = requireEnv(['X_ACCESS_TOKEN'], { dryRun });
 
-  if (!force && alreadyPosted('x', slug)) {
+  const existing = force ? null : alreadyPosted('x', slug);
+  if (existing?.complete) {
     console.log(`"${slug}" is already in the X ledger — pass --force to post again.`);
     return;
   }
@@ -96,20 +116,27 @@ async function main() {
   const tweets = buildXThread(c);
   const estimate = estimateCost(tweets);
 
+  const startIndex = force ? 0 : (existing?.tweetIds?.length ?? 0);
+  const startIds = force ? [] : [...(existing?.tweetIds ?? [])];
+
   if (dryRun) {
     console.log(`[DRY RUN] would post a ${tweets.length}-tweet thread (est. $${estimate.toFixed(3)}):`);
-    tweets.forEach((t, i) => console.log(`  ${i + 1}. ${t}`));
+    tweets.forEach((t, i) => console.log(`  ${i + 1}. ${i < startIndex ? '(already posted)' : t}`));
     return;
   }
 
-  console.log(`posting ${tweets.length}-tweet thread for "${slug}" (est. $${estimate.toFixed(3)})…`);
+  if (startIndex > 0) {
+    console.log(`resuming "${slug}" from tweet ${startIndex + 1}/${tweets.length} (${startIndex} already posted)…`);
+  } else {
+    console.log(`posting ${tweets.length}-tweet thread for "${slug}" (est. $${estimate.toFixed(3)})…`);
+  }
 
   try {
-    const ids = await postThread(X_ACCESS_TOKEN, tweets);
-    recordPost('x', slug, { tweetIds: ids, estimatedCostUsd: estimate });
+    const ids = await postThread(X_ACCESS_TOKEN, tweets, { slug, estimate, ids: startIds, startIndex });
     console.log(`posted: ${slug} → https://x.com/i/status/${ids[0]} (${ids.length} tweets)`);
   } catch (err) {
     console.error(`error posting ${slug} to x: ${err.message}`);
+    console.error('progress so far is ledgered — re-run the same command to resume from the last posted tweet.');
     process.exit(1);
   }
 }

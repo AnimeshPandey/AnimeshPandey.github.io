@@ -30,9 +30,12 @@
  * See ./README.md for the full setup guide.
  */
 
+import { loadLocalEnv, requireEnv } from './lib/env.mjs';
+
+loadLocalEnv();
+
 import { loadCase } from './lib/content.mjs';
 import { buildLinkedInPost } from './lib/compose.mjs';
-import { loadLocalEnv, requireEnv } from './lib/env.mjs';
 import { alreadyPosted, recordPost } from './lib/ledger.mjs';
 
 const API_VERSION = process.env.LINKEDIN_API_VERSION ?? '202401';
@@ -42,7 +45,10 @@ function parseArgs(argv) {
   const [slug, ...rest] = argv;
   const flags = new Set(rest.filter((a) => a.startsWith('--') && !a.includes('=')));
   const kv = Object.fromEntries(
-    rest.filter((a) => a.includes('=')).map((a) => a.replace(/^--/, '').split('=')),
+    rest.filter((a) => a.includes('=')).map((a) => {
+      const eq = a.indexOf('=');
+      return [a.slice(2, eq), a.slice(eq + 1)];
+    }),
   );
   return { slug, force: flags.has('--force'), tone: kv.tone ?? 'staff' };
 }
@@ -103,7 +109,6 @@ async function addFirstComment(token, authorUrn, postUrn, url) {
 }
 
 async function main() {
-  loadLocalEnv();
   const { slug, force, tone } = parseArgs(process.argv.slice(2));
   const dryRun = process.env.DRY_RUN === '1';
 

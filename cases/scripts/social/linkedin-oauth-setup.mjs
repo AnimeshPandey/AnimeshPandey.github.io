@@ -22,6 +22,10 @@
  */
 
 import { randomBytes } from 'node:crypto';
+import { loadLocalEnv } from './lib/env.mjs';
+
+loadLocalEnv();
+
 import { waitForCallback, openInBrowser } from './lib/oauth-callback-server.mjs';
 
 const PORT = 8935;

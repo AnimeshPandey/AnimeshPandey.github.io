@@ -84,9 +84,13 @@ export function loadCaseyHints(slug) {
   return readJson(path);
 }
 
+/** Normalizes site.url to always end in a single trailing slash. */
+export function siteBaseUrl(site) {
+  return site.url.endsWith('/') ? site.url : `${site.url}/`;
+}
+
 export function caseUrl(site, slug) {
-  const base = site.url.endsWith('/') ? site.url : `${site.url}/`;
-  return `${base}${slug}/`;
+  return `${siteBaseUrl(site)}${slug}/`;
 }
 
 export const VALID_TONES = ['junior', 'mid', 'staff'];
