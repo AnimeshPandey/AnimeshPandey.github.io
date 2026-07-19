@@ -50,6 +50,11 @@
   font-size: 0.8rem;
   color: var(--casebook-accent-ink);
   text-decoration: none;
+  /* idea #44 touch-target sweep: real hit area was ~39×22px, short of the
+     44×44 minimum. Padding + matching negative margin grows the clickable
+     box without shifting the flex row layout or changing the visible mark. */
+  display: inline-flex; align-items: center;
+  padding: 11px 3px; margin: -11px -3px;
 }
 
 .hub-progress__account-link:hover {
