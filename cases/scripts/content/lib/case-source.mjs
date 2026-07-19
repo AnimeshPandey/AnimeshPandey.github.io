@@ -32,6 +32,18 @@ function extractSection(html, chapter) {
   return bodyEnd === -1 ? null : html.slice(bodyStart, bodyEnd);
 }
 
+// Code samples routinely contain literal `<div>`/`</div>` text as example
+// markup (this is a site about frontend code, after all). Masking <pre>
+// blocks out BEFORE the balanced-div scan below means that text can never
+// be miscounted as a real structural tag and desync the depth counter —
+// masking after extraction (as an earlier version of this file did) was
+// too late, since the scan had already run over the raw code sample.
+const PRE_PLACEHOLDER = '@@CODEBLOCK@@';
+
+function maskPreBlocks(html) {
+  return html.replace(/<pre[\s\S]*?<\/pre>/gi, ` ${PRE_PLACEHOLDER} `);
+}
+
 /** Div-depth-aware extraction — tone blocks can contain their own nested divs. */
 function extractBalancedDiv(html, contentStart) {
   const tagRe = /<div\b[^>]*>|<\/div>/gi;
@@ -46,16 +58,18 @@ function extractBalancedDiv(html, contentStart) {
 }
 
 function extractToneBlock(sectionHtml, tone) {
+  const masked = maskPreBlocks(sectionHtml);
   const openRe = new RegExp(`<div\\s+class="tone-${tone}"\\s*>`, 'i');
-  const open = openRe.exec(sectionHtml);
+  const open = openRe.exec(masked);
   if (!open) return '';
-  return extractBalancedDiv(sectionHtml, open.index + open[0].length) ?? '';
+  return extractBalancedDiv(masked, open.index + open[0].length) ?? '';
 }
 
 function htmlToPlainText(html) {
   if (!html) return '';
   return html
-    .replace(/<pre[\s\S]*?<\/pre>/gi, ' [code example] ')
+    .split(PRE_PLACEHOLDER)
+    .join(' [code example] ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/g, ' ')
     .replace(/&amp;/g, '&')

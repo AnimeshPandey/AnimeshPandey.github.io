@@ -95,10 +95,15 @@ export function caseUrl(site, slug) {
 
 export const VALID_TONES = ['junior', 'mid', 'staff'];
 
+/** The raw hint text for a chapter/tone, boilerplate or not — the one place this lookup lives. */
+export function rawHintText(casey, chapter, tone) {
+  const entry = (casey?.hints ?? []).find((h) => h.chapter === chapter);
+  return entry?.[tone] ?? '';
+}
+
 export function hintFor(casey, chapter, tone = 'junior') {
   if (!casey) return '';
-  const entry = (casey.hints ?? []).find((h) => h.chapter === chapter);
-  const text = entry?.[tone] ?? '';
+  const text = rawHintText(casey, chapter, tone);
   return KNOWN_BOILERPLATE_HINTS.has(text.trim()) ? '' : text;
 }
 

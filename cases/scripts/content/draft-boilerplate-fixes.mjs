@@ -34,7 +34,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Anthropic from '@anthropic-ai/sdk';
-import { loadManifest, loadCaseyHints, KNOWN_BOILERPLATE_HINTS } from '../social/lib/content.mjs';
+import { loadManifest, loadCaseyHints, KNOWN_BOILERPLATE_HINTS, rawHintText } from '../social/lib/content.mjs';
 import { parseFlags } from '../social/lib/cli-args.mjs';
 import { findBoilerplateSlots } from './lib/boilerplate.mjs';
 import { chapterProse, readCaseHtml } from './lib/case-source.mjs';
@@ -98,8 +98,7 @@ CONSTRAINTS:
 - Do not just restate the chapter's opening sentence; add something Casey would actually notice or say about it.`;
 
 function rawHint(casey, chapter, tone) {
-  const entry = (casey.hints ?? []).find((h) => h.chapter === chapter);
-  return (entry?.[tone] ?? '').trim();
+  return rawHintText(casey, chapter, tone).trim();
 }
 
 function buildUserPrompt(manifestCase, casey, html, slots) {
@@ -189,7 +188,14 @@ async function draftCase(client, manifestCase, { dryRun, force }) {
     return 'error';
   }
 
-  const parsed = JSON.parse(textBlock.text);
+  let parsed;
+  try {
+    parsed = JSON.parse(textBlock.text);
+  } catch (err) {
+    console.error(`  ${manifestCase.slug}: model response wasn't valid JSON — ${err.message}`);
+    return 'error';
+  }
+
   const requestedKeys = new Set(slots.map((s) => `${s.chapter}|${s.tone}`));
   const returned = (parsed.hints ?? []).filter((h) => requestedKeys.has(`${h.chapter}|${h.tone}`));
   const missing = [...requestedKeys].filter((key) => !returned.some((h) => `${h.chapter}|${h.tone}` === key));

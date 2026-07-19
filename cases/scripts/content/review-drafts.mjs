@@ -28,9 +28,15 @@ function loadDrafts() {
   } catch {
     return [];
   }
-  return files
-    .map((f) => JSON.parse(readFileSync(resolve(DRAFTS_DIR, f), 'utf8')))
-    .sort((a, b) => a.slug.localeCompare(b.slug));
+  const drafts = [];
+  for (const f of files) {
+    try {
+      drafts.push(JSON.parse(readFileSync(resolve(DRAFTS_DIR, f), 'utf8')));
+    } catch (err) {
+      console.warn(`  skipping ${f} — not valid JSON (${err.message})`);
+    }
+  }
+  return drafts.sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
 function renderDraft(draft) {

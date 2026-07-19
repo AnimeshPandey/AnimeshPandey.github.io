@@ -52,28 +52,43 @@ function main() {
   const casey = JSON.parse(readFileSync(targetPath, 'utf8'));
 
   let applied = 0;
-  const skippedChapters = new Set();
+  let skipped = 0;
+  casey.hints = casey.hints ?? [];
   for (const { chapter, tone, new: next } of draft.slots) {
-    const entry = (casey.hints ?? []).find((h) => h.chapter === chapter);
-    if (!entry) {
-      skippedChapters.add(chapter);
+    const text = (next ?? '').trim();
+    if (!text) {
+      console.warn(`  skip [${chapter}/${tone}] — draft has no replacement text, leaving casey.json untouched here`);
+      skipped++;
       continue;
     }
+
+    let entry = casey.hints.find((h) => h.chapter === chapter);
+    if (!entry) {
+      // The chapter had no hints entry at all (findBoilerplateSlots treats
+      // that the same as boilerplate text) — create it rather than silently
+      // dropping the slot, or the reviewed content never actually lands.
+      entry = { chapter };
+      casey.hints.push(entry);
+    }
+
     const before = entry[tone] ?? '(empty)';
-    console.log(`  [${chapter}/${tone}] "${before}"  ->  "${next}"`);
-    if (!dryRun) entry[tone] = next;
+    console.log(`  [${chapter}/${tone}] "${before}"  ->  "${text}"`);
+    if (!dryRun) entry[tone] = text;
     applied++;
   }
 
-  if (skippedChapters.size > 0) {
-    console.warn(
-      `  warning: casey.json has no "${[...skippedChapters].join('", "')}" hint entry to patch — skipped those slots`,
-    );
+  if (skipped > 0) {
+    console.warn(`  ${skipped} slot(s) skipped — re-run draft-boilerplate-fixes.mjs --force to regenerate them`);
   }
 
   if (dryRun) {
     console.log(`\n[DRY RUN] would apply ${applied} slot(s) to ${targetPath.replace(process.cwd(), '.')}`);
     return;
+  }
+
+  if (applied === 0) {
+    console.error(`\nApplied 0 of ${draft.slots.length} slot(s) — nothing written`);
+    process.exit(1);
   }
 
   writeFileSync(targetPath, `${JSON.stringify(casey, null, 2)}\n`, 'utf8');
