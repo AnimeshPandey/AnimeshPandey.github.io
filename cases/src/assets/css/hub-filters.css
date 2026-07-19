@@ -10,18 +10,6 @@
   gap: 0.625rem;
 }
 
-/* Mobile: strip card chrome from toolbar — just show the select inline */
-@media (max-width: 639px) {
-  .hub-toolbar__card {
-    border: none;
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-  }
-  .hub-toolbar__main { gap: 0.5rem; }
-  .hub-toolbar__field { flex: 1 1 100%; max-width: 100%; }
-}
-
 .hub-toolbar__type {
   display: inline-flex;
   border: 1px solid var(--casebook-border);
@@ -130,6 +118,30 @@
   outline: 3px solid var(--casebook-accent);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Mobile: strip card chrome from toolbar — just show the select inline.
+   NOTE: this block must stay *after* the unconditional .hub-toolbar__card /
+   .hub-toolbar__field rules above. CSS breaks ties between equal-specificity
+   rules by source order, not by whether a media condition is present — so
+   when this override previously sat above those base rules, the base rules
+   (appearing later, unconditionally) always won, even on narrow viewports,
+   silently disabling this entire block on every device. */
+@media (max-width: 639px) {
+  .hub-toolbar__card {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+  }
+  .hub-toolbar__main { gap: 0.5rem; }
+  /* flex-basis is content-sized (not a %) because the @media (max-width: 767px)
+     rule below switches .hub-toolbar__main to flex-direction: column, which
+     flips the main axis to vertical — a "100%" basis here previously stretched
+     this field to fill the *column's* height instead of just its own content,
+     leaving a large dead gap above "Show upcoming cases". align-items: stretch
+     on the column already gives it full width, so no % basis is needed. */
+  .hub-toolbar__field { flex: 0 1 auto; max-width: 100%; }
 }
 
 .hub-toolbar__footer {

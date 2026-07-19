@@ -563,6 +563,14 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   object-fit: contain;
   flex-shrink: 0;
 }
+/* casey-companion.js wraps every avatar <img> (including this header trigger's)
+   in a generic .casey-avatar-frame div for pose-swap crossfading. That frame
+   defaults to 64x64 (see base rule above) unless scoped down here, which made
+   the frame overflow this 44px-tall trigger button and poke above the header. */
+.casebook-prefs__trigger .casey-avatar-frame {
+  width: 24px;
+  height: 24px;
+}
 .casebook-prefs__trigger:hover,
 .casebook-prefs__trigger[aria-expanded="true"] {
   color: var(--casebook-accent);
