@@ -343,7 +343,7 @@
   }
 
   function initChromeMisc() {
-    var header = document.querySelector('header');
+    var header = document.querySelector('.platform-header');
     if (header) {
       window.addEventListener('scroll', function () {
         header.classList.toggle('scrolled', window.scrollY > 8);
