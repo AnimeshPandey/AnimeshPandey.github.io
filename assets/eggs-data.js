@@ -13,7 +13,7 @@ window.__EGG_DATA = {
 
   /* M2 — long-press stat sparklines (keyed by stat-n text content) */
   sparklines: {
-    '7+':   { label: 'Career growth',      points: [8, 18, 32, 48, 62, 78, 90, 100], caption: '2016 → now' },
+    '7+':   { label: 'Career growth',      points: [8, 18, 32, 48, 62, 78, 90, 100], caption: '2019 → now' },
     '50k+': { label: 'Daily active users',  points: [3,  9, 20, 35, 54, 71, 88, 100], caption: 'Tekion → Lifesight' },
     '30%':  { label: 'Perf improvement',    points: [100, 95, 88, 78, 70, 72, 71, 70], caption: 'Webpack MF migration' },
     '8+':   { label: 'Engineers mentored',  points: [10, 22, 36, 48, 60, 74, 86, 100], caption: '2020 → present' }

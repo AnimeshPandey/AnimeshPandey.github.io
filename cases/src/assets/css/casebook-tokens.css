@@ -27,6 +27,12 @@
 
   /* ── Chapter rhythm — responsive ── */
   --case-chapter-gap: 1.5rem;
+
+  /* ── Motion — shared easing already used identically in two places
+     (casebook-components.css chapter reveal, casebook-progression.css
+     progress-bar fill) before this token existed; named to match this
+     file's existing --casebook-* convention. ── */
+  --casebook-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (min-width: 640px)  { :root { --case-chapter-gap: 2rem;    --casebook-max: 1100px; } }

@@ -30,7 +30,7 @@
 | 11 | Article bylines: git-blame "code last verified" date | ⏳ Open | Only meaningfully applies to the one article with local runnable code samples; deferred. |
 | 12 | Homepage hero: orchestrated load sequence tied to LCP | 🚫 Recommended against | Subjective aesthetic risk without a strong justification; restraint favored per the plan's own framing. Not attempted. |
 | 13 | `i18n.js` coverage indicator | 🔍 Audited | All three locales (`en`/`es`/`hi`) already sit at ~99% key parity (334–335 keys each) via fully automatic `navigator.language` detection — there is no partial-coverage problem to disclose, and no manual switcher exists for a coverage indicator to attach to. The idea's premise doesn't match the current implementation shape. No action needed. |
-| 14 | Egg-data staleness audit | ⏳ Open | Not audited this pass — still a real, cheap follow-up. |
+| 14 | Egg-data staleness audit | ✅ Shipped | Audited every caption in `assets/eggs-data.js`'s long-press sparklines against the canonical `assets/profile-facts.js` and the career-bar's own real tenure dates (`index.html`'s `.career-bar` segments, read by `assets/visuals.js`'s `initCareerBar()`). Found one real bug: the "Career growth" sparkline's caption said `'2016 → now'`, a year with no basis anywhere in the site's real data — the earliest professional milestone is the career-bar's own Vassar Labs segment (`data-from="2019-06"`, full-time; the May–Nov 2018 internship is deliberately excluded from that timeline). Fixed to `'2019 → now'`, which also now agrees with the adjacent "7+ years" stat it sits next to (2019 → 2026 ≈ 7 years) instead of contradicting it. Two other captions ("5 products built", "8+ ... 2020 → present") were audited and left alone — plausible under a defensible reading, not clearly wrong. |
 
 ## C. Casebook hub + track hubs
 
@@ -64,7 +64,7 @@
 | 30 | Real language-mix indicator | ⏳ Open | Deferred. |
 | 31 | Per-year coverage sparkline | ⏳ Open | Deferred. |
 | 32 | `clusterId` as a real "similar articles" grouping | ⏳ Open | Deferred. |
-| 33 | Category chip counts audited against filtered result | ⏳ Open | Not audited this pass. |
+| 33 | Category chip counts audited against filtered result | ✅ Shipped (audit + guard) | Tallied all 14 category chip counts in `cases/src/_data/hub-facets.json` against a live count of `categories[]` across the 779-row `library-entries.json` — every `count`/`totalCount`/`interactiveCount` matched exactly today. But unlike the track chips (which compute counts live from the DOM in `hub-filters.js`'s `annotateTrackOptions()`), category counts are pre-baked with no build step regenerating them — the same two-independent-copies shape that already caused real drift for idea #25's `principle` field and idea #34's slug collision. Added a permanent guard, `tests/static/assert-category-chip-counts.mjs`, so any future drift fails the build instead of silently misleading a reader about how many entries a filter chip actually contains. |
 | 34 | Duplicate-slug data-quality sweep | ✅ Shipped | Swept all 779 `library-entries.json` rows: the one known duplicate from PR #20 (`financial-times-improving-the-cache-performance-of-the-polyf`) remains the *only* one — no new truncated-slug collisions. New permanent guard: `tests/static/assert-library-slug-uniqueness.mjs`. |
 | 35 | `mapsToSlug` cross-reference reminder | 📝 Note only | Dormant code from PR #19 will activate automatically once any `library-entries.json` row gets a real `mapsToSlug` populated. Nothing to build — just a reminder this exists and isn't permanently dead. |
 
@@ -82,7 +82,7 @@
 | # | Idea | Status | Notes |
 |---|------|--------|-------|
 | 40 | Reduced-motion real disclosure | ⏳ Open | Deferred. |
-| 41 | Shared motion-duration/easing audit | ⏳ Open | Not fully audited this pass. |
+| 41 | Shared motion-duration/easing audit | ✅ Shipped (partial — safe consolidation only) | Audited every `transition`/`animation` timing value across both products' CSS. Found a real, easy-to-fix sliver: the exact literal `cubic-bezier(.16,1,.3,1)` was repeated 24 times across `assets/site.css`, `assets/eggs.css`, and `assets/recruiter.css`, even though a `--ease-out` token for this exact value already existed in `assets/styles/foundation.css` (added for idea #41's sibling work on `button.css`) and is guaranteed loaded on every page those three files apply to. Replaced all 24 with `var(--ease-out)` — a zero-visual-change swap (same computed value), verified via `getComputedStyle`. Casebook had its own analogous case: `cubic-bezier(0.22, 1, 0.36, 1)` repeated identically in `casebook-components.css` and `casebook-progression.css` with no token at all; added `--casebook-ease-out` to `casebook-tokens.css` (matching that file's existing `--casebook-*` naming convention) and pointed both call sites at it. Left the much larger duration sprawl (dozens of distinct, genuinely different-purpose values from `.15s` to `6s` across `site.css` alone) alone — unifying those would be a design decision affecting real animation feel, not a mechanical fix, and out of scope for a same-value consolidation pass. |
 | 42 | Skip-link presence audit | 🔍 Audited | Confirmed present on all three shells: root homepage (`index.html`), portfolio articles (`site/src/_includes/layouts/article.njk`), and Casebook (`cases/src/_includes/layouts/casebook-layout.njk`, "Skip to story"). No action needed. |
 | 43 | Empty/error states audited against voice rules | ⏳ Open | Not audited this pass. |
 | 44 | Touch-target mechanical sweep (44×44px) | ⏳ Open | Earlier a11y passes (tasks #2, #14, #15) covered general accessibility; an explicit bounding-box sweep specifically against the 44px rule hasn't been run as its own check. Good `accesslint`/Playwright follow-up. |
@@ -102,8 +102,8 @@
 
 ## Summary
 
-- **15 shipped this pass:** #1, #3, #7, #9, #19, #23, #24, #25, #34, #46, #47, #48, #50 (docs/tests), plus the roadmap corrections themselves.
+- **18 shipped this pass:** #1, #3, #7, #9, #14, #19, #23, #24, #25, #33, #34, #41 (partial), #46, #47, #48, #50 (docs/tests), plus the roadmap corrections themselves.
 - **9 audited and already done** (found already shipped by an earlier commit, no new code needed): #8, #13, #16, #17, #18, #20, #21, #28, #42, and #2's touch-target/focus-visible/motion-safe portion.
 - **3 explicitly recommended against**, matching the original plan's own scope discipline: #12, #26, #38.
 - **1 note-only, no action needed:** #35.
-- **~21 remain genuinely open** — real, scoped backlog items, several with real data sources already identified in the plan text above (§A.4–6, §D.22/27/29, §E.30–33/39, §F.36/37/39, §G.40/41/43–45/49). None were abandoned; they're listed here specifically so they don't quietly disappear.
+- **~18 remain genuinely open** — real, scoped backlog items, several with real data sources already identified in the plan text above (§A.4–6, §D.22/27/29, §E.30–32/39, §F.36/37/39, §G.40/43–45/49). None were abandoned; they're listed here specifically so they don't quietly disappear.
