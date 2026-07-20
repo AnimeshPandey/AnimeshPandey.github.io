@@ -462,6 +462,18 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   .casey-hub__avatar-wrap .casey-avatar-frame { width: 128px; height: 128px; }
 }
 
+/* Header trigger: frame must match the trigger image's own size (see
+   .casey-panel__trigger-img below), or the default 64px frame overflows
+   the 44px-tall button — flexbox align-items:center centers the oversized
+   frame, clipping it above and below the button edge. Both this rule and
+   .casey-panel__trigger-img read --casey-trigger-avatar-size (defined on
+   .casebook-prefs__trigger.casey-panel__trigger below) so resizing the
+   trigger avatar can't desync the two declarations again. */
+.casey-panel__trigger .casey-avatar-frame {
+  width: var(--casey-trigger-avatar-size, 24px);
+  height: var(--casey-trigger-avatar-size, 24px);
+}
+
 .casey-library__img.casey-avatar-frame__img,
 .hub-empty__img {
   width: 100%;
@@ -555,10 +567,11 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   min-width: 44px;
   padding: 0 10px 0 6px;
   gap: 4px;
+  --casey-trigger-avatar-size: 24px;
 }
 .casey-panel__trigger-img {
-  width: 24px;
-  height: 24px;
+  width: var(--casey-trigger-avatar-size, 24px);
+  height: var(--casey-trigger-avatar-size, 24px);
   border-radius: 50%;
   object-fit: contain;
   flex-shrink: 0;
