@@ -217,7 +217,10 @@ gap found while building and dry-running these scripts.
   when that leaves `concept`/`fe-depth` empty (LinkedIn/X posts get
   shorter; Dev.to skips the heading). That's a safety net, not a content
   fix — the real fix is authoring case-specific `concept`/`fe-depth` text
-  for the affected cases, which is a writing task, not a scripting one.
+  for the affected cases. `../content/draft-boilerplate-fixes.mjs` is a
+  first-draft assist for that writing task (grounded in each case's real
+  chapter prose, human-reviewed before anything is applied) — see
+  `../content/README.md`.
 - **The card renderer ships one card type.** `render-cards.mjs` /
   `lib/card-template.mjs` build a "principle card" (title + principle +
   hook + Casey). The plan's "Casey Explains" carousel format (mascot +

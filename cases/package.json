@@ -17,6 +17,7 @@
     "@11ty/eleventy": "^2.0.1"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
     "playwright": "^1.49.1"
   }
 }

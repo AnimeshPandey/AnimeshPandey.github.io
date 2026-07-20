@@ -45,7 +45,7 @@ const DEVTO_TAG_MAP = {
 // than publish an obviously-templated sentence under a specific case's
 // name. This is a stopgap, not a fix for the underlying casey.json content
 // gap — see scripts/social/README.md "Known limitations".
-const KNOWN_BOILERPLATE_HINTS = new Set([
+export const KNOWN_BOILERPLATE_HINTS = new Set([
   'Map the pattern to observability: what would you measure in RUM or lab to prove the fix?',
   'Connect the principle to your component API: what prop or CSS change encodes the fix?',
   'Connect the principle to your component API. What prop or CSS change encodes the fix?',
@@ -95,10 +95,15 @@ export function caseUrl(site, slug) {
 
 export const VALID_TONES = ['junior', 'mid', 'staff'];
 
+/** The raw hint text for a chapter/tone, boilerplate or not — the one place this lookup lives. */
+export function rawHintText(casey, chapter, tone) {
+  const entry = (casey?.hints ?? []).find((h) => h.chapter === chapter);
+  return entry?.[tone] ?? '';
+}
+
 export function hintFor(casey, chapter, tone = 'junior') {
   if (!casey) return '';
-  const entry = (casey.hints ?? []).find((h) => h.chapter === chapter);
-  const text = entry?.[tone] ?? '';
+  const text = rawHintText(casey, chapter, tone);
   return KNOWN_BOILERPLATE_HINTS.has(text.trim()) ? '' : text;
 }
 

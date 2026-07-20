@@ -17,7 +17,7 @@ Monorepo: personal portfolio + **The Frontend Casebook**, deployed together as o
 
 Manifest-driven automation for Dev.to/LinkedIn/X/Instagram — full guide in that folder's own `README.md`. Two things worth knowing before touching it:
 - Every script supports `DRY_RUN=1` — use it before any real change, no credentials required.
-- `lib/content.mjs`'s `KNOWN_BOILERPLATE_HINTS` guards against publishing near-duplicate `casey.json` content (a real, audited finding — `concept`/`fe-depth` hints are boilerplate across most live cases). Don't remove it without fixing the underlying content first.
+- `lib/content.mjs`'s `KNOWN_BOILERPLATE_HINTS` guards against publishing near-duplicate `casey.json` content (a real, audited finding — `concept`/`fe-depth` hints are boilerplate across most live cases). Don't remove it without fixing the underlying content first. `cases/scripts/content/` has a draft-generator for that fix — it drafts, a human reviews, nothing is applied automatically (see its own `README.md`).
 
 ## Publishing gate
 
