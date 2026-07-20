@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Match your debounce to your server's actual round-trip time, not a number from 2014 — 500ms made sense on old connections, but modern servers often respond in 80–150ms, and your debounce should track that, not tradition.",
+      "mid": "Optimistic updates sidestep the 400ms threshold entirely: apply the change immediately and roll back on failure. For most toggles and saves the failure rate is under 0.1%, so nearly everyone gets the instant feel and almost nobody sees a rollback.",
+      "staff": "Even when you genuinely can't respond inside 400ms, showing some signal — a disabled button, an animated border, a 'searching…' label — inside 50ms resets the psychological latency clock, because it tells the brain the system received the input at all."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "If your search supports CJK languages, gate it on the compositionend event, not the raw input event — firing on every keystroke during character composition triggers search on incomplete, in-progress characters.",
+      "mid": "Build your local search index at idle time with requestIdleCallback so it never competes with initial page render, and cap it around 200 to 500 documents — enough for instant results without a noticeable memory cost.",
+      "staff": "Set your debounce to roughly 2x your measured p50 API response time, not a guessed constant, and recalibrate it whenever your infrastructure changes. A debounce tuned for last year's backend is actively wrong today."
     }
   ],
   "anecdotes": [

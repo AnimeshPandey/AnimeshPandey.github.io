@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "closest() is the trick: it walks up from whatever you actually clicked and finds the ancestor you care about, so one listener on the parent can catch clicks from a button, a span inside it, or an icon inside that.",
+      "mid": "event.target is what got clicked; event.currentTarget is where your listener lives. The bug almost everyone hits once is checking target.tagName instead of target.closest(), which breaks the moment there's a nested element inside your button.",
+      "staff": "Delegation quietly fails in three places: focus/blur don't bubble (use focusin/focusout), a child's stopPropagation() blocks your parent listener entirely, and events don't cross shadow DOM boundaries by default — none of these throw an error, they just silently stop firing."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation. The diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "You almost always want event.target.closest(selector), not event.target directly — a click on a nested span or icon still needs to resolve up to the actual row or button.",
+      "mid": "If delegation mysteriously stops firing, check computed pointer-events on the parent before anything else — pointer-events: none silently blocks the parent from ever receiving the click in the first place.",
+      "staff": "In a virtualized list, per-row listeners get re-attached on every scroll because the rows themselves unmount. Delegate on the scroller container instead — that's the one element that's actually always mounted."
     }
   ],
   "anecdotes": [

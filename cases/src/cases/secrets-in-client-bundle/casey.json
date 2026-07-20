@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Three patterns keep a key off the client entirely: a simple API proxy on your own backend, a single serverless function, or a thin BFF server. Pick based on what you already have running, not which sounds fanciest.",
+      "mid": "The first line of defense is naming, not code: an env var without a public prefix like NEXT_PUBLIC_ or VITE_ never enters the bundle at all — server-only by convention, before any proxy pattern even comes into play.",
+      "staff": "Treat any key that ever touched git history as permanently compromised, reverted commit or not. Git history doesn't forget, and rotation is the only real remediation once a key has been committed."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation. The diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Run strings on your production bundle and search for your key's prefix before you ship — it takes seconds, and it's the same check an attacker would run first.",
+      "mid": "source-map-explorer and @next/bundle-analyzer both give you a treemap of exactly what shipped in your bundle. Run one before assuming minification hid anything.",
+      "staff": "Your proxy endpoint is still a public surface even with the key safely server-side — rate-limit it per-user or per-IP, and scope the underlying key itself (a Stripe restricted key with only the permissions your server actually needs, not full account access)."
     }
   ],
   "anecdotes": [

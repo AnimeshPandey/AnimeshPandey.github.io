@@ -21,9 +21,9 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "The key prop is the item's name tag, not its seat number — with index keys, position 0 is always 'item 0' even when a completely different todo moves there, so your typed text stays behind with the position, not the item.",
+      "mid": "React's diffing rule is exact: matching keys update in place, new keys mount fresh, removed keys unmount. With index keys, inserting at position 0 shifts every key below it, so React updates every element in place instead of recognizing they just moved.",
+      "staff": "The O(n) reconciliation guarantee explicitly assumes stable, predictable, unique keys — index satisfies uniqueness but fails both stability and predictability, and the algorithm's effective behavior degrades toward O(n²) DOM operations under index keys with list mutations."
     }
   ],
   "anecdotes": [

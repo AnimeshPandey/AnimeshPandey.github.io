@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "If a user can't bookmark or share a filtered view and get the same results back, the filter state is living in the wrong place. The URL is the fix, not component state.",
+      "mid": "React Router's useSearchParams handles the URL-to-state sync natively — you don't need a manual URLSearchParams + pushState dance once you're inside a router that already ships this.",
+      "staff": "Filter state in Redux when it belongs in the URL is a specific, common over-engineering trap: it adds store complexity while still failing to be shareable, since you'd need a URL sync layer on top of the store anyway to get the thing you actually wanted."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Don't forget the popstate listener — without it, clicking browser back or forward changes the URL but your UI just sits there unchanged, out of sync with what the address bar says.",
+      "mid": "Always merge into the existing search params — prev.set(key, val), never build a fresh URLSearchParams from scratch — or every other active filter gets silently wiped the moment one changes.",
+      "staff": "Build a typed URL-state hook once and reuse it everywhere, rather than letting each feature hand-roll its own URLSearchParams logic. The state-architecture matrix — path for identity, query for filters, component for ephemeral, store for cross-component, localStorage for persisted prefs — is the reference for where new state should actually live."
     }
   ],
   "anecdotes": [

@@ -21,9 +21,9 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "A stacking context is a group: everything inside gets painted together, and only the group's own z-index matters to elements outside it. A bigger number on a child inside the group changes nothing about how the group stacks against its neighbors.",
+      "mid": "transform: translateZ(0), the classic 'hardware acceleration hack,' creates a stacking context as a side effect — if your animation wrapper has it, every modal rendered inside is now trapped no matter what z-index you give it.",
+      "staff": "contain: layout and contain: paint also create stacking contexts, easy to miss since they're framed as performance primitives, not layout ones. Audit your component library for both, not just the obvious transform and opacity triggers."
     }
   ],
   "anecdotes": [

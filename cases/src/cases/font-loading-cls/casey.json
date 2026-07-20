@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "font-display: optional is the one value that guarantees zero layout shift — it gives the custom font a very short window to load, and just keeps the fallback if it misses. No swap, no shift.",
+      "mid": "The real fix isn't picking the right font-display value, it's metric-matched fallback overrides — when the swap happens, the fallback and custom font share the same size and spacing, so there's nothing to reflow.",
+      "staff": "screenspan.net/fallback and the fontpie CLI both compute the override values for you. The target is a visual difference between fallback and custom font small enough that even if a shift technically occurs, it stays under the 0.1 CLS threshold."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "crossorigin is required on your font preload even for same-origin fonts — skip it and the browser downloads the font twice, once for the preload and once for the actual @font-face rule.",
+      "mid": "Reserve font-display: optional for decorative fonts like logos or display headings. For body text where the custom font has to render, pair swap with a metric-matched fallback instead.",
+      "staff": "If you're on Next.js 13+, next/font generates the metric-matched fallback automatically — the zero-config version of everything else in this chapter, worth switching to before hand-rolling the override yourself."
     }
   ],
   "anecdotes": [

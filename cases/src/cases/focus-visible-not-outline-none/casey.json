@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Think of :focus-visible as a bouncer who only checks IDs for people who walked in, not the ones who teleported: click with a mouse and there's no ring, tab with a keyboard and the browser shows one automatically.",
+      "mid": "The spec's heuristic — did the element receive focus via keyboard, or is it a type that usually benefits from a visible ring — is what MDN documents under :focus-visible. You don't need to reverse-engineer it, just don't override it for mouse clicks.",
+      "staff": "The heuristic keeps a 'recently used keyboard' flag, so tabbing into a field then clicking a button can still show the ring on the click. That's not a bug to suppress; the spec assumes a keyboard user benefits from it even then."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Never write *:focus { outline: none } alone. Pair every suppression with a :focus-visible rule, or keyboard users lose their ring entirely.",
+      "mid": "Put the ring on outline, not box-shadow: outline survives Windows High Contrast Mode and doesn't affect layout. box-shadow silently vanishes for the users who need it most.",
+      "staff": "Treat --focus-ring-color as a token, not a per-component color. Add axe-core's focus-visible rule to CI, and a Playwright pass that tabs through nav in both light and dark mode asserting a visible outline."
     }
   ],
   "anecdotes": [

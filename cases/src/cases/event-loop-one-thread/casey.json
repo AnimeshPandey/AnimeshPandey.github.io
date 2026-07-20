@@ -21,9 +21,9 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Think of JavaScript as a chef with one pair of hands: it finishes one order (a macrotask), clears every urgent ticket that came in during it (microtasks), then moves to the next order — urgent tickets always jump the line.",
+      "mid": "The spec's actual loop shape: run the oldest macrotask to completion, fully drain the microtask queue even if it keeps growing, paint if a frame is due, repeat. A Promise chain that keeps re-enqueuing itself can starve rendering entirely.",
+      "staff": "Long Animation Frames (LoAF) in Chrome DevTools now surfaces exactly when a task plus its full microtask drain exceeds 50ms — your real production signal for event loop contention, not just guessing from a janky scroll."
     }
   ],
   "anecdotes": [

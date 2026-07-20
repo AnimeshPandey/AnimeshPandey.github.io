@@ -21,9 +21,9 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "AbortController works like a return-to-sender stamp you attach before mailing the request: call abort() while it's still in flight, and it never gets to update anything.",
+      "mid": "The useEffect cleanup function is where this actually lives in React: every new search creates a fresh controller, and the cleanup from the previous render aborts the one before it — that pairing is the whole pattern.",
+      "staff": "The signal propagates through the entire fetch chain automatically for anything built on the Fetch API, including TanStack Query's internal fetcher — but for non-fetch async work, you have to check signal.aborted manually inside your own loop."
     }
   ],
   "anecdotes": [

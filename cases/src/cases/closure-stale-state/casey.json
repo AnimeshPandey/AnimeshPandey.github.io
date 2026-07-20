@@ -21,9 +21,9 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "A closure is a function carrying a backpack of variables from the moment it was created — the bug happens when the backpack should hold today's value but is still carrying yesterday's.",
+      "mid": "Every render in React is its own function call, so a handler created in that render closes over that render's values. Call it later from a stale setTimeout or an unremoved listener, and it hands you the past, not the present.",
+      "staff": "Suppressing eslint-plugin-react-hooks's exhaustive-deps rule is an explicit choice to accept a stale closure — sometimes correct (stable refs), but the two real fixes work at different layers: functional updates remove the dependency entirely, refs give you a container that's always fresh."
     }
   ],
   "anecdotes": [

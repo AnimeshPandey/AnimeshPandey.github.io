@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Visual size and tap area are two different things in CSS — you can show a 16px icon while giving it a 44px tap target just by padding the button around it, no visual bulk required.",
+      "mid": "Fitts's Law's MT = a + b·log2(1 + D/W) formula translates directly to UI: bigger targets and shorter distances both cut movement time. That's the math behind why 44px isn't an arbitrary number.",
+      "staff": "The OS gesture zone is an easy-to-miss Fitts's Law violation: iOS reserves roughly the bottom 34px for the home indicator, so a bottom nav without env(safe-area-inset-bottom) padding makes its own edge tabs effectively unreachable under normal thumb movement."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Use min-width: 44px, not width: 44px, on the button — min-width lets it grow if a label gets added later without ever shrinking the tap target below the floor.",
+      "mid": "The checkbox-without-label-association pattern hides best in review: the input itself might be 44px, but if clicking the label text next to it does nothing, half the visual tap target is fake.",
+      "staff": "Bake the 44px floor into your IconButton base component's own styles, not as guidance developers have to remember per-instance. Add a Playwright pass asserting offsetHeight and offsetWidth on every button, link, and checkbox meet it, so a regression fails CI instead of shipping."
     }
   ],
   "anecdotes": [

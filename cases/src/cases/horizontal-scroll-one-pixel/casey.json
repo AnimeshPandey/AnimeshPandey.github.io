@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Five usual suspects cause horizontal overflow: a fixed width wider than the viewport, an unbreakable long string, a negative margin, an absolutely-positioned element, or an SVG missing its viewBox. Check those first before guessing.",
+      "mid": "Paste the debugger snippet in DevTools console and it logs every element whose right edge crosses the viewport, sorted by how far it overflows — faster than eyeballing the DOM tree.",
+      "staff": "The audit-mode trick — a one-line CSS rule that outlines every element on the page — turns 20 minutes of DOM inspection into a 5-second visual scan for the culprit."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here: you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation; the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Two fixes cover most horizontal-overflow bugs: max-width: 100% on images and SVGs, and min-width: 0 on flex children. Try both before digging deeper.",
+      "mid": "100vw includes the scrollbar gutter on platforms with persistent scrollbars, so it renders 15 to 17px wider than 100% on desktop Chrome and Firefox — and on iOS Safari it still overflows the same way despite the scrollbar being an overlay.",
+      "staff": "overflow-x: clip does the same job as hidden without establishing a new block formatting context, meaning it won't silently break position: sticky the way hidden does — the safer default for clipping decorative overflow."
     }
   ],
   "anecdotes": [

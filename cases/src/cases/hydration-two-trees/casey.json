@@ -21,9 +21,9 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Two runs of React have to produce identical HTML — one on the server, one hydrating in the browser — and if they differ by even one character, you've got a mismatch React either patches silently or re-renders visibly.",
+      "mid": "Four sources cause almost every mismatch you'll see: new Date(), Math.random() or crypto.randomUUID(), any localStorage or window read during render, and browser extensions injecting HTML before React walks the tree.",
+      "staff": "React 18's hydrateRoot gives you real error boundaries around hydration failures plus suppressHydrationWarning at the element level for genuinely intentional mismatches. The principle: mismatches should be deliberately suppressed, never accidentally created."
     }
   ],
   "anecdotes": [

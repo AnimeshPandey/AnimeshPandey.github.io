@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Use a skeleton when you know the shape of what's coming, like a profile or an article. Use a spinner when you don't, like an unknown-count search result — a skeleton for unknown content sets a shape promise you can't keep.",
+      "mid": "The 200ms delay rule applies to both indicators equally: don't flash either one for a load that finishes fast, since a brief flash reads as more broken than no indicator at all.",
+      "staff": "A mismatched skeleton is worse than a spinner, not just neutral — it sets a specific layout expectation, and when the real content doesn't match it, that violated prediction costs more trust than the honest uncertainty of a spinner would have."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here: you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation; the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Don't show a skeleton for loads under 200ms — a quick flash of shimmer reads as a glitch, not as helpful feedback.",
+      "mid": "Match the shimmer's animation direction to reading direction, left to right in LTR, and keep the duration between 1.4 and 1.8 seconds. Faster reads as erratic, slower reads as just static.",
+      "staff": "If your feed sometimes returns 3 items and sometimes 8, a fixed 5-card skeleton is a prediction violation either way — use a single generic loading state for variable-count content instead of guessing a number."
     }
   ],
   "anecdotes": [

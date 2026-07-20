@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Host, Client, and Server are like a translated meeting: the Host is the person having the conversation, the Client is the translator doing real-time conversion, and the Server is the expert you brought in — you almost always only build the Server.",
+      "mid": "The spec draws a hard line at the Server: it only ever sees the JSON-RPC call itself, never the model's context window or conversation history. That isolation is enforced by the Host, not a convention you have to maintain.",
+      "staff": "The security model follows from process isolation, not permissions you configure: a Server literally cannot read the model's context, only the explicit arguments of the tool call it received. The Host decides what filesystem or network access it gets."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here: you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation; the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Every tool call becomes a JSON-RPC request under the hood — if your tool's arguments don't match the schema you declared, that's almost always where a silent failure is hiding.",
+      "mid": "The schema you declare for a tool and the arguments the model actually sends are two separate things. Mismatches between them are the single most common source of silent MCP tool failures, so validate at the boundary — don't assume.",
+      "staff": "Forgetting the initialize handshake handler doesn't error loudly — it hangs the Client waiting for capability negotiation that never comes, which reads like a mystery timeout instead of the missing-handler bug it actually is."
     }
   ],
   "anecdotes": [

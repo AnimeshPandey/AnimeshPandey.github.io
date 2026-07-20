@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "LCP isn't always the hero image. The browser just measures whichever visible element paints largest, and a big heading in a large font routinely wins that contest against a smaller image.",
+      "mid": "Don't guess your LCP element — open DevTools Performance panel, hover the yellow LCP marker in the filmstrip, and the highlighted element is your actual target, not whatever you assumed.",
+      "staff": "For text LCP specifically, the metric collapses to font load time if the font is render-blocking — which means preloading the font, or falling back to a system font for that one element, fixes LCP with zero image work at all."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation. The diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "For text LCP, preload the font. For image LCP, add fetchpriority='high' and remove loading='lazy'. The fix depends entirely on which element type DevTools actually flagged.",
+      "mid": "fetchpriority='high' and preloading are not the same lever: fetchpriority boosts an image's place in the browser's fetch queue, preload moves its discovery earlier in parsing. Use both together for image LCP — one alone leaves gains on the table.",
+      "staff": "Preload and font-display attack two different phases of the CrUX four-phase LCP breakdown: preload shrinks resource load delay, font-display shrinks render delay. Check PageSpeed Insights' phase breakdown before assuming either fix alone will move the number."
     }
   ],
   "anecdotes": [

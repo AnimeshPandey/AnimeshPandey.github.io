@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "The ratio is the whole rule: the gap between a label and its field should be less than half the gap to the next field group. The exact pixel values don't matter — only that relationship does.",
+      "mid": "Password labels equidistant from both the email field above and the password field below cause roughly 30% of users to misread which label belongs to which input — not a hypothetical, a measured misgrouping rate from real form audits.",
+      "staff": "Semantic spacing tokens (--space-intra-group vs --space-inter-group) preserve the grouping ratio even when absolute values change during a density update, while a plain numeric scale (--space-2, --space-4) gives developers no signal about which gap encodes which relationship."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation. The diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "A global CSS reset that sets uniform margin-bottom on everything collapses your label-to-field ratio to 1:1 by accident. Always apply form-specific spacing after any reset runs — never rely on the reset's defaults.",
+      "mid": "The blur test is a real QA step, not a metaphor: screenshot the form, apply a 4px CSS blur in DevTools, and if you still can't tell which label belongs to which field, the spacing ratio is wrong. Fix it before it ships, not after a user complains.",
+      "staff": "A Stylelint rule that flags margin-bottom set to the same value on .form-label and .form-input within one rule block catches the equal-spacing accident at authoring time, before it ever reaches a design review."
     }
   ],
   "anecdotes": [

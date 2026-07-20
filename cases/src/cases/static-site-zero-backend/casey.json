@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Almost every 'dynamic' feature people assume needs a backend already has a static-friendly answer: contact forms use Netlify Forms, comments use Giscus, search uses Pagefind — you rarely need to write the server yourself.",
+      "mid": "The decision matrix is simpler than it looks: same content for every visitor means static, a few pages needing per-user data means hybrid (ISR, islands), and almost every page needing auth means you actually do need a full server.",
+      "staff": "The real operational argument isn't speed, it's absence: no cold starts, no scaling events, no OS or runtime to patch, and rollback is just redeploying a previous build artifact. The entire pipeline is git push → build → deploy."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Eleventy is zero-config and framework-agnostic; Astro gives you component islands when you need some interactivity; Hugo wins purely on build speed at scale. Pick based on which tradeoff you actually need.",
+      "mid": "For real-time data on an otherwise-static page, the honest pattern is a static shell plus a client-side fetch on load — you don't need to abandon static just because one widget needs fresh numbers.",
+      "staff": "Log x-vercel-cache or CF-Cache-Status per route before deciding anything. Teams routinely overbuild to full SSR when the data shows only their dashboard and profile routes actually needed it."
     }
   ],
   "anecdotes": [

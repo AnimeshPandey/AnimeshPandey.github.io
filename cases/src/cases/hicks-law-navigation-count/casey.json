@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "A nav-click audit usually finds the same pattern: 3 or 4 items handle 80% of all clicks, and the remaining 5 or 6 split the rest. Those tail items still matter — they just don't deserve equal visual weight.",
+      "mid": "The 'More' overflow pattern is the direct fix for that audit finding: top-level items for the 80% case, one grouped overflow for the 20%, cutting decision cost for the common path without hiding the rest.",
+      "staff": "Hick's Law and Miller's 7±2 compound rather than duplicate: Hick slows the decision itself, Miller caps how much you can hold in mind while scanning. A 9-item nav hits both limits at once, which is why trimming to 5 or 6 fixes more than one problem simultaneously."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation. The diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Every item you add to a nav adds a small, real delay to how fast someone finds what they want. The 'More' overflow pattern is the practical fix once you're past 5 or 6 top-level items.",
+      "mid": "The formula isn't abstract: an 11-item nav predicts roughly 537ms of scan time per decision versus 348ms for a 4-item nav. For a user who navigates 20 times in a session, that gap compounds to nearly 4 extra seconds of pure decision time.",
+      "staff": "The most common navigation-restructure failure isn't the item count, it's grouping by your org chart instead of user intent. 'Analytics and Reports' is how your data team thinks about it; 'See how things are performing' is how a user searches for it — card-sorting with real users is the cheapest way to catch the difference before shipping."
     }
   ],
   "anecdotes": [

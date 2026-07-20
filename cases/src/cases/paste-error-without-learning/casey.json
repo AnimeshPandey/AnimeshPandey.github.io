@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "One sentence before you paste: 'I think X is causing Y.' That single habit turns a copy-paste hand-off into a real diagnostic conversation, and the model's answer gets noticeably more specific because of it.",
+      "mid": "The rubber-duck pattern applies to AI the same way it applies to a colleague: state your hypothesis first ('I think X because Y — is that right?'), and you'll catch shallow fixes before they ship instead of after.",
+      "staff": "The compounding risk is architectural, not immediate: a codebase where every null check and ?? [] default was a one-off suggestion is quietly masking real data-layer invariant violations the type system should be catching instead."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "If your build tooling supports it, ask for JSON or TAP-formatted error output instead of raw terminal text — structured errors are easier for both you and the model to actually parse.",
+      "mid": "tsc --noEmit --pretty false strips the ANSI escape codes that make raw compiler output noisy to parse. Pipe it through your own digest step before it ever reaches the next prompt.",
+      "staff": "If the same error survives three consecutive agent turns with no progress, that's the signal to stop looping and surface it to a human. Unresolvable-error retry loops are one of the most common agentic-pipeline failure modes, and they're cheap to detect."
     }
   ],
   "anecdotes": [
