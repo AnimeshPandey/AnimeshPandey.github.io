@@ -57,4 +57,23 @@ test.describe('Casey settings panel', () => {
     );
     await expect(page.locator('.casey-coach__name').first()).toContainText(/Staff/i);
   });
+
+  test('header trigger avatar is not clipped by the header row', async ({ page }) => {
+    await page.goto('/cases/');
+    await waitForCaseyCompanion(page);
+
+    const trigger = page.locator('#casebook-prefs-btn');
+    const frame = trigger.locator('.casey-avatar-frame');
+    await expect(frame).toBeVisible();
+
+    const [triggerBox, frameBox] = await Promise.all([trigger.boundingBox(), frame.boundingBox()]);
+    if (!triggerBox || !frameBox) throw new Error('bounding box unavailable');
+
+    // The avatar frame must sit fully inside the trigger button — a frame
+    // taller than the 44px button (no per-context size override) gets
+    // vertically centered by flexbox and overflows both edges, clipping
+    // the avatar above the header row.
+    expect(frameBox.y).toBeGreaterThanOrEqual(triggerBox.y);
+    expect(frameBox.y + frameBox.height).toBeLessThanOrEqual(triggerBox.y + triggerBox.height);
+  });
 });

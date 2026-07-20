@@ -462,6 +462,15 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   .casey-hub__avatar-wrap .casey-avatar-frame { width: 128px; height: 128px; }
 }
 
+/* Header trigger: frame must match the 24px trigger image (see
+   .casey-panel__trigger-img below), or the default 64px frame overflows
+   the 44px-tall button — flexbox align-items:center centers the oversized
+   frame, clipping it above and below the button edge. */
+.casey-panel__trigger .casey-avatar-frame {
+  width: 24px;
+  height: 24px;
+}
+
 .casey-library__img.casey-avatar-frame__img,
 .hub-empty__img {
   width: 100%;
