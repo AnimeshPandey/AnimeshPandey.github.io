@@ -5,7 +5,7 @@
       "chapter": "hook",
       "junior": "About 25% of iPhone users have Reduce Motion enabled. If your animations ignore it, you're running uninvited motion for millions of users.",
       "mid": "The safe-by-default pattern wraps animation in prefers-reduced-motion: no-preference. Motion is opt-in: users who haven't set the preference still get it.",
-      "staff": "WCAG 2.1 SC 2.3.3 is AAA, but SC 2.3.1 (Three Flashes) is AA, and flashing animations above 3Hz can trigger seizures. prefers-reduced-motion alone doesn't protect against 2.3.1."
+      "staff": "WCAG 2.1 SC 2.3.3 is AAA, but SC 2.3.1 (Three Flashes) is A, and flashing animations above 3Hz can trigger seizures. prefers-reduced-motion alone doesn't protect against 2.3.1."
     },
     {
       "chapter": "demo",
