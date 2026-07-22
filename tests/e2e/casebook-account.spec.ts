@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { resetCasebookStorage, waitForCasebookAuth } from './helpers';
+import { resetCasebookStorage } from './helpers';
 
 test.describe('Casebook account', () => {
   test.beforeEach(async ({ page }) => {
@@ -13,21 +13,26 @@ test.describe('Casebook account', () => {
     await expect(page.locator('#account-email')).toBeVisible();
   });
 
-  test('magic link flow signs user in', async ({ page }) => {
-    await page.route('**/casebook-magic-link.animeshpandey.workers.dev', async (route) => {
+  // Token verification is server-side only now (workers/magic-link's
+  // POST /verify, checked with an HMAC secret that never reaches the
+  // browser) — see cases/lib/casebook-auth-core.js's header comment for
+  // why. These tests mock that endpoint rather than forging a token
+  // client-side, which is a closer simulation of the real flow anyway:
+  // the browser never has enough information to mint a valid token itself.
+  function mockVerify(page: import('@playwright/test').Page, email: string) {
+    return page.route('**/casebook-magic-link.animeshpandey.workers.dev/verify', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ success: true }),
+        body: JSON.stringify({ valid: true, email }),
       });
     });
+  }
 
-    await page.goto('/cases/account/');
-    await waitForCasebookAuth(page);
-    const token = await page.evaluate(() => window.CasebookAuth?.makeToken('e2e@casebook.test'));
-    expect(token).toBeTruthy();
-    const magicUrl = `/cases/account/?token=${encodeURIComponent(token as string)}`;
-    await page.goto(magicUrl);
+  test('magic link flow signs user in', async ({ page }) => {
+    await mockVerify(page, 'e2e@casebook.test');
+
+    await page.goto('/cases/account/?token=opaque-test-token');
     await expect(page.locator('#account-signed-in')).toBeVisible();
     await expect(page.locator('#account-signed-in-email')).toHaveText('e2e@casebook.test');
     const auth = await page.evaluate(() => localStorage.getItem('casebook-auth-v1'));
@@ -35,12 +40,9 @@ test.describe('Casebook account', () => {
   });
 
   test('sign out returns to email form', async ({ page }) => {
-    await page.goto('/cases/account/');
-    await waitForCasebookAuth(page);
-    const token = await page.evaluate(() => window.CasebookAuth?.makeToken('out@test.io'));
-    expect(token).toBeTruthy();
-    const magicUrl = `/cases/account/?token=${encodeURIComponent(token as string)}`;
-    await page.goto(magicUrl);
+    await mockVerify(page, 'out@test.io');
+
+    await page.goto('/cases/account/?token=opaque-test-token');
     await expect(page.locator('#account-signed-in')).toBeVisible();
     await page.click('#account-sign-out');
     await expect(page.locator('#account-signed-out')).toBeVisible();

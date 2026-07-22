@@ -1,6 +1,9 @@
 /**
  * casey-companion.js — unified Casey brain: FSM, memory, surfaces.
- * Load before casey-coach.js / casey-hub.js / casey-library.js.
+ * Load before casey-coach.js / casey-hub.js / casey-library.js — and
+ * after casebook-progress-store.js, whose adapter backs the progress
+ * blob read/written below (falls back to direct localStorage if that
+ * script didn't load, so load order failures degrade rather than break).
  */
 (function initCaseyCompanionModule() {
   'use strict';
@@ -8,6 +11,18 @@
   var STORAGE_KEY = 'casebook-companion-v1';
   var TONE_KEY = 'casebook-tone';
   var VISITED_KEY = 'casebook-visited';
+
+  var progressStore = window.CasebookProgressStore || {
+    get: function (key) {
+      try { return localStorage.getItem(key); } catch (e) { return null; }
+    },
+    set: function (key, value) {
+      try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
+    },
+    remove: function (key) {
+      try { localStorage.removeItem(key); } catch (e) { /* ignore */ }
+    },
+  };
 
   var POSE_ALIAS = {
     'think-deep': 'think',
@@ -81,7 +96,7 @@
 
   function loadState() {
     try {
-      var raw = localStorage.getItem(STORAGE_KEY);
+      var raw = progressStore.get(STORAGE_KEY);
       if (!raw) return defaultState();
       var s = JSON.parse(raw);
       var merged = Object.assign(defaultState(), s);
@@ -127,16 +142,12 @@
   }
 
   function saveState(state) {
-    try {
-      state.lastVisitAt = new Date().toISOString();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) { /* private mode */ }
+    state.lastVisitAt = new Date().toISOString();
+    progressStore.set(STORAGE_KEY, JSON.stringify(state));
   }
 
   function resetCompanion() {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) { /* ignore */ }
+    progressStore.remove(STORAGE_KEY);
   }
 
   if (typeof URLSearchParams !== 'undefined') {
