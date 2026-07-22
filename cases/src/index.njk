@@ -314,6 +314,7 @@ permalink: /index.html
 
 <script id="manifest-slug-order" type="application/json">[{% for c in manifest.cases %}"{{ c.slug }}"{% if not loop.last %},{% endif %}{% endfor %}]</script>
 <script id="hub-case-titles" type="application/json">{{ hubCaseTitles | jsonLd | safe }}</script>
+<script src="{{ '/assets/js/casebook-progress-store.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casebook-auth.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casebook-progression.js' | url }}" defer></script>

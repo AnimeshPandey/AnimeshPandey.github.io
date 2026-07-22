@@ -1,5 +1,14 @@
 /**
- * casebook-auth-core.js — shared auth token helpers (Node + browser via CasebookAuthCore).
+ * casebook-auth-core.js — shared auth helpers (Node + browser via CasebookAuthCore).
+ *
+ * Token generation and verification live server-side only, in
+ * workers/magic-link/index.js — a client-side implementation would have to
+ * ship the HMAC secret to the browser to check a signature, which lets
+ * anyone forge a token for any email. This file used to include makeToken/
+ * parseToken doing exactly that (a public salt + non-cryptographic hash,
+ * trivially forgeable from the browser console); removed in favor of the
+ * worker's real HMAC-SHA256 signing and its POST /verify endpoint — see
+ * casebook-auth.js's applyTokenFromQuery.
  */
 (function (root, factory) {
   var api = factory();
@@ -12,7 +21,6 @@
   'use strict';
 
   var AUTH_KEY = 'casebook-auth-v1';
-  var SALT = 'casebook-magic-v1';
 
   function normalizeEmail(email) {
     return String(email || '')
@@ -20,57 +28,8 @@
       .toLowerCase();
   }
 
-  function hashString(str) {
-    var h = 2166136261;
-    for (var i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return (h >>> 0).toString(36);
-  }
-
-  function makeToken(email) {
-    var norm = normalizeEmail(email);
-    var sig = hashString(SALT + ':' + norm);
-    var payload = norm + ':' + sig;
-    if (typeof btoa === 'function') {
-      return btoa(payload).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
-    return Buffer.from(payload, 'utf8')
-      .toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
-  }
-
-  function parseToken(token) {
-    if (!token) return null;
-    try {
-      var padded = token.replace(/-/g, '+').replace(/_/g, '/');
-      while (padded.length % 4) padded += '=';
-      var raw;
-      if (typeof atob === 'function') {
-        raw = atob(padded);
-      } else {
-        raw = Buffer.from(padded, 'base64').toString('utf8');
-      }
-      var parts = raw.split(':');
-      if (parts.length < 2) return null;
-      var email = parts.slice(0, -1).join(':');
-      var sig = parts[parts.length - 1];
-      if (hashString(SALT + ':' + email) !== sig) return null;
-      return { email: email };
-    } catch (e) {
-      return null;
-    }
-  }
-
   return {
     AUTH_KEY: AUTH_KEY,
-    SALT: SALT,
     normalizeEmail: normalizeEmail,
-    hashString: hashString,
-    makeToken: makeToken,
-    parseToken: parseToken,
   };
 });

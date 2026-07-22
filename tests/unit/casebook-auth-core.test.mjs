@@ -13,33 +13,25 @@ describe('casebook-auth-core', () => {
     assert.equal(core.normalizeEmail('  Foo@Bar.COM '), 'foo@bar.com');
   });
 
-  it('makeToken is stable for same email', () => {
-    const a = core.makeToken('test@example.com');
-    const b = core.makeToken('test@example.com');
-    assert.equal(a, b);
-    assert.ok(a.length > 8);
+  it('normalizes missing/non-string input to an empty string', () => {
+    assert.equal(core.normalizeEmail(undefined), '');
+    assert.equal(core.normalizeEmail(null), '');
   });
 
-  it('parseToken accepts valid token', () => {
-    const token = core.makeToken('reader@casebook.dev');
-    const parsed = core.parseToken(token);
-    assert.deepEqual(parsed, { email: 'reader@casebook.dev' });
+  it('exposes AUTH_KEY for the localStorage key', () => {
+    assert.equal(typeof core.AUTH_KEY, 'string');
+    assert.ok(core.AUTH_KEY.length > 0);
   });
 
-  it('parseToken rejects tampered token', () => {
-    const token = core.makeToken('a@b.co');
-    const bad = token.slice(0, -2) + 'xx';
-    assert.equal(core.parseToken(bad), null);
-  });
-
-  it('parseToken rejects garbage', () => {
-    assert.equal(core.parseToken(''), null);
-    assert.equal(core.parseToken('not-valid!!!'), null);
-  });
-
-  it('tokens survive URL encoding roundtrip', () => {
-    const token = core.makeToken('encode@test.io');
-    const encoded = encodeURIComponent(token);
-    assert.deepEqual(core.parseToken(decodeURIComponent(encoded)), { email: 'encode@test.io' });
+  // Regression guard: makeToken/parseToken used to live here as a public
+  // salt + non-cryptographic hash — forgeable from the browser console for
+  // any email, with no relationship to the real signed token the magic-link
+  // worker issues. Token generation and verification now live server-side
+  // only, in workers/magic-link/index.js (see
+  // tests/unit/casebook-magic-link-worker.test.mjs) — this module must
+  // never grow them back.
+  it('does not expose client-side token generation or verification', () => {
+    assert.equal(core.makeToken, undefined);
+    assert.equal(core.parseToken, undefined);
   });
 });

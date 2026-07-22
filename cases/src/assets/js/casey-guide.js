@@ -7,6 +7,9 @@
   var STORAGE_KEY = 'casebook-companion-v1';
 
   function _loadProgress() {
+    if (window.CaseyCompanion && window.CaseyCompanion.getState) {
+      return window.CaseyCompanion.getState() || {};
+    }
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
     } catch (_) { return {}; }

@@ -106,6 +106,7 @@ layout: layouts/casebook-layout.njk
 <script type="application/json" id="casey-data">{{ caseyData | jsonLd | safe }}</script>
 
 {% include 'partials/casey-companion-lines.njk' %}
+<script src="{{ '/assets/js/casebook-progress-store.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casebook-auth-core.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casebook-auth.js' | url }}" defer></script>

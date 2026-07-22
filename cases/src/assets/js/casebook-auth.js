@@ -1,9 +1,13 @@
 /**
  * casebook-auth.js — client-only email sign-in (magic link in URL).
- * Core token logic: casebook-auth-core.js (also unit-tested).
+ * Shared helpers: casebook-auth-core.js (also unit-tested).
  *
  * Form submission POSTs to a Cloudflare Worker which sends the magic link
- * via Resend. Update MAGIC_LINK_WORKER_URL after deploying the worker.
+ * via Resend. The link's token is verified by that same worker's
+ * POST /verify — never parsed or checked client-side. A client-side check
+ * would need the worker's HMAC secret shipped to the browser, which lets
+ * anyone forge a "signed in as any email" token from the console. Update
+ * MAGIC_LINK_WORKER_URL after deploying the worker.
  */
 (function initCasebookAuth() {
   'use strict';
@@ -18,8 +22,6 @@
 
   var AUTH_KEY = core.AUTH_KEY;
   var normalizeEmail = core.normalizeEmail;
-  var makeToken = core.makeToken;
-  var parseToken = core.parseToken;
 
   function loadAuth() {
     try {
@@ -50,18 +52,36 @@
     document.dispatchEvent(new CustomEvent('casebook-auth-change', { detail: null }));
   }
 
+  /**
+   * Consumes ?token= from the URL (if present) by asking the worker to
+   * verify it server-side, cleans the URL either way so the token never
+   * lingers in browser history, and returns a promise resolving to
+   * whether sign-in succeeded. Safe to call once per page load — the
+   * caller doesn't need to gate on any earlier DOM state.
+   */
   function applyTokenFromQuery() {
     var params = new URLSearchParams(window.location.search);
     var token = params.get('token');
-    if (!token) return false;
-    var parsed = parseToken(token);
-    if (!parsed) return false;
-    saveAuth(parsed.email);
+    if (!token) return Promise.resolve(false);
+
     if (window.history && window.history.replaceState) {
-      var clean = window.location.pathname;
-      window.history.replaceState({}, '', clean);
+      window.history.replaceState({}, '', window.location.pathname);
     }
-    return true;
+
+    return fetch(MAGIC_LINK_WORKER_URL + '/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: token }),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data || !data.valid || !data.email) return false;
+        saveAuth(data.email);
+        return true;
+      })
+      .catch(function () {
+        return false;
+      });
   }
 
   function bindAccountPage() {
@@ -112,7 +132,9 @@
       showPanel(signedOut);
     }
 
-    applyTokenFromQuery();
+    // Token consumption happens once, at the bottom of this file — refresh()
+    // here just renders whatever's already in localStorage; the
+    // casebook-auth-change listener below picks up the async verify result.
     refresh();
 
     form.addEventListener('submit', function (e) {
@@ -205,7 +227,5 @@
     load: loadAuth,
     save: saveAuth,
     clear: clearAuth,
-    makeToken: makeToken,
-    parseToken: parseToken,
   };
 }());
