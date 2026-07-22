@@ -4,7 +4,7 @@
     {
       "chapter": "hook",
       "junior": "The input-stays-at-position-0 bug is almost always an index key. Your data moved; React's DOM node didn't follow it because the key didn't change.",
-      "mid": "The key prop isn't just a React requirement: it's the identity contract that makes reconciliation O(n) instead of O(n²). It matters at scale.",
+      "mid": "The key prop isn't just a React requirement: it's the identity contract reconciliation depends on for correctness — get it wrong and React patches the wrong DOM nodes in place instead of tracking which element is which. It matters at scale.",
       "staff": "Enable react/no-array-index-key lint rule before the next code review. Index keys are the kind of bug that appears subtle in dev and painful in prod."
     },
     {

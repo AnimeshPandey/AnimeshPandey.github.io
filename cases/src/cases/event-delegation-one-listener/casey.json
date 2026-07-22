@@ -17,7 +17,7 @@
       "chapter": "concept",
       "junior": "closest() is the trick: it walks up from whatever you actually clicked and finds the ancestor you care about, so one listener on the parent can catch clicks from a button, a span inside it, or an icon inside that.",
       "mid": "event.target is what got clicked; event.currentTarget is where your listener lives. The bug almost everyone hits once is checking target.tagName instead of target.closest(), which breaks the moment there's a nested element inside your button.",
-      "staff": "Delegation quietly fails in two places that never throw: focus/blur don't bubble (use focusin/focusout instead), and a child's stopPropagation() blocks your parent listener entirely. A subtler shadow-DOM gotcha: a custom event you dispatch yourself needs { bubbles: true, composed: true } to cross a shadow boundary at all — native events like click already carry both by default, so delegation across a web component's shadow root works for those without extra work."
+      "staff": "Delegation quietly fails in two places that never throw: focus/blur don't bubble (use focusin/focusout instead), and a child's stopPropagation() blocks your parent listener entirely. A shadow-DOM gotcha that bites even when delegation technically works: composed events like click do cross a shadow boundary and reach your delegated listener, but event.target gets retargeted to the shadow host, so target.closest(selector) resolves against the wrong ancestor chain. Use event.composedPath()[0] instead of event.target when delegating across a shadow boundary."
     },
     {
       "chapter": "fe-depth",

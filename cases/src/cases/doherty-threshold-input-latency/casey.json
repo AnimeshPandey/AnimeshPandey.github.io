@@ -16,8 +16,8 @@
     {
       "chapter": "concept",
       "junior": "Match your debounce to your server's actual round-trip time, not a number from 2014 — 500ms made sense on old connections, but modern servers often respond in 80–150ms, and your debounce should track that, not tradition.",
-      "mid": "Optimistic updates sidestep the 400ms threshold entirely: apply the change immediately and roll back on failure. For most toggles and saves the failure rate is under 0.1%, so nearly everyone gets the instant feel and almost nobody sees a rollback.",
-      "staff": "Even when you genuinely can't respond inside 400ms, showing some signal — a disabled button, an animated border, a 'searching…' label — inside 50ms resets the psychological latency clock, because it tells the brain the system received the input at all."
+      "mid": "Optimistic updates sidestep the 400ms threshold entirely: apply the change immediately and roll back on failure. Toggles and saves fail rarely enough on a stable connection that most users never see a rollback — but 'rarely' still means you build the rollback path, not skip it because failures are uncommon.",
+      "staff": "Even when you genuinely can't respond inside 400ms, showing some signal fast — a disabled button, an animated border, a 'searching…' label — resets the psychological latency clock, because it tells the brain the system received the input at all. The signal only needs to beat the user's own sense of a pause; it doesn't need to be the real answer."
     },
     {
       "chapter": "fe-depth",

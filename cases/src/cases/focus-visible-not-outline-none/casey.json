@@ -23,7 +23,7 @@
       "chapter": "fe-depth",
       "junior": "Never write *:focus { outline: none } alone. Pair every suppression with a :focus-visible rule, or keyboard users lose their ring entirely.",
       "mid": "Put the ring on outline, not box-shadow: outline survives Windows High Contrast Mode and doesn't affect layout. box-shadow silently vanishes for the users who need it most.",
-      "staff": "Treat --focus-ring-color as a token, not a per-component color. Add axe-core's focus-visible rule to CI, and a Playwright pass that tabs through nav in both light and dark mode asserting a visible outline."
+      "staff": "Treat --focus-ring-color as a token, not a per-component color — and verify it renders, don't just declare it. A static analyzer can't see a rendered focus ring, so add a Playwright pass that tabs through nav in both light and dark mode and asserts a visible outline is actually painted."
     }
   ],
   "anecdotes": [

@@ -5,7 +5,7 @@
       "chapter": "hook",
       "junior": "Use @media (prefers-reduced-motion: no-preference) to wrap animations: they only run when the OS reports no motion preference. That's the safe default.",
       "mid": "The two strategies: (1) wrap all motion in no-preference (conservative, motion is off by default); (2) write animations normally, override in reduce (motion is on by default, off when requested). Strategy 2 is more common but requires comprehensive reduce overrides.",
-      "staff": "WCAG 2.1 SC 2.3.3 (AAA): animations triggered by interaction can be disabled. SC 2.3.1 (AA): nothing flashes more than 3 times per second. prefers-reduced-motion is the CSS implementation path for 2.3.3."
+      "staff": "WCAG 2.1 SC 2.3.3 (AAA): animations triggered by interaction can be disabled. SC 2.3.1 (A): nothing flashes more than 3 times per second. prefers-reduced-motion is the CSS implementation path for 2.3.3."
     },
     {
       "chapter": "demo",
@@ -22,7 +22,7 @@
     {
       "chapter": "fe-depth",
       "junior": "Two approaches, pick by context: disabling an animation after it starts can still show a flash of its first frame in some browsers; never starting it in the first place never does.",
-      "mid": "The prefers-reduced-motion listener fires synchronously the moment the OS setting flips — respond to the change event, not just a one-time check, so mid-session toggles actually take effect.",
+      "mid": "The prefers-reduced-motion listener fires as soon as the OS setting flips — respond to the change event, not just a one-time check, so mid-session toggles actually take effect.",
       "staff": "Classify animations by vestibular risk before deciding on a fallback strategy: parallax, spinning, and large-area translates need a full static fallback; opacity crossfades and color transitions are low-risk enough to run even in reduced-motion mode."
     }
   ],

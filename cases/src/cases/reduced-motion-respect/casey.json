@@ -22,7 +22,7 @@
     {
       "chapter": "fe-depth",
       "junior": "Read the preference with matchMedia and add a change listener, not just a one-time check on load — someone can toggle Reduce Motion in OS settings while your page is still open.",
-      "mid": "The change event on the media query fires synchronously the moment the OS setting flips, so you can swap animation states immediately instead of waiting for a reload.",
+      "mid": "The change event on the media query fires as soon as the OS setting flips, so you can swap animation states immediately instead of waiting for a reload.",
       "staff": "When you strip an animation for reduced-motion users, always land on its end state, not its start state. A collapsed menu should render fully open, not frozen mid-slide — a one-line fix teams miss constantly."
     }
   ],

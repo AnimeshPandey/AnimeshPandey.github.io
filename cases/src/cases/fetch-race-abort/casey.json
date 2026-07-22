@@ -17,7 +17,7 @@
       "chapter": "concept",
       "junior": "When you call abort(), the fetch doesn't error quietly — it rejects with a DOMException named AbortError, and catching that specific name and returning early is the whole pattern.",
       "mid": "One AbortController.signal can cancel a whole Promise.all of parallel fetches at once. Pass the same signal to every call in the batch, and a single abort() drops all of them together.",
-      "staff": "Build named cancellation into your fetch wrapper at the service layer — cancel every 'search' request without touching an in-flight 'user-profile' request. React Query and SWR already give you this at the hook level; the service pattern is for non-React or custom fetch layers below the framework."
+      "staff": "Build named cancellation into your fetch wrapper at the service layer — cancel every 'search' request without touching an in-flight 'user-profile' request. TanStack Query already gives you this at the hook level via its per-query AbortSignal; SWR doesn't cancel the in-flight request the same way, only the stale response, so the service pattern is what covers SWR, non-React, or custom fetch layers."
     },
     {
       "chapter": "fe-depth",

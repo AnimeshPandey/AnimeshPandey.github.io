@@ -21,7 +21,7 @@
     },
     {
       "chapter": "fe-depth",
-      "junior": "Strip whitespace and comments from a code snippet before pasting it — it can cut token count 15 to 30% with zero loss of meaning for the model.",
+      "junior": "Stripping whitespace and most comments from a code snippet before pasting can meaningfully cut token count — but keep any comment that explains a non-obvious constraint or workaround; the model can't infer context it can't see.",
       "mid": "For dependencies specifically, send only the exported function signatures and their JSDoc, never the implementation. The model needs the contract, not how the library fulfills it.",
       "staff": "Track 'accepted first suggestion' rate as your proxy metric for context quality, not just token spend — it should climb as your curation discipline improves, and it's the signal that actually reflects whether the model had what it needed."
     }
