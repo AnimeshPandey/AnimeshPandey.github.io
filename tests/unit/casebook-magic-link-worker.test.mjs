@@ -54,4 +54,13 @@ describe('casebook-magic-link worker token signing', () => {
     const result = await verifyToken(forged, SECRET);
     assert.equal(result, null);
   });
+
+  it('rejects a well-formed envelope whose payload field is not valid base64, without throwing', async () => {
+    // envelope.sig decodes fine (atob('AAAA') is valid) but envelope.payload
+    // does not — this must resolve to null like every other malformed input,
+    // not reject with an uncaught InvalidCharacterError.
+    const malformed = btoa(JSON.stringify({ payload: 'not-valid-base64!!!', sig: 'AAAA' }));
+    const result = await verifyToken(malformed, SECRET);
+    assert.equal(result, null);
+  });
 });

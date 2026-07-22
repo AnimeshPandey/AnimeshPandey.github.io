@@ -12,10 +12,13 @@ const GUIDE_SRC = fs.readFileSync(
 );
 
 /** Spin up a sandboxed CaseyGuide with controlled localStorage and guide lines. */
-function makeGuide(storageData = {}, guideLines = null) {
+function makeGuide(storageData = {}, guideLines = null, companionState = null) {
   const ls = {};
   Object.assign(ls, storageData);
   const mockWindow = { CaseyGuide: null, __GUIDE_LINES: guideLines };
+  if (companionState) {
+    mockWindow.CaseyCompanion = { getState: () => companionState };
+  }
   const ctx = vm.createContext({
     window: mockWindow,
     localStorage: { getItem: (k) => ls[k] ?? null, setItem: (k, v) => { ls[k] = v; } },
@@ -145,5 +148,19 @@ describe('CaseyGuide', () => {
     });
     const g = makeGuide({ 'casebook-companion-v1': val }, LINES);
     assert.equal(g.getProgress().completedCount, 2);
+  });
+
+  it('reads progress via window.CaseyCompanion.getState() when available, not raw localStorage', () => {
+    // Stale/empty localStorage should be ignored once CaseyCompanion (and
+    // therefore CasebookProgressStore, which may be backend-synced) is
+    // present — this is the seam a future account-sync adapter relies on.
+    const staleStorage = storageFor(['a']);
+    const freshCompanionState = { caseProgress: {
+      x: { completedAt: new Date().toISOString() },
+      y: { completedAt: new Date().toISOString() },
+      z: { completedAt: new Date().toISOString() },
+    } };
+    const g = makeGuide(staleStorage, LINES, freshCompanionState);
+    assert.equal(g.getProgress().completedCount, 3);
   });
 });

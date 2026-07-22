@@ -49,6 +49,14 @@ test.describe('Casebook account', () => {
   });
 
   test('invalid token does not sign in', async ({ page }) => {
+    await page.route('**/casebook-magic-link.animeshpandey.workers.dev/verify', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ valid: false }),
+      });
+    });
+
     await page.goto('/cases/account/?token=invalid-token-xyz');
     await expect(page.locator('#account-signed-out')).toBeVisible();
   });

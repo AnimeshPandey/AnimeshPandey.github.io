@@ -53,7 +53,12 @@ export async function verifyToken(token, secret) {
   if (!envelope || typeof envelope.payload !== 'string' || typeof envelope.sig !== 'string') return null;
 
   const key = await hmacKey(secret);
-  const data = new TextEncoder().encode(atob(envelope.payload));
+  let data;
+  try {
+    data = new TextEncoder().encode(atob(envelope.payload));
+  } catch {
+    return null;
+  }
   let sigBytes;
   try {
     sigBytes = Uint8Array.from(atob(envelope.sig), (c) => c.charCodeAt(0));
