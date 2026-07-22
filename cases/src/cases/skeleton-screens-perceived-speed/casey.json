@@ -21,9 +21,9 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Labor perception is the real mechanism: seeing effort happen makes waiting feel shorter, even at the exact same duration. A skeleton's grey shapes are just visible 'effort' for your brain to latch onto.",
+      "mid": "Buell & Norton's 2011 labor-perception research is the real mechanism behind this pattern: visible effort raises perceived value and lowers frustration, independent of whether the underlying wait actually got shorter — which is why a skeleton and a spinner covering the identical wait can land completely differently with users.",
+      "staff": "The secondary benefit is CLS, not just perception: a well-designed skeleton preserves the final layout geometry so content slots directly into place, while spinners routinely cause pop-in with CLS above 0.1 that shows up in CrUX."
     }
   ],
   "anecdotes": [

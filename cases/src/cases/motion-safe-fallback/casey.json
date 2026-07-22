@@ -5,7 +5,7 @@
       "chapter": "hook",
       "junior": "Use @media (prefers-reduced-motion: no-preference) to wrap animations: they only run when the OS reports no motion preference. That's the safe default.",
       "mid": "The two strategies: (1) wrap all motion in no-preference (conservative, motion is off by default); (2) write animations normally, override in reduce (motion is on by default, off when requested). Strategy 2 is more common but requires comprehensive reduce overrides.",
-      "staff": "WCAG 2.1 SC 2.3.3 (AAA): animations triggered by interaction can be disabled. SC 2.3.1 (AA): nothing flashes more than 3 times per second. prefers-reduced-motion is the CSS implementation path for 2.3.3."
+      "staff": "WCAG 2.1 SC 2.3.3 (AAA): animations triggered by interaction can be disabled. SC 2.3.1 (A): nothing flashes more than 3 times per second. prefers-reduced-motion is the CSS implementation path for 2.3.3."
     },
     {
       "chapter": "demo",
@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Strategy 1 keeps motion off by default and turns it on only when the OS says 'no preference' — the safer of the two options, since you can't forget to protect a new animation.",
+      "mid": "Strategy 2 (write animations normally, override in reduce) is more common in the wild, but only works if every single animation gets a corresponding override — one missed selector and reduced-motion users get the effect anyway.",
+      "staff": "Parallax specifically deserves the no-preference gate over a reduce override, because the vestibular harm comes from the depth illusion itself. WCAG's separate 3-flash limit (SC 2.3.1, Level A) protects against seizures, not vestibular discomfort — passing it says nothing about whether your parallax is vestibular-safe."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Two approaches, pick by context: disabling an animation after it starts can still show a flash of its first frame in some browsers; never starting it in the first place never does.",
+      "mid": "The prefers-reduced-motion listener fires as soon as the OS setting flips — respond to the change event, not just a one-time check, so mid-session toggles actually take effect.",
+      "staff": "Classify animations by vestibular risk before deciding on a fallback strategy: parallax, spinning, and large-area translates need a full static fallback; opacity crossfades and color transitions are low-risk enough to run even in reduced-motion mode."
     }
   ],
   "anecdotes": [

@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "The rule of thumb: paste the error, the 20 relevant lines, and what you expected — not the whole file. A model reading 500 lines to find the 1 that matters is doing its job worse than it would otherwise.",
+      "mid": "Context cost is asymmetric, not linear: a full 500-line file eats 10x the token budget of the relevant 50 lines while adding maybe 20% more real signal. Curate before you paste, every time.",
+      "staff": "For agentic pipelines this becomes real engineering: retrieve by relevance, re-rank with a second pass, summarize long files to their API surface, and put your most important instructions at the start or end of context — not the middle, where recall measurably drops."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Stripping whitespace and most comments from a code snippet before pasting can meaningfully cut token count — but keep any comment that explains a non-obvious constraint or workaround; the model can't infer context it can't see.",
+      "mid": "For dependencies specifically, send only the exported function signatures and their JSDoc, never the implementation. The model needs the contract, not how the library fulfills it.",
+      "staff": "Track 'accepted first suggestion' rate as your proxy metric for context quality, not just token spend — it should climb as your curation discipline improves, and it's the signal that actually reflects whether the model had what it needed."
     }
   ],
   "anecdotes": [

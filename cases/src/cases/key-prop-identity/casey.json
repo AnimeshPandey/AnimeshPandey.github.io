@@ -4,7 +4,7 @@
     {
       "chapter": "hook",
       "junior": "The input-stays-at-position-0 bug is almost always an index key. Your data moved; React's DOM node didn't follow it because the key didn't change.",
-      "mid": "The key prop isn't just a React requirement: it's the identity contract that makes reconciliation O(n) instead of O(n²). It matters at scale.",
+      "mid": "The key prop isn't just a React requirement: it's the identity contract reconciliation depends on for correctness — get it wrong and React patches the wrong DOM nodes in place instead of tracking which element is which. It matters at scale.",
       "staff": "Enable react/no-array-index-key lint rule before the next code review. Index keys are the kind of bug that appears subtle in dev and painful in prod."
     },
     {
@@ -21,9 +21,9 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "The key prop is the item's name tag, not its seat number — with index keys, position 0 is always 'item 0' even when a completely different todo moves there, so your typed text stays behind with the position, not the item.",
+      "mid": "React's diffing rule is exact: matching keys update in place, new keys mount fresh, removed keys unmount. With index keys, inserting at position 0 shifts every key below it, so React updates every element in place instead of recognizing they just moved.",
+      "staff": "The O(n) reconciliation guarantee assumes stable, predictable, unique keys — index satisfies uniqueness but fails both stability and predictability. That's not a complexity problem, it's a correctness one: React still runs its single O(n) pass, it just ends up patching the wrong DOM nodes in place instead of recognizing they moved."
     }
   ],
   "anecdotes": [

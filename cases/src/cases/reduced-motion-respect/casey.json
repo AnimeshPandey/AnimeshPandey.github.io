@@ -5,7 +5,7 @@
       "chapter": "hook",
       "junior": "About 25% of iPhone users have Reduce Motion enabled. If your animations ignore it, you're running uninvited motion for millions of users.",
       "mid": "The safe-by-default pattern wraps animation in prefers-reduced-motion: no-preference. Motion is opt-in: users who haven't set the preference still get it.",
-      "staff": "WCAG 2.1 SC 2.3.3 is AAA, but SC 2.3.1 (Three Flashes) is AA, and flashing animations above 3Hz can trigger seizures. prefers-reduced-motion alone doesn't protect against 2.3.1."
+      "staff": "WCAG 2.1 SC 2.3.3 is AAA, but SC 2.3.1 (Three Flashes) is A, and flashing animations above 3Hz can trigger seizures. prefers-reduced-motion alone doesn't protect against 2.3.1."
     },
     {
       "chapter": "demo",
@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Picture reduced motion as a light switch, not a dimmer: strategy 1 wraps animation in 'no preference' so it's off unless the switch says otherwise. Strategy 2 does the opposite.",
+      "mid": "The no-preference guard is the safer default: motion is opt-in, so you can't ship a new animation without automatically getting the protection built in.",
+      "staff": "Parallax is the highest-risk case — it manufactures a sense of depth the vestibular system contradicts with physical stillness. Anything using translateZ or layered scroll rates needs the no-preference gate, not just an afterthought override."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Read the preference with matchMedia and add a change listener, not just a one-time check on load — someone can toggle Reduce Motion in OS settings while your page is still open.",
+      "mid": "The change event on the media query fires as soon as the OS setting flips, so you can swap animation states immediately instead of waiting for a reload.",
+      "staff": "When you strip an animation for reduced-motion users, always land on its end state, not its start state. A collapsed menu should render fully open, not frozen mid-slide — a one-line fix teams miss constantly."
     }
   ],
   "anecdotes": [

@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "Validate on blur, not on every keystroke and not only at submit. Keystroke validation punishes users mid-typing; submit-only validation makes them re-parse the whole form after they've already moved on mentally.",
+      "mid": "Good error copy has two parts, not one: what's wrong, plus a concrete example of what's right. 'Invalid email' tells someone they failed without telling them how to succeed.",
+      "staff": "A 422 response with a real field/code mapping enables a precise inline error; a generic 500 with no field data forces a top-level 'something went wrong.' That's an API design failure whose UX cost still gets paid entirely by the user, not the backend team."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Don't skip role='alert' on your error message — without it, the error text exists in the DOM but screen readers never announce it when it appears, so sighted and non-sighted users get a completely different experience of the same failure.",
+      "mid": "Server-returned field errors need a manual setError call — React Hook Form validates your client-side rules automatically, but it has no way to know about a 422 your API just returned unless you tell it explicitly.",
+      "staff": "Define the error contract as a shared type between API and UI — {errors: [{field, code, message}]} — and validate it at the boundary with something like Zod, so 'something went wrong' can never become your only error state by default."
     }
   ],
   "anecdotes": [

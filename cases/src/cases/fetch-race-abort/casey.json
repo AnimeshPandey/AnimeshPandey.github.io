@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "When you call abort(), the fetch doesn't error quietly — it rejects with a DOMException named AbortError, and catching that specific name and returning early is the whole pattern.",
+      "mid": "One AbortController.signal can cancel a whole Promise.all of parallel fetches at once. Pass the same signal to every call in the batch, and a single abort() drops all of them together.",
+      "staff": "Build named cancellation into your fetch wrapper at the service layer — cancel every 'search' request without touching an in-flight 'user-profile' request. TanStack Query already gives you this at the hook level via its per-query AbortSignal; SWR doesn't cancel the in-flight request the same way, only the stale response, so the service pattern is what covers SWR, non-React, or custom fetch layers."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here: you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation; the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Always check err.name === 'AbortError' and return early instead of re-throwing — re-throwing it fires your global error handler for a cancellation that was completely intentional.",
+      "mid": "Debounce and abort solve different problems: debounce cuts how often you fire a request, abort stops a stale one from corrupting state after it lands. Use both — they're not substitutes for each other.",
+      "staff": "In tab-based or wizard-style UIs, named cancellation lets navigating away cancel only the data load for the tab you left — a blanket cancel-everything approach would kill requests the next tab still needs."
     }
   ],
   "anecdotes": [

@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "The same 14 fields feel overwhelming crammed on one screen and manageable split into 3 steps. The actual work is identical; only the perceived load changes, which is the whole point of chunking.",
+      "mid": "Miller's ~7±2 figure is really about fields visible at once, not fields total. Cross roughly 5 to 7 simultaneous fields and completion rates start dropping even when the total field count across the whole form stays fixed.",
+      "staff": "Cowan's 2001 follow-up research puts the real working-memory limit closer to 4 items, not Miller's original 7±2. The heuristic survives in UI design because it's still directionally useful, even though the underlying number has been revised down."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Always validate the current step before calling setStep to advance — deferring every check to the final submit means errors surface after the user has already moved past the field that caused them.",
+      "mid": "Keep one useForm instance shared across every step, not a fresh form per step. That's what makes data persist automatically when a user navigates back without re-entering values they already typed.",
+      "staff": "Instrument form_step_started, form_step_completed, and form_abandoned with a step property specifically. Without per-step events, your overall completion rate masks exactly which step is actually losing people."
     }
   ],
   "anecdotes": [

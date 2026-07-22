@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "The fix is one habit: collect every token that lands between frames into a string, then flush the whole thing to the DOM once per frame instead of once per character.",
+      "mid": "The word-boundary variant — flushing at spaces and punctuation instead of on every animation frame — is what makes streaming feel like reading instead of watching characters trickle in.",
+      "staff": "Wrap the buffer flush in startTransition, not instead of the rAF loop but inside it — that marks the update as non-urgent so React can defer it during typing or scrolling without you managing priority by hand."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation: the diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "EventSource is the simplest way to consume a stream, but it can't send an Authorization header — the moment you need an API key, you're reaching for fetch + ReadableStream instead.",
+      "mid": "Don't render streaming markdown mid-parse — a half-closed code fence is a real intermediate state you'll hit. Either use an incremental parser built for it, or just show raw text until the stream ends.",
+      "staff": "Scroll-to-bottom belongs inside the rAF callback, not on every token arrival — calling it per-token is exactly the kind of per-character DOM work this whole pattern exists to eliminate."
     }
   ],
   "anecdotes": [

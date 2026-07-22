@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "If you genuinely don't know how long something will take, use an indeterminate spinner, not a fake countdown. Users forgive an honest 'I don't know'; they distrust a percentage that stalls at 95%.",
+      "mid": "Real milestones beat fabricated percentages every time: 'Uploading (1 of 3 files)' is a true statement about actual progress, while a smooth deterministic bar with no real signal behind it is a promise you can't keep.",
+      "staff": "The pattern survives in production for an organizational reason, not a technical one: a bar that visibly moves reads as progress to a stakeholder watching a demo, even when the number behind it is fabricated. That incentive is what 'just use a spinner' is actually arguing against, not a lack of awareness that fake progress is dishonest."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation. The diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "Check e.lengthComputable before dividing bytes — it's false whenever the server uses chunked transfer encoding, and dividing by an unknown total silently produces garbage percentages.",
+      "mid": "For a multi-step server job like video transcoding, use SSE and map each stage name to user-facing copy. Show 'Preparing your video,' not the raw 47% the server happens to be reporting for that stage.",
+      "staff": "Map each server stage to a percentage range for the visual bar, but keep the stage name as the primary copy — and never let the bar visually reach 100% before the operation has actually finished, or you've just relocated the trust-breaking stall to the very end."
     }
   ],
   "anecdotes": [

@@ -15,15 +15,15 @@
     },
     {
       "chapter": "concept",
-      "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-      "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-      "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      "junior": "singleton: true works like a first-come rule at a shared coat check: whichever micro-frontend's design system loads first is the one everyone else has to use, no exceptions.",
+      "mid": "requiredVersion and strictVersion are the two levers Module Federation gives you beyond singleton — a semver range that throws on mismatch, or an exact-match guard for breaking changes.",
+      "staff": "The real fix is governance through tooling, not process. A Jira ticket asking teams to 'stay in sync' will fail quietly; a CI check that fails the build on a missing singleton flag can't be ignored."
     },
     {
       "chapter": "fe-depth",
-      "junior": "Skim the code patterns here; you can copy the structure even if the syntax is new.",
-      "mid": "Compare broken vs fixed implementation. The diff is usually smaller than you expect.",
-      "staff": "Check edge cases: SSR, hydration, design tokens, and high-contrast mode."
+      "junior": "The fix for drifted styling is almost always the same word in the webpack config: singleton. It means only one copy of the design system loads, no matter how many micro-frontends ask for one.",
+      "mid": "eager: true on the session MFE isn't about the design system — it's so the app that owns auth state initializes before any consumer micro-frontend tries to read it, a different failure mode than a plain version mismatch.",
+      "staff": "The sneaky one: localStorage looks like a clean way to share auth state across micro-frontends, but it's really just a second, unversioned cache each MFE can silently mutate. Treat it as MFE-private and use the event bus instead."
     }
   ],
   "anecdotes": [
