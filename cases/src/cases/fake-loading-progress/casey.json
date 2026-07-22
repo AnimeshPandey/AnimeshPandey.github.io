@@ -17,7 +17,7 @@
       "chapter": "concept",
       "junior": "If you genuinely don't know how long something will take, use an indeterminate spinner, not a fake countdown. Users forgive an honest 'I don't know'; they distrust a percentage that stalls at 95%.",
       "mid": "Real milestones beat fabricated percentages every time: 'Uploading (1 of 3 files)' is a true statement about actual progress, while a smooth deterministic bar with no real signal behind it is a promise you can't keep.",
-      "staff": "The Etsy and YouTube A/B data from 2014 found a stalled deterministic bar at 95% increased perceived wait time by 40% over an honest indeterminate indicator for the identical actual wait. The pattern survives anyway because it 'looks like work' to a stakeholder watching the demo."
+      "staff": "The pattern survives in production for an organizational reason, not a technical one: a bar that visibly moves reads as progress to a stakeholder watching a demo, even when the number behind it is fabricated. That incentive is what 'just use a spinner' is actually arguing against, not a lack of awareness that fake progress is dishonest."
     },
     {
       "chapter": "fe-depth",

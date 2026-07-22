@@ -16,7 +16,7 @@
     {
       "chapter": "concept",
       "junior": "The ratio is the whole rule: the gap between a label and its field should be less than half the gap to the next field group. The exact pixel values don't matter — only that relationship does.",
-      "mid": "Password labels equidistant from both the email field above and the password field below cause roughly 30% of users to misread which label belongs to which input — not a hypothetical, a measured misgrouping rate from real form audits.",
+      "mid": "Password labels equidistant from both the email field above and the password field below are the single most common Gestalt violation in real login forms — proximity alone can't tell a user which label belongs to which input when the spacing on both sides is symmetric.",
       "staff": "Semantic spacing tokens (--space-intra-group vs --space-inter-group) preserve the grouping ratio even when absolute values change during a density update, while a plain numeric scale (--space-2, --space-4) gives developers no signal about which gap encodes which relationship."
     },
     {

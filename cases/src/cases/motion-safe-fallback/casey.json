@@ -17,7 +17,7 @@
       "chapter": "concept",
       "junior": "Strategy 1 keeps motion off by default and turns it on only when the OS says 'no preference' — the safer of the two options, since you can't forget to protect a new animation.",
       "mid": "Strategy 2 (write animations normally, override in reduce) is more common in the wild, but only works if every single animation gets a corresponding override — one missed selector and reduced-motion users get the effect anyway.",
-      "staff": "Parallax specifically deserves the no-preference gate over a reduce override, because the vestibular harm comes from the depth illusion itself. WCAG 2.3.1's 3-flash limit is a separate, narrower AA requirement that doesn't cover this."
+      "staff": "Parallax specifically deserves the no-preference gate over a reduce override, because the vestibular harm comes from the depth illusion itself. WCAG's separate 3-flash limit (SC 2.3.1, Level A) protects against seizures, not vestibular discomfort — passing it says nothing about whether your parallax is vestibular-safe."
     },
     {
       "chapter": "fe-depth",
