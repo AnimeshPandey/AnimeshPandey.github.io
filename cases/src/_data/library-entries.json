@@ -896,7 +896,7 @@
     "clusterId": "C25",
     "track": "16",
     "status": "placeholder",
-    "mapsToSlug": null,
+    "mapsToSlug": "cognitive-load-error-recovery",
     "priority": "P2"
   },
   {
@@ -5108,7 +5108,7 @@
     "clusterId": "C02",
     "track": "01",
     "status": "placeholder",
-    "mapsToSlug": null,
+    "mapsToSlug": "skeleton-vs-spinner-choice",
     "priority": "P2"
   },
   {
