@@ -1,0 +1,103 @@
+{
+  "slug": "confidence-threshold-ui",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A 51%-confidence guess and a 99%-confidence guess looked identical once both got auto-applied — nothing in the UI told anyone the model was unsure.",
+      "mid": "Every model call already returns a confidence score — most integrations just never read it before deciding whether to auto-apply.",
+      "staff": "95% top-line accuracy still means wrong 5% of the time — without a confidence gate, the UI can't tell that 5% apart from the 95% it should trust."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle modes and watch which of the four suggestions apply instantly versus which one waits for you to decide.",
+      "mid": "The threshold here is fixed for the demo — in production it's tuned per action, not one constant for the whole product.",
+      "staff": "In broken mode there's zero visual signal for which applied suggestions were actually low-confidence guesses — that data existed and was thrown away."
+    },
+    {
+      "chapter": "concept",
+      "junior": "High-confidence suggestions apply automatically, same as before — low-confidence ones wait in a reviewable state instead of applying blind.",
+      "mid": "The threshold is a product decision, not a technical constant — tune it against how costly a wrong auto-apply actually is for that action.",
+      "staff": "The threshold should scale with blast radius — 70% confidence is fine for a low-stakes tag, risky as a default for auto-sending a customer email."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A review queue nobody looks at is barely better than no gate — make accepting or rejecting a suggestion genuinely one click.",
+      "mid": "If reviewers accept almost everything below threshold, it's set too conservative; if they reject a lot above it, it's set too loose — track outcomes.",
+      "staff": "Confidence scores aren't calibrated the same across model versions — re-validate the threshold against real outcomes whenever the model changes."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about an AI suggestion tool that applied every suggestion the same way, even when the model itself was barely confident in the guess.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is a confidence threshold: high-confidence suggestions still apply automatically, but low-confidence ones wait for a human to actually look at them first.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Watch four simulated suggestions with different confidence scores, and see which ones apply themselves versus which ones wait for review.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A model's confidence score is a real signal. Use it: auto-apply the confident output, and make the rest wait for a human to say yes.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

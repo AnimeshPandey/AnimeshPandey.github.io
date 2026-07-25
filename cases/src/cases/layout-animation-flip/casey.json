@@ -1,0 +1,103 @@
+{
+  "slug": "layout-animation-flip",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Animating top looked fine with three items, then visibly stuttered with thirty — the browser has to recalculate layout for everything, every frame.",
+      "mid": "Any layout-affecting property (top, left, width, margin) forces a full recalculation each animation frame — transform and opacity don't.",
+      "staff": "The fix isn't animating faster — it's letting layout jump instantly and faking the animation entirely with a transform, which is what FLIP does."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Shuffle a few times in each mode — the difference gets clearer as more items reorder at once.",
+      "mid": "The broken mode animates top/left directly; the fixed mode measures positions before and after, then animates only a transform.",
+      "staff": "Open DevTools Performance while shuffling — the broken mode shows recurring Layout work per frame the fixed mode simply doesn't have."
+    },
+    {
+      "chapter": "concept",
+      "junior": "First: measure position. Last: let the DOM jump there instantly. Invert: fake it back with a transform. Play: remove the transform and let it transition.",
+      "mid": "dx/dy between First and Last become a transform with no transition, then next frame that transform is removed with a transition applied.",
+      "staff": "This works because transform on a composited layer skips main-thread layout and paint entirely — the technique changes which pipeline stage does the work."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "FLIP isn't a general animation library — items entering or leaving the list need separate handling, it only covers items that persist and move.",
+      "mid": "Elements must exist in the DOM at both First and Last for the measurement to work — new/removed items need their own enter/exit logic.",
+      "staff": "Batch all First measurements before mutating the DOM and all Last measurements after — interleaving reads and writes causes layout thrashing."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a list-reorder animation that looked fine with a few items and visibly stuttered once there were dozens.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is the FLIP technique — measure the starting position, let the DOM jump straight to the end position, then fake the animation with a cheap transform instead of an expensive layout property.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Shuffle the list in both modes and watch how each one holds up as more items move at once.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Don't animate top or left for a list reorder. Measure before and after, then animate only a transform — same visual result, none of the layout cost.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

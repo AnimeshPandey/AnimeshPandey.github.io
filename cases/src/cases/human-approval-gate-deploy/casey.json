@@ -1,0 +1,148 @@
+{
+  "slug": "human-approval-gate-deploy",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Every individual step in the agent's reasoning was right. The outcome wasn't, because nothing checked the plan before it ran.",
+      "mid": "Decide and execute being the same step means every planning mistake becomes a production mistake, instantly.",
+      "staff": "Same reason human deploys have had review-then-execute for decades: the cost of an irreversible action justifies a cheap gate."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Same proposed action, two paths, toggle between it running instantly and it waiting for your click.",
+      "mid": "The pending state shows the real parameters, not a paraphrase, that's what makes the approval meaningful.",
+      "staff": "Reject is a first-class outcome here, not just withheld approval, it explicitly cancels the queued action."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The tool call becomes a proposal shown to a human first. Nothing runs until someone clicks Approve.",
+      "mid": "The tool's interface stays the same, what changes is it enqueues instead of executing, pending an explicit approval event.",
+      "staff": "Show the actual parameters, not a summary, approving a paraphrase isn't approving the action."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A vague approval prompt turns the gate into a formality. Always show the specific, real details.",
+      "mid": "Add a timeout to pending actions, a stale approval on now-outdated data shouldn't still be one click from executing.",
+      "staff": "Log who approved what parameters, that's the audit trail that matters after an incident, not the agent's reasoning trace."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about an agent that decided on a production action and executed it in the very same step, with nobody able to catch a mistake in between.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is separating proposing an action from executing it, so the agent's plan sits in a pending state until a human explicitly approves it.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Compare an action that runs the moment the agent decides on it against one that waits for your explicit approval or rejection.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Anything with real production side effects needs a review step before it runs, not just good reasoning behind it.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

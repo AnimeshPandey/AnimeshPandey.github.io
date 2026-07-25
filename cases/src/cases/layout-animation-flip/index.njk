@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "FLIP Technique for List Reorder"
+description: "Why animating a list reorder by transitioning top/left position forces the browser to recompute layout on every frame, and how the FLIP technique gets the same visual result by animating only a cheap transform."
+slug: layout-animation-flip
+track: animation-motion
+readMin: 10
+flagship: false
+demoType: animation
+principle: FLIP
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/layout-animation-flip-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The reorder animation that dropped frames with ten items</h2>
+  <div class="tone-junior">
+    <p>
+      You've got a sortable list, and when items reorder you want them to slide smoothly into their new positions instead of jumping instantly. The obvious approach: animate the <code>top</code> (or <code>left</code>) CSS property from the old position to the new one. It looks fine with three items. With thirty, it visibly stutters.
+    </p>
+    <p>
+      The stutter isn't a bug in your animation code, it's that animating <code>top</code> forces the browser to recalculate the layout of everything around it, every single frame, for every item moving.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Any animated property that affects layout (<code>top</code>, <code>left</code>, <code>width</code>, <code>margin</code>) triggers a full layout recalculation on every animation frame. <code>transform</code> and <code>opacity</code> don't, the browser can animate them on the compositor thread without touching layout at all.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix isn't "animate faster," it's animating a fundamentally cheaper property while producing the exact same visual result. That's what the FLIP technique does: it lets the layout jump instantly to the new state, then fakes the animation entirely with a transform.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>First, Last, Invert, Play</h2>
+  <div class="tone-junior">
+    <p>
+      FLIP stands for the four steps: measure the element's position <strong>F</strong>irst, let the DOM update to its <strong>L</strong>ast position instantly (no animation yet), calculate the difference and apply a transform to <strong>I</strong>nvert it back so it visually looks like it never moved, then remove that transform and let it transition, so it <strong>P</strong>lays from the old-looking position to the real new one.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Concretely: read <code>getBoundingClientRect()</code> before the reorder (First), let the reorder happen in the DOM instantly (Last), compute <code>dx</code>/<code>dy</code> between First and Last and apply <code>transform: translate(dx, dy)</code> with no transition (Invert, makes it visually appear unmoved), then in the next frame remove the transform with a transition applied (Play). The browser only ever animates <code>transform</code>.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This works because <code>transform</code> changes are handled entirely by the compositor when the element is already promoted to its own layer, no main-thread layout or paint work is needed per frame, regardless of how many other elements exist on the page. The technique doesn't reduce the amount of visual movement, it changes which part of the rendering pipeline has to do the work.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The kanban board that only stuttered in production</h2>
+  <div class="tone-junior">
+    <p>
+      A team's drag-to-reorder kanban board animated card position by transitioning <code>top</code>. It was smooth in local testing with a handful of demo cards, then a real customer board with 80 cards visibly janked every time a card moved, since every other card in the column had to be re-measured on every frame of the animation.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Switching to FLIP, animating a <code>transform</code> computed from before/after <code>getBoundingClientRect()</code> snapshots, fixed the stutter without changing the visual result at all, the cards still slide into place, just via a cheap property instead of an expensive one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also found the fix mattered more on lower-end devices than their own dev machines suggested, main-thread layout work scales with both element count and device CPU speed, so the janky version passed unnoticed in local testing and only showed up clearly once real, varied hardware hit it in production.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Reorder animated via top/left, forcing layout recalculation every frame (broken) vs. the FLIP technique animating only a compositor-only transform (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Shuffle the list, watch which mode holds up</h2>
+  <div class="tone-junior">
+    <p>Click shuffle a few times in each mode. With a small list both can look fine, the difference gets clearer as more items reorder at once.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken mode animates top/left directly; the fixed mode measures positions before and after, then animates only a transform.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Open DevTools' Performance panel while shuffling in each mode — the broken mode shows recurring Layout/Recalculate Style work per frame that the fixed mode doesn't.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="List reorder animated via top/left (broken) vs. the FLIP technique animating only transform (fixed)"
+           data-required="true"
+           data-demo-type="animation"
+           data-demo-slug="layout-animation-flip">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a list reorder animated via top/left against the same reorder animated with the FLIP technique; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            top/left animation
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            FLIP (transform)
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: FLIP (transform)</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>FLIP has real limits worth knowing</h2>
+  <div class="tone-junior">
+    <p>
+      FLIP works great for a fixed set of items changing position or size. It's not a general animation library, if you need physics-based motion, gesture-driven dragging, or animating items entering/leaving the list entirely, you'll want a purpose-built library layered on top of the same underlying idea.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Elements need to exist in the DOM at both the First and Last positions for the measurement step to work, items that are newly added or removed during the reorder need separate enter/exit handling, FLIP alone only covers items that persist and move.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      For long lists, batch all First measurements before any DOM mutation happens (avoid interleaving reads and writes, which forces synchronous layout thrashing), then batch all Last measurements after the single DOM update, this is why FLIP implementations measure everything up front rather than element-by-element.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Animating top/left forces the browser to recalculate layout every frame — animating transform instead lets it skip that work entirely.</div>
+        <div class="tone-mid">FLIP: measure First, let the DOM jump to Last, Invert with a transform so it looks unmoved, then Play by removing the transform with a transition.</div>
+        <div class="tone-staff">Batch all First measurements before mutating the DOM and all Last measurements after, to avoid layout thrashing on longer lists.</div>
+      </li>
+    </ul>
+  </div>
+</section>

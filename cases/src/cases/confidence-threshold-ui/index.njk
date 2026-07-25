@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Confidence Thresholds Before Auto-Apply"
+description: "Why auto-applying every AI suggestion regardless of the model's own confidence score quietly ships low-confidence guesses, and how gating low-confidence output behind explicit review catches them before they land."
+slug: confidence-threshold-ui
+track: ai-frontend-integration
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Human oversight
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/confidence-threshold-ui-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The auto-tagged ticket that was confidently wrong</h2>
+  <div class="tone-junior">
+    <p>
+      Your support tool uses a model to auto-tag incoming tickets by category, and applies the tag immediately so agents don't have to do it by hand. Most of the time it's right. Then a genuinely ambiguous ticket comes in, the model guesses a category it's barely sure about, and that guess gets applied exactly the same way as a confident, obvious one.
+    </p>
+    <p>
+      Nothing in the UI told anyone the model was unsure. A 51%-confidence guess and a 99%-confidence guess look identical once they're both silently applied.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Every model call that drives an auto-applied UI action returns a confidence score alongside its output, most integrations just never read it. Treating every output as equally trustworthy throws away a signal the model is already computing for you.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This isn't a model-accuracy problem, it's a UI design problem. A model with 95% top-line accuracy is still wrong on the other 5%, and without a confidence gate, the UI has no way to tell those 5% apart from the 95% it should trust.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Auto-apply the confident output, surface the rest</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of applying every suggestion the same way, check the confidence score first. High-confidence suggestions apply automatically, same as before. Low-confidence ones go into a "needs review" state instead, so a human decides before anything actually changes.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A confidence threshold turns one uniform behavior into two: <code>score >= threshold</code> auto-applies, anything below sits in a reviewable pending state with the suggestion visible but not yet committed. The threshold itself is a product decision, not a technical constant, tune it against how costly a wrong auto-apply actually is for that specific action.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The threshold should scale with the action's blast radius, not stay fixed across the whole product. Auto-tagging a support ticket at 70% confidence is low-stakes and easily corrected later; auto-applying a code suggestion or auto-sending a customer email at the same 70% is a much riskier default, and probably deserves a materially higher bar.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The auto-categorized refund that shouldn't have been</h2>
+  <div class="tone-junior">
+    <p>
+      A team's support tool auto-applied a "refund eligible" tag whenever the model detected a refund request, no confidence check. A sarcastic customer message ("oh great, ANOTHER broken order, refund me I guess") got tagged refund-eligible at low confidence, and the automated workflow behind that tag fired anyway.
+    </p>
+    <p>
+      Nobody had reviewed it, because nothing in the system knew the model itself had been unsure. The tag looked exactly as certain as every other tag.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team added a confidence threshold specifically on the refund-eligible tag (a high-stakes action), leaving low-stakes tags like "billing question" auto-applying at a much lower bar. Ambiguous refund requests now sit in a review queue with the model's suggestion pre-filled, an agent confirms or overrides in seconds instead of the workflow firing blind.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also logged the confidence score alongside every auto-applied tag, not just the below-threshold ones, so a later audit could check whether the threshold itself was set correctly, catching threshold drift as the underlying model changed versions was something the original all-or-nothing design had no way to detect at all.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Every AI suggestion auto-applied regardless of confidence (broken) vs. only high-confidence suggestions auto-apply, the rest wait for explicit review (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch which suggestions apply themselves</h2>
+  <div class="tone-junior">
+    <p>Four simulated AI suggestions, each with its own confidence score. Toggle between the two modes and watch which ones apply instantly versus which wait for you.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The threshold in this demo is fixed for clarity — in a real system it's tuned per action, not a single global constant.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the broken mode gives you zero visual signal about which applied suggestions were actually low-confidence guesses — that information existed and was simply discarded.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="AI suggestions applied regardless of confidence (broken) vs. gated by a confidence threshold (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="confidence-threshold-ui">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares AI suggestions that always auto-apply against ones gated by a confidence threshold; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Always auto-apply
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Confidence-gated
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Confidence-gated</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>A threshold alone isn't the whole answer</h2>
+  <div class="tone-junior">
+    <p>
+      Once a suggestion is sitting in "needs review," make it genuinely easy to act on, a one-click accept and a one-click reject, with the original suggestion clearly visible. A review queue nobody actually looks at is barely better than no gate at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Track the outcome of every reviewed item, not just whether it was accepted or rejected. If reviewers are accepting the vast majority of below-threshold suggestions, the threshold is probably set too conservatively and just adding friction; if they're rejecting a lot of above-threshold ones, it's set too loosely.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Confidence scores from different model versions or providers aren't always calibrated the same way, a 0.8 from one model release doesn't necessarily mean the same real-world accuracy as 0.8 from the next. Re-validate the threshold against actual review outcomes whenever the underlying model changes, don't assume the old cutoff still means what it used to.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A model's confidence score is a real signal — don't apply every suggestion the same way when the model itself is telling you how sure it is.</div>
+        <div class="tone-mid">Gate auto-apply behind a confidence threshold: high-confidence suggestions apply automatically, low-confidence ones wait for explicit review.</div>
+        <div class="tone-staff">Set the threshold per action based on blast radius, log scores for every auto-applied action, and re-validate the cutoff whenever the underlying model changes.</div>
+      </li>
+    </ul>
+  </div>
+</section>
