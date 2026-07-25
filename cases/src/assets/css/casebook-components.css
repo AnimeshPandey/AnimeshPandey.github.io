@@ -1304,21 +1304,12 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   animation: casey-milestone-flash 0.7s ease;
 }
 
-.casey-lottie-host {
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-}
 .casey-hub__avatar-wrap {
   position: relative;
   flex-shrink: 0;
 }
 .casey-coach__avatar-wrap {
   position: relative;
-}
-.casey-lottie-host svg {
-  width: 100% !important;
-  height: 100% !important;
 }
 
 .casey-about-bubble {
