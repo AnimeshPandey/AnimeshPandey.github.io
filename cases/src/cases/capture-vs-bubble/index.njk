@@ -1,0 +1,260 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Capture vs Bubble: Who Wins?"
+description: Why a "click outside to close" handler can fire in the wrong order, and how the DOM's capture phase fixes it.
+slug: capture-vs-bubble
+track: browser-dom
+readMin: 8
+flagship: false
+demoType: toggle
+principle: Event phases
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/capture-vs-bubble-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The dropdown that won't stay closed</h2>
+  <div class="tone-junior">
+    <p>
+      You build a dropdown menu. Click outside it, it should close — you wire up a click
+      listener on <code>document</code> for that. It works, until a button <em>inside</em>
+      another widget on the page calls <code>stopPropagation()</code> on its own click.
+      Now clicking that button doesn't close your dropdown, even though the click was
+      clearly outside it. Your listener never even ran.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A default <code>addEventListener</code> call listens during the bubble phase — the
+      DOM walks from the clicked element back up to the root, firing listeners on the way.
+      <code>stopPropagation()</code> called partway up that walk stops it dead: nothing
+      further up the tree ever hears about the click, including a bubble-phase listener
+      on <code>document</code>.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Events don't just bubble — they capture first. The DOM dispatches every event in
+      three phases: capture (root → target), target, then bubble (target → root).
+      A listener registered with <code>{ capture: true }</code> runs on the way down,
+      before the click ever reaches the element that calls <code>stopPropagation()</code>.
+      That's the actual fix, and it's why most "click outside" implementations you'll find
+      in real component libraries register on <code>document</code> with capture, not bubble.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Every click happens twice: down, then up</h2>
+  <div class="tone-junior">
+    <p>
+      Picture three nested boxes: Outer, Middle, Inner. Click Inner, and the browser
+      doesn't just tell Inner about it — it walks the whole chain twice. First it walks
+      <strong>down</strong> from the page's root to Inner (that's capturing), then it
+      walks <strong>up</strong> from Inner back out to the root (that's bubbling).
+      By default, <code>addEventListener</code> only listens on the way up.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>addEventListener(type, handler, options)</code>'s third argument controls
+      which walk a listener hears: <code>{ capture: true }</code> (or the legacy boolean
+      <code>true</code>) attaches it to the downward pass; omitting it, or passing
+      <code>false</code>, attaches it to the upward pass — the default almost everyone uses
+      without thinking about it.
+    </p>
+    <p>
+      Order matters because it determines who sees the event first. With three nested
+      capture-phase listeners, Outer fires before Middle fires before Inner. With three
+      nested bubble-phase listeners, it's the exact reverse: Inner, then Middle, then Outer.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is defined by the DOM Events spec's event dispatch algorithm, not a browser
+      quirk or a framework convention — capture-then-target-then-bubble is the same in
+      every evergreen browser. <code>Event.eventPhase</code> reports which phase a
+      listener is currently running in (1 = capturing, 2 = at target, 3 = bubbling), and
+      <code>Event.stopPropagation()</code> halts whichever walk is currently in progress —
+      it does not retroactively cancel listeners that already ran in an earlier phase.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Why capture-phase "click outside" is the common pattern</h2>
+  <div class="tone-junior">
+    <p>
+      Open the dev tools on almost any dropdown, popover, or modal from a real component
+      library and search its source for <code>addEventListener('click'</code>. You'll
+      usually find a call ending in <code>true</code> or <code>{ capture: true }</code>.
+      That's deliberate: the library doesn't want some other widget's
+      <code>stopPropagation()</code> to be able to hide a click from its own
+      "did you click outside me?" check.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Registering the outside-click listener in the capture phase means it runs before
+      the DOM even reaches the element that was actually clicked — before that element's
+      own bubble-phase handler has a chance to call <code>stopPropagation()</code>. The
+      outside-click check has already happened by then; nothing downstream can suppress it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The tradeoff: a capture-phase listener on <code>document</code> runs on literally
+      every click on the page, before anything else does. That's correct for "did this
+      click land outside my element" checks (cheap: one <code>element.contains(target)</code>
+      call), but it's the wrong tool for anything that should be skippable — a capture-phase
+      listener can't be shut off by an inner element's <code>stopPropagation()</code>,
+      which is exactly the point, but also means it can't be opted out of either.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Three nested boxes, one click, two possible orders</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">BUBBLE (the default)</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>outer.addEventListener('click', fn)
+// click order: Inner &#8594; Middle &#8594; Outer</code></pre>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">CAPTURE</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>outer.addEventListener('click', fn, { capture: true })
+// click order: Outer &#8594; Middle &#8594; Inner</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: click Inner, watch the order</h2>
+  <div class="tone-junior">
+    <p>
+      Click the small inner box. In "Bubble (default)" mode, watch the log: Inner fires
+      first, then Middle, then Outer. Switch to "Capture" and click again — now Outer
+      fires first, then Middle, then Inner. Same click, opposite order.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      All three boxes register the same handler, only the <code>capture</code> option
+      changes between the two states. Nothing about the click itself changes — only which
+      pass of the dispatch algorithm each listener is subscribed to.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Open the console and click Inner in either mode: each log line includes
+      <code>event.eventPhase</code>, confirming capture-phase listeners genuinely run
+      during phase 1 and bubble-phase listeners during phase 3 — this isn't just a
+      call-order illusion from JS execution order, it's the browser reporting the real
+      dispatch phase per listener invocation.
+    </p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Try it: click order in bubble vs capture phase"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="capture-vs-bubble">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> Shows three nested boxes and the click-handler firing order in bubble vs. capture phase.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Bubble (default)
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Capture
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Capture</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Where this actually bites in real code</h2>
+  <div class="tone-junior">
+    <p>
+      React's synthetic event system attaches most listeners at the document root and
+      simulates bubbling for you — <code>onClick</code> in JSX is a bubble-phase handler.
+      If you need capture in React, the prop name has a suffix:
+      <code>onClickCapture</code>, <code>onMouseDownCapture</code>, and so on, for every
+      event type that supports it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>{ once: true }</code> and <code>{ capture: true }</code> compose in the same
+      options object — <code>addEventListener('click', fn, { capture: true, once: true })</code>
+      is a valid, common combination for "run exactly once, before anything downstream can
+      suppress it," e.g. dismissing a tooltip on the very next click anywhere on the page.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Removing a capture-phase listener requires matching the options: <code>removeEventListener</code>
+      needs the same <code>capture</code> value used at registration (or it silently
+      no-ops, doesn't throw). This is the single most common bug when wiring capture-phase
+      listeners by hand — forgetting to pass <code>{ capture: true }</code> to the matching
+      <code>removeEventListener</code> call leaves a listener attached forever, a real
+      memory/behavior leak in any component that mounts and unmounts repeatedly.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Every click walks the DOM down first (capture), then up (bubble). Regular addEventListener only listens on the way up.</div>
+        <div class="tone-mid">Pass <code>{ capture: true }</code> as the third argument to listen on the way down instead — before any inner element's own handler runs.</div>
+        <div class="tone-staff">Capture-then-target-then-bubble is defined by the DOM Events spec's dispatch algorithm — identical behavior across every evergreen browser, not a framework convention.</div>
+      </li>
+      <li>
+        <div class="tone-junior">A capture-phase listener can't be silenced by an inner element calling stopPropagation() — it already ran before that inner element was even reached.</div>
+        <div class="tone-mid">This is exactly why "click outside to close" implementations in real component libraries register on document with capture: true, not the bubble-phase default.</div>
+        <div class="tone-staff">stopPropagation() halts whichever pass is currently in progress; it cannot retroactively cancel listeners that already ran in an earlier phase.</div>
+      </li>
+      <li>
+        <div class="tone-junior">removeEventListener needs to match how the listener was added — if you registered with capture, you have to remove with capture too.</div>
+        <div class="tone-mid">Mismatched capture options on removeEventListener don't throw — they silently no-op, leaving the listener attached. This is the most common real bug with capture-phase listeners.</div>
+        <div class="tone-staff">In React, capture-phase handlers are separate props (onClickCapture, etc.) — JSX's plain onClick is always bubble-phase, simulated at the document root.</div>
+      </li>
+    </ul>
+  </div>
+</section>
