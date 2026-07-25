@@ -1,0 +1,148 @@
+{
+  "slug": "mutation-observer-vs-polling",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Polling the DOM on a timer means most checks find nothing, and the one check that matters can still be up to your polling interval late.",
+      "mid": "A setInterval poll loop keeps running forever, even long after the change you were waiting for already happened.",
+      "staff": "MutationObserver batches its notifications into microtasks, so rapid DOM changes in the same tick arrive as one array of records, not one callback per change."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Watch the check counter in polling mode climb the whole time, even after the target element already appeared. Observer mode fires exactly once, right when it happens.",
+      "mid": "The polling version keeps querying the DOM every 100ms indefinitely; the observer version does zero work until the actual mutation occurs.",
+      "staff": "Compare the total query count between modes after the same simulated delay \u2014 polling mode's count scales with wait time, observer mode's doesn't."
+    },
+    {
+      "chapter": "concept",
+      "junior": "MutationObserver watches for a change and calls your function the moment it happens, instead of you repeatedly asking whether it happened yet.",
+      "mid": "You create an observer with a callback, then call observe() on a target node with a config describing what to watch: child list, attributes, or text changes.",
+      "staff": "The browser delivers mutation records as a batched array per microtask, which is part of why observers stay cheap even on busy pages."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Watch as narrow a part of the page as you can, and only set subtree true if you actually need to see changes in descendant elements too.",
+      "mid": "Call observer.disconnect() once you've gotten the change you needed, or in a cleanup function \u2014 don't leave it running for the page's whole lifetime.",
+      "staff": "For high-frequency mutation sources, iterate the whole records array once per callback rather than reacting per individual mutation record."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're replacing a setInterval poll loop with something that actually tells you the moment a DOM change happens.",
+        "mid": "This case covers MutationObserver as the precise, zero-waste alternative to polling the DOM on a timer.",
+        "staff": "We're covering observer scoping, microtask batching of mutation records, and when to disconnect an observer."
+      },
+      {
+        "chapter": "concept",
+        "junior": "MutationObserver watches for a change and calls your function the instant it happens, instead of you repeatedly checking.",
+        "mid": "You configure what to watch, child list, attributes, or text, and the browser calls you back exactly when a matching change occurs.",
+        "staff": "Mutation records arrive batched per microtask, so many rapid changes in one tick still produce a single callback invocation."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Watch the check counter in polling mode keep climbing forever. The observer mode counter only moves once, right when the change happens.",
+        "mid": "Polling keeps querying on a fixed interval regardless of whether anything changed; the observer does zero work until a real mutation occurs.",
+        "staff": "Compare total query counts between modes over the same wait duration to see the difference directly."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Don't poll the DOM on a timer for a change you're waiting for. MutationObserver tells you the moment it happens.",
+        "mid": "Scope the observer as narrowly as possible, and disconnect it once you\u2019ve gotten what you needed.",
+        "staff": "Mutation callbacks are batched into microtasks and deliver an array of records, so handle them in one pass rather than reacting per mutation."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

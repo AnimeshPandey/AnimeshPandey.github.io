@@ -1,0 +1,183 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Structured Output for UI Generation"
+description: "Why extracting JSON from a model’s prose reply is fragile, and how structured output schemas guarantee a parseable response at generation time."
+slug: structured-output-json
+track: agentic-ai
+readMin: 10
+flagship: false
+demoType: code-only
+principle: JSON mode
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/structured-output-json-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Parsing JSON out of a paragraph the model wrote around it</h2>
+  <div class="tone-junior">
+    <p>
+      You ask an LLM to return JSON describing a UI card: a title, an icon name, a color. It replies with "Sure! Here's the JSON you asked for:" followed by the actual object, then a closing sentence explaining what it did.
+    </p>
+    <p>
+      Your code does <code>JSON.parse(response)</code> and immediately throws, because the response isn't JSON, it's a sentence with JSON somewhere inside it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Regex-stripping the surrounding text works until the model changes its phrasing, wraps the JSON in a markdown code fence, or adds a trailing note. Every one of those is a silent parse failure in production.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Structured output modes solve this at the API level: instead of asking the model to produce JSON and hoping it complies with the formatting, you give the API a schema and it constrains the model's output to match that schema exactly, no prose, no parsing gymnastics.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>undefined</h2>
+  <div class="tone-junior">
+    <p>
+      Think of it like a form with fields the model has to fill in, instead of a blank page where it might write anything. You describe the shape you want, and the response comes back already in that shape.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      You pass a JSON schema describing the exact fields, types, and structure you need. The API guarantees the response is valid JSON matching that schema, so you can call <code>JSON.parse()</code> directly and trust the result without a validation-and-retry loop.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is enforced at generation time, not checked after the fact: the model is constrained token-by-token to only produce output that can complete into a schema-valid document, which is a stronger guarantee than prompting the model to "only output JSON" and then validating the response yourself.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The dashboard widget generator that broke on one model update</h2>
+  <div class="tone-junior">
+    <p>
+      A team built a feature where an LLM generates dashboard widget configs, JSON describing chart type, data source, and title, from a plain-English request. They extracted JSON from the response with a regex that looked for the first <code>{</code> and the last <code>}</code>.
+    </p>
+    <p>
+      It worked for months. Then a model update changed the response format slightly, adding a trailing explanation after the JSON, and the regex started capturing extra text past the closing brace, breaking the parse for every request.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Switching to structured output with an explicit schema removed the regex entirely. The API response was always valid, parseable JSON, with no dependency on the model's incidental formatting choices.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This also let the team tighten their schema over time, for example, constraining the chart type field to an enum of only the chart components the dashboard actually supports, so the model literally cannot request card unsupported chart type. Invalid requests became structurally impossible rather than something to catch after the fact.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Regex-extracting JSON from free-form model prose (broken) vs. a schema-constrained response that always parses (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Extracting JSON from prose vs. a schema-guaranteed response</h2>
+  <div class="tone-junior">
+    <p>Compare the two raw model responses below: one needs extraction logic, one is ready to parse as-is.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken response is realistic model output with prose wrapped around the JSON. The fixed response is what a schema-constrained call returns.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The fixed mode is not a formatting trick, the response is constrained by the API to match the schema at generation time.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Model JSON output comparison: prose-wrapped response vs schema-constrained response"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="structured-output-json">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a free-form model response against a schema-constrained one; it requires JavaScript to run the parse attempt in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: hope the model's prose-wrapped JSON parses
+const response = "Sure! Here's the JSON: {\"title\":\"Sales\",\"chart\":\"bar\"} Let me know if you need changes!";
+JSON.parse(response); // throws SyntaxError
+
+// Fixed: schema-constrained response, always valid JSON
+const response = await client.messages.create({
+  model: 'claude-opus-4-8',
+  output_config: { format: { type: 'json_schema', schema: widgetSchema } },
+  messages: [{ role: 'user', content: prompt }],
+});
+JSON.parse(response.content[0].text); // always succeeds</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Schema design as a product decision, not an implementation detail</h2>
+  <div class="tone-junior">
+    <p>
+      Keep your schema close to what your UI actually needs to render. If a field's value can only ever be one of a few options, use an enum for it instead of a free-text string; that way the model can't return something your UI doesn't know how to handle.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Version your schemas the same way you'd version an API contract. If you add a required field, existing cached or logged responses generated under the old schema won't have it, so plan a migration path rather than assuming every response your system has ever produced matches today's schema.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Structured output narrows what the model can say, but it doesn't guarantee the values are correct, only that they're shaped correctly. A schema-valid response can still contain a hallucinated data source name or a nonsensical title; treat schema conformance as a parsing guarantee, not a correctness guarantee, and validate semantic constraints separately.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">
+    Don't ask a model for JSON in plain prose and hope it formats it right. Use structured output so the response is guaranteed to parse.
+  </div>
+        <div class="tone-mid">
+    A JSON schema constrains the model's output at generation time, removing the need for regex extraction or a parse-retry loop.
+  </div>
+        <div class="tone-staff">
+    Schema conformance guarantees shape, not correctness. Validate semantic constraints (real data source, sane values) separately from parsing.
+  </div>
+      </li>
+    </ul>
+  </div>
+</section>
