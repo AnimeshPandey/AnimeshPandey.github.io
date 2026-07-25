@@ -62,27 +62,24 @@ The "Listen with Casey" button (`casey-voice.js`) plays a pre-generated MP3 per 
 
 ## Adding a new case
 
-1. Set `status: "live"` and `publishedAt` on the manifest entry
-2. Create `src/cases/<slug>/index.njk` (copy from skeleton-screens template)
-3. Create `src/cases/<slug>/casey.json` with hints + anecdotes + actions per chapter
-4. Create `src/assets/js/demos/<slug>.js` — import and use `wireToggleDemo` from `./_demo-utils.js`
-5. Push → CI builds and deploys automatically
+**Full reference: [`CASE-AUTHORING-GUIDE.md`](CASE-AUTHORING-GUIDE.md)** — the 3-tier
+tone system, Casey hints vs. voice script, all three `demoType`s (including the
+gotcha where even a `code-only` demo needs a real JS module or its section stays
+hidden forever), ui-strip, references, chapter order/learning path, and the
+pre-done quality checklist. Read that before authoring a case; this is just the
+command sequence.
 
-**Demo module contract:**
-
-```js
-// src/assets/js/demos/<slug>.js
-import { wireToggleDemo, PRM } from './_demo-utils.js';
-
-export function initDemo(root, dataset) {
-  wireToggleDemo(root, {
-    renderBroken: (vp) => { vp.innerHTML = '…'; },
-    renderFixed:  (vp) => { vp.innerHTML = '…'; },
-  });
-}
-```
-
-`demo-loader.js` dynamically imports `./demos/${slug}.js` and calls `initDemo(root, root.dataset)`.
+1. Scaffold from an existing `idea`-status manifest entry:
+   `node scripts/scaffold-case.mjs promote <slug>`
+2. Author content per the guide above (chapters, `casey.json` hints + voice +
+   actions, ui-strip, references)
+3. Create `src/assets/js/demos/<slug>.js` exporting `initDemo()` — required for
+   **every** `demoType`, see the guide's "The demo" section
+4. Validate: `node scripts/scaffold-case.mjs check <slug>`
+5. Build and actually look at the rendered page before considering it done —
+   content/visual correctness isn't caught by tests
+6. Going live is a separate, human-gated step (`status`/`permalink` flip via
+   `confirm-publish.py` in the `ideas` repo) — do not do this as part of authoring
 
 ## Refreshing the manifest
 
