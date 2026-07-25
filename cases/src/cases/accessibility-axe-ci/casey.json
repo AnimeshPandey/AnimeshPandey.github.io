@@ -1,0 +1,103 @@
+{
+  "slug": "accessibility-axe-ci",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A five-year-old app can hit 340 violations on the first axe run — fail-on-any-violation blocks every unrelated PR until someone disables the check.",
+      "mid": "'Fail on any violation' conflates 'does this app have a11y problems' with 'did this change make anything worse' — a check that can't tell those apart gets disabled, not fixed.",
+      "staff": "Same failure shape as any retroactively-introduced linter on a large codebase — a check that starts red on day one and can't isolate new regressions gets turned off."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click 'Run axe in CI' in each mode — the page has the same 3 pre-existing violations both times, watch how each policy handles them.",
+      "mid": "Try 'Simulate new violation' in baseline mode afterward — it shows the check still catches a real regression instead of just going green forever.",
+      "staff": "The baseline is keyed by rule id plus CSS selector, not just the rule id — that's what lets it catch a new contrast failure on a different element while ignoring the tracked one."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Run axe once, save what it finds as a baseline. From then on, only a violation NOT in that baseline fails the build — known issues stay tracked but don't block unrelated work.",
+      "mid": "Each baseline entry is a rule id plus the CSS selector from that violation's node.target — fixing one instance of color-contrast doesn't un-baseline every other instance of that rule.",
+      "staff": "This is deliberately not axe.configure disabling a rule outright — that turns the rule off everywhere including brand-new code, where the baseline only allowlists specific already-known pairs."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Don't disable a whole rule to quiet a noisy page — that hides new violations of that same rule too. Allowlist the specific known instances instead.",
+      "mid": "Scan a stable DOM state (after loading/animation settles) and use context.exclude for third-party subtrees you don't control, rather than disabling the rules they happen to trigger sitewide.",
+      "staff": "Track the baseline's entry count on a dashboard and require a linked ticket for any addition — without that discipline it decays into the same 'everything's allowed' state as the disabled check it replaced, just more quietly."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about running axe-core in CI, and why the obvious first setup, fail the build on any violation, gets disabled within a week on a real codebase with any accessibility debt at all.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is a baseline. Run axe once, save what it finds as known issues, and from then on only fail the build on a violation that isn't already in that baseline.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try running axe in CI under each policy, and then simulate a new violation in baseline mode to see it still gets caught.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Fail on any violation gets disabled fast. Baseline the known issues, fail only on new ones, and track the baseline size so it shrinks instead of growing quietly.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try fail-on-any", "target": "[data-demo-state=broken]" },
+        { "label": "Try baseline diff", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle fail-on-any", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle baseline diff", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Fail-on-any state", "target": "[data-demo-state=broken]" },
+        { "label": "Baseline diff state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

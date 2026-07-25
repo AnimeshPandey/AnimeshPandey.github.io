@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Line Coverage vs Risk Coverage"
+description: "Why a payment retry function can hit 100% line coverage with a fully green test suite and still double-charge a customer in production, and what to measure instead of the coverage percentage."
+slug: coverage-myth-lines
+track: testing-quality
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Metrics
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/coverage-myth-lines-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>100% coverage, fully green suite, customer charged twice</h2>
+  <div class="tone-junior">
+    <p>
+      A payment retry function has a try block and a catch block that retries once on failure. A test mocks the first call to fail and the second to succeed, runs the function, and checks that it was called twice. Every line executes. Coverage reports 100%. The test passes. In production, a customer's payment actually succeeded on the first attempt, the confirmation response just got lost on the way back, so the retry fired anyway and created a second, real charge. The customer was billed twice. The test suite never once went red.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Line coverage answers one question: did this line of code execute while the tests ran. It says nothing about whether the test asserted anything true about what <em>should</em> have happened. "Called twice" is a true statement about the mock's behavior; it says nothing about whether a second real charge is the correct outcome, which is the actual risk this code exists to manage.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The subtler problem: this isn't even a missed branch. The catch block did run during the test, branch coverage would also show 100% here. The gap is that the mock's scenario, "the first call definitely failed," doesn't match the production scenario that actually occurred, "the first call succeeded but its response was lost." Both scenarios execute the exact same lines and branches; only one of them is the risky one, and no coverage percentage, line or branch, can tell those two scenarios apart.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Measure whether tests catch real bugs, not whether lines ran</h2>
+  <div class="tone-junior">
+    <p>
+      Coverage percentage tells you which lines ran during your tests, never whether the test checked anything correct about what should have happened. A test with a weak or missing assertion can drive coverage to 100% while catching nothing. What actually matters is whether a test would fail if the underlying logic were wrong, and coverage tools don't measure that at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Mutation testing measures the thing coverage can't: it automatically introduces small, deliberate bugs (mutants) into your code, flips a <code>&gt;=</code> to <code>&gt;</code>, deletes a line, changes a return value, then reruns your test suite against each mutant. If a test fails, the mutant is "killed," your tests actually caught that specific bug. If every test still passes, the mutant "survived," meaning your suite would let that exact bug ship undetected, regardless of what its line coverage number said.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Full mutation testing has real cost (it reruns the suite once per mutant, which is slow on large codebases) and doesn't fully solve the retry example either, a mutant that changes the idempotency key logic could still survive if no test's mock ever represents the "response lost, not actually failed" scenario in the first place, mutation testing only catches faults in code your tests exercise with realistic inputs. The reliable complement is a risk-weighted review pass: before merging, name the worst realistic failure this code enables (a double charge, a dropped write, a stale read racing a write) and confirm a test targets exactly that scenario, not just that its lines execute.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The retry that assumed "no response" meant "it failed"</h2>
+  <div class="tone-junior">
+    <p>
+      A checkout flow's payment submission had a simple retry: if the charge request didn't get a response within 3 seconds, retry it once. The team had a unit test for this, mock the API to reject the first call and resolve the second, assert the function retried and eventually returned a success. It passed. Coverage on the payment module sat at 100%, cited in a sprint review as proof the checkout flow was well-tested.
+    </p>
+    <p>
+      In production, a brief network blip didn't cause the charge itself to fail, the payment provider processed it successfully, the confirmation response just never made it back before the 3-second timeout. The client, having no way to distinguish "definitely failed" from "response lost," retried anyway, with no idempotency key attached to identify it as the same logical charge. The provider processed a second, entirely separate charge for the same order.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Support tickets started arriving from customers seeing two charges for one order, clustered on days with elevated network latency between the app and the payment provider, exactly the conditions that make "response lost, request actually succeeded" far more likely than a clean failure. The existing test suite, still green, still 100% covered, had never modeled that specific scenario, its mock only ever represented an unambiguous first-call failure.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix was an idempotency key generated once per checkout attempt and sent on both the original and retried request; the payment provider's API, like most, recognized a repeated key and returned the original charge instead of creating a new one. The team also added a specific test for the "response lost, not actually failed" scenario, mocking a successful server-side charge whose response never arrives, and asserting exactly one charge exists afterward, the assertion the original 100%-covered suite had never actually made.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Both versions report 100% line coverage and a fully green test suite (same coverage report) — only the version with an idempotency key on the retry actually prevents a real double charge when a response is lost in transit (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Same green coverage report, different real-world outcome</h2>
+  <div class="tone-junior">
+    <p>Both modes show the identical test suite result at the top. Click "Simulate lost response" and watch what actually happens to the customer's charge underneath that same green report.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The retry-without-idempotency-key version creates a second real charge when the first one's response is merely delayed, not failed. The coverage number never moves, in either version, because both versions execute the exact same lines.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This is deliberately not a coverage-number toggle, the coverage stays identical between modes on purpose, that's the entire point: the number that usually gets cited as "well tested" doesn't change at all between the version that's safe and the version that silently double-charges.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Payment retry without an idempotency key (broken) vs. with an idempotency key (fixed), both at 100% line coverage"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="coverage-myth-lines">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a payment retry under a lost-response network condition, comparing a retry with no idempotency key against one with an idempotency key, both reporting the same 100% line coverage; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No idempotency key
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            With idempotency key
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: With idempotency key</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>What to actually measure instead of the percentage</h2>
+  <div class="tone-junior">
+    <p>
+      Treat a coverage percentage as a checklist of what's untested, not a score of how well-tested something is. Zero coverage on a file is a real, useful signal, nobody's looked at it at all. 100% coverage is not the mirror-image good signal it looks like; it just means every line ran at least once under some test, with no guarantee about what those tests actually verified.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Tools like Stryker Mutator (JS/TS) run mutation testing directly against your existing suite: install it, point it at the same files your coverage tool already reports on, and read the mutation score, the percentage of injected bugs your tests actually caught, alongside (not instead of) your line coverage number. A file with 100% line coverage and a 40% mutation score is a much more honest signal that something's wrong than either number alone.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      For code where full mutation testing isn't practical (slow suites, flaky infra, tight deadlines), a lightweight substitute is a deliberate risk-review question added to code review itself: for any code touching money, auth, or data integrity, ask "what's the worst realistic thing this could silently get wrong," and require the PR to point at a test asserting against exactly that scenario, not just that the new lines are exercised. This catches what percentage metrics structurally can't, because the risk lives in whether the test's inputs and mocks represent the dangerous real-world scenario, not in which lines execute.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">100% line coverage only means every line ran during tests — it doesn't mean the tests checked anything correct about what should have happened, a test with a weak assertion can hit every line and still miss the real bug.</div>
+        <div class="tone-mid">Mutation testing asks a different question than coverage: if this code were deliberately broken, would any test notice? A suite that lets an injected bug survive is a stronger warning sign than any coverage percentage.</div>
+        <div class="tone-staff">Coverage can't distinguish a mock scenario from the real risky scenario it's meant to represent — pair mutation testing where practical with a risk-weighted review question ("what's the worst realistic thing this silently gets wrong") for code touching money, auth, or data integrity.</div>
+      </li>
+    </ul>
+  </div>
+</section>

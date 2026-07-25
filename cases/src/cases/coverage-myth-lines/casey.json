@@ -1,0 +1,103 @@
+{
+  "slug": "coverage-myth-lines",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A payment retry with 100% coverage and a fully green suite still double-charged a customer — coverage never asked whether the retry was actually safe to fire twice.",
+      "mid": "'Called twice' is a true statement about a mock — it says nothing about whether a second real charge was the correct outcome, which is the actual risk this code manages.",
+      "staff": "This isn't even a missed branch — the catch block ran during the test. The mock's scenario just didn't match the production scenario, and no coverage percentage can tell those two apart."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Both modes show the same green test suite result up top — click 'Simulate lost response' to see what actually happens to the charge underneath it.",
+      "mid": "Retry-without-idempotency-key creates a second real charge when the first response is merely delayed, not failed — the coverage number never moves between modes.",
+      "staff": "The coverage stays identical between modes on purpose — the number usually cited as 'well tested' doesn't change at all between the safe version and the one that silently double-charges."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Coverage tells you which lines ran, never whether the test checked anything correct about what should have happened — a weak assertion can hit 100% and catch nothing.",
+      "mid": "Mutation testing deliberately injects small bugs and reruns your suite — if every test still passes, that mutant 'survived,' meaning your suite would let that exact bug ship regardless of its coverage number.",
+      "staff": "Mutation testing doesn't fully solve this either — a mutant survives if no test's mock represents the risky real-world scenario in the first place. The reliable complement is naming the worst realistic failure and confirming a test targets it directly."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Zero coverage on a file is a real signal — nobody's looked at it. 100% coverage isn't the mirror-image good signal it looks like; it just means every line ran once, under some test.",
+      "mid": "Stryker Mutator runs against your existing suite and reports a mutation score alongside your coverage number — 100% line coverage with a 40% mutation score is an honest red flag either number alone would miss.",
+      "staff": "When full mutation testing isn't practical, add a risk-review question to code review itself: for money, auth, or data-integrity code, name the worst realistic failure and require a test asserting against exactly that scenario."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about line coverage versus risk coverage — a payment retry function that hit 100% coverage with a fully green test suite, and still double-charged a real customer in production.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "Coverage only tells you which lines ran, not whether the test checked anything true about the result. Mutation testing asks a better question: if this code were deliberately broken, would any test actually notice?",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Both versions show the same green coverage report at the top. Try simulating a lost response and watch what actually happens to the charge underneath it.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "100% coverage means every line ran, not that anything was verified correctly. Pair it with mutation testing or a deliberate risk review for anything touching money or data integrity.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try no idempotency key", "target": "[data-demo-state=broken]" },
+        { "label": "Try with idempotency key", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle no key", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle with key", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "No idempotency key state", "target": "[data-demo-state=broken]" },
+        { "label": "Idempotency key state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

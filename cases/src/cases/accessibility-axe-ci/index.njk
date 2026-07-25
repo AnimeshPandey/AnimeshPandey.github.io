@@ -1,0 +1,180 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "axe in CI Without Noise"
+description: "Why 'fail the build on any axe-core violation' gets an a11y check disabled within a week on a real codebase, and the baseline-diff pattern that fails only on violations a PR actually introduces."
+slug: accessibility-axe-ci
+track: testing-quality
+readMin: 10
+flagship: false
+demoType: toggle
+principle: a11y CI
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/accessibility-axe-ci-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The a11y check that blocked 200 PRs and got disabled in a week</h2>
+  <div class="tone-junior">
+    <p>
+      A team wires <code>axe-core</code> into CI: run it against the app, fail the build if it finds any violation. On a brand-new page this works great. Dropped into an app with five years of existing markup, the first run finds 340 violations across pages nobody touched in this PR. Every single build fails, on every PR, including the one-line copy fix that has nothing to do with accessibility. Within a week, someone adds <code>continue-on-error: true</code> to the CI step "temporarily," and the check quietly stops meaning anything.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      "Fail on any violation" conflates two different questions: does this codebase have accessibility problems (yes, it's five years old, of course it does) and did this specific change make anything worse. A check that can't tell those apart either blocks unrelated work constantly, and gets disabled, or gets configured so loosely to avoid the noise that it stops catching real regressions too.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The failure mode isn't unique to accessibility tooling, it's the same shape as any linter or check introduced retroactively onto a large existing codebase: a check that starts red on day one and can't distinguish pre-existing debt from new regressions gets disabled, not fixed, because "fix all 340 violations before you can merge your copy change" is never going to be the team's actual choice.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Baseline the known violations, fail only on new ones</h2>
+  <div class="tone-junior">
+    <p>
+      Run <code>axe.run()</code> once against the current app and save the results as a baseline file, every violation it finds right now is "known," tracked, not blocking. From then on, CI runs axe again on every PR and diffs the new results against that baseline: anything already in the baseline still doesn't fail the build, anything <em>not</em> in the baseline, a violation this PR actually introduced, fails it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Each axe-core violation has an <code>id</code> (the rule, like <code>color-contrast</code> or <code>image-alt</code>) and a <code>nodes</code> array where each node's <code>target</code> is the CSS selector it was found on. A baseline entry is that pair, rule id plus selector, not just the rule id alone, so fixing one instance of <code>color-contrast</code> doesn't accidentally un-baseline every other instance of that same rule elsewhere on the page.
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>const results = await axe.run();
+const key = (v, node) => `${v.id}::${node.target.join(',')}`;
+const found = new Set(
+  results.violations.flatMap(v => v.nodes.map(n => key(v, n)))
+);
+const newViolations = [...found].filter(k => !baseline.has(k));
+if (newViolations.length) {
+  throw new Error(`${newViolations.length} new a11y violation(s): ${newViolations.join(', ')}`);
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is deliberately not the same thing as <code>axe.configure({ rules: { 'color-contrast': { enabled: false } } })</code> or a broad <code>disableRules</code> call, either of those turns a rule off everywhere, including on new code this PR adds, so a brand-new button with a genuine contrast failure would pass silently. The baseline approach allowlists specific, already-known (rule, selector) pairs, it never widens what gets checked on code that didn't exist when the baseline was recorded.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The rebrand that broke contrast on every page, silently, for six months</h2>
+  <div class="tone-junior">
+    <p>
+      A team's first attempt at CI accessibility checking was exactly the "fail on anything" version. It hit the wall almost immediately, marketing pages nobody had budget to retrofit accounted for most of the 200+ violations, and blocking engineering velocity on pages the a11y team didn't even own wasn't sustainable. The check got disabled rather than fixed, with a ticket to "revisit accessibility tooling" that sat untouched.
+    </p>
+    <p>
+      Six months later, a rebrand updated the CSS custom properties driving the site's color palette. The new brand colors happened to fail WCAG contrast on several interactive elements, buttons, form labels, link text. Nothing caught it. The check that would have flagged exactly this kind of regression had been off since the week it was introduced, and nobody remembered it was supposed to be on.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The rebrand's contrast regressions shipped to production and stayed there until a customer accessibility complaint prompted a manual audit. The fix that followed wasn't "turn the old check back on," it was rebuilding it with a baseline: axe ran once against the current (already partially broken) state, that became the allowlist, and from that point forward any <em>new</em> contrast failure, like the ones a future rebrand might introduce, would fail CI immediately instead of silently going live.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team also added a lightweight policy alongside the tooling fix: no new entry gets added to the baseline file without a linked ticket, and the baseline's total size is tracked as a dashboard metric over time. Without that second part, a baseline can quietly become a dumping ground, every awkward violation "just gets added to the baseline" instead of fixed, and the check degrades back toward meaninglessness through a slower, less obvious path than disabling it outright.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">CI fails the build on any axe violation, blocking every PR on 200+ pre-existing issues until the check gets disabled (broken) vs. a baseline diff that fails only on violations a PR actually introduces, catching real regressions without blocking unrelated work (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Run axe against the same page, two different CI policies</h2>
+  <div class="tone-junior">
+    <p>Click "Run axe in CI" in each mode. The page being scanned has the same 3 pre-existing violations in both — watch how each policy handles them.</p>
+  </div>
+  <div class="tone-mid">
+    <p>In baseline mode, try "Simulate new violation" afterward, it adds a violation that isn't in the baseline and reruns the check, showing it still catches a real regression instead of just going green forever.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the baseline is keyed by rule id plus CSS selector, not just the rule id, that's what lets the check catch a brand-new color-contrast failure on a different element while still ignoring the tracked one.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="CI failing on any axe violation (broken) vs. a baseline diff failing only on new violations (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="accessibility-axe-ci">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates running axe-core in CI against a page with pre-existing violations, comparing a fail-on-any-violation policy against a baseline diff that fails only on new violations; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Fail on any violation
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Baseline: new only
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Baseline: new only</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Where the baseline pattern can still go wrong</h2>
+  <div class="tone-junior">
+    <p>
+      Don't reach for disabling a whole rule (<code>rules: { 'color-contrast': { enabled: false } }</code>) to make noisy pages quiet, that turns the rule off everywhere, including on new code. Allowlist the specific known instances instead, so new violations of the same rule elsewhere still get caught.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Dynamic content needs care: run axe against a stable DOM state (after loading spinners resolve, after animations settle) or results will vary run to run and either flake CI or silently miss real elements. For third-party embeds you don't control (an ad iframe, a payment widget), use the <code>context.exclude</code> option to scope the scan away from that subtree rather than disabling the rules it happens to trigger sitewide.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Treat the baseline file itself as a tracked liability, not a one-time setup artifact: require a linked ticket for any addition, and put its total entry count on a dashboard so it trends toward zero rather than growing invisibly. A baseline with no burn-down discipline decays into the same "everything's allowed" state as the disabled check it replaced, just via a slower, quieter path that's easier to miss in review.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Failing the build on every axe violation blocks unrelated PRs on pre-existing issues until someone disables the check entirely — and then it catches nothing at all.</div>
+        <div class="tone-mid">Record a baseline of known violations (rule id plus selector), then diff future runs against it — fail CI only on violations a PR actually introduces.</div>
+        <div class="tone-staff">Allowlist specific instances, not whole rules, exclude third-party subtrees you don't control instead of disabling rules sitewide, and track the baseline's size on a dashboard so it burns down instead of quietly growing.</div>
+      </li>
+    </ul>
+  </div>
+</section>

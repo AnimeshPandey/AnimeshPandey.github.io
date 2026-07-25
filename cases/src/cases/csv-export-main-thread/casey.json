@@ -1,0 +1,103 @@
+{
+  "slug": "csv-export-main-thread",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "250,000 rows joined into one string on the main thread froze the whole tab — no spinner, no scroll, nothing, for several seconds. Customers assumed the app had crashed.",
+      "mid": "The freeze isn't a correctness bug, the CSV comes out right — it's a where-does-this-run bug. Anything long and synchronous blocks layout, paint, and every event handler on the same thread.",
+      "staff": "Dev and QA datasets are almost always small, so this cost is invisible until a real customer's data is orders of magnitude bigger — the bug ships latent until someone's data grows into it."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The number in the corner ticks up on its own about ten times a second — click export in each mode and watch whether it keeps ticking.",
+      "mid": "This is a real CPU-bound export timed to run about a second, either directly on the main thread or inside an actual Web Worker created for this demo.",
+      "staff": "Try 'Cancel export' mid-run in the fixed mode — worker.terminate() actually stops it, which the broken mode's synchronous loop structurally cannot offer."
+    },
+    {
+      "chapter": "concept",
+      "junior": "A Web Worker runs on a separate thread with no DOM access but full access to loops, strings, and Blob — let it build the CSV so the main thread stays free.",
+      "mid": "The worker can't trigger a download itself — it postMessages progress and a final result back, the main thread updates a progress bar and creates the actual download from that.",
+      "staff": "postMessage copies data via structured clone, it doesn't share it — for real scale, have the worker fetch its own data rather than copying an already-fetched array across, and use transferables for the return trip."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A worker has no DOM access, so it can't click a download link itself — that trigger always happens back on the main thread once the worker hands back the finished data.",
+      "mid": "Give export a real cancel button backed by worker.terminate(), and disable the trigger while one's in flight — a second click starting a second concurrent export is exactly what frustrated users do.",
+      "staff": "For millions of rows, avoid holding the full export as one in-memory string or Blob even inside the worker — stream it out in chunks via the File System Access API or a chunked ReadableStream instead."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a CSV export that froze an entire browser tab, because building a quarter million rows into one big string happened synchronously on the main thread, the same thread responsible for every click and repaint on the page.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is a Web Worker. It builds the CSV on a separate thread and sends progress updates back to the main thread, which stays completely free to keep the page responsive the whole time.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Watch the heartbeat counter in the corner while you run the export in each mode, and see whether it keeps ticking or freezes.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Never build a large export as one synchronous pass on the main thread. Move it to a Web Worker, report progress back, and give people a real way to cancel it.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try main thread", "target": "[data-demo-state=broken]" },
+        { "label": "Try Web Worker", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle main thread", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle Web Worker", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Main thread state", "target": "[data-demo-state=broken]" },
+        { "label": "Web Worker state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

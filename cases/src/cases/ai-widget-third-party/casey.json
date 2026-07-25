@@ -1,0 +1,103 @@
+{
+  "slug": "ai-widget-third-party",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "That one-line embed script gets the same DOM and cookie access as your own code — an AI widget that scrapes page text for 'context' scrapes whatever's actually on the page.",
+      "mid": "No browser-level distinction between 'your script' and 'their script' once both share the origin — cookies, DOM, storage, all reachable, all by default.",
+      "staff": "The failure is silent by design — nothing signals a third party just read your cookies and posted DOM text out, you only catch it by reading its actual network requests."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click 'Load AI widget' in each mode and watch the log show exactly what the widget could read and what it sent.",
+      "mid": "Direct script tag mode reads the mock page text plus a mock cookie; sandboxed mode only ever sees the two fields explicitly passed in.",
+      "staff": "No real network call happens here — this simulates the mechanism locally so you can see what a real integration either way would actually transmit."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Three layers: CSP limits where any script can send data, a sandboxed iframe stops the widget reading your page at all, and an allowlist limits what you hand it in the first place.",
+      "mid": "sandbox=\"allow-scripts\" with no allow-same-origin puts the widget in an opaque origin — its document.cookie is empty and window.parent throws, it only gets what you postMessage to it.",
+      "staff": "The allowlist step is independent of sandboxing — even a perfectly sandboxed widget gets over-shared if your integration code serializes a whole user object instead of the two fields the flow needs."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Check what other domains the widget's own script calls — some pull in their own analytics or trackers beyond the vendor you actually chose.",
+      "mid": "Verify by reading real payloads in DevTools Network, filtered to the widget's domain — no console errors isn't proof the sandbox worked, an actual look at the request body is.",
+      "staff": "SRI pinning is often impractical for frequently-updated widget bundles — a versioned URL instead of a 'latest' alias is the realistic middle ground, plus check the vendor's terms for whether page context is used for model training by default."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about third-party AI chat widgets, and how a single script tag can end up reading way more of your page than you'd expect, including things like internal notes or account details sitting right there in the DOM.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix has three parts: a content security policy that limits where scripts can send data, a sandboxed iframe so the widget can't read your page's cookies or content directly, and passing it only the specific fields it actually needs instead of letting it read everything.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try loading the widget in each mode and watch the log to see exactly what it can read and what it ends up sending out.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A widget script tag has the same access as your own code by default. Sandbox it, restrict where it can send data, and only hand it the fields it actually needs.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try direct embed", "target": "[data-demo-state=broken]" },
+        { "label": "Try sandboxed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle direct embed", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle sandboxed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Direct embed state", "target": "[data-demo-state=broken]" },
+        { "label": "Sandboxed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
