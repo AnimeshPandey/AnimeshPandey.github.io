@@ -1091,6 +1091,12 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   min-height: 44px;
   cursor: pointer;
 }
+/* The class's own display:inline-flex above outranks the [hidden]
+   attribute's UA-default display:none — without this, the review page's
+   empty-state "hide the submit button" never actually hides it visually. */
+.casey-hub__action[hidden] {
+  display: none;
+}
 
 @media (hover: hover) and (pointer: fine) {
   .casey-hub__action:hover { color: var(--casebook-ink); border-color: var(--casebook-accent); }

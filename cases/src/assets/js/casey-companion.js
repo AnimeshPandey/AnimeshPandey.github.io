@@ -1217,6 +1217,19 @@
           primary: true,
         });
       }
+      // Turns the passive hub.reviewDue greeting text into something
+      // actually clickable — previously a reader could see "X is due for
+      // review" with no way to act on it besides finding the case
+      // themselves. Ranked above "Next in track" since it's the more
+      // time-sensitive nudge, same priority order suggest() already gives
+      // reviewDue over the other greeting branches.
+      var dueSlugs = dueForReview(state.caseProgress);
+      if (dueSlugs.length) {
+        items.push({
+          href: pathPrefix + 'review/',
+          label: 'Review ' + dueSlugs.length + ' due case' + (dueSlugs.length === 1 ? '' : 's'),
+        });
+      }
       var nextTrack = suggestNextInTrack();
       if (nextTrack) {
         items.push({
