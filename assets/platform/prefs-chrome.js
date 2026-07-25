@@ -111,6 +111,7 @@
       menu.querySelectorAll('[role="option"]').forEach(function (el) {
         el.setAttribute('tabindex', '0');
       });
+      if (options.onOpen) options.onOpen();
       var items = focusableIn(menu);
       if (items.length) items[0].focus();
       if (openMenus.indexOf(entry) === -1) openMenus.push(entry);
