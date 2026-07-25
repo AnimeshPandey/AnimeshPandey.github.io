@@ -19,6 +19,8 @@ permalink: /search/index.html
     </p>
   </header>
 
+  <div id="search-casey-bubble"></div>
+
   <div class="casebook-search__box">
     <label for="casebook-search-input" class="casebook-search__label">Search</label>
     <input
@@ -48,5 +50,8 @@ permalink: /search/index.html
 
 </div>
 
+<script type="application/json" id="search-live-cases">{{ liveCases | dump | safe }}</script>
+{% include 'partials/casey-companion-lines.njk' %}
+<script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casebook-search.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casebook-search-page.js' | url }}" defer></script>
