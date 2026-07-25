@@ -15,6 +15,11 @@
       "mid": "Five cases complete. You're past tourist mode.",
       "staff": "Five completions. Time to cross-link patterns in the library."
     },
+    "reviewDue": {
+      "junior": "One from a while back is worth another look — want to revisit {title}?",
+      "mid": "{title} is due for a review — spaced repeats are what make a pattern stick.",
+      "staff": "{title} is due for a review pass — details fade faster than the headline principle."
+    },
     "filterMatch": {
       "junior": "Good filter — {n} case{nLabel} match.",
       "mid": "{n} case{nLabel} in this track.",
