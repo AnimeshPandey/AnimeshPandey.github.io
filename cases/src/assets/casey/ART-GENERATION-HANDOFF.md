@@ -6,6 +6,30 @@ whoever picks it up next starts from the actual current state (verified by readi
 code, not assumed) plus researched, licensed tool options — rather than rediscovering
 what already exists in this repo.
 
+> **2026-07-25 update:** the 48 raster PNGs described below were fully regenerated in
+> PR #78 (`fix/casey-full-regen`) — real, verified pose art, not a preview/anchor set,
+> with new automated topology checks (`assert-casey-extremities.mjs`,
+> `assert-casey-fur.mjs`, `assert-casey-no-checker.mjs`, `assert-casey-floor-matte.mjs`)
+> guarding against the specific defect classes found earlier this session (matte
+> rectangles, enclosed alpha holes, stray dots, extremity mottling). A full visual sweep
+> after that merge (all 48 poses at both grid and full-resolution size, plus real UI
+> context — hub, coach panel, preferences panel, mobile dock, milestone celebration,
+> search empty-state) found the regeneration clean: no artifacts, no console errors, all
+> four automated checks passing. **Everything below about the PNG *source* being usable
+> input for vectorization (Decision A) is now stronger, not weaker** — the source art is
+> materially better than what this doc was originally written against.
+>
+> One real content-quality finding from that sweep, unrelated to the technical defects
+> the regeneration fixed: **`staff/support.png` doesn't convey the "support" concept as
+> distinctly as its junior/mid counterparts.** `junior/support.png` shows clasped paws
+> with a visibly concerned expression; `mid/support.png` shows the character holding a
+> heart. `staff/support.png` reads as close to a generic sitting/idle pose — no clear
+> supportive gesture or prop. This is a content/art-direction gap (a future regeneration
+> or touch-up pass should give staff-tier `support` its own distinguishing gesture,
+> consistent with the other two tiers), not a technical defect the automated checks
+> above would catch — they check topology (alpha holes, matte rectangles, extremities),
+> not "does this pose read as distinct from `idle`."
+
 ## Current state (verified, not assumed)
 
 **Raster PNGs are the only asset runtime actually uses.** All three call sites that
