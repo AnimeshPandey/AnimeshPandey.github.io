@@ -59,4 +59,53 @@ test.describe('Casebook search', () => {
     await expect(page.locator('#casebook-search-input')).toHaveValue('flexbox');
     await expect(page.locator('.casebook-search__result-title').first()).toBeVisible();
   });
+
+  test('Casey shows an idle suggestion before typing, hides it once a query is active, and it reappears after clearing', async ({ page }) => {
+    await page.goto('/cases/search/');
+    const bubble = page.locator('#search-casey-bubble');
+    await expect(bubble.locator('.casey-about-bubble__text')).toBeVisible();
+
+    await page.fill('#casebook-search-input', 'flexbox');
+    await expect(bubble).toBeHidden();
+
+    await page.fill('#casebook-search-input', '');
+    await expect(bubble.locator('.casey-about-bubble__text')).toBeVisible();
+  });
+
+  test('Casey shows a track-affinity suggestion grounded in real progress instead of the generic idle line', async ({ page }) => {
+    await page.goto('/cases/search/');
+    const live = JSON.parse(await page.locator('#search-live-cases').innerText());
+    const byTrack: Record<string, string[]> = {};
+    for (const c of live) (byTrack[c.track] ||= []).push(c.slug);
+    const track = Object.keys(byTrack).find((t) => byTrack[t].length >= 2)!;
+    const twoSlugs = byTrack[track].slice(0, 2);
+
+    await page.evaluate((slugs) => {
+      const caseProgress: Record<string, { completedAt: string }> = {};
+      slugs.forEach((s: string) => (caseProgress[s] = { completedAt: new Date().toISOString() }));
+      localStorage.setItem(
+        'casebook-companion-v1',
+        JSON.stringify({
+          v: 1, tone: 'junior', visitedHub: true,
+          casesStarted: [], casesCompleted: slugs,
+          libraryOpened: false, lastSlug: null,
+          lastVisitAt: new Date().toISOString(), previousVisitAt: new Date().toISOString(),
+          milestones: [], dismissedTips: [], caseyIntensity: 'full',
+          caseProgress, confettiSeenSlugs: [],
+        })
+      );
+    }, twoSlugs);
+    await page.reload({ waitUntil: 'networkidle' });
+
+    const text = await page.locator('#search-casey-bubble .casey-about-bubble__text').innerText();
+    const trackLabel = track.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    expect(text).toContain(trackLabel);
+  });
+
+  test('the zero-results message is dynamic and includes the actual query', async ({ page }) => {
+    await page.goto('/cases/search/');
+    await page.fill('#casebook-search-input', 'zzznonexistentqueryzzz');
+    await expect(page.locator('#casebook-search-empty')).toBeVisible();
+    await expect(page.locator('#casebook-search-empty .hub-empty__msg')).toContainText('zzznonexistentqueryzzz');
+  });
 });

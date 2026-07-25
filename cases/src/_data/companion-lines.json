@@ -97,6 +97,23 @@
       "staff": "Casey in Staff mode surfaces production gotchas and measurement notes."
     }
   },
+  "search": {
+    "idle": {
+      "junior": "Search across every case and the reading library — or browse the hub if you're not sure what you want yet.",
+      "mid": "Full-text search across cases and the reading library. Try a mechanism name, not just a topic.",
+      "staff": "Indexes case titles, tracks, and library entries — company names work too."
+    },
+    "trackAffinity": {
+      "junior": "Still on a {track} kick? {title} is next in that track if you want to keep going.",
+      "mid": "{track} seems to be where you're focused — {title} is the next unread one there.",
+      "staff": "{track} has an unread case waiting: {title}."
+    },
+    "zeroResults": {
+      "junior": "Nothing for \"{query}\" — try a shorter or more general term.",
+      "mid": "No matches for \"{query}\". Try the underlying mechanism name rather than the product feature.",
+      "staff": "No index hits for \"{query}\" — the corpus is case titles/tracks + library entries, not full body text."
+    }
+  },
   "companies": {
     "mini": {
       "junior": "Pick a company you admire — then find a case that uses their patterns.",
