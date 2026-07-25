@@ -1,0 +1,104 @@
+{
+  "slug": "flex-min-width-zero",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Flex items have an invisible default: min-width: auto. For an item with a long word or filename inside, that means 'never smaller than my own content' — flex-shrink can't override it.",
+      "mid": "min-width: auto resolves to the item's content-intrinsic width, not zero. flex-shrink only controls how items shrink relative to each other once they hit that floor — it doesn't remove the floor.",
+      "staff": "This is the CSS Flexbox spec's automatic minimum size rule for the main axis, identical across evergreen browsers — not a bug, just an easy-to-miss default almost nobody sets deliberately."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Same three-card row, same long filename. Broken mode pushes the row wider than its container; fixed mode truncates the text with an ellipsis and the row stays put.",
+      "mid": "Only min-width changes between the two states — flex-shrink is identical in both. Shrink was always willing to act, it just had nowhere to go until the floor was removed.",
+      "staff": "Inspect the middle card's computed min-width in DevTools in each state: auto (resolving to content width) vs 0px — the entire behavioral difference in one property."
+    },
+    {
+      "chapter": "concept",
+      "junior": "flex-shrink is 'how eager is this item to shrink'; min-width: auto is 'how small will it ever actually go.' Even an eager shrinker stops at its content's own width unless you remove that floor.",
+      "mid": "min-width: 0 removes the floor entirely, letting flex-shrink act all the way down to zero. Pair it with overflow: hidden and text-overflow: ellipsis on the inner content so it truncates instead of clipping mid-character.",
+      "staff": "The same rule applies on the cross axis for column layouts (min-height: 0), and Grid has an equivalent gotcha: minmax(0, 1fr) vs. a plain 1fr track, for exactly the same automatic-minimum-size reason."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "The same fix, same reasoning, applies to flex-direction: column layouts — use min-height: 0 instead of min-width: 0, for the same reason on the other axis.",
+      "mid": "CSS Grid's version of this bug: a plain 1fr track can still refuse to shrink below its content's intrinsic size. minmax(0, 1fr) is the grid equivalent of min-width: 0 on a flex item.",
+      "staff": "Nested flex containers compound this: a parent item's own min-width: auto sets the floor for its whole subtree, regardless of what's declared on children further down — audit outside-in when hunting this in a deeply nested layout."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "A dashboard I built looked perfect in dev with short test data. In production, one user had a long filename in a flex card and the whole row overflowed sideways. One line, min-width: 0, fixed it.",
+      "mid": "It's a classic 'passes code review, fails in production' bug: the layout is visually correct with realistic-looking short test content. The failure only appears with content wider than the container, which nobody deliberately tests for.",
+      "staff": "The nested case is worse: if a parent flex item is also missing min-width: 0, none of its children's own shrink behavior can fix an overflow — the parent's auto-minimum sets the floor for the whole subtree. Audit outside-in, not inside-out."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's a one-property CSS fix for a bug that only shows up in production with real user data — a flex row that overflows because of a default nobody sets deliberately.",
+        "mid": "This case covers flex-shrink's hidden floor: the min-width: auto default, why it exists, and the min-width: 0 fix that lets flex items actually shrink all the way.",
+        "staff": "We're covering the Flexbox spec's automatic minimum size rule, the column/grid equivalents (min-height: 0, minmax(0, 1fr)), and why nested flex containers compound this bug."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Same three-card row, same long filename in the middle card — only min-width changes between the two states.",
+        "mid": "flex-shrink is identical in both states. Shrink was always willing to act; it just had nowhere to go until the floor was removed.",
+        "staff": "Only the middle card's computed min-width changes between the two demo states — everything else about the layout is identical."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for flex-min-width-zero.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
