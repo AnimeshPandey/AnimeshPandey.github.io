@@ -10,6 +10,18 @@
  * found across 45 of 48 live pose assets during the 2026-07-22 visual
  * audit — see the deferred-work plan for the full writeup.
  *
+ * Complements, not duplicates, the three existing tests/static/assert-
+ * casey-{fur,no-checker,floor-matte}.mjs checks — each of those fights a
+ * *previous* asset-corruption incident and is color-based: fur checks for
+ * too little white (opposite direction from this bug, which adds white,
+ * not removes it); no-checker explicitly excludes near-white pixels via
+ * its own isWarmFur() as legitimate fur, which is exactly this bug's
+ * color, so it's invisible to it; floor-matte only scans the bottom 25%
+ * of the canvas, while this defect sits around the head/face. This
+ * script is shape-based (geometric rectangularity, not color) and scans
+ * the whole canvas, which is why it catches what those three structurally
+ * can't.
+ *
  * Usage:
  *   node check-pose-alpha.mjs <file.png> [file2.png ...]
  *   node check-pose-alpha.mjs --json <file.png> ...   (machine-readable)
