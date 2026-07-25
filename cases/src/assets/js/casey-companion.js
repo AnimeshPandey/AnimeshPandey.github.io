@@ -148,6 +148,11 @@
 
   function resetCompanion() {
     progressStore.remove(STORAGE_KEY);
+    // Reading level lives in a separate store (casebook-tone.js) from
+    // everything else this function clears — without this, "Reset memory"
+    // silently left the tier picker on whatever the reader last chose,
+    // even though the confirm prompt promises to reset Casey wholesale.
+    if (window.CasebookTone) window.CasebookTone.setTone('junior');
   }
 
   if (typeof URLSearchParams !== 'undefined') {
@@ -343,7 +348,15 @@
       });
     }
     if (type === 'library-visit') state.libraryOpened = true;
-    if (type === 'hub-visit') state.visitedHub = true;
+    if (type === 'hub-visit') {
+      state.visitedHub = true;
+      // The prefs panel's "Visited the hub" milestone row (casey-companion-prefs.js)
+      // reads state.milestones, not state.visitedHub — without this push it could
+      // never flip to done no matter how many times the hub was visited.
+      if (state.milestones.indexOf('hub-visit') === -1) {
+        state.milestones.push('hub-visit');
+      }
+    }
 
     saveState(state);
     document.dispatchEvent(new CustomEvent('casey-companion-event', {

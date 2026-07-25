@@ -238,7 +238,11 @@
     if (!btn || !menu || !window.PrefsChrome || !window.PrefsChrome.PopoverMenu) return;
     window.PrefsChrome.PopoverMenu(btn, menu, {
       onOpen: function () {
-        wirePanels();
+        // wirePanels()/bindPanel() only ever run their setup once per root
+        // (caseyPanelBound guard) — the panel's already bound by boot() on
+        // page load, so what "refresh on open" actually needs is refreshPanel
+        // itself, which recomputes progress/milestones/motion status live.
+        document.querySelectorAll('[data-casey-prefs-root]').forEach(refreshPanel);
       },
     });
   }
