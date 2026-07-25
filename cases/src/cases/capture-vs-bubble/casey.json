@@ -1,0 +1,104 @@
+{
+  "slug": "capture-vs-bubble",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Every click on a page actually happens twice: once walking down to what you clicked, once walking back up. addEventListener only listens to the walk up, by default.",
+      "mid": "A bubble-phase listener (the addEventListener default) can be silenced by an inner element's stopPropagation() before it ever runs. A capture-phase listener can't — it already ran on the way down.",
+      "staff": "This is why real 'click outside to close' implementations register on document with { capture: true }, not the bubble-phase default most code reaches for without thinking about it."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Inner in both modes and watch the log. Same click, opposite order: bubble goes Inner-Middle-Outer, capture goes Outer-Middle-Inner.",
+      "mid": "event.eventPhase in the log confirms this isn't just call-order — capture-phase listeners genuinely run in phase 1, bubble-phase in phase 3, reported by the browser itself.",
+      "staff": "Toggling only changes the third argument to addEventListener on all three boxes. Nothing else about the click or the DOM structure changes between the two runs."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Think of it as walking down a hallway to a room, then walking back out. addEventListener's third argument picks which trip a listener hears: capture is the walk in, bubble is the walk out.",
+      "mid": "capture: true attaches a listener to the downward pass instead of the default upward one — the same three-argument addEventListener call, just one option different, and the fire order across nested elements completely reverses.",
+      "staff": "Capture-then-target-then-bubble is the DOM Events spec's dispatch algorithm, identical across every evergreen browser. event.eventPhase (1/2/3) reports which pass is currently running, independent of any framework."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "React's onClick in JSX is always bubble-phase. If you need capture, the prop has a Capture suffix: onClickCapture, onMouseDownCapture, and so on.",
+      "mid": "{ capture: true } composes with { once: true } in the same options object — a common combo for 'run exactly once, before anything downstream can suppress it', like dismissing a tooltip on the next click anywhere.",
+      "staff": "removeEventListener must match the capture value used at registration or it silently no-ops instead of throwing — the most common real bug with capture-phase listeners, and a genuine leak in components that mount/unmount repeatedly."
+    }
+  ],
+  "anecdotes": [
+    {
+      "chapter": "concept",
+      "junior": "I built a dropdown that wouldn't close when you clicked a button inside a totally unrelated widget. That widget's button called stopPropagation() on its own click, and my document-level bubble listener never even fired. Switching my listener to capture: true fixed it in one line.",
+      "mid": "The bug is invisible in isolation — your dropdown's own tests pass, because nothing inside YOUR component calls stopPropagation(). It only shows up once another team's widget does, on a page you don't control end to end.",
+      "staff": "This is why component libraries default their outside-click detection to capture: it's defensive against code they don't own and can't audit. If you're shipping a widget other teams will compose with arbitrary other widgets, assume something downstream will call stopPropagation() eventually."
+    }
+  ],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's about a DOM quirk that breaks 'click outside to close' menus in a way that's genuinely confusing to debug — the click happens, your listener just never hears about it.",
+        "mid": "This case covers event capture vs bubble phase: what addEventListener's third argument actually does, and why real component libraries lean on capture for outside-click detection specifically.",
+        "staff": "We're covering the DOM Events dispatch algorithm's three phases, the addEventListener capture option, and the removeEventListener capture-matching gotcha that's the most common real bug here."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
+        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
+        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+      },
+      {
+        "chapter": "demo",
+        "junior": "Click the small Inner box, watch the fire order in the log, then flip the toggle and click again — same click, reversed order.",
+        "mid": "event.eventPhase in the log is the browser confirming this for real, not just JS call order looking that way.",
+        "staff": "Only the capture option on addEventListener changes between the two demo states — everything else about the click is identical."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "This section covers takeaway for capture-vs-bubble.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try bubble", "target": "[data-demo-state=broken]" },
+        { "label": "Try capture", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle bubble", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle capture", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Bubble phase", "target": "[data-demo-state=broken]" },
+        { "label": "Capture phase", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
