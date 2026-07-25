@@ -333,6 +333,14 @@
       if (state.casesCompleted.length >= 5 && state.milestones.indexOf('five-cases') === -1) {
         state.milestones.push('five-cases');
       }
+      // Populates the "new shape" caseProgress[slug].completedAt that
+      // casey-guide.js's _recentStreak()/_completedCount() already read
+      // defensively (with a fallback to the legacy casesCompleted array
+      // when absent) — until this line, nothing ever wrote it, so the
+      // streak-based hub greeting variant could never fire.
+      state.caseProgress[slug] = Object.assign({}, state.caseProgress[slug], {
+        completedAt: new Date().toISOString(),
+      });
     }
     if (type === 'library-visit') state.libraryOpened = true;
     if (type === 'hub-visit') state.visitedHub = true;
@@ -342,6 +350,44 @@
       detail: { type: type, state: state, slug: slug },
     }));
     return state;
+  }
+
+  // Fixed-interval review ladder (not full spaced-repetition — a case is
+  // "due" once per interval, in a 1-day window after it elapses, then
+  // drops off the ladder after the last interval). Deliberately simple:
+  // most of the value of spaced repetition for a fading-technical-detail
+  // use case comes from "revisit at all," not from a difficulty-adjusted
+  // schedule.
+  var REVIEW_INTERVALS_MS = [7, 30, 90].map(function (days) { return days * 86400000; });
+
+  /**
+   * Returns the slugs of completed cases currently due for review — i.e.
+   * caseProgress[slug].completedAt is 7, 30, or 90 days old (within a
+   * 1-day catch window so a missed visit doesn't silently skip the slot).
+   * `now` is injectable for tests; defaults to Date.now().
+   */
+  function dueForReview(caseProgress, now) {
+    now = now || Date.now();
+    var due = [];
+    Object.keys(caseProgress || {}).forEach(function (slug) {
+      var entry = caseProgress[slug];
+      if (!entry || !entry.completedAt) return;
+      var age = now - new Date(entry.completedAt).getTime();
+      var isDue = REVIEW_INTERVALS_MS.some(function (interval) {
+        return age >= interval && age < interval + 86400000;
+      });
+      if (isDue) due.push(slug);
+    });
+    return due;
+  }
+
+  /** First due-for-review slug with a known title, or null. Used to pick a single hub nudge. */
+  function pickReviewDueSlug(caseProgress, titles, now) {
+    var due = dueForReview(caseProgress, now);
+    for (var i = 0; i < due.length; i++) {
+      if (titles && titles[due[i]]) return due[i];
+    }
+    return null;
   }
 
   function suggest(ctx) {
@@ -373,6 +419,12 @@
       } else if (state.visitedHub) {
         out.line = lineAt('hub.returning', tone);
         out.pose = 'welcome';
+      }
+      var reviewSlug = pickReviewDueSlug(state.caseProgress, readCaseTitles());
+      if (reviewSlug) {
+        out.line = lineAt('hub.reviewDue', tone, { title: readCaseTitles()[reviewSlug] });
+        out.pose = 'point';
+        out.reviewSlug = reviewSlug;
       }
       return out;
     }
@@ -929,6 +981,12 @@
     }
 
     function pickInitialGreetingFallback(tier) {
+      var titles = readCaseTitles();
+      var reviewSlug = pickReviewDueSlug(state.caseProgress, titles);
+      if (reviewSlug) {
+        var reviewLine = lineAt('hub.reviewDue', tier, { title: titles[reviewSlug] });
+        if (reviewLine) return reviewLine;
+      }
       var completed = state.casesCompleted.length;
       if (completed >= 5) return lineAt('hub.progress5', tier) || greetings(tier)[0];
       if (completed >= 1) return lineAt('hub.progress1', tier) || greetings(tier)[0];
@@ -1571,5 +1629,7 @@
     recordProgress: recordProgress,
     lineAt: lineAt,
     readTier: readTier,
+    dueForReview: dueForReview,
+    pickReviewDueSlug: pickReviewDueSlug,
   };
 }());
