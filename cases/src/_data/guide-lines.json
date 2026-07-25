@@ -8,7 +8,27 @@
       { "pose": "welcome", "line": "Good to see you back. {completed} down, more to explore." },
       { "pose": "perk", "line": "Pick up where you left off — or try something new." }
     ],
-    "return_streak": [
+    "long_absence": [
+    {
+      "pose": "welcome",
+      "line": "Been a while! You'd already gotten through {completed} — want to pick it back up?"
+    },
+    {
+      "pose": "wave",
+      "line": "Welcome back — it's been a minute. {completed} cases still logged and waiting."
+    }
+  ],
+  "track_affinity": [
+    {
+      "pose": "point",
+      "line": "You've been deep in {track} lately — there's another one waiting if you want to keep going."
+    },
+    {
+      "pose": "nod",
+      "line": "{track} seems to be your track — want the next one in that set?"
+    }
+  ],
+  "return_streak": [
       { "pose": "celebrate", "line": "{streak} cases in a row — you're on a streak!" },
       { "pose": "proud", "line": "Look at you go — {streak} cases completed." }
     ],

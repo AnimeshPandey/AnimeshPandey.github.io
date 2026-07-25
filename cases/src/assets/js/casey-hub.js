@@ -11,6 +11,44 @@
   }
   var hubEl = document.querySelector('[data-casey-hub]');
 
+  // Cross-references completed slugs against the hub's own card DOM (each
+  // <li data-track> already carries the track, no extra data plumbing
+  // needed) to find a track the reader has completed 2+ cases in that
+  // still has an unread case sitting on the hub. Lives here rather than
+  // in casey-guide.js so that module stays DOM-free — it only ever reads
+  // localStorage state, casey-hub.js is what already touches hub markup.
+  function trackAffinity(state) {
+    // The card grid (#hub-grid) is a sibling of the casey-hub greeting
+    // section in the DOM, not a descendant of it — querying from hubEl
+    // finds zero cards. Scope to the grid directly instead.
+    var grid = document.getElementById('hub-grid');
+    var cards = grid ? grid.querySelectorAll('li[data-track]') : [];
+    var completed = {};
+    (state.casesCompleted || []).forEach(function (s) { completed[s] = true; });
+    var doneCounts = {};
+    var hasUnread = {};
+    cards.forEach(function (li) {
+      var track = li.getAttribute('data-track');
+      if (!track) return;
+      var link = li.querySelector('.case-card__link');
+      var href = link && link.getAttribute('href');
+      var slug = href ? href.replace(/\/+$/, '').split('/').pop() : null;
+      if (!slug) return;
+      if (completed[slug]) {
+        doneCounts[track] = (doneCounts[track] || 0) + 1;
+      } else {
+        hasUnread[track] = true;
+      }
+    });
+    var topTrack = null;
+    var topCount = 1; // require at least 2 completions in the track to count as an affinity
+    Object.keys(doneCounts).forEach(function (t) {
+      if (doneCounts[t] > topCount) { topCount = doneCounts[t]; topTrack = t; }
+    });
+    if (!topTrack || !hasUnread[topTrack]) return null;
+    return topTrack.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+  }
+
   function tryReviewDueGreeting() {
     var greetEl = document.querySelector('[data-casey-greeting]');
     if (!greetEl) return false;
@@ -41,7 +79,8 @@
     // immediately overwrite the text set here.
     if (tryReviewDueGreeting()) return;
     if (!window.CaseyGuide) return;
-    var suggestion = CaseyGuide.suggest('hub');
+    var track = trackAffinity(window.CaseyCompanion.getState());
+    var suggestion = CaseyGuide.suggest('hub', track ? { track: track } : undefined);
     if (!suggestion) return;
 
     var greetEl = document.querySelector('[data-casey-greeting]');

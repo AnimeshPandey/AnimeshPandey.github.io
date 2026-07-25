@@ -410,7 +410,8 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 
 .casey-coach--compact .casey-coach__bubble,
 .casey-coach--compact .casey-coach__actions,
-.casey-coach--compact .casey-coach__voice {
+.casey-coach--compact .casey-coach__voice,
+.casey-coach--compact .casey-coach__explain {
   display: none !important;
 }
 
@@ -421,7 +422,8 @@ html.casebook--reduce-motion .case-chapter.is-visible {
 
 .casey-coach--minimal .casey-coach__bubble,
 .casey-coach--minimal .casey-coach__actions,
-.casey-coach--minimal .casey-coach__voice {
+.casey-coach--minimal .casey-coach__voice,
+.casey-coach--minimal .casey-coach__explain {
   display: none !important;
 }
 
@@ -534,6 +536,20 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   flex-shrink: 0;
 }
 .casey-coach__voice:hover { color: var(--casebook-accent); }
+
+.casey-coach__explain {
+  font-family: var(--mono, monospace); font-size: 11px;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--casebook-ink-faint);
+  min-height: 44px; min-width: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.casey-coach__explain:hover { color: var(--casebook-accent); }
+.casey-coach__explain--active { color: var(--casebook-accent); }
+.casey-coach__explain[hidden] { display: none; }
 
 /* Desktop casey card */
 .casey-coach__card {

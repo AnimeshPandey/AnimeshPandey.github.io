@@ -65,6 +65,8 @@
     var rows = [
       { id: 'first-case-completed', label: 'First case completed' },
       { id: 'five-cases', label: 'Five cases completed' },
+      { id: 'ten-cases', label: 'Ten cases completed' },
+      { id: 'twenty-cases', label: 'Twenty cases completed' },
       { id: 'hub-visit', label: 'Visited the hub' },
     ];
     var ms = state.milestones || [];

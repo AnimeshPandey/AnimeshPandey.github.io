@@ -38,6 +38,17 @@
     }).length;
   }
 
+  // Days since the visit BEFORE this one (casey-companion.js's
+  // recordEvent() stashes the pre-overwrite lastVisitAt into
+  // previousVisitAt specifically so this is available) — null if there's
+  // no prior visit to compare against (first-ever visit).
+  function _daysSinceLastVisit(progress) {
+    if (!progress.previousVisitAt) return null;
+    var prev = new Date(progress.previousVisitAt).getTime();
+    if (isNaN(prev)) return null;
+    return (Date.now() - prev) / 86400000;
+  }
+
   function _pickLine(lines, vars) {
     if (!lines || !lines.length) return null;
     var item = lines[Math.floor(Math.random() * lines.length)];
@@ -66,10 +77,24 @@
       var progress = _loadProgress();
       var completed = _completedCount(progress);
       var streak = _recentStreak(progress);
+      var daysSince = _daysSinceLastVisit(progress);
       var vars = Object.assign({ completed: completed, streak: streak, filtered: '' }, extraVars || {});
 
       if (context === 'hub') {
         if (completed === 0) return _pickLine(lines.hub.first_visit, vars);
+        // A returning-after-a-while welcome is more relevant than the
+        // generic streak/count lines below it — but only once there's
+        // real progress to welcome them back to.
+        if (daysSince !== null && daysSince >= 14 && lines.hub.long_absence) {
+          return _pickLine(lines.hub.long_absence, vars);
+        }
+        // vars.track is set by casey-hub.js when it detects the reader has
+        // completed 2+ cases in one track AND that track still has an
+        // unread case on the hub — a specific, actionable nudge, so it
+        // outranks the generic streak/count lines too.
+        if (vars.track && lines.hub.track_affinity) {
+          return _pickLine(lines.hub.track_affinity, vars);
+        }
         if (streak >= 3)     return _pickLine(lines.hub.return_streak, vars);
         if (completed >= 10) return _pickLine(lines.hub.return_high, vars);
         return _pickLine(lines.hub.return_low, vars);
