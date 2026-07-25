@@ -48,6 +48,10 @@ Casey runtime uses **PNG poses** (`casey-coach.js` / `casey-hub.js`). After AI b
 
 Legacy SVG regen (fallback): `node scripts/generate-casey-svgs.mjs`. See `src/assets/casey/STYLE-GUIDE.md`.
 
+### Casey voice (per-case audio)
+
+The "Listen with Casey" button (`casey-voice.js`) plays a pre-generated MP3 per case/chapter/tone from `src/assets/casey/voice/<slug>/<chapter>-<tone>.mp3`, falling back to the browser's own `speechSynthesis` if a file is missing or fails to load. The script text lives in each case's `casey.json` under `voice.sections` — see `scripts/content/README.md`'s voice-content section for the boilerplate detector, and `scripts/content/generate-voice-audio.mjs`'s own header comment for how to (re)generate audio after editing that text (requires locally-installed `piper` + `ffmpeg`, not an npm dependency).
+
 ## Architecture decisions
 
 - No portfolio service worker, theme.js, or recruiter scripts on `/cases/*`

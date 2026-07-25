@@ -167,3 +167,32 @@ A live case's actual `takeaway` markup uses bare text directly inside each
 — `apply-case-prose.mjs` special-cases `takeaway` to match. Found by
 actually applying a synthetic draft and diffing the result against a real
 case's markup, not by reading the scaffold template alone.
+
+## Voice-script content (`casey.json`'s `voice.sections`)
+
+A separate content surface from `hints` (above) and from the chapter
+prose in `index.njk`: `voice.sections` is the text `casey-voice.js` reads
+aloud through the "Listen with Casey" button. It has its own boilerplate
+problem and its own detector, because a string generic enough to flag as
+boilerplate in one field isn't necessarily generic in the other — see
+`lib/voice-boilerplate.mjs`'s header comment for why this isn't just
+folded into `KNOWN_BOILERPLATE_HINTS`.
+
+```bash
+node scripts/content/check-voice-boilerplate.mjs          # all live cases
+node scripts/content/check-voice-boilerplate.mjs --json   # machine-readable
+```
+
+Unlike the two draft/review/apply pipelines above, there's currently no
+`draft-voice-fixes.mjs` — the 2026-07-25 fix for all 31 live cases (174 of
+372 slots were empty or boilerplate) was authored directly rather than
+through a generator script, since the content is short (1-3 sentences per
+slot) and benefits from being read in the context of the case's full
+chapter prose rather than assembled mechanically. If a large batch of
+voice-script fixes is needed again, `draft-boilerplate-fixes.mjs` is the
+closest existing template to extend, swapping the target field and
+grounding material.
+
+After editing `voice.sections` text, regenerate the corresponding audio —
+see the "Casey voice" section in `../../README.md` and
+`generate-voice-audio.mjs`'s header comment.
