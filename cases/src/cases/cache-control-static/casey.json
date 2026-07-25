@@ -1,0 +1,148 @@
+{
+  "slug": "cache-control-static",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Short cache lifetimes feel safe, but they mean everyone re-downloads the same unchanged file over and over. That's the opposite of what caching is for.",
+      "mid": "Same-named asset + short Cache-Control is a tradeoff you don't have to make once hashing enters the picture.",
+      "staff": "The real bug here is that HTML and its hashed assets need opposite caching policies, one mutable pointer, one immutable payload."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle between the two modes and watch which requests actually hit the network on the second and third simulated visit.",
+      "mid": "The fixed mode's request log should go quiet after the first load until the hash itself changes.",
+      "staff": "The broken mode's 'stale after deploy' state is a 200 from cache, not an error, that's exactly why it's hard to catch in monitoring."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The filename itself becomes the cache key. Change the file, change the name, and the old cached copy just stops being requested.",
+      "mid": "max-age=31536000 plus immutable only makes sense once the URL is a pure function of the content.",
+      "staff": "This turns cache invalidation, notoriously hard, into a non-problem: there's nothing to invalidate, only a new URL to start requesting."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "The HTML file is the one exception, it always needs a short cache lifetime so the browser can learn the new hashed filenames.",
+      "mid": "no-cache on the HTML entry point forces a cheap revalidation (a 304) on every load instead of skipping the request entirely.",
+      "staff": "A service worker's cache lifecycle doesn't inherit HTTP Cache-Control for free, if one exists, it needs this same discipline applied on purpose."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a static file that never changes name between deploys, so browsers end up re-downloading it constantly, or worse, serving a stale copy after you ship a fix.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is to bake a content hash into the filename, so the URL itself changes the moment the file does, and cache that URL forever with no risk.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try the short-lived cache mode first, then switch to hashed and immutable, and watch how many requests actually go out on the repeat visits.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Hash your asset filenames, cache them forever, and keep the HTML that points to them on a short lifetime so it always finds the latest hash.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

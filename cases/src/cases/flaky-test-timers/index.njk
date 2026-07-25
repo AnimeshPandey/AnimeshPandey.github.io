@@ -1,0 +1,184 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Fake Timers vs Real Timers"
+description: "Why a test that waits on a real setTimeout is a coin flip under CI load, and how swapping in fake timers makes the same assertion deterministic."
+slug: flaky-test-timers
+track: testing-quality
+readMin: 10
+flagship: false
+demoType: code-only
+principle: Flakiness
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/flaky-test-timers-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>A test that passes 98% of the time isn't passing</h2>
+  <div class="tone-junior">
+    <p>
+      You write a test for a component that shows a "Saved!" toast 2 seconds after a save button is clicked, then hides it. The test clicks save, waits, and asserts the toast appears. It passes on your laptop every time. In CI, it fails maybe once every 40 runs, always on the same line.
+    </p>
+    <p>
+      The test isn't testing your component's logic — it's racing a real 2-second clock against however busy the CI runner happens to be that day.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Any test that does <code>await new Promise(r => setTimeout(r, 2000))</code> (or an equivalent real wait) and then asserts is coupling test correctness to wall-clock scheduling. Under CI load — shared runners, other jobs, throttled CPU — a "2 second" wait can take 2.3 seconds, and a test written to check state at exactly the 2-second mark starts flaking.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Fake timers replace <code>setTimeout</code>/<code>setInterval</code>/<code>Date</code> with an in-process, synchronous clock the test controls directly — advancing it doesn't wait for real time to pass, it fires the callbacks scheduled for that point instantly. The assertion becomes deterministic because there's no real clock left to race against.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The test controls the clock instead of waiting on it</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of your test actually pausing for 2 real seconds, a fake-timer library swaps out <code>setTimeout</code> with its own version. When your test calls "advance time by 2000ms," every timer scheduled to fire within that window runs immediately, in order — no real waiting happens at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Vitest's <code>vi.useFakeTimers()</code> and Jest's <code>jest.useFakeTimers()</code> both patch the global timer functions for the duration of a test. <code>vi.advanceTimersByTime(2000)</code> (or Jest's <code>jest.advanceTimersByTime</code>) synchronously fires anything due in that window; <code>vi.runAllTimers()</code> fires everything currently scheduled, including timers that schedule further timers.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This only fixes flakiness caused by <em>timer</em> races. A test can still flake for unrelated reasons — real network calls, unflushed microtasks, DOM layout timing — so fake timers are the fix specifically when the thing you're waiting on is a <code>setTimeout</code>/<code>setInterval</code> your own code scheduled, not a general-purpose flake cure.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The debounced search box that failed one run in forty</h2>
+  <div class="tone-junior">
+    <p>
+      A team's search input debounced its API call by 300ms — type, wait 300ms of silence, then fire. Their test typed a query, used a real <code>await new Promise(r => setTimeout(r, 350))</code> to "wait past the debounce," then asserted the API mock was called once.
+    </p>
+    <p>
+      It failed intermittently in CI, never locally. Nobody could reproduce it on demand, which made it worse than a test that just failed outright — it looked like a real product bug at first.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Switching to <code>vi.useFakeTimers()</code> plus <code>vi.advanceTimersByTime(300)</code> removed the real wait entirely. The test now asserts the mock was called zero times immediately after typing, then exactly once after advancing the fake clock past the debounce window — both checks are synchronous and can't be affected by how loaded the CI runner is.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team also caught a latent bug this way: advancing to exactly 300ms (not 350ms) revealed the debounce comparison used <code>&gt;</code> instead of <code>&gt;=</code>, so the call fired one tick later than the component's own advertised delay. The real-timer version had enough slack (350ms padding) to hide this; the fake-timer version, being exact, didn't.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Real setTimeout wait racing CI load (flaky) vs. a fake clock the test advances synchronously (deterministic)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>A real wait vs. a controlled one</h2>
+  <div class="tone-junior">
+    <p>Both snippets test the same debounced search box. One waits on the real clock and pads its timeout to "probably" be safe; the other advances a fake clock to the exact millisecond and never guesses.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Note the fake-timer version also asserts the zero-calls state <em>before</em> advancing — something the real-timer version can't cheaply do without adding yet another real wait.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The fake-timer version runs faster too: no test suite time is spent actually sleeping, so a file full of timer-dependent tests finishes in milliseconds instead of accumulating real seconds per test.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Flaky real-timer test vs deterministic fake-timer test for a debounced search box"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="flaky-test-timers">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a real-timer test against a fake-timer test for the same debounced search box; it requires JavaScript to load the code comparison in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Flaky: races the real clock, padded "to be safe"
+it('fires search after debounce', async () =&gt; {
+  fireEvent.change(input, { target: { value: 'react' } });
+  await new Promise(r =&gt; setTimeout(r, 350)); // hope 350 &gt; CI jitter
+  expect(searchApi).toHaveBeenCalledTimes(1);
+});
+
+// Deterministic: the test owns the clock
+it('fires search after debounce', () =&gt; {
+  vi.useFakeTimers();
+  fireEvent.change(input, { target: { value: 'react' } });
+
+  expect(searchApi).not.toHaveBeenCalled(); // true immediately, no call yet
+  vi.advanceTimersByTime(300);              // exactly the debounce window
+  expect(searchApi).toHaveBeenCalledTimes(1);
+
+  vi.useRealTimers();
+});</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>What fake timers don't fix, and cleaning up after them</h2>
+  <div class="tone-junior">
+    <p>
+      Always call <code>vi.useRealTimers()</code> (or Jest's equivalent) after a test that used fake timers, usually in an <code>afterEach</code>. Forgetting this leaks the fake clock into the next test file's timers, which can cause a completely different, much more confusing kind of flakiness.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Fake timers don't fake <code>requestAnimationFrame</code> or real network I/O by default — libraries differ, so check whether your test needs <code>vi.useFakeTimers({ toFake: [...] })</code>-style scoping if a component also depends on rAF timing, or you'll get a different flake, not a fix.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Testing Library's <code>waitFor</code> polls with real microtask/macrotask ticks under the hood; mixing it with fake timers requires either <code>vi.advanceTimersByTimeAsync</code> or wrapping assertions carefully, because <code>waitFor</code>'s own internal polling can itself stall waiting on a timer that will now never fire on its own. Check your fake-timer library's docs for the specific async-flush helper it ships for exactly this interaction.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A test that waits on a real setTimeout is racing the CI runner's actual load, not just your code — that's why it passes locally and flakes in CI.</div>
+        <div class="tone-mid">Fake timers (vi.useFakeTimers / jest.useFakeTimers) let a test advance a controlled clock synchronously instead of waiting on wall-clock time.</div>
+        <div class="tone-staff">Fake timers only fix flakiness caused by timer races specifically — unrelated flake sources (network, unflushed microtasks, layout timing) need their own fix.</div>
+      </li>
+    </ul>
+  </div>
+</section>

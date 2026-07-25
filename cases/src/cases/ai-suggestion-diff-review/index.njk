@@ -1,0 +1,239 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Diff Review Before Merge (Copilot Pattern)"
+description: "Why an AI code suggestion applied straight to the file, with no diff shown, is how a defensive null check quietly disappears — and why a required accept/reject diff view is what actually catches it."
+slug: ai-suggestion-diff-review
+track: ai-frontend-integration
+readMin: 10
+flagship: false
+demoType: toggle
+principle: HITL
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/ai-suggestion-diff-review-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The null check that "looked unnecessary"</h2>
+  <div class="tone-junior">
+    <p>
+      You ask an AI assistant to "clean up" a price-formatting function. It comes back with
+      one line removed: a guard clause that returned <code>—</code> when the price hadn't
+      loaded yet. The suggestion applies straight into your editor, no diff, no confirmation.
+      You skim the new version, it looks fine, you commit. Three days later prices are
+      showing <code>$NaN</code> for every product still loading on slow connections.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The AI wasn't wrong about the code being simpler without the null check — it was wrong
+      about the check being unnecessary. It had no way to know <code>cents</code> genuinely
+      arrives as <code>null</code> during the loading state; that context lives in the
+      calling component, not the function it was looking at. Nothing failed loudly. The
+      function still returned a string, just the wrong one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the specific failure mode diff-review UIs exist to catch: not "the AI is
+      usually wrong" (it isn't), but that an auto-applied edit removes the one thing a
+      human would have caught in half a second — a removed guard clause is visually obvious
+      in a diff, and invisible in a finished file you're skimming for the first time.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Show the change, require an explicit decision</h2>
+  <div class="tone-junior">
+    <p>
+      The fix isn't "don't use AI suggestions" — it's changing how a suggestion reaches your
+      file. Instead of the AI editing the file directly, it proposes a diff: here's what
+      would be removed, here's what would be added. You look at exactly those lines, and
+      you click Accept or Reject. Nothing merges until you've made that call.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is the same review discipline you'd apply to a human teammate's pull request,
+      pointed at an AI suggestion instead — and it's exactly the shape GitHub Copilot's own
+      review UI uses: suggestions render as inline diffs with per-suggestion Accept/Dismiss
+      controls, not as silent file edits.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The mechanism that matters isn't the diff rendering, it's the required decision point.
+      A diff you can passively scroll past provides no more protection than an auto-applied
+      edit — the review has to block on an explicit accept or reject per change before it
+      takes effect, which is what turns "the AI proposed something" into "a human confirmed
+      this specific change is correct."
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The edit that shipped because nothing looked different</h2>
+  <div class="tone-junior">
+    <p>
+      A small e-commerce team wired an in-house AI "quick fix" button directly into their
+      code editor: click it, the suggestion replaces the selected function in place. It
+      worked well for weeks — mostly small renames and obvious cleanups. Then someone used
+      it on <code>formatPrice()</code>, and the null-check removal above happened for real.
+      The PR that shipped it had a green CI run and a one-line diff in GitHub — but the
+      developer had already accepted the AI's in-editor rewrite before opening the PR, so by
+      the time a teammate could have caught it in review, the change looked like an
+      intentional simplification, not a suggestion someone should double-check.
+    </p>
+    <p>
+      Support tickets about "$NaN" showing up on the pricing page took four days to connect
+      back to that commit, because nothing in the deploy pipeline flagged it — the code was
+      syntactically fine and passed every existing test, none of which covered the
+      still-loading state.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The postmortem's actual finding wasn't "the AI made a mistake" — it was that the
+      tool's UX made an AI suggestion indistinguishable from a change the developer had
+      written and verified themselves. There was no moment in the workflow where the
+      specific lines being removed were shown side-by-side with a decision required.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix the team shipped wasn't a smarter model — it was a UI change: the "quick fix"
+      button now opens a diff panel with the proposed removal/addition highlighted and
+      Accept/Reject buttons, and nothing touches the file until one is clicked. The bug rate
+      from AI-assisted edits didn't drop because suggestions got better; it dropped because
+      rejecting a bad one became a five-second, zero-cost action instead of something that
+      required noticing a problem after the fact.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">AI suggestion silently overwrites the file (broken) vs. a required accept/reject diff before anything merges (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: request a suggestion, then see what each mode lets through</h2>
+  <div class="tone-junior">
+    <p>
+      Click "Get AI suggestion" in either mode, then run the test call below the code. In
+      auto-apply mode, the suggestion overwrites the function immediately and the test
+      already reflects the broken behavior. In diff-review mode, nothing changes until you
+      click Accept — try Reject instead and watch the test call stay correct.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Both modes propose the exact same edit (removing the null guard) — the only variable
+      is whether it applies immediately or waits on an explicit per-hunk decision.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The test call underneath re-invokes the current version of the function live, so you
+      can see the actual runtime output flip from <code>—</code> to <code>$NaN</code> the
+      instant the edit takes effect — in auto-apply mode that's the moment you click
+      "Get AI suggestion"; in diff-review mode it's the moment you click Accept, and never if
+      you click Reject.
+    </p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="AI suggestion review: auto-apply vs. required diff review"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="ai-suggestion-diff-review">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> Compares an AI suggestion that overwrites code immediately against one that requires an explicit accept/reject diff review before it merges.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Auto-apply
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Diff review
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Diff review</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Making the review step real, not decorative</h2>
+  <div class="tone-junior">
+    <p>
+      A diff view only helps if someone actually reads it. Highlight exactly the changed
+      lines (not the whole function) so the reviewer's eyes go straight to what matters, and
+      make Reject at least as easy to reach as Accept — a UI that buries "reject" one click
+      deeper than "accept" quietly nudges people toward rubber-stamping.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Keep an audit trail of what was accepted vs. rejected and by whom, scoped per
+      suggestion, not per session — this is what lets a postmortem answer "did anyone
+      actually see this diff" instead of guessing from git blame alone.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The diff panel needs the same accessibility treatment as any other critical-path UI:
+      the accept/reject controls must be reachable and operable by keyboard alone (this
+      demo's buttons are real <code>&lt;button&gt;</code> elements for exactly that reason),
+      and the applied/rejected result should announce via <code>aria-live</code> so a screen
+      reader user gets the same "did my decision take effect" confirmation a sighted user
+      gets from watching the code visibly change.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">An AI suggestion that edits your file directly, with no diff shown, removes the one moment you'd naturally catch a bad change.</div>
+        <div class="tone-mid">Route AI suggestions through the same diff-and-decide flow you'd use for a human teammate's PR — GitHub Copilot's own review UI works exactly this way.</div>
+        <div class="tone-staff">The protection comes from a required per-hunk decision blocking the merge, not from the diff rendering itself — a diff you can passively scroll past protects nothing.</div>
+      </li>
+      <li>
+        <div class="tone-junior">A removed guard clause looks obvious in a diff and invisible once it's already part of a finished file you're skimming for the first time.</div>
+        <div class="tone-mid">The AI wasn't wrong that the code was simpler — it was wrong about the check being unused, because that context lived in a caller it never saw.</div>
+        <div class="tone-staff">Make Reject at least as reachable as Accept, and keep an audit trail of which suggestions were actually reviewed — both close real gaps a passive diff view leaves open.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,115 @@
+{
+  "slug": "flaky-test-timers",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A test that pads a real wait to \"probably be enough\" is still gambling on how busy the CI runner is that day.",
+      "mid": "If a test only fails on shared CI runners and never locally, a real-timer race is the first thing to suspect, not a product bug.",
+      "staff": "The fix isn't a longer padding value — it's removing the real wait from the test's critical path entirely."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Watch the fake-timer version assert zero calls before advancing the clock, then exactly one call right after — no waiting either time.",
+      "mid": "advanceTimersByTime(300) is exact; the real-timer version's 350ms is a guess at how much CI jitter to absorb.",
+      "staff": "Exact timer advancement caught a real off-by-one in the debounce comparison that the padded real-timer version had been silently absorbing."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Fake timers swap out setTimeout for a version the test itself controls — advancing it fires callbacks instantly, no real waiting.",
+      "mid": "vi.advanceTimersByTime / jest.advanceTimersByTime fires everything due in that window synchronously, including timers that schedule further timers.",
+      "staff": "This only removes timer-race flakiness — network calls, unflushed microtasks, and layout timing can still flake for unrelated reasons."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Always call useRealTimers() after a test that faked them, usually in afterEach, or the fake clock leaks into the next test file.",
+      "mid": "Fake timers don't automatically fake requestAnimationFrame — check your library's toFake option if a component also depends on rAF timing.",
+      "staff": "waitFor's own internal polling can stall against a fake clock; use your library's async-flush helper (e.g. advanceTimersByTimeAsync) when combining the two."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! This one's about a test that passes on your laptop every time but flakes in CI once in a while. Turns out it's racing a real clock, not testing your code.",
+        "mid": "We're looking at why a real setTimeout wait inside a test becomes a coin flip under CI load, and how fake timers fix that.",
+        "staff": "This covers fake-timer libraries, exact clock advancement, and where fake timers stop helping."
+      },
+      {
+        "chapter": "concept",
+        "junior": "A fake-timer library swaps out setTimeout with one the test controls. Advancing it fires callbacks right away, no real waiting.",
+        "mid": "vi.advanceTimersByTime fires everything due in that window synchronously, in order.",
+        "staff": "This fixes timer races specifically. It won't help with network calls or layout-timing flakiness."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Look at the two tests side by side. The flaky one pads its wait and hopes. The fake-timer one advances the clock to the exact millisecond.",
+        "mid": "Notice the fake-timer version can assert the zero-calls state before advancing — the real-timer version can't cheaply do that.",
+        "staff": "Exact advancement is what caught the off-by-one debounce comparison in the story above."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "If a test only flakes in CI, suspect a real-timer race before anything else.",
+        "mid": "Fake timers make timer-dependent tests deterministic and fast — no real waiting, no CI-load guessing.",
+        "staff": "Clean up with useRealTimers() every time, and reach for your library's async-flush helper when mixing fake timers with waitFor."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}
