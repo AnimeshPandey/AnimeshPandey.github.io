@@ -147,8 +147,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Labor perception research shows visible effort lowers frustration even when nothing about the actual wait time changes. A skeleton implies progress; a spinner implies nothing.",
+        "staff": "Beyond perception, a well-built skeleton also helps your CLS score, since content slots directly into the space it already reserved instead of popping in and shifting everything around it."
       },
       {
         "chapter": "demo",
@@ -158,9 +158,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for skeleton-screens-perceived-speed.",
-        "mid": "",
-        "staff": ""
+        "junior": "Skeleton screens feel faster even when they're not actually faster. It's psychology, not magic.",
+        "mid": "Perceived wait time isn't the same as measured wait time. Reducing uncertainty matters as much as reducing the actual clock.",
+        "staff": "Your skeleton's geometry has to match the real content's geometry, or you'll trade a spinner's CLS problem for a skeleton's CLS problem instead."
       }
     ]
   }

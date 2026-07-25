@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "First thing to check: is your debounce timer way longer than it needs to be? A five-hundred-millisecond debounce made sense on old slow connections; today's servers usually respond in well under two hundred.",
+        "mid": "For anything mutating state, like a save or a toggle, apply the change immediately and roll back only if the server actually rejects it. Users see the result instantly instead of waiting on a round trip.",
+        "staff": "Even when you can't get a full response under four hundred milliseconds, you can still show feedback in under fifty. A 'searching' label or a border animation resets the user's perception clock even before real data arrives."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for doherty-threshold-input-latency.",
-        "mid": "",
-        "staff": ""
+        "junior": "Four hundred milliseconds is the line between feeling alive and feeling slow. Even if you can't hit that for the full response, show some feedback within fifty milliseconds to reset that feeling.",
+        "mid": "Match your debounce to your actual server round-trip time. If your server responds in a hundred milliseconds, a two-hundred-millisecond debounce keeps you comfortably under the threshold.",
+        "staff": "Optimistic updates sidestep the Doherty threshold entirely for mutations. Failure rates on stable connections are typically under a tenth of a percent, so the rollback cost is well worth the universal speed win."
       }
     ]
   },

@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "A stacking context is like a group that gets painted together as one unit. Bumping a child's z-index sky high still can't beat a sibling group's position, no matter how big the number is.",
+        "mid": "Over a dozen CSS properties create a new stacking context, most of them not obviously about layering at all: position plus z-index, opacity under one, any transform, any filter, will-change, and isolation isolate.",
+        "staff": "translateZ(0) and will-change transform are often added purely for GPU compositing, but they silently create a stacking context too. If your animation wrapper has either one, every modal inside it is trapped."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for z-index-stacking-context.",
-        "mid": "",
-        "staff": ""
+        "junior": "z-index only competes within its own stacking context. No number is big enough to escape a parent context it's trapped in.",
+        "mid": "Transform, low opacity, filter, will-change, and isolation all create stacking contexts, often as an unintended side effect of something else you were trying to do.",
+        "staff": "Use isolation isolate to create stacking contexts on purpose, and audit overlay ancestors for the properties that create them by accident."
       }
     ]
   },

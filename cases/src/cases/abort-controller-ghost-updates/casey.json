@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "AbortController lets you cancel a fetch mid-flight. Create a controller, pass its signal into fetch, and call abort when you want out. The fetch rejects, and you just ignore that rejection.",
+        "mid": "In a React effect, pair AbortController with the cleanup function: every new search creates a fresh controller, and the cleanup aborts whichever one came before it.",
+        "staff": "The abort signal propagates through the whole fetch chain, including most wrapper libraries. For anything that isn't fetch-based, you check the signal manually instead."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for abort-controller-ghost-updates.",
-        "mid": "",
-        "staff": ""
+        "junior": "A race condition happens when several requests can all update the same state, and whichever arrives last wins, even if it's not the freshest data.",
+        "mid": "Debouncing cuts down requests but doesn't stop them arriving out of order under real network conditions. Cancellation is the actual fix.",
+        "staff": "An unmount check just silences the warning and wastes the bandwidth. AbortController actually cancels the network request."
       }
     ]
   },

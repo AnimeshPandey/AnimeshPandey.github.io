@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Same AbortController pattern as the reconciliation case, just applied outside React: create it, pass the signal to fetch, call abort on cleanup.",
+        "staff": "For parallel requests, share one controller across every fetch call in a Promise.all. One abort call cancels the whole batch at once."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for fetch-race-abort.",
-        "mid": "",
-        "staff": ""
+        "junior": "Any fetch that could outlive its context, a page navigation, a superseded request, needs an AbortController: create it, pass the signal, call abort on cleanup.",
+        "mid": "An AbortError isn't a real failure, it's an intentional cancellation. Catch it, return null, and only re-throw errors that actually matter.",
+        "staff": "One controller can cancel many parallel fetches at once. Pass the same signal into every call inside a Promise.all to drop the whole batch together."
       }
     ]
   },

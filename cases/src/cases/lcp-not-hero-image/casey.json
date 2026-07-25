@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "The browser measures LCP by the biggest visible element when it renders, and that's measured by area, not by how important it looks. A wide heading in a big font can easily outweigh a small image.",
+        "mid": "To find your actual LCP element, open the DevTools Performance panel, look at the filmstrip, and hover the yellow LCP marker. Whatever highlights is your real target.",
+        "staff": "LCP time for a text element is really about render-blocking time. If the font is blocking render, your LCP time is basically your font load time, and no amount of image optimization touches that."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for lcp-not-hero-image.",
-        "mid": "",
-        "staff": ""
+        "junior": "Always check what your actual LCP element is before optimizing anything. Use the DevTools filmstrip, don't just assume it's the hero image.",
+        "mid": "Text is very often the real LCP element on content-heavy pages. Preloading fonts frequently moves the needle more than any image work.",
+        "staff": "LCP breaks into four measurable phases. Find your largest phase first and fix that one, rather than optimizing whichever part feels most obvious."
       }
     ]
   },

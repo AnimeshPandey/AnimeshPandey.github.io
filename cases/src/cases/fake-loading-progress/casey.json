@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "Under two hundred milliseconds, show nothing at all. Between two hundred milliseconds and three seconds, show something indeterminate with no number attached. Past three seconds, only show real percentages if you actually have real progress to report.",
+        "mid": "If you don't have real progress events to work with, use an indeterminate animation. Never fabricate a deterministic-looking bar just because it looks more reassuring.",
+        "staff": "When you genuinely have no progress signal, named stages beat a fake percentage every time: showing 'transcoding' then 'generating thumbnails' is honest, because each label maps to a real server event."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for fake-loading-progress.",
-        "mid": "",
-        "staff": ""
+        "junior": "A plain spinner or pulse says 'working, not sure how long.' A bar that fakes ninety-five percent and stalls says 'I lied to you.' Choose honesty.",
+        "mid": "Nothing under two hundred milliseconds, indeterminate from two hundred milliseconds to three seconds, real milestones past that. Only show a deterministic number when you actually have one.",
+        "staff": "Every percentage you display is a promise to the user. Fabricating precision for something inherently uncertain reliably makes the wait feel longer, not shorter."
       }
     ]
   },

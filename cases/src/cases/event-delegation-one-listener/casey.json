@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "A click on a button bubbles up through its row, then the table, then the page. One listener on the table catches every click, no matter which row it came from.",
+        "mid": "There are a few delegation patterns depending on what you're matching against: closest for structural matches, data attributes for explicit intent, or a mix of both for complex tables.",
+        "staff": "Skip delegation for non-bubbling events like focus and blur, use focusin and focusout instead, and don't fight frameworks like React that already delegate everything to the root for you."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for event-delegation-one-listener.",
-        "mid": "",
-        "staff": ""
+        "junior": "Put one listener on the parent instead of one per child. Events bubble up, so the parent already hears everything.",
+        "mid": "event.target.closest is the key primitive. It walks up from wherever the click landed to find the ancestor you actually care about.",
+        "staff": "React already delegates every event to the root, so adding native listeners per item just fights the framework. Use React's own event props instead."
       }
     ]
   },

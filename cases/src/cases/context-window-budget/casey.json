@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "The token cost isn't just about length. Retrieval quality itself degrades as the window fills with low-relevance content, so a shorter, focused context often gets a better answer than a longer one.",
+        "staff": "For agentic tasks, assemble context programmatically: embed and retrieve the most relevant chunks, re-rank them for actual relevance, summarize long files down to their API surface, and put your most important instructions at the start or end, not buried in the middle."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for context-window-budget.",
-        "mid": "",
-        "staff": ""
+        "junior": "Send the error, the relevant function, and what you expected. Twenty focused lines beat four hundred lines of noise every time.",
+        "mid": "Context quality degrades with noise. More tokens isn't more signal; it's often just more for the model to wade through before it finds what matters.",
+        "staff": "Budget context by role: system prompt, retrieved docs, conversation history, reasoning space, tool output. Reserve headroom, because overfilling the window measurably hurts recall on anything buried in the middle."
       }
     ]
   },

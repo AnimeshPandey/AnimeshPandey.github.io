@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Before you paste an error into AI, describe the problem to yourself first. That one sentence forces a hypothesis, which turns the AI's answer from a patch into an actual explanation.",
+        "staff": "The professional worry isn't AI itself, it's shallow fixes compounding into systemic problems. Ask whether a suggested fix addresses the system, not just whether it makes the error go away."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for paste-error-without-learning.",
-        "mid": "",
-        "staff": ""
+        "junior": "Before pasting an error, write one sentence about what you think is wrong. That single habit turns a quick fix into an actual learning moment.",
+        "mid": "Paste-and-repeat builds speed at patching symptoms. Diagnose-first builds real understanding of root causes. AI will accelerate whichever habit you already have.",
+        "staff": "Shallow AI-assisted fixes compound over time: scattered null checks and suppressed warnings pile up because each one looked small and safe in isolation. Review for root cause, not just whether the error disappeared."
       }
     ]
   },

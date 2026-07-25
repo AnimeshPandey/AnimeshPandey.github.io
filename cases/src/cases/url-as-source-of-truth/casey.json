@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "React Router's useSearchParams hook keeps the URL and your component state in sync automatically, so you don't have to wire that up by hand.",
+        "mid": "There's a real decision matrix here: query params for anything shareable like filters and sort and search, the path itself for entity identity, and component state only for things that are genuinely ephemeral, like whether a menu is open.",
+        "staff": "Putting filter state in a global store like Redux when it really belongs in the URL is a common form of over-engineering. It adds complexity without fixing the actual problem, which is that the state isn't shareable."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for url-as-source-of-truth.",
-        "mid": "",
-        "staff": ""
+        "junior": "Filter, sort, and search state belongs in the URL, not in component state. That's what makes it bookmarkable, shareable, and able to survive a page refresh.",
+        "mid": "URLSearchParams plus history.pushState is the native browser API for this. You don't need a routing library for the basic case.",
+        "staff": "URL-parameterized filter pages get indexed by search engines. Component-state filters are invisible to them. That's a business decision as much as a UX one."
       }
     ]
   },

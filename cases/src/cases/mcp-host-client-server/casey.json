@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "The Client lives inside the Host and translates between the model's tool calls and your Server's JSON-RPC responses. You almost never write this layer yourself; the SDK handles it.",
+        "staff": "Servers are process-isolated from the Host. They can't read the model's context window, only the explicit inputs a tool call sends them. The Host decides which servers connect and what they can access."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for mcp-host-client-server.",
-        "mid": "",
-        "staff": ""
+        "junior": "MCP has three roles: the Host runs the AI app, the Client is the protocol adapter inside it, and the Server is the tools and data you build. You'll almost always just be building the Server.",
+        "mid": "The Server is stateless and declarative. It lists tools and answers JSON-RPC calls, with no knowledge of the model, the conversation, or the Host itself.",
+        "staff": "Transport is pluggable: stdio for a local subprocess server, HTTP with SSE for a remote one. Same protocol either way, so you build the logic once and deploy based on your latency and security needs."
       }
     ]
   },

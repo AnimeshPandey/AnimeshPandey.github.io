@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "Think of React's reconciliation like comparing two shopping lists. The key is each item's name tag: same key means update this one in place, different key means treat it as brand new.",
+        "mid": "With index keys, inserting at the front means every item after it looks like it changed. React updates everything in place instead of just shifting the new one in.",
+        "staff": "React's docs are explicit that keys need to be stable, predictable, and unique. Index satisfies uniqueness but fails both stability and predictability, which is exactly what breaks reconciliation on reorder or insert."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for key-prop-identity.",
-        "mid": "",
-        "staff": ""
+        "junior": "React treats the key prop like a name tag on each item. Same key means the same item, just update it. A different key means treat it as brand new.",
+        "mid": "Index keys cause uncontrolled inputs, checkboxes, and animations to stick to their position on screen instead of following the actual data item they belong to.",
+        "staff": "Index keys drag reconciliation down from skipping unchanged items to updating almost everything on any list mutation. Stable keys let React skip real work entirely."
       }
     ]
   },

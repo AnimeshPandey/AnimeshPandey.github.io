@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "The rule of thumb: the gap between a label and its field should be about half the gap between that field and the next label. The ratio, not the exact pixel value, is what makes ownership obvious.",
+        "mid": "Try the blur test on your own UI: squint until the text is illegible. If you can still tell which label belongs to which field just from the spacing, you're fine. If it's ambiguous, fix the ratio.",
+        "staff": "Design your spacing tokens around grouping semantics, not raw sizes. Naming them for what they mean, in-group versus between-group versus between-section, stops teams from picking one value everywhere by accident."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for gestalt-spacing-as-syntax.",
-        "mid": "",
-        "staff": ""
+        "junior": "Keep the label-to-field gap at half or less of the field-to-next-label gap. That ratio is what tells people which label belongs to which field.",
+        "mid": "The blur test: squint at your form until the text blurs out. If the groupings are still obvious from spacing alone, you're good. If not, fix the ratio.",
+        "staff": "Semantic spacing tokens prevent equal-spacing accidents. Name them for the relationship they express, not just for a size, so the grouping intent survives into the code."
       }
     ]
   },

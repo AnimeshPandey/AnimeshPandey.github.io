@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Paste this in the console: it logs every element whose right edge pokes past the viewport, sorted by how far it overflows.",
+        "staff": "Add a quick audit rule in DevTools styles that outlines every element in red; the culprit becomes visually obvious in seconds."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for horizontal-scroll-one-pixel.",
-        "mid": "",
-        "staff": ""
+        "junior": "Don't slap overflow-x hidden on the body. It breaks sticky positioning everywhere. Find the actual overflowing element instead.",
+        "mid": "That console snippet, checking getBoundingClientRect right against innerWidth, finds the culprit on any page in seconds.",
+        "staff": "min-width zero on flex and grid children is the spec-correct fix for elements that refuse to shrink below their content size."
       }
     ]
   },

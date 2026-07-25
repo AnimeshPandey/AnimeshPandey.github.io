@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "Module Federation can share the design system so it only loads once. Set singleton to true, and every micro-frontend uses the exact same version, no exceptions.",
+        "mid": "Three settings control this: singleton for one shared instance, requiredVersion to throw on a bad semver range, and strictVersion for exact-match enforcement on breaking changes.",
+        "staff": "The governance model: the shell app owns the version, minor updates roll out automatically, major versions are coordinated migrations, and CI checks that every micro-frontend declares the same singleton config. Tooling enforces this, not a process document."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for micro-frontend-boundary-drift.",
-        "mid": "",
-        "staff": ""
+        "junior": "When teams ship separate micro-frontends without enforcement, their design systems quietly drift apart until the UI looks inconsistent.",
+        "mid": "Module Federation's singleton flag makes a shared dependency load exactly once at runtime. The shell's version wins, and everyone gets the same instance.",
+        "staff": "Shell owns the version. Minor updates auto-propagate via semver. Major versions are migration events. CI enforces that every micro-frontend agrees on the singleton config."
       }
     ]
   },
