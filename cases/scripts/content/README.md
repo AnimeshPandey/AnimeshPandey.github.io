@@ -106,3 +106,64 @@ generous headroom, not a real ceiling you'll hit.
   little more skeptically in `REVIEW.md`. This is real content variation,
   not an extraction bug (confirmed by reading the source `index.njk`
   directly).
+
+## Drafting full chapter prose for not-yet-written cases
+
+`draft-case-prose.mjs` extends the same draft/review/apply pattern one
+level up: instead of fixing boilerplate hints on a *live* case, it drafts
+the core narrative chapters (`hook`, `concept`, `story-1`, `fe-depth`,
+`takeaway`) for an *idea-status* case that's already been through
+`scaffold-case.mjs promote`.
+
+```
+draft-case-prose.mjs  →  review-case-prose.mjs  →  apply-case-prose.mjs
+   (calls Claude API)       (no API call)              (no API call)
+writes drafts/<slug>-prose.json  writes drafts/PROSE_REVIEW.md  patches the real index.njk
+```
+
+```bash
+# Case must already be scaffolded first:
+node scripts/scaffold-case.mjs promote <slug>
+
+DRY_RUN=1 node scripts/content/draft-case-prose.mjs --slug=<slug>
+node scripts/content/draft-case-prose.mjs --slug=<slug>
+node scripts/content/review-case-prose.mjs          # → drafts/PROSE_REVIEW.md
+node scripts/content/apply-case-prose.mjs --slug=<slug>   # --dry-run to preview first
+```
+
+### Scope — deliberately narrower than "write the whole case"
+
+This drafts the five narrative chapters only. It does **not** draft
+`ui-strip` copy, demo button/aria labels, noscript text, references, or
+the interactive demo itself — those stay real engineering/authoring work,
+same as the two pilot cases built by hand earlier in this project.
+`scaffold-case.mjs check <slug>` still correctly flags the remaining
+`casey.json` concept/fe-depth hints as needing content after
+`apply-case-prose.mjs` runs — that's `draft-boilerplate-fixes.mjs`'s job,
+not this one, and that script currently only targets `status: "live"`
+cases, so it can't be pointed at an idea-status case yet even after real
+chapter prose exists to ground it. Extending it to also accept idea-status
+slugs (now that this tool can put real prose in place for it to read) is
+a natural follow-up, not done here to keep this change reviewable as one
+unit.
+
+### Grounding, without existing prose to read
+
+Unlike the hint generator, there's no real chapter prose to ground a
+first draft in — the whole point is that none exists yet. The prompt
+instead uses one already-good live case's `hook`/`concept` prose (see
+`EXAMPLE_SLUG` in `draft-case-prose.mjs`) as a few-shot example for
+voice/length/register, plus the manifest entry's title/track/principle as
+the actual content signal. This means first-draft quality here is
+structurally lower-confidence than the hint generator's — read `PROSE_REVIEW.md`
+skeptically, not as a rubber stamp.
+
+### A real bug this caught before it shipped
+
+`patchToneBody`'s first version was tested against the `takeaway` chapter
+the same way as every other chapter (wrapping paragraphs in `<p>` tags).
+A live case's actual `takeaway` markup uses bare text directly inside each
+`.tone-*` div (`<div class="tone-junior">Some sentence.</div>`, no `<p>`)
+— `apply-case-prose.mjs` special-cases `takeaway` to match. Found by
+actually applying a synthetic draft and diffing the result against a real
+case's markup, not by reading the scaffold template alone.
