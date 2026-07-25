@@ -60,6 +60,9 @@ def color_close(r: int, g: int, b: int, ref: tuple[int, int, int], tol: int) -> 
 
 def is_character_pixel(r: int, g: int, b: int, tol: int = 22) -> bool:
     """Protect fur, garments, and face fills from matte removal."""
+    # Pure achromatic light greys are checker/studio matte, not fur
+    if abs(r - g) <= 2 and abs(g - b) <= 2 and abs(r - b) <= 2 and r >= 220:
+        return False
     for ref in CHARACTER_SWATCHES:
         if color_close(r, g, b, ref, tol):
             return True
@@ -75,8 +78,8 @@ def is_background_pixel(r: int, g: int, b: int, refs: list[tuple[int, int, int]]
     for ref in refs:
         if color_close(r, g, b, ref, tol):
             return True
-    # Checkerboard neutrals only — not warm fur (#FAFAF8)
-    if abs(r - g) <= 10 and abs(g - b) <= 10 and 190 <= r <= 246:
+    # Checkerboard neutrals — include pure white cells (not warm fur)
+    if abs(r - g) <= 10 and abs(g - b) <= 10 and 190 <= r <= 255:
         return True
     return False
 
@@ -248,7 +251,8 @@ def process_file(path: Path, tol: int, trim: bool, sharpen: bool, normalize: boo
     if trim:
         im = trim_transparent(im, pad=10)
     if normalize and should_normalize(path):
-        fill = 0.78 if "junior" in path.parts else 0.84
+        # Uniform fill across tiers so circular coach/hub frames don't jump size on tier swap
+        fill = 0.84
         im = normalize_canvas(im, fill=fill)
     if sharpen:
         rgb = im.convert("RGB")

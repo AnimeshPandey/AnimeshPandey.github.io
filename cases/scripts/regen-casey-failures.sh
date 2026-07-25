@@ -12,7 +12,7 @@ fi
 
 echo ""
 echo "⚠ Transparency QA reported issues. Re-export sources then reinstall:"
-echo "  export CASEY_SRC=\"\$HOME/.cursor/projects/Users-animeshpandey-Desktop-Codebases/assets\""
+echo "  export CASEY_SRC=\"\$HOME/.cursor/projects/Users-animeshpandey-Documents-Codebases/assets\""
 echo "  ./scripts/install-casey-pngs.sh"
 echo "  python3 scripts/fix-casey-transparency.py"
 echo ""
