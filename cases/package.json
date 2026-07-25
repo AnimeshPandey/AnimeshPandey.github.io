@@ -11,6 +11,7 @@
     "start": "eleventy --serve --port 8080",
     "debug": "DEBUG=Eleventy* eleventy",
     "verify:live": "npm run build && node scripts/assert-live-cases.mjs",
+    "check:pose-alpha": "node scripts/content/check-pose-alpha.mjs src/assets/casey/junior/*.png src/assets/casey/mid/*.png src/assets/casey/staff/*.png",
     "test": "npm --prefix ../tests test"
   },
   "dependencies": {
