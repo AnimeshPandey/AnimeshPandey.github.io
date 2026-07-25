@@ -5,3 +5,8 @@ npm-debug.log*
 scripts/social/.env
 scripts/content/drafts/*.json
 scripts/content/drafts/REVIEW.md
+
+# Generated at build time by scripts/build-search-index.mjs from
+# src/_data/manifest.json + src/_data/library-entries.json — never
+# commit, or it can silently drift from those two source-of-truth files.
+src/assets/search-index.json
