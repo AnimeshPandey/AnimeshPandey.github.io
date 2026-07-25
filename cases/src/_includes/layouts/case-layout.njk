@@ -104,6 +104,9 @@ layout: layouts/casebook-layout.njk
 {# ── Case scripts ── #}
 {# Inline casey data for JS #}
 <script type="application/json" id="casey-data">{{ caseyData | jsonLd | safe }}</script>
+{# Same liveCases global interview.njk already dumps wholesale — used here
+   for the completion-time "Casey recommends" same-track chip. #}
+<script type="application/json" id="case-live-index">{{ liveCases | dump | safe }}</script>
 
 {% include 'partials/casey-companion-lines.njk' %}
 <script src="{{ '/assets/js/casebook-progress-store.js' | url }}" defer></script>

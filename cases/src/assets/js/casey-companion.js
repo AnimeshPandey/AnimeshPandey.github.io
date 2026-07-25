@@ -86,6 +86,7 @@
       libraryOpened: false,
       lastSlug: null,
       lastVisitAt: null,
+      previousVisitAt: null,
       milestones: [],
       dismissedTips: [],
       caseyIntensity: 'full',
@@ -321,6 +322,16 @@
       .catch(function () { return null; });
   }
 
+  // Numeric-count milestones beyond the first case (which has its own
+  // always-on-completion celebration, handled separately). `linePath` is
+  // the companion-lines.json key read via lineAt() when a reader crosses
+  // that count for the first time.
+  var COUNT_MILESTONES = [
+    { count: 5, id: 'five-cases', linePath: 'milestones.fiveCases' },
+    { count: 10, id: 'ten-cases', linePath: 'milestones.tenCases' },
+    { count: 20, id: 'twenty-cases', linePath: 'milestones.twentyCases' },
+  ];
+
   function recordEvent(type, detail) {
     detail = detail || {};
     var state = loadState();
@@ -335,9 +346,11 @@
       if (state.milestones.indexOf('first-case-completed') === -1) {
         state.milestones.push('first-case-completed');
       }
-      if (state.casesCompleted.length >= 5 && state.milestones.indexOf('five-cases') === -1) {
-        state.milestones.push('five-cases');
-      }
+      COUNT_MILESTONES.forEach(function (m) {
+        if (state.casesCompleted.length >= m.count && state.milestones.indexOf(m.id) === -1) {
+          state.milestones.push(m.id);
+        }
+      });
       // Populates the "new shape" caseProgress[slug].completedAt that
       // casey-guide.js's _recentStreak()/_completedCount() already read
       // defensively (with a fallback to the legacy casesCompleted array
@@ -356,6 +369,11 @@
       if (state.milestones.indexOf('hub-visit') === -1) {
         state.milestones.push('hub-visit');
       }
+      // saveState() below stamps lastVisitAt to right now — capture the
+      // PRIOR value first so a long-absence greeting has something to
+      // compare against. Without this, lastVisitAt would always read as
+      // "just now" by the time anything downstream tries to use it.
+      state.previousVisitAt = state.lastVisitAt;
     }
 
     saveState(state);
@@ -550,18 +568,28 @@
     });
   }
 
-  function getHint(caseyData, chapter, tone) {
+  // Raw {junior, mid, staff} object for a chapter's hint (hints take
+  // priority over anecdotes, matching getHint()'s own lookup order) — used
+  // by getHint() for the single active-tone string, and by the "explain
+  // differently" cycle to read the OTHER tones' phrasings of the same hint.
+  function getHintEntry(caseyData, chapter) {
     if (!caseyData) return null;
     var hints = caseyData.hints || [];
     var i;
     for (i = 0; i < hints.length; i++) {
-      if (hints[i].chapter === chapter) return hints[i][tone] || hints[i].junior || null;
+      if (hints[i].chapter === chapter) return hints[i];
     }
     var anecdotes = caseyData.anecdotes || [];
     for (i = 0; i < anecdotes.length; i++) {
-      if (anecdotes[i].chapter === chapter) return anecdotes[i][tone] || null;
+      if (anecdotes[i].chapter === chapter) return anecdotes[i];
     }
     return null;
+  }
+
+  function getHint(caseyData, chapter, tone) {
+    var entry = getHintEntry(caseyData, chapter);
+    if (!entry) return null;
+    return entry[tone] || entry.junior || null;
   }
 
   function voiceLineForChapter(caseyData, chapter, tone) {
@@ -584,6 +612,39 @@
     }
     root.classList.add('casey-milestone-flash');
     setTimeout(function () { root.classList.remove('casey-milestone-flash'); }, 700);
+  }
+
+  function readLiveIndex() {
+    var el = document.getElementById('case-live-index');
+    if (!el) return [];
+    try {
+      return JSON.parse(el.textContent) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /**
+   * "Casey recommends" pick shown on case completion: prefer a real,
+   * human-curated relatedCases entry (front-matter field, populated per
+   * case as content gets that pass) — falls back to the nearest unread
+   * case in the same track, since relatedCases is empty on most cases
+   * today. Returns { slug, title } or null if nothing suitable exists.
+   */
+  function pickRecommendation(caseyData, currentSlug, currentTrack, completedSlugs) {
+    var live = readLiveIndex();
+    var completed = {};
+    (completedSlugs || []).forEach(function (s) { completed[s] = true; });
+    var related = (caseyData && caseyData.relatedCases) || [];
+    for (var i = 0; i < related.length; i++) {
+      var match = live.filter(function (c) { return c.slug === related[i] && !completed[c.slug]; })[0];
+      if (match) return { slug: match.slug, title: match.title };
+    }
+    var sameTrack = live.filter(function (c) {
+      return c.track === currentTrack && c.slug !== currentSlug && !completed[c.slug];
+    });
+    if (!sameTrack.length) return null;
+    return { slug: sameTrack[0].slug, title: sameTrack[0].title };
   }
 
   function readManifestSlugOrder() {
@@ -650,6 +711,8 @@
     var bubbles = document.querySelectorAll('.casey-coach__bubble');
     var avatars = document.querySelectorAll('[data-casey-avatar]');
     var actionContainers = document.querySelectorAll('.casey-coach__actions');
+    var explainBtns = document.querySelectorAll('.casey-coach__explain');
+    var explainCycle = null; // { chapter, tones: [...], idx } — reset on chapter change
     var dock = document.getElementById('casey-dock');
     var scrollRoot = document.querySelector('.case-scroll');
     var coachAsides = document.querySelectorAll('.casey-coach:not(.casey-coach--dock-bottom)');
@@ -675,6 +738,38 @@
         b.textContent = text || '';
       });
     }
+
+    // "Explain differently": cycles through the OTHER reading-level
+    // phrasings of the current chapter's hint, without touching the
+    // reader's actual tone setting for the rest of the page — the three
+    // tones are already independently-written text (see
+    // CASE-AUTHORING-GUIDE.md), this just surfaces the other two on
+    // request instead of only ever showing the active tone's version.
+    var TONE_CYCLE_ORDER = ['junior', 'mid', 'staff'];
+    function cycleExplainDifferently() {
+      var entry = getHintEntry(caseyData, currentChapter);
+      if (!entry) return;
+      if (!explainCycle || explainCycle.chapter !== currentChapter) {
+        var others = TONE_CYCLE_ORDER.filter(function (t) { return t !== currentTone && entry[t]; });
+        explainCycle = { chapter: currentChapter, tones: others.concat([currentTone]), idx: -1 };
+      }
+      explainCycle.idx = (explainCycle.idx + 1) % explainCycle.tones.length;
+      var tone = explainCycle.tones[explainCycle.idx];
+      var text = entry[tone];
+      if (!text) return;
+      setBubble(text, true);
+      var backToOriginal = tone === currentTone;
+      explainBtns.forEach(function (btn) {
+        btn.classList.toggle('casey-coach__explain--active', !backToOriginal);
+        btn.setAttribute(
+          'aria-label',
+          backToOriginal ? 'Explain differently' : 'Explained at the ' + tone + ' level — tap to cycle'
+        );
+      });
+    }
+    explainBtns.forEach(function (btn) {
+      btn.addEventListener('click', cycleExplainDifferently);
+    });
 
     function setPose(pose, opts) {
       opts = opts || {};
@@ -711,6 +806,18 @@
       setPose(pose, { preload: false });
       if (hint) setBubble(hint, true);
       else setBubble(voiceLineForChapter(caseyData, chapterId, currentTone) || '', true);
+
+      explainCycle = null;
+      var entryForExplain = getHintEntry(caseyData, chapterId);
+      var distinctTones = entryForExplain
+        ? TONE_CYCLE_ORDER.filter(function (t) { return entryForExplain[t]; }).length
+        : 0;
+      explainBtns.forEach(function (btn) {
+        btn.hidden = distinctTones < 2;
+        btn.classList.remove('casey-coach__explain--active');
+        btn.setAttribute('aria-label', 'Explain differently');
+      });
+
       if (shouldShowCaseyBehavior('chips')) {
         renderActionChips(caseyData, chapterId, currentTone, actionContainers);
       } else {
@@ -751,9 +858,34 @@
           flashConfetti(document.querySelector('.casebook-case'), slug);
           document.dispatchEvent(new CustomEvent('case-case-completed', { detail: { slug: slug } }));
           var state = loadState();
-          if (state.milestones.indexOf('five-cases') !== -1) {
+          // Fire each count milestone's own celebration only on the exact
+          // crossing (===, not >=) so a reader who already passed five
+          // cases doesn't get the five-cases line replayed on every
+          // future completion — state.milestones already guards re-firing
+          // across sessions, this guards re-firing within the same batch
+          // of COUNT_MILESTONES on one completion.
+          COUNT_MILESTONES.forEach(function (m) {
+            if (state.casesCompleted.length !== m.count) return;
             setPose('celebrate', { force: true });
             avatars.forEach(function (img) { img.classList.add('casey-bounce-once'); });
+            var mLine = lineAt(m.linePath, currentTone);
+            if (mLine) setBubble(mLine, true);
+            flashConfetti(document.querySelector('.casebook-case'), null);
+          });
+          if (shouldShowCaseyBehavior('chips')) {
+            var liveIdx = readLiveIndex();
+            var selfEntry = liveIdx.filter(function (c) { return c.slug === slug; })[0];
+            var rec = pickRecommendation(caseyData, slug, selfEntry && selfEntry.track, state.casesCompleted);
+            if (rec) {
+              actionContainers.forEach(function (container) {
+                var a = document.createElement('a');
+                a.href = pathPrefix + rec.slug + '/';
+                a.className = 'casey-coach__chip casey-coach__chip--recommend';
+                a.textContent = 'Casey recommends: ' + (rec.title.length > 28 ? rec.title.slice(0, 26) + '…' : rec.title);
+                container.appendChild(a);
+                container.hidden = false;
+              });
+            }
           }
         }, 2000);
       }

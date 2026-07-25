@@ -116,6 +116,18 @@
       "junior": "Five cases — high five!",
       "mid": "Five cases — you're in the top cohort of readers.",
       "staff": "Five cases — time to teach this pattern to someone else."
+    },
+    "tenCases": {
+      "pose": "celebrate",
+      "junior": "Ten cases — double digits, and it's starting to add up.",
+      "mid": "Ten cases in — that's a real library of patterns to reach for.",
+      "staff": "Ten cases — worth a skim back through your takeaways for the ones you'd forgotten."
+    },
+    "twentyCases": {
+      "pose": "celebrate",
+      "junior": "Twenty cases — you've read almost everything live here.",
+      "mid": "Twenty cases — you're closing in on the full live set.",
+      "staff": "Twenty cases — at this point the review queue is doing more for you than new reading."
     }
   }
 }
