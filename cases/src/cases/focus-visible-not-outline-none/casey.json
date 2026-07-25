@@ -146,9 +146,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "The browser already knows if you're using a keyboard or a mouse. focus-visible only shows the ring when it thinks you'd actually want to see it.",
+        "mid": "The browser's focus-visible heuristic checks whether the element got focus via keyboard, and whether it's a type that usually benefits from a visible ring. It's reliable across Chrome, Firefox, and Safari.",
+        "staff": "focus-visible tracks a 'recent keyboard interaction' flag internally, so typing then clicking can briefly show the ring on the clicked element. That's intentional, not a bug."
       },
       {
         "chapter": "demo",
@@ -158,9 +158,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for focus-visible-not-outline-none.",
-        "mid": "",
-        "staff": ""
+        "junior": "Never use outline: none on focus without a replacement. It makes your site invisible to keyboard users.",
+        "mid": "focus-visible shows the ring only when a keyboard user would benefit from it. It's browser-native, so you don't have to build the heuristic yourself.",
+        "staff": "WCAG 2.2 SC 2.4.11 requires a focus indicator with at least 3 to 1 contrast and a 2 pixel perimeter. Design your focus ring to meet that spec, not just to look nice."
       }
     ]
   }

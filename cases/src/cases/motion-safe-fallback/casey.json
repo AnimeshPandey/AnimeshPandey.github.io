@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Wrapping every animation in a no-preference guard is easier to maintain long-term, since new animations are opt-in by default rather than needing a manual override added later.",
+        "staff": "Reduce motion doesn't mean no motion at all. It means no vestibular-triggering motion, parallax, rapid transforms, spinning. A gentle crossfade that helps comprehension is usually fine to keep."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for motion-safe-fallback.",
-        "mid": "",
-        "staff": ""
+        "junior": "Wrap animations in the reduced-motion no-preference query so they only run for people who haven't asked for less movement.",
+        "mid": "Two strategies exist: guard animations behind no-preference, or write them normally and add reduce overrides. Pick one and apply it consistently across your codebase.",
+        "staff": "Parallax is the highest-risk pattern for vestibular disorders, so always gate it behind the no-preference query, no exceptions."
       }
     ]
   },

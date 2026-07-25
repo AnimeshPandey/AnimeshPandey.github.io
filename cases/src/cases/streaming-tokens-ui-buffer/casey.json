@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "Instead of updating the page for every single token, collect the tokens that arrive between frames and flush them all at once, right when the next frame starts.",
+        "mid": "A word-boundary variant flushes on spaces and punctuation instead of on every frame, so full words appear at once instead of trickling in character by character.",
+        "staff": "Watch your framework integration: wrap streaming callbacks in the buffer pattern, let React 18's startTransition mark updates as non-urgent, and always cancel the animation frame handle when the component unmounts."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for streaming-tokens-ui-buffer.",
-        "mid": "",
-        "staff": ""
+        "junior": "Don't push every token straight to the page. Buffer them in a string and flush once per animation frame instead.",
+        "mid": "LLMs emit tokens faster than the display can usefully show them. Extra updates between frames are wasted work that produces nothing visible.",
+        "staff": "Every token-level DOM mutation risks a style recalculation. At sixty mutations a second you can burn your entire per-frame budget on updates nobody sees. One flush per frame cuts that by about ninety-five percent."
       }
     ]
   },

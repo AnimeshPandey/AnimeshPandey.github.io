@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "Route the request through your own backend instead: your frontend calls your server, and your server is the one that holds the real key and calls the third-party API.",
+        "mid": "For a static site with no backend, a small serverless function works the same way, a Vercel or Netlify or Cloudflare function holds the key, and your frontend just calls that function's URL.",
+        "staff": "Beyond the proxy pattern itself: rotate any key that's ever leaked, rate-limit your proxy endpoint, and allowlist the third-party API to your server's IP rather than trusting client IPs."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for secrets-in-client-bundle.",
-        "mid": "",
-        "staff": ""
+        "junior": "Any environment variable with a public prefix, like REACT_APP or VITE or NEXT_PUBLIC, ends up baked straight into your JavaScript. Never put a real secret in one.",
+        "mid": "The proxy pattern is the actual fix: your frontend calls your backend, your backend calls the third-party API with the key, and the key never touches the client.",
+        "staff": "Add secret scanning to your CI pipeline to catch keys before they ship. Treat anything that was ever committed or bundled as permanently compromised and rotate it immediately."
       }
     ]
   },

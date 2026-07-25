@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "If your form has more than about five visible fields, split it into steps grouped by what they're actually about, like who you are, then where you are, then how you pay.",
+        "mid": "Validate each step as the user finishes it, not all at once at the very end. Catching an error early is cheap; catching it after the whole form is filled out is expensive and frustrating.",
+        "staff": "Pre-filled fields compound with chunking. A six-field step with three fields already filled in only presents an effective load of three, well inside working memory. Pair smart defaults with chunking whenever you can."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for miller-chunking-forms.",
-        "mid": "",
-        "staff": ""
+        "junior": "More than five or six visible fields at once, split it into steps grouped by theme. Same amount of work, way less perceived difficulty.",
+        "mid": "Chunk by meaning, who you are, where you are, how you pay, not arbitrarily. Users already understand those natural groupings without being told.",
+        "staff": "Pre-fill and smart defaults compound with chunking. Every auto-filled field lowers the effective load per step, so combine both techniques rather than picking one."
       }
     ]
   },

@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "Think of JavaScript as a chef with one pair of hands, working through three kinds of tickets: big ones like timers and clicks, urgent ones like promises, and paint tickets for rendering. Urgent tickets always jump the line ahead of the next big one.",
+        "mid": "Each loop iteration: run the oldest macrotask to completion, drain every microtask that's queued, render a frame if one's due, repeat. A promise chain that keeps re-queuing itself can starve rendering entirely.",
+        "staff": "Chrome's Long Animation Frames entries now surface exactly when a task plus its microtask drain crosses fifty milliseconds. That's your real production signal for event loop contention, not a guess."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for event-loop-one-thread.",
-        "mid": "",
-        "staff": ""
+        "junior": "Microtasks, meaning promises, always run before the next macrotask, meaning things like setTimeout. That's the whole reason the ordering surprises you.",
+        "mid": "The microtask queue drains completely before the browser paints. A flood of chained then callbacks can block rendering just as badly as a synchronous loop.",
+        "staff": "Use Long Animation Frame entries and INP attribution in production monitoring to pinpoint exactly which task source is causing rendering gaps."
       }
     ]
   },

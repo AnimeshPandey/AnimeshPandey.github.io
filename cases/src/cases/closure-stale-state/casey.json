@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Each React render is its own function call, and useState hands back that render's value. A handler created in this render closes over this render's values, so if it fires later, from a timer or a stale listener, it reads the past.",
+        "staff": "The exhaustive-deps lint rule exists specifically to catch this pattern. Suppressing it means you're choosing to accept a stale closure, sometimes on purpose, often by accident."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for closure-stale-state.",
-        "mid": "",
-        "staff": ""
+        "junior": "A closure captures a variable's value at the moment the function was created, not at the moment it actually runs.",
+        "mid": "Every React render creates a fresh scope. A closure holding onto one render's state doesn't automatically update when state changes later.",
+        "staff": "The pattern is specific: a function created during render N holds render N's state, and if it's called during render N plus some number, it's still reading N."
       }
     ]
   },

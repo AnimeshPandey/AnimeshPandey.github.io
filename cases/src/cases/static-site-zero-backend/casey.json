@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Ask one question before reaching for a server: does this page look the same to every visitor? If yes, it's static content, serve it from a CDN.",
+        "staff": "The operational argument is the whole case: no cold starts, no scaling events to configure, nothing to patch. A rollback is just redeploying an old build. When you truly need dynamism, one small serverless function usually covers it."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for static-site-zero-backend.",
-        "mid": "",
-        "staff": ""
+        "junior": "If every visitor sees the same content, you don't need a server at all. A static site generator on a CDN is faster, cheaper, and needs zero upkeep.",
+        "mid": "Ask before every architecture decision: does this depend on who's asking? If not, pre-build the HTML and skip the server entirely.",
+        "staff": "Static architecture means zero cold starts, zero scaling events, and CDN-edge response times in the tens of milliseconds. Treat it as the default until dynamic requirements actually prove otherwise."
       }
     ]
   },

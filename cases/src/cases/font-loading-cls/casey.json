@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "font-display swap shows the fallback font right away and swaps in your real font once it loads, but if the two fonts are different sizes, that swap makes the page jump.",
+        "mid": "The fix is a metric-matched fallback: override the fallback font's size, ascent, and descent so it lines up almost exactly with your real font. When the swap happens, nothing visibly moves.",
+        "staff": "Don't hand-calculate those override values. Tools like screenspan.net's fallback generator or the fontpie CLI compute them precisely for you, whether you're using Google Fonts or self-hosting."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for font-loading-cls.",
-        "mid": "",
-        "staff": ""
+        "junior": "font-display swap stops invisible text, but it can cause a layout jump when the real font finally arrives. It trades one problem for another.",
+        "mid": "Metric-matched fallback fonts, using size-adjust and the ascent and descent overrides, make that swap invisible by matching the fallback's dimensions to your real font.",
+        "staff": "Use a tool to generate those metric overrides rather than hand-tuning them. The math needs to be precise, and the tooling already does it reliably."
       }
     ]
   },

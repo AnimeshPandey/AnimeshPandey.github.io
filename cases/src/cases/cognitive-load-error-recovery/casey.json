@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Actionable error copy follows a simple shape: say what's wrong, then show an example of what's right. 'Enter a valid email like name at example dot com' beats 'invalid email' every time.",
+        "staff": "A precise API error, one that names the exact field and reason, is what makes a good inline error possible in the first place. A generic five-hundred with no field mapping forces a vague summary, and that's really an API design failure showing up as a UX cost."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for cognitive-load-error-recovery.",
-        "mid": "",
-        "staff": ""
+        "junior": "Validate when the user leaves a field, not on every keystroke and not only at the very end. Errors that show up right next to the field are the least disruptive to fix.",
+        "mid": "Good error copy explains what went wrong and shows an example of what's correct. 'Invalid email' solves neither problem; a concrete example solves both.",
+        "staff": "Link every error to its field with aria-invalid and aria-describedby. Visual proximity helps sighted users, but screen reader users need those attributes to make the same connection."
       }
     ]
   },

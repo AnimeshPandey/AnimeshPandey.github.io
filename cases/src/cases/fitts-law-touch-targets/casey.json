@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Small touch targets hide in four common places: unlabeled checkboxes, icon-only toolbar buttons, inline links in dense text, and table row action icons. All four fix the same way, with padding around the visible element.",
+        "staff": "Watch the OS gesture zone too. Bottom navigation without safe-area-inset-bottom padding puts the last tab right where the phone's home-indicator gesture lives, making it genuinely hard to hit."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for fitts-law-touch-targets.",
-        "mid": "",
-        "staff": ""
+        "junior": "Visual size and tap area are two different things in CSS. Give interactive elements a minimum width and height of 44 pixels even if the icon inside looks smaller.",
+        "mid": "Four places small targets hide: unlabeled checkboxes, icon-only toolbar buttons, inline text links, and table row actions. All fixable with the same padding trick.",
+        "staff": "Bottom navigation needs to respect the OS gesture zone using safe-area-inset-bottom, or the edge tabs end up competing with the system's own swipe gesture."
       }
     ]
   },

@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API. What prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "Sort your nav items by actual click volume. Usually three or four items handle most of the traffic, and everything else can move into a secondary menu without anyone missing it.",
+        "mid": "A 'more' overflow pattern lowers the decision cost for the common case while still keeping the less-used items discoverable for anyone who needs them.",
+        "staff": "Hick's Law and Miller's seven-plus-or-minus-two compound each other here. Hick slows the decision itself, Miller can overflow working memory during the scan. Keeping primary nav to five or six items addresses both at once."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for hicks-law-navigation-count.",
-        "mid": "",
-        "staff": ""
+        "junior": "Every item you add to a nav slows down the decision for every other item too. Trim ruthlessly: rarely-used items belong in a secondary menu.",
+        "mid": "Flat nav growth is basically always a performance regression. Use real click data to find the twenty percent of items driving eighty percent of usage, and give those the top-level spots.",
+        "staff": "Mega-menus and overflow patterns work by shrinking the effective choice count to items-per-category. That only helps if your categories actually match how users think about them."
       }
     ]
   },

@@ -147,8 +147,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Don't flash any loading indicator for anything under two hundred milliseconds. A brief flash reads as a bug, not as feedback.",
+        "staff": "React's useTransition paired with Suspense and a delay prop handles this natively: the fallback only shows if the wait genuinely crosses your configured threshold."
       },
       {
         "chapter": "demo",
@@ -158,9 +158,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for skeleton-vs-spinner-choice.",
-        "mid": "",
-        "staff": ""
+        "junior": "Skeletons only work when you actually know the shape of what's loading. If the content might come back empty or with a different count, use a spinner instead.",
+        "mid": "The rule of thumb: profiles, articles, and settings panels get a skeleton. Search results and anything with a variable count gets a spinner.",
+        "staff": "A skeleton that predicts the wrong layout is measurably worse than a plain spinner at the same load time. The mismatch itself is what hurts, not the wait."
       }
     ]
   }

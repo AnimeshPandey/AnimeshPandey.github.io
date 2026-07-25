@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "You've got two choices when reduce motion is on: turn animation off completely, or keep the functional stuff and just cut the decorative movement.",
+        "mid": "The no-preference query targets people who have NOT asked for reduced motion. Wrap your optional animation in it, and it's off by default for everyone else.",
+        "staff": "Write animations behind the no-preference guard rather than adding a reduce override. That way anyone who never sets the OS preference still gets motion, and reduce-preference users never see it by accident."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for reduced-motion-respect.",
-        "mid": "",
-        "staff": ""
+        "junior": "Always wrap any animation that moves things around or loops forever in a check for the reduce-motion setting.",
+        "mid": "The safe-by-default pattern: wrap animations in prefers-reduced-motion no-preference. Motion becomes opt-in, not opt-out.",
+        "staff": "WCAG 2.1 SC 2.3.3 requires that motion triggered by interaction can be disabled. This isn't a nice-to-have, it's the implementation mechanism for a real accessibility requirement."
       }
     ]
   },

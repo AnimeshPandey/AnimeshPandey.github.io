@@ -45,9 +45,9 @@
       },
       {
         "chapter": "concept",
-        "junior": "The concept chapter is the principle: read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "junior": "Server-side rendering happens in two passes: the server renders HTML first for a fast initial paint, then React runs again in the browser and has to produce the exact same output to attach itself cleanly.",
+        "mid": "The two trees are the server's rendered HTML and the client's freshly-built virtual DOM during hydration. Anything that differs between them, even one character, counts as a mismatch.",
+        "staff": "Common mismatch sources all share one trait: they read something environment-dependent during render. Date objects, Math.random, localStorage, anything from window. None of those exist identically on the server and in the browser."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for hydration-two-trees.",
-        "mid": "",
-        "staff": ""
+        "junior": "The server's HTML and React's client render have to match exactly. Any difference triggers a mismatch warning and a possible flicker.",
+        "mid": "Hydration mismatches almost always come from reading something environment-dependent during render: dates, random values, or anything from window or localStorage.",
+        "staff": "React 18 downgrades a subtree mismatch to a recoverable warning instead of a hard crash. A CLS spike in production is often your first real signal that hydration is silently re-rendering."
       }
     ]
   },
