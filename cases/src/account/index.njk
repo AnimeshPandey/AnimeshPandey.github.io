@@ -47,15 +47,17 @@ noindex: true
   </section>
 
   <section class="account-card account-card--signed-in" id="account-signed-in" hidden>
-    <div class="casey-avatar-frame account-card__avatar" data-casey-tier="junior">
-      <img src="{{ '/assets/casey/junior/celebrate.png' | url }}?v=__AP_BUILD_ID__"
-           alt="Casey celebrating"
+    <div class="casey-avatar-frame account-card__avatar" data-casey-tier="junior" id="account-casey-avatar">
+      <img src="{{ '/assets/casey/junior/present.png' | url }}?v=__AP_BUILD_ID__"
+           alt="Casey"
            width="72" height="72"
            class="casey-avatar-frame__img casey-breathing"
+           id="account-casey-img"
            loading="lazy" />
     </div>
     <h2 class="account-card__title">Signed in</h2>
     <p class="account-card__text">You're signed in as <strong id="account-signed-in-email"></strong>.</p>
+    <p class="account-card__text account-card__milestone" id="account-casey-milestone" hidden></p>
     <div class="account-stats" id="account-stats" data-casebook-progress-strip></div>
     <div class="account-actions">
       <a href="{{ '/' | url }}" class="account-form__submit account-form__submit--inline">Continue learning</a>

@@ -1,0 +1,30 @@
+{
+  "name": "The Frontend Casebook",
+  "short_name": "Casebook",
+  "description": "Scrollable frontend case studies with Casey as your guide — Junior to Staff.",
+  "start_url": "/cases/",
+  "scope": "/cases/",
+  "display": "browser",
+  "theme_color": "#7CA897",
+  "background_color": "#FAFAF8",
+  "icons": [
+    {
+      "src": "/brand/casebook-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/casey-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/casey-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

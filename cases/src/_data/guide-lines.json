@@ -1,7 +1,7 @@
 {
   "hub": {
     "first_visit": [
-      { "pose": "present", "line": "Hey! I'm Casey — your frontend learning guide. Pick any case to start." },
+      { "pose": "wave", "line": "Hey! I'm Casey — your frontend learning guide. Pick any case to start." },
       { "pose": "wave", "line": "Welcome to The Frontend Casebook. No fluff, just real patterns." }
     ],
     "return_low": [
@@ -53,7 +53,7 @@
   },
   "library": {
     "visit": [
-      { "pose": "read", "line": "779 real-world engineering articles. Filter by topic or company." },
+      { "pose": "read", "line": "Hundreds of real-world engineering articles. Filter by topic or company." },
       { "pose": "read", "line": "Reading list mode. {filtered} articles matching your filter." }
     ]
   }

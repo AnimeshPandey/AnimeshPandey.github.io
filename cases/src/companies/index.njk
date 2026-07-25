@@ -97,6 +97,13 @@ permalink: /companies/index.html
      just silently emptied the list with no feedback at all. Same
      `.hub-empty` container as the other two empty states. #}
   <div class="hub-empty" id="companies-empty" role="status" hidden>
+    <div class="casey-avatar-frame hub-empty__avatar" data-casey-tier="junior">
+      <img class="hub-empty__img casey-avatar-frame__img"
+           src="{{ '/assets/casey/brand/status/empty-filter.png' | url }}?v=__AP_BUILD_ID__"
+           alt=""
+           width="120" height="86"
+           loading="lazy" />
+    </div>
     <p class="hub-empty__msg">No companies match your search.</p>
     <button type="button" class="btn btn--ghost" id="companies-empty-clear">Clear search</button>
   </div>

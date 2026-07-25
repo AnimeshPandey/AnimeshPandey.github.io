@@ -65,6 +65,28 @@
     return window.CaseyCompanion.lineAt(path, tier) || '';
   }
 
+  function caseyReactionUrl(reaction) {
+    var assetBase = document.documentElement.dataset.assetBase || '/cases/assets/casey/';
+    return assetBase.replace(/\/?$/, '/') + 'brand/reactions/' + reaction + '.png';
+  }
+
+  function poseToReaction(pose) {
+    var map = {
+      celebrate: 'yay',
+      think: 'hmm',
+      support: 'oops',
+      focus: 'focus',
+      sleep: 'sleep',
+      wave: 'wave',
+      proud: 'proud',
+      curious: 'curious',
+      perk: 'perk',
+      nod: 'nod',
+      point: 'point',
+    };
+    return map[pose] || 'nod';
+  }
+
   function caseyPoseUrl(pose) {
     var tier = window.CaseyCompanion && window.CaseyCompanion.readTier ? window.CaseyCompanion.readTier() : 'junior';
     var assetBase = document.documentElement.dataset.assetBase || '/cases/assets/casey/';
@@ -75,9 +97,11 @@
     if (!container) return;
     var text = caseyLine(path);
     if (!text) { container.innerHTML = ''; return; }
+    var reaction = poseToReaction(pose);
     container.innerHTML =
-      '<div class="casey-about-bubble" role="note">' +
-      '<img class="casey-about-bubble__img" src="' + caseyPoseUrl(pose) + '" width="64" height="64" alt="" />' +
+      '<div class="casey-about-bubble casey-reaction-chip" role="note">' +
+      '<img class="casey-reaction-chip__img" src="' + caseyReactionUrl(reaction) + '" width="48" height="48" alt="" ' +
+      'onerror="this.onerror=null;this.src=\'' + caseyPoseUrl(pose) + '\';this.className=\'casey-about-bubble__img\'" />' +
       '<p class="casey-about-bubble__text"></p>' +
       '</div>';
     container.querySelector('.casey-about-bubble__text').textContent = text;
@@ -315,6 +339,23 @@
         var reactionPath =
           result === 'yes' ? 'interview.reactionYes' : result === 'partial' ? 'interview.reactionPartial' : 'interview.reactionNo';
         var reactionPose = result === 'yes' ? 'proud' : result === 'partial' ? 'nod' : 'support';
+
+        // Soft stuck nudge after 2+ consecutive non-yes without revealing answers
+        if (!session.stuckNudgeShown) {
+          var streak = 0;
+          session.caseSlugs.forEach(function (s) {
+            var r = session.results[s];
+            if (r === 'no' || r === 'partial') streak += 1;
+            else if (r === 'yes') streak = 0;
+          });
+          if (streak >= 2 && (result === 'no' || result === 'partial')) {
+            reactionPath = 'interview.stuckNudge';
+            reactionPose = 'support';
+            session.stuckNudgeShown = true;
+            saveSession(session);
+          }
+        }
+
         assessBar.innerHTML = '';
         renderCaseyBubble(assessBar, reactionPath, reactionPose);
         setTimeout(navigateNext, 1100);

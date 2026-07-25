@@ -21,6 +21,7 @@ const scripts = [
   'assert-casey-extremities.mjs',
   'assert-casey-no-checker.mjs',
   'assert-casey-floor-matte.mjs',
+  'assert-casey-pose-coverage.mjs',
   'assert-live-cases.mjs',
   'assert-deploy-routes.mjs',
   'assert-critical-assets.mjs',
