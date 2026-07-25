@@ -1,0 +1,239 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "flex: min-width: 0 Saves Dashboards"
+description: Why a flex child with a long label or filename overflows its row, and the one-property fix.
+slug: flex-min-width-zero
+track: css-layout
+readMin: 8
+flagship: false
+demoType: toggle
+principle: Flexbox
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/flex-min-width-zero-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The dashboard row that won't stop overflowing</h2>
+  <div class="tone-junior">
+    <p>
+      Three cards in a row, <code>display: flex</code>, each meant to share the space
+      equally. Works fine — until one card gets a long filename or a long email address
+      in it. That one card refuses to shrink, pushes past its share of the row, and the
+      whole layout overflows sideways. You didn't set a width anywhere. Nothing looks wrong
+      in the CSS.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Flex items have an invisible default: <code>min-width: auto</code>. For an item
+      containing unbreakable content (a long word, a filename, a URL with no spaces),
+      "auto" resolves to that content's own intrinsic width — the item is not allowed to
+      shrink smaller than its own content, flex-shrink notwithstanding.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the CSS Flexbox spec's "automatic minimum size" rule for flex items along
+      the main axis. <code>flex-shrink: 1</code> only controls how items shrink relative
+      to each other once they've reached their minimum sizes — it does not override that
+      minimum. <code>min-width: auto</code> is that minimum, and for content-heavy items
+      it's rarely 0.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>flex-shrink has a floor it won't cross</h2>
+  <div class="tone-junior">
+    <p>
+      Think of <code>flex-shrink</code> as "how eager is this item to shrink," and
+      <code>min-width: auto</code> as "how small will it ever actually go." Even a very
+      eager shrinker (<code>flex-shrink: 1</code> or higher) stops at its content's own
+      width if you never override that floor.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Setting <code>min-width: 0</code> on the flex item removes that floor entirely,
+      letting <code>flex-shrink</code> actually do its job all the way down to zero if
+      needed. Pair it with <code>overflow: hidden</code> and <code>text-overflow: ellipsis</code>
+      on the content inside so it truncates gracefully instead of just clipping mid-character.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The same rule applies on the cross axis for <code>flex-direction: column</code>
+      layouts — swap in <code>min-height: 0</code> there instead. Grid has an equivalent
+      gotcha with <code>minmax(0, 1fr)</code> vs. plain <code>1fr</code> for exactly the
+      same underlying reason: an implicit auto-minimum sized to content.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Why this specifically shows up in dashboards</h2>
+  <div class="tone-junior">
+    <p>
+      Dashboards are exactly where this bites hardest: a row of stat cards, a table row
+      with a long value in one column, a breadcrumb bar with a long page title — anywhere
+      real, unpredictable user data (not lorem ipsum) ends up inside a flex row that
+      looked perfectly fine with placeholder text during development.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      It's rare in early development because test data is short and clean. It shows up in
+      production, on one specific user's account, with one specific long value — which
+      makes it feel like a data bug rather than the layout bug it actually is.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is also why the bug survives code review so often: the CSS is correct by every
+      visual check the reviewer runs with realistic-looking short test content. The
+      failure mode only appears with content wider than the container, which reviewers
+      rarely deliberately test for.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">One property between a stable row and an overflowing one</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">❌ DEFAULT min-width: auto</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>.card { flex: 1; }
+/* long content refuses to shrink below itself */</code></pre>
+      </div>
+      <div style="border: 1px solid var(--casebook-border); border-radius: 8px; padding: 16px; background: var(--casebook-bg);">
+        <p style="font-family: var(--mono, monospace); font-size: 10px; color: var(--casebook-ink-faint); margin-bottom: 12px;">✅ min-width: 0</p>
+        <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:10px;border-radius:6px;font-size:0.75rem;"><code>.card { flex: 1; min-width: 0; }
+.card__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try it: same row, one property different</h2>
+  <div class="tone-junior">
+    <p>
+      Same three-card row, same long filename in the middle card. In "Broken" mode, watch
+      it push the row wider than its container. In "Fixed" mode, the same card truncates
+      its text with an ellipsis and the row stays put.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Only <code>min-width</code> differs between the two states — <code>flex-shrink</code>
+      is identical in both. That's the point: shrink was always willing to act, it just had
+      nowhere to go until the floor was removed.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Open DevTools and inspect the middle card's computed <code>min-width</code> in each
+      state: "auto" (resolving to the content's intrinsic width) vs. "0px" — the only
+      change, and the entire difference in behavior.
+    </p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Try it: flex overflow vs min-width: 0"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="flex-min-width-zero">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> Shows a 3-card flex row overflowing with a long filename, and the min-width: 0 fix.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Broken: min-width auto
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Fixed: min-width 0
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fixed, min-width 0</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:140px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Where else the same rule applies</h2>
+  <div class="tone-junior">
+    <p>
+      Same fix, same reasoning, in a <code>flex-direction: column</code> layout: use
+      <code>min-height: 0</code> instead of <code>min-width: 0</code>, for the exact same
+      reason on the other axis.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      CSS Grid has its own version: a plain <code>1fr</code> track can still refuse to
+      shrink below its content's intrinsic size for the same automatic-minimum-size reason.
+      <code>minmax(0, 1fr)</code> is the grid equivalent of <code>min-width: 0</code> on a
+      flex item.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Nested flex containers compound this: if a parent flex item has no explicit
+      <code>min-width: 0</code>, none of ITS children's shrink behavior can fix an
+      overflow — the parent's own auto-minimum sets the floor for the whole subtree
+      regardless of what's declared further down. Audit from the outside in, not the
+      inside out, when hunting this bug in a deeply nested layout.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Flex items default to min-width: auto, which for content-heavy items means "never smaller than my own content." flex-shrink can't override that floor.</div>
+        <div class="tone-mid">Set min-width: 0 on the flex item to remove the floor, then pair it with overflow: hidden + text-overflow: ellipsis on the inner content so it truncates instead of overflowing.</div>
+        <div class="tone-staff">This is the CSS Flexbox spec's automatic minimum size rule for flex items along the main axis — not a browser bug or inconsistency, identical across evergreen browsers.</div>
+      </li>
+      <li>
+        <div class="tone-junior">This mostly shows up in production, not development — test data is short and clean; real user data (long filenames, long emails) is what actually triggers it.</div>
+        <div class="tone-mid">It survives code review because the layout looks correct with realistic short test content — the failure only appears with content wider than the container.</div>
+        <div class="tone-staff">Nested flex containers compound this: a parent item's own min-width: auto sets the floor for its whole subtree, regardless of what's declared on children further down. Audit outside-in.</div>
+      </li>
+      <li>
+        <div class="tone-junior">Column layouts need the same fix on the other axis: min-height: 0 instead of min-width: 0.</div>
+        <div class="tone-mid">CSS Grid's equivalent is minmax(0, 1fr) instead of a plain 1fr track — same automatic-minimum-size rule, different layout mode.</div>
+        <div class="tone-staff">Audit deeply nested flex layouts from the outermost container inward — a missing min-width: 0 on a parent blocks every child's shrink behavior beneath it.</div>
+      </li>
+    </ul>
+  </div>
+</section>
