@@ -27,7 +27,7 @@
   <section class="casey-panel__section" aria-labelledby="{{ idp }}casey-panel-intensity-heading">
     <h3 class="casebook-prefs__label" id="{{ idp }}casey-panel-intensity-heading">Guide intensity</h3>
     <div class="casebook-prefs__group" role="radiogroup" aria-label="Casey intensity">
-      <button type="button" class="casey-panel__intensity" role="radio" data-casey-intensity="full" aria-checked="true">Full — hints, motion, voice</button>
+      <button type="button" class="casey-panel__intensity" role="radio" data-casey-intensity="full" aria-checked="true">Full — hints, motion, optional voice</button>
       <button type="button" class="casey-panel__intensity" role="radio" data-casey-intensity="quiet" aria-checked="false">Quiet — no rotation or confetti</button>
       <button type="button" class="casey-panel__intensity" role="radio" data-casey-intensity="off" aria-checked="false">Off — avatar only</button>
     </div>
@@ -41,18 +41,14 @@
 
   {# Real disclosure of the browser/OS-level prefers-reduced-motion state
      (design-backlog idea #40) — read live via matchMedia in
-     casey-companion-prefs.js, not a toggle Casey can flip on its own; this
-     just tells you which state Casey (and the rest of Casebook's
-     casebook--reduce-motion class, set in casebook-preferences.js) is
-     currently honoring, and updates live if you change the OS setting
-     while the panel is open. #}
-  <section class="casey-panel__section" aria-labelledby="{{ idp }}casey-panel-motion-heading">
-    <h3 class="casebook-prefs__label" id="{{ idp }}casey-panel-motion-heading">Motion</h3>
+     casey-companion-prefs.js, not a toggle Casey can flip on its own. #}
+  <section class="casey-panel__section casey-panel__section--compact" aria-labelledby="{{ idp }}casey-panel-motion-heading">
+    <h3 class="casebook-prefs__label" id="{{ idp }}casey-panel-motion-heading">System motion</h3>
     <p class="casey-panel__motion-status" data-casey-panel-motion-status>Checking your system setting…</p>
   </section>
 
   <div class="casey-panel__footer">
     <a class="casebook-prefs__link" href="{{ '/about/' | url }}#casey">About Casey</a>
-    <button type="button" class="casebook-prefs__link casey-panel__reset" data-casey-reset>Reset memory</button>
+    <button type="button" class="casebook-prefs__link casey-panel__reset" data-casey-reset>Reset Casey memory</button>
   </div>
 </div>

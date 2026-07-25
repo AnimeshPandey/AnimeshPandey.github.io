@@ -153,7 +153,14 @@
         e.preventDefault();
         options.onActivate(e, { close: close });
       }
-      if (e.key === 'Tab') close();
+      // Theme/lang listboxes close on Tab (quick pick). Dialog panels
+      // (Casey prefs) must keep Tab for moving between controls.
+      if (e.key === 'Tab') {
+        var isDialog =
+          menu.getAttribute('role') === 'dialog' ||
+          btn.getAttribute('aria-haspopup') === 'dialog';
+        if (!isDialog) close();
+      }
     });
 
     var api = { open: open, close: close, entry: entry };

@@ -59,12 +59,21 @@
     if (!text) text = caseyLine('search.idle');
     if (!text) return;
 
-    bubbleEl.innerHTML =
-      '<div class="casey-about-bubble" role="note">' +
-      '<img class="casey-about-bubble__img" src="' +
-      (document.documentElement.dataset.assetBase || '/cases/assets/casey/') +
+    var assetBase = (document.documentElement.dataset.assetBase || '/cases/assets/casey/').replace(/\/?$/, '/');
+    var reactionSrc = assetBase + 'brand/reactions/curious.png';
+    var poseSrc =
+      assetBase +
       (window.CaseyCompanion.readTier ? window.CaseyCompanion.readTier() : 'junior') +
-      '/curious.png" width="64" height="64" alt="" />' +
+      '/curious.png';
+
+    bubbleEl.innerHTML =
+      '<div class="casey-about-bubble casey-reaction-chip" role="note">' +
+      '<img class="casey-reaction-chip__img" src="' +
+      reactionSrc +
+      '" width="48" height="48" alt="" ' +
+      'onerror="this.onerror=null;this.src=\'' +
+      poseSrc +
+      '\';this.className=\'casey-about-bubble__img\'" />' +
       '<p class="casey-about-bubble__text"></p>' +
       '</div>';
     bubbleEl.querySelector('.casey-about-bubble__text').textContent = text;

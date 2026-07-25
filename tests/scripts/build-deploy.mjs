@@ -85,6 +85,13 @@ copyDir(SITE_OUT, DEPLOY);
 fs.mkdirSync(path.join(DEPLOY, 'cases'), { recursive: true });
 copyDir(CASES_OUT, path.join(DEPLOY, 'cases'));
 
+// Root /brand/* (Casey favicon, PWA icons, OG, webmanifest) is outside
+// Eleventy output — stage it the same way CI static-pages.yml does.
+const brandRoot = path.join(ROOT, 'brand');
+if (fs.existsSync(brandRoot)) {
+  copyDir(brandRoot, path.join(DEPLOY, 'brand'));
+}
+
 const headers = path.join(ROOT, '_headers');
 if (fs.existsSync(headers)) fs.copyFileSync(headers, path.join(DEPLOY, '_headers'));
 
