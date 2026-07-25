@@ -71,16 +71,14 @@ describe('findRectArtifact', () => {
 });
 
 describe('checkFile against real repo assets (regression baseline)', () => {
-  it('flags junior/present.png with the known matte-rectangle span', () => {
+  it('junior/present.png is clean after the 2026-07-25 isnet-anime re-matte', () => {
     const result = checkFile(path.join(CASEY, 'junior/present.png'));
-    assert.equal(result.flagged, true);
-    assert.deepEqual(result.span, [56, 454]);
+    assert.equal(result.flagged, false, `expected clean, got a ${result.runRows}-row run`);
   });
 
-  it('flags mid/idle.png with the known matte-rectangle span', () => {
+  it('mid/idle.png is clean after the 2026-07-25 isnet-anime re-matte', () => {
     const result = checkFile(path.join(CASEY, 'mid/idle.png'));
-    assert.equal(result.flagged, true);
-    assert.deepEqual(result.span, [41, 470]);
+    assert.equal(result.flagged, false, `expected clean, got a ${result.runRows}-row run`);
   });
 
   it('does not flag the 3 files confirmed clean during the 2026-07-22 audit', () => {
@@ -90,7 +88,7 @@ describe('checkFile against real repo assets (regression baseline)', () => {
     }
   });
 
-  it('current affected count across all 48 pose assets is 45 — update this test when art is fixed', () => {
+  it('affected count across all 48 pose assets is 0 — regressed if this ever fails', () => {
     const tiers = ['junior', 'mid', 'staff'];
     const poses = ['idle', 'wave', 'point', 'celebrate', 'think', 'sleep', 'perk', 'blink', 'curious', 'focus', 'nod', 'present', 'proud', 'read', 'support', 'welcome'];
     let flaggedCount = 0;
@@ -100,6 +98,6 @@ describe('checkFile against real repo assets (regression baseline)', () => {
         if (checkFile(p).flagged) flaggedCount++;
       }
     }
-    assert.equal(flaggedCount, 45);
+    assert.equal(flaggedCount, 0);
   });
 });
