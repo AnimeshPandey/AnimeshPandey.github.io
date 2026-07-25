@@ -1,0 +1,103 @@
+{
+  "slug": "ai-suggestion-diff-review",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The null check wasn't dead code — it was the only thing handling the still-loading state. The AI just never saw that caller.",
+      "mid": "Nothing threw. The function still returned a string on every call — just the wrong one for one specific input the AI's context window didn't include.",
+      "staff": "This isn't a model-quality problem. Diff review exists to catch exactly this class of miss: a locally-reasonable edit that's wrong for a reason outside the edited function."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Reject in diff-review mode — the test call underneath still shows the correct output, because nothing merged.",
+      "mid": "Same proposed edit in both modes. Only whether it applies immediately vs. waits on your explicit decision changes.",
+      "staff": "The live test call re-invokes whatever the current function body actually is right now — it's not a canned before/after, the runtime output really does flip on Accept."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Diff review isn't about not trusting AI — it's the same review step you'd want on a teammate's PR, just pointed at a different author.",
+      "mid": "GitHub Copilot's own review surface renders suggestions as diffs with per-suggestion Accept/Dismiss — this pattern isn't hypothetical, it's what the real tool does.",
+      "staff": "The required decision point is what does the work. A diff you can scroll past without deciding anything gives you the appearance of review with none of the protection."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Put Reject as close to Accept as Accept is to itself — a UI that buries rejection nudges people toward rubber-stamping.",
+      "mid": "Log who accepted or rejected each suggestion, not just who committed — git blame alone can't answer whether a diff was actually read.",
+      "staff": "aria-live announcing the applied/rejected result matters here specifically — a screen reader user has no equivalent of \"watching the code visibly change\" without it."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Here's a real failure mode with AI code suggestions: one gets applied straight to your file, no diff, no confirmation, and a defensive check just quietly disappears.",
+        "mid": "This case is about a null check that got auto-removed by an AI suggestion, and showed up three days later as NaN prices in production.",
+        "staff": "We're covering why diff review, not model quality, is the actual safeguard against context the AI never had visibility into."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is simple: show the change, and make the person click Accept or Reject before anything merges.",
+        "mid": "This mirrors how you'd review a teammate's pull request, just applied to an AI-authored change instead.",
+        "staff": "The protection comes from the required decision blocking the merge, not from rendering a diff someone can passively scroll past."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try both modes here. In auto-apply, the fix lands the second you click the button. In diff review, it waits for you to say yes.",
+        "mid": "Watch the test call underneath — it's live, so you'll see the real output change the moment the edit actually takes effect.",
+        "staff": "Reject in diff-review mode and confirm the test call still returns the original, correct output — nothing touched the function."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A diff makes a removed check obvious. A finished file doesn't. That difference is the whole point of this pattern.",
+        "mid": "Route AI suggestions through a real diff-and-decide step, the same one you'd want for any other author's change.",
+        "staff": "Required decision beats passive diff every time — build the review step so it can't be skimmed past."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Cache-Control on Static Assets"
+description: "Why a static JS bundle without a content hash forces a bad choice between staleness and re-downloading it on every visit, and how hash-in-filename plus immutable caching gets you both speed and correctness."
+slug: cache-control-static
+track: networking
+readMin: 10
+flagship: false
+demoType: toggle
+principle: HTTP cache
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/cache-control-static-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Your users are re-downloading the same 200KB bundle on every single visit</h2>
+  <div class="tone-junior">
+    <p>
+      You ship <code>app.js</code>. It never changes name between deploys, so you set a short cache lifetime, just to be safe. Now every returning visitor re-downloads the whole file almost every time they load the page, even though nothing in it changed since yesterday.
+    </p>
+    <p>
+      The instinct to cache "a little bit, just in case" is exactly backwards. The fix isn't a shorter cache time, it's making the browser able to cache the file forever and still always know the instant it actually changes.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A same-named static asset with a short or default <code>Cache-Control</code> lifetime forces a permanent tradeoff: cache too long and a real deploy goes unnoticed by returning visitors; cache too short and you're re-serving the same bytes on every page load for no reason.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Content-hashed filenames dissolve the tradeoff entirely: the cache lifetime and the correctness guarantee become independent variables instead of one knob you have to compromise on.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Cache forever, invalidate by renaming the file</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of always naming the file <code>app.js</code>, the build tool names it something like <code>app.a3f8c1.js</code>, where <code>a3f8c1</code> is generated from the file's own contents. Change one line of code, and the hash, and therefore the filename, changes too.
+    </p>
+    <p>
+      Because the URL itself changes whenever the content changes, you can tell the browser "cache this forever" with zero risk, a URL that never changes can only ever point at one exact set of bytes.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>Cache-Control: public, max-age=31536000, immutable</code> on a content-hashed asset is safe specifically because the URL is a function of the content. The HTML that references it (<code>&lt;script src="/app.a3f8c1.js"&gt;</code>) is what actually changes on deploy, and the HTML itself gets a short or no-cache lifetime.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is why the HTML document and its hashed assets need opposite caching policies: the HTML is the mutable pointer, revalidated on every request, while everything it points to is immutable and cached for a year. Caching the HTML aggressively is the actual bug that causes "I deployed but nothing changed" reports, not stale JS.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The hotfix that didn't fix anything for an hour</h2>
+  <div class="tone-junior">
+    <p>
+      A team shipped a critical bug fix and watched error rates stay flat for almost an hour after deploy. The static JS file had no content hash and a 24-hour cache lifetime set months earlier "to reduce load." Most visitors' browsers simply never asked the server for a new copy.
+    </p>
+    <p>
+      The team's first instinct was to drop the cache lifetime to zero everywhere. That made the outage-response problem go away and created a slower site for everyone, permanently, for a problem that only mattered during deploys.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The actual fix was moving to a hashed filename output from their bundler (already supported, just not enabled) and splitting the caching policy: <code>index.html</code> got <code>Cache-Control: no-cache</code> (always revalidated, cheap because HTML is small), and every hashed asset it referenced got a one-year immutable cache.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also added a CI check that fails the build if any <code>&lt;script&gt;</code> or <code>&lt;link&gt;</code> tag in the built HTML points at a non-hashed filename, since the failure mode is silent (nothing errors, it just serves stale code to some fraction of users) and had already shipped once before anyone noticed the caching config was still the pre-hash default.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Same-named asset with a short cache window re-fetched on repeat visits, and stale after deploy within that window (broken) vs. content-hashed filename cached for a year and invalidated instantly by the hash changing on deploy (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch what a repeat visit actually requests</h2>
+  <div class="tone-junior">
+    <p>Simulate loading the page three times in a row, then simulate a deploy in between, and watch what the browser has to re-download in each mode.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The fixed mode caches the hashed URL for the full simulated session and only ever re-fetches once the hash itself changes.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the broken mode is stale for the entire cache window even after a real deploy, not just slow, actually wrong content served with a 200 from cache.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Static asset caching comparison: short-lived same-name cache (broken) vs. content-hashed immutable cache (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="cache-control-static">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates repeat page loads and a deploy in between, comparing a short-lived same-name cache against a content-hashed immutable cache; it requires JavaScript to run the simulated request log in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Short-lived cache
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Hashed + immutable
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Hashed + immutable</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The HTML is the one file you must not cache long</h2>
+  <div class="tone-junior">
+    <p>
+      Don't put a long cache time on <code>index.html</code> itself, even though it feels consistent with "cache everything." It's the small file that has to be fetched fresh so the browser can learn the new hashed filenames after a deploy.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Use <code>Cache-Control: no-cache</code> (not <code>no-store</code>) on the HTML entry point: <code>no-cache</code> still lets the browser cache it but forces a revalidation request every time, which is cheap (a 304 response) and guarantees freshness.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Service workers complicate this further, a stale-while-revalidate SW cache can re-introduce the exact staleness problem hashed filenames were supposed to solve, since the SW's own cache lifecycle is independent of HTTP <code>Cache-Control</code> headers. If a service worker is in play, its update/activate lifecycle needs the same "small mutable pointer, large immutable payload" discipline applied deliberately, it doesn't inherit HTTP caching semantics for free.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A same-named file forces a tradeoff between staleness and re-downloading it constantly. A content-hashed filename removes the tradeoff entirely.</div>
+        <div class="tone-mid">Cache hashed assets forever with immutable; keep the HTML that references them on a short or no-cache lifetime so it always picks up the new hash.</div>
+        <div class="tone-staff">A service worker's own cache lifecycle doesn't inherit HTTP Cache-Control semantics, apply the same short-pointer/long-payload discipline to it deliberately if one is in play.</div>
+      </li>
+    </ul>
+  </div>
+</section>
