@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "State Machines for Wizards"
+description: "A multi-step form built with isLoading, hasError, and isSubmitting booleans can end up loading, erroring, and complete all at once — how explicit finite states make that combination structurally impossible instead of just unlikely."
+slug: finite-state-machines-ui
+track: state-architecture
+readMin: 10
+flagship: false
+demoType: toggle
+principle: FSM
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/finite-state-machines-ui-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The wizard that showed a spinner and an error at the same time</h2>
+  <div class="tone-junior">
+    <p>
+      A multi-step signup wizard tracked its submit step with a handful of booleans: <code>isSubmitting</code>, <code>hasError</code>, <code>isComplete</code>. A slow network plus a quick retry click produced a screen showing a loading spinner and a red error banner stacked on top of each other, because a retry set <code>isSubmitting</code> back to <code>true</code> without anyone remembering to also reset <code>hasError</code> to <code>false</code>.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Three independent booleans describe eight possible combinations. The UI's render logic only ever intentionally handles maybe four of those — loading, error, success, idle — but nothing in the type system or the code stops the other four from happening. They're not commented as invalid, they're just never supposed to occur, which is a much weaker guarantee.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is boolean explosion: <em>n</em> independent flags describe 2<sup>n</sup> possible combinations, and almost every real UI only has a handful of states that are actually meaningful. The other combinations aren't edge cases to handle, they're states that shouldn't exist at all — but scattered booleans have no way to say that.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Name the real states, then only allow moving between them</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of several independent true/false flags, use one variable that holds exactly one named state at a time: <code>idle</code>, <code>submitting</code>, <code>success</code>, or <code>error</code>. Since it's one variable, it's structurally impossible for the UI to be in two of those at once — there's no such thing as a "submitting and error" value if <code>state</code> can only ever equal one string.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A finite state machine adds one more piece: an explicit list of which transitions are even allowed from each state — <code>idle</code> can go to <code>submitting</code>, <code>submitting</code> can go to <code>success</code> or <code>error</code>, <code>error</code> can go back to <code>submitting</code> on retry. An event that isn't a valid transition from the current state simply doesn't fire, instead of quietly corrupting the state.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the difference between a state <em>value</em> (a single variable holding one of a few named states — better than scattered booleans, but nothing stops any transition from anywhere) and a state <em>machine</em> (the transition table itself is data, so "can you even get from A to B" is answerable by inspection, and libraries like XState can visualize and even statically verify it, catching an unreachable or dead-end state before it ships).
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The checkout flow that could "complete" twice</h2>
+  <div class="tone-junior">
+    <p>
+      A checkout wizard used <code>isProcessingPayment</code>, <code>paymentFailed</code>, and <code>orderComplete</code> booleans across three steps. A user whose payment failed, then retried and succeeded, ended up on a screen where the "order complete" confirmation and a leftover "payment failed, please try again" banner from the previous attempt were both still visible, because the retry's success handler set <code>orderComplete</code> without anyone remembering that <code>paymentFailed</code> was still <code>true</code> from before.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team rebuilt the flow's step state as a single machine: <code>idle → processing → (failed | complete)</code>, with <code>failed → processing</code> as the only way back in. The render logic switched from "check three booleans and hope" to a single <code>switch</code> on one state value, and the leftover-banner bug became impossible to reproduce because there was no longer a code path where two conflicting states could both be true.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also found, while drawing out the transition table, a state their old code silently allowed that made no product sense at all: retrying payment from the <code>complete</code> state, left over from a stray button that hadn't been disabled after success. The FSM model forced them to explicitly decide "no, <code>complete</code> has no outgoing transitions" — a decision the boolean version had never actually been forced to make.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Scattered isLoading/hasError/isComplete booleans can all be true at once (broken) vs. one explicit state value with a fixed transition table, so only valid moves are even possible (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try to break it, then try to break the fixed version</h2>
+  <div class="tone-junior">
+    <p>Click Submit, then Server error, then Success, in that order, in each mode. Watch what stacks up in broken mode — and notice which buttons the fixed mode simply won't let you press.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken mode's badges show all three flags live — watch more than one go true at once. The fixed mode disables any button that isn't a valid transition from the current state.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The fixed mode's transition table is four lines of data (see the fe-depth chapter) — the entire guarantee comes from the render function only ever reading one state variable, not from any extra runtime validation layered on top.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Scattered booleans producing simultaneous loading/error/success states (broken) vs. an explicit state machine allowing only valid transitions (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="finite-state-machines-ui">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a wizard step built with independent boolean flags against the same step built as an explicit finite state machine; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Boolean flags
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Finite state machine
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Finite state machine</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The transition table is the whole design surface</h2>
+  <div class="tone-junior">
+    <p>
+      Writing the transition table down (even as a plain object, no library required) forces you to make every decision explicit up front: what can happen from each state, and just as importantly, what deliberately can't. That second half — the states you can't reach from a given point — is usually where the real bugs were hiding in the boolean version.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A hand-rolled <code>switch</code> on a single state string gets you most of the benefit for a simple wizard. Reach for a library like XState once you need parallel states (two independent sub-machines running at once), hierarchical states (a "submitting" state that's itself broken into sub-steps), or you want the transition table to be visually diagrammable for a design/product conversation.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Don't let the state value leak implementation booleans back in through the side door — a common half-measure is keeping <code>state: 'submitting' | 'error' | ...</code> alongside a still-separate <code>isDirty</code> or <code>retryCount</code> flag that can drift out of sync with it. Model anything that genuinely depends on which state you're in as part of that state (or as machine "context" data scoped to the current state), not as a sibling variable with its own independent lifecycle.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Independent booleans like isLoading/hasError/isComplete can all end up true at once — one named state value can only ever be one thing.</div>
+        <div class="tone-mid">Pair the single state value with an explicit transition table so only valid moves between states are even possible, not just the common ones you remembered to check for.</div>
+        <div class="tone-staff">Writing the transition table down forces you to decide what deliberately can't happen from a given state — that's usually where the real bugs were hiding in the boolean version.</div>
+      </li>
+    </ul>
+  </div>
+</section>

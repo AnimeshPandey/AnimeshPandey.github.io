@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "content-visibility for Long Pages"
+description: "content-visibility: auto can cut a long page's initial render cost dramatically by skipping off-screen sections — but without contain-intrinsic-size it causes scrollbar jump and layout jank as the browser measures content on scroll."
+slug: content-visibility-sections
+track: performance-cwv
+readMin: 10
+flagship: false
+demoType: toggle
+principle: CSS perf
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/content-visibility-sections-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>One CSS property, and the scrollbar started jumping around</h2>
+  <div class="tone-junior">
+    <p>
+      A long documentation page — a dozen sections, a lot of DOM — got one line added: <code>content-visibility: auto</code> on each section. Initial render got dramatically faster, exactly as promised. Then someone scrolled down and the scrollbar thumb visibly jumped, the page height kept snapping around, and it looked worse than before the "optimization."
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>content-visibility: auto</code> does exactly what it says: sections not currently relevant to the user get skipped — no layout, no paint — until they're needed. What it doesn't do on its own is reserve any space for what it's skipping, so a skipped section collapses toward zero height until the browser actually renders it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a containment trade-off, not a bug: <code>content-visibility: auto</code> applies size containment as part of skipping render work, and size containment means the element's size is computed without looking at its contents at all. Skip the render, and by definition you've also skipped knowing how tall the thing is.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Tell the browser how tall the thing is before it skips rendering it</h2>
+  <div class="tone-junior">
+    <p>
+      The fix is a second property, <code>contain-intrinsic-size</code>, set alongside <code>content-visibility: auto</code> on the same element. It gives the browser a placeholder size to use while a section's real content is skipped, so the page's total height stays roughly correct the whole time, not just after everything's been scrolled past once.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Use the <code>auto</code> keyword form: <code>contain-intrinsic-size: auto 300px</code>. The <code>300px</code> is the fallback guess for a section that's never been rendered yet; the <code>auto</code> part tells the browser to remember the section's real measured height the first time it does render, and reuse that remembered size the next time it's skipped, instead of falling back to the guess again.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fallback size doesn't need to be exact, it needs to be close enough that the layout shift from placeholder-to-real-content stays under whatever your CLS budget tolerates. A skeleton-loader-style estimate per section type (short section vs. long section) beats one constant applied uniformly across sections of very different real heights.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The changelog page that "optimized" itself into visible jank</h2>
+  <div class="tone-junior">
+    <p>
+      A product's changelog page had grown to hundreds of entries and felt sluggish on load. Someone added <code>content-visibility: auto</code> to each entry's wrapper, saw the initial render time drop sharply in a Lighthouse run, and shipped it. QA caught the regression: scrolling down the page now visibly stuttered, and the scrollbar thumb resized itself repeatedly as entries came into view.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Every unrendered entry was collapsing to just its padding, a few pixels, instead of its real height, somewhere around 150-300px depending on the entry. The page's total scrollable height was wrong until every entry had been scrolled past at least once, so the browser kept having to recompute it mid-scroll, which is exactly what a user sees as jank.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix added <code>contain-intrinsic-size: auto 220px</code> (roughly the median entry height, measured from real data) to the same rule. First render stayed just as fast, since skipping is still happening, but the placeholder height meant the total page height was correct from the start, and each entry's <code>auto</code>-remembered size self-corrected after its first real render, so the initial 220px guess only mattered once per entry.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">content-visibility: auto alone collapses off-screen sections to near-zero height, causing scroll jumps (broken) vs. paired with contain-intrinsic-size to reserve placeholder space (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Scroll an 8-section mini page both ways</h2>
+  <div class="tone-junior">
+    <p>Click "Auto-scroll" (or scroll manually) in each mode and watch the "layout jumps detected" counter — each section really does carry <code>content-visibility: auto</code> (inspect it in DevTools), reproducing the exact collapse-or-reserve behavior the spec describes.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken mode has no <code>contain-intrinsic-size</code>, so unrendered sections collapse and the scroll container's height snaps around as you pass them. The fixed mode reserves placeholder space, so the height stays stable.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Open DevTools' Rendering panel and enable "Layout Shift Regions" while scrolling the broken mode — you'll see the highlight boxes fire on every section boundary, exactly the CLS-contributing behavior this fixes.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="content-visibility: auto without contain-intrinsic-size causing scroll jumps (broken) vs. with contain-intrinsic-size reserving space (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="content-visibility-sections">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares content-visibility: auto alone against content-visibility: auto paired with contain-intrinsic-size, using real CSS in your browser; it requires JavaScript to run.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            content-visibility alone
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            + contain-intrinsic-size
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: + contain-intrinsic-size</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:280px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>content-visibility has real limits and one common accessibility trap</h2>
+  <div class="tone-junior">
+    <p>
+      Don't apply <code>content-visibility: auto</code> to the whole page in one wrapper — it needs to be on individual sections so the browser can skip some while rendering others. One giant wrapper just moves the same all-or-nothing rendering cost around instead of actually reducing it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Find-in-page (Ctrl/Cmd+F) and fragment-link navigation (<code>#section-id</code>) both work correctly through skipped content — the browser temporarily renders a matched section even if it's currently skipped. This is a deliberate spec guarantee, not something you need to work around.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Watch for interaction with <code>position: sticky</code> or <code>fixed</code> elements nested inside a <code>content-visibility: auto</code> ancestor — size containment can affect how their containing block resolves, producing sticky headers that stop sticking correctly once their ancestor starts skipping render. Test that combination explicitly rather than assuming it's unaffected.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">content-visibility: auto skips rendering off-screen sections, but without contain-intrinsic-size those sections collapse to near-zero height and cause scroll jank.</div>
+        <div class="tone-mid">Pair it with contain-intrinsic-size: auto &lt;fallback&gt; — the fallback covers the first render, the auto keyword remembers the real size after that.</div>
+        <div class="tone-staff">Size the fallback from real measured data per section type, and explicitly test sticky/fixed descendants and CLS impact before shipping the change.</div>
+      </li>
+    </ul>
+  </div>
+</section>

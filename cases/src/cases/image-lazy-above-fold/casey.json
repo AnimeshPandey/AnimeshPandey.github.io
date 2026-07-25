@@ -1,0 +1,103 @@
+{
+  "slug": "image-lazy-above-fold",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A find-and-replace added loading=\"lazy\" to every image on the site, hero included — the one image that was already visible on load got slower.",
+      "mid": "For an image already in the viewport, the browser still runs layout and an intersection check before starting a lazy fetch — later than not having the attribute at all.",
+      "staff": "This is backwards for LCP specifically — the metric times the largest visible element, and deferring its own fetch delays exactly what the team wanted to improve."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Load page in each mode and watch when the hero bar finishes — that moment is the LCP marker.",
+      "mid": "Below-fold images stay lazy in both modes — only the hero's loading strategy changes between broken and fixed.",
+      "staff": "The timings here are illustrative — the mechanism (delayed fetch start, lower scheduling priority) is the part to internalize, not the exact milliseconds."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Match the attribute to visibility: loading=\"eager\" for anything visible on load, loading=\"lazy\" only for genuinely below-fold images.",
+      "mid": "Add fetchpriority=\"high\" on the actual LCP candidate — images start at lower priority until layout runs, this skips that wait.",
+      "staff": "loading controls when the fetch starts relative to viewport proximity; fetchpriority controls how urgently it's scheduled against other in-flight requests — different halves of the same fix."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Above the fold depends on viewport size — a hero that's visible on desktop can be below the fold on a tall-header phone layout.",
+      "mid": "Use DevTools' Performance panel or Lighthouse to see the actual LCP element on a real page load instead of guessing which image it is.",
+      "staff": "Don't mark more than one or two images fetchpriority=\"high\" per page — if everything is high priority, the scheduler has no signal left to act on."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a well-meaning performance fix that added lazy loading to every image on a page, including the hero image right at the top.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is matching the loading attribute to whether an image is actually visible when the page loads. Above the fold gets eager and high priority, below the fold stays lazy.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Load the page in both modes and watch exactly when the hero image finishes, and when the LCP marker fires because of it.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Lazy loading is great below the fold and actively harmful above it. Check which images are visible on load before you apply it everywhere.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

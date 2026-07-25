@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Lazy Loading the Wrong Image"
+description: "Applying loading=\"lazy\" to every image on a page, including the one above the fold that's your LCP candidate, delays exactly the image Core Web Vitals is timing — here's the fix and why it's easy to make this mistake."
+slug: image-lazy-above-fold
+track: performance-cwv
+readMin: 10
+flagship: false
+demoType: toggle
+principle: LCP
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/image-lazy-above-fold-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The performance fix that made LCP worse</h2>
+  <div class="tone-junior">
+    <p>
+      A team wanted faster pages, so someone added <code>loading="lazy"</code> to every <code>&lt;img&gt;</code> tag on the site with a find-and-replace. Most images got faster, deferred until the user actually scrolls to them, exactly what lazy loading is for. The hero image at the top of the page — the one visible the instant the page loads — got slower, because it also got <code>loading="lazy"</code>.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>loading="lazy"</code> tells the browser to delay a resource's fetch until it's near the viewport. For a below-fold image that's a win. For an image that's already in the viewport on load, "near the viewport" is immediately true, but the browser still has to finish layout and run the intersection check first, so the fetch starts later than it would have without the attribute at all.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is exactly backwards for Largest Contentful Paint: LCP measures the render time of the largest visible content element, and a hero image is very often that element. Deferring its own fetch start doesn't just delay the image, it delays the specific metric the team was presumably trying to improve.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Eager and high-priority above the fold, lazy below it</h2>
+  <div class="tone-junior">
+    <p>
+      The rule isn't "use lazy loading" or "don't use lazy loading," it's "match the attribute to whether the image is visible on load." Above-the-fold images (the hero, a header logo, anything visible without scrolling) should use <code>loading="eager"</code> — the browser's actual default, so often the real fix is just deleting a misapplied <code>lazy</code>. Everything genuinely below the fold keeps <code>loading="lazy"</code>.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      For the specific image likely to be your LCP candidate, go one step further and add <code>fetchpriority="high"</code>. Images start at a lower fetch priority by default until layout determines their on-screen size; <code>fetchpriority="high"</code> tells the browser to treat this one as important immediately, without waiting for that layout pass.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>fetchpriority="high"</code> and <code>loading="eager"</code> solve different halves of the same problem: <code>loading</code> controls *when* the fetch starts relative to viewport proximity, <code>fetchpriority</code> controls *how urgently* the browser schedules it relative to other in-flight requests. An eager image at default priority can still lose the network queue to a dozen other eager requests; a high-priority image is scheduled ahead of them.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The blanket find-and-replace that shipped through review</h2>
+  <div class="tone-junior">
+    <p>
+      A marketing site's engineering team ran a lazy-loading audit tool that flagged every <code>&lt;img&gt;</code> missing the <code>loading</code> attribute, and a well-meaning contributor added <code>loading="lazy"</code> to all of them in one PR, hero image included. It passed review — nobody scrolled through every template checking which images were actually above the fold, and the PR's own Lighthouse run happened to test a page where the hero was small enough not to move the needle much.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Field data (Core Web Vitals from real users, not lab tests) told a different story a week later: LCP on the homepage regressed by several hundred milliseconds. The fix was one line per template — remove <code>loading="lazy"</code> from the hero, add <code>fetchpriority="high"</code> in its place — leaving every genuinely below-fold image exactly as it was.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They added an ESLint rule (via a custom lint plugin for their templating layer) that flags <code>loading="lazy"</code> on any image inside a component tagged as "above the fold" in their design system's metadata, so the same blanket find-and-replace mistake fails CI the next time someone tries it, rather than surfacing as a field-data regression a week later.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">loading="lazy" on the above-fold hero image delays its fetch and pushes LCP later (broken) vs. loading="eager" + fetchpriority="high" on the hero, lazy only below the fold (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch the LCP marker move</h2>
+  <div class="tone-junior">
+    <p>Click "Load page" in each mode and watch when the hero image bar finishes filling — that moment is your LCP marker.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Below-fold images stay lazy in both modes; only the hero's loading strategy changes between broken and fixed.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The timings here are illustrative, not measured — the mechanism (delayed fetch start, deprioritized scheduling) is what to internalize, not the exact milliseconds.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Hero image lazy-loaded, delaying LCP (broken) vs. hero image eager with high fetch priority, LCP fires sooner (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="image-lazy-above-fold">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a lazy-loaded above-fold hero image against an eager, high-priority one, and when each causes the LCP marker to fire; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Hero: loading="lazy"
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Hero: eager + high priority
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Hero: eager + high priority</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:200px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Knowing which image is "above the fold" isn't always obvious</h2>
+  <div class="tone-junior">
+    <p>
+      "Above the fold" depends on viewport size, and a hero image that's fully visible on desktop might be partially or fully below the fold on a narrow phone screen with a tall header and nav. When in doubt, treat any image that could plausibly be the LCP element on your most common viewport as above-fold, rather than guessing from one layout.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Use Chrome DevTools' Performance panel or the Lighthouse report to identify the actual LCP element on a real page load — it names the specific element, so you don't have to guess which image (or text block) it picked.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Don't mark more than one or two images <code>fetchpriority="high"</code> per page — it's a relative priority hint, and if everything is high priority, the browser's scheduler has no signal left to act on. Reserve it for the actual LCP candidate, not every image that feels important.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">loading="lazy" on an above-the-fold hero image delays its own fetch, directly hurting LCP — match the attribute to whether the image is actually visible on load.</div>
+        <div class="tone-mid">Use loading="eager" (or just omit loading) plus fetchpriority="high" on the LCP candidate; keep loading="lazy" only on genuinely below-fold images.</div>
+        <div class="tone-staff">loading controls when the fetch starts, fetchpriority controls how urgently it's scheduled — use fetchpriority sparingly, on one or two real LCP candidates, not everywhere.</div>
+      </li>
+    </ul>
+  </div>
+</section>

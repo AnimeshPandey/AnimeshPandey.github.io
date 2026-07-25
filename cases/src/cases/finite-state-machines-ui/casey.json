@@ -1,0 +1,103 @@
+{
+  "slug": "finite-state-machines-ui",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A slow retry set isSubmitting back to true without clearing hasError — the screen showed a spinner and a red error banner stacked on top of each other.",
+      "mid": "Three independent booleans describe eight combinations, but the render logic only ever meant to handle about four of them.",
+      "staff": "Boolean explosion: n independent flags describe 2^n combinations, and most aren't edge cases to handle — they're states that shouldn't exist at all."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Submit, then Server error, then Success, in that order, in each mode — watch what stacks up in broken mode.",
+      "mid": "Broken mode's badges show all three flags live — watch more than one go true at once. Fixed mode disables anything that isn't a valid transition.",
+      "staff": "The fixed mode's entire guarantee comes from a four-line transition table plus a render function that only ever reads one state variable — no extra runtime validation needed."
+    },
+    {
+      "chapter": "concept",
+      "junior": "One variable holding exactly one named state — idle, submitting, success, error — can't be two of those at once, because it's just one string.",
+      "mid": "A transition table says which moves are even allowed from each state — an event that isn't valid from the current state simply doesn't fire.",
+      "staff": "A state value alone stops accidental combinations; a state machine's transition table also stops accidental transitions, and libraries like XState can statically check it for dead ends."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Writing the transition table down forces you to decide what can happen from each state, and just as importantly, what deliberately can't.",
+      "mid": "A hand-rolled switch on one state string covers most simple wizards — reach for a library once you need parallel or hierarchical states.",
+      "staff": "Don't let implementation booleans leak back in beside the state value — model anything state-dependent as part of that state, not as a sibling variable with its own lifecycle."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a signup wizard that once showed a loading spinner and an error message on screen at the exact same time.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is using one named state instead of several separate true or false flags, plus a fixed list of which moves between states are even allowed.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try to trigger submit, error, and success back to back in both modes, and see what the broken version lets happen that the fixed one simply won't.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Scattered booleans let impossible combinations happen by accident. One explicit state with a real transition table makes them impossible on purpose.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
