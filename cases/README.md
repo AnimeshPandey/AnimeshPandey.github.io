@@ -34,7 +34,7 @@ In CI, the build runs automatically on push to `main`. The `_site/` output is me
 
 ## Content
 
-- **`src/_data/manifest.json`** — auto-generated master list of all 220+ planned cases. Only entries with `status: "live"` get permalinks, sitemap entries, and RSS items.
+- **`src/_data/manifest.json`** — auto-generated master list of all 229 planned cases (check `stats` in that file, it drifts in prose — don't trust a number here). Only entries with `status: "live"` get permalinks, sitemap entries, and RSS items.
 - **`src/cases/<slug>/index.njk`** — one Nunjucks file per case; uses `case-layout.njk`
 - **`src/cases/<slug>/casey.json`** — tier-aware hints, anecdotes, and voice script for Casey
 
@@ -107,32 +107,33 @@ Key contracts:
 - JS modules communicate via custom events (`casebook-tone-change`, `casebook-color-change`), never direct imports
 - `data-asset-base` on `<html>` is the only runtime URL the JS needs
 
-## Current status (2026-06-01)
+## Current status (2026-07-25)
 
-**Shipped (D0–D7 complete):**
-- 31 live interactive cases with working demos (22 demo modules + `_demo-utils.js`)
+**Shipped:**
+- 31 live interactive cases with working demos (22 demo modules + `_demo-utils.js`); 8 more idea-status cases fully authored (content + demo, not yet publish-gated) out of 229 total planned — see `src/_data/manifest.json`'s `stats`, don't trust a case count from prose
 - Reading library — 779 English articles, faceted filters (category, company, year, sort)
 - Company pages — 167 company index pages (`/cases/companies/`)
 - Pro tier stubs — 81 Pro badges on hub, honor-system localStorage gate, `payments.enabled: false`
 - SEO — sitemap, JSON-LD, CSS/JS route-scoping, Lighthouse check script
-- Casey companion — FSM hub/case/library, hub hero motion (float/sparkles/glow), intensity prefs, coach peek, library bounce, confetti, voice v2
+- Casey companion — FSM hub/case/library, hub hero motion (float/sparkles/glow), intensity prefs, coach peek, library bounce, confetti, pre-generated-audio voice with `speechSynthesis` fallback, continuous "listen to whole case" playback
+- Casey smart guide (`casey-guide.js`) — hub greeting decision tree: first-visit, streak, high/low completion count, long-absence welcome-back, track-affinity nudge, plus a review-due greeting sourced from the spaced-review ladder
+- Casey elsewhere — interview mode (pre-session/reaction/summary lines), a dedicated Casey-led review-session flow at `/review/` (reuses the interview machinery, pool sourced from `dueForReview()`), search page (idle track-affinity suggestion + dynamic zero-results line), a "Casey recommends" chip on case completion, a first-visit onboarding tour (gated, dismissible, keyboard-accessible), an "explain differently" hint-cycle toggle, and milestone tiers through twenty-cases
+- Casey preferences panel — tone/intensity radiogroups, live progress + milestones list, motion-status disclosure, reset-memory (fully audited or bug-fixed as of 2026-07-25 — see `CASE-AUTHORING-GUIDE.md`'s sibling PRs, not a stale claim)
 - Casey library strip — `casey-library-strip.njk` + `read` pose on `/cases/library/`
 - Progression — `casebook-companion-v1` localStorage: case progress, confetti milestones, hub strip, case continue CTAs
 - Email sign-in beta — `/account/` with copy-magic-link UX (client-side only)
-- Regression tests — `tests/` static, unit, 69+ e2e including all 31 live slugs
+- Regression tests — `tests/` static, unit (119), 87 e2e across 17 spec files including all 31 live slugs
 
-**In progress:** content polish on 22-case MVP set (story chapters, UI strips, FE depth, references)
+**In progress:** content polish across the 190 remaining idea-status cases (story chapters, UI strips, FE depth, references, demo modules) — `CASE-AUTHORING-GUIDE.md` is the reference for that pass.
 
 ## Deferred (not yet built)
 
 **Content**
-- Content polish — chapter additions across the 22-case MVP set (story, ui-strip, fe-depth, references) — tracked in `ideas/projects/case-studies/DEVELOPMENT-PLAN.md` (Phase 4); the original `frontendcs-corpus/NEXT-BUILD-PLAN.md` task tracker no longer exists
-- `mvpLaunch: true` manifest gating on polished 22-case set — after content complete
+- The 190 remaining idea-status cases — full authoring per `CASE-AUTHORING-GUIDE.md`
+- `mvpLaunch: true` manifest gating on a polished case set — after content complete
 
 **Casey**
-- Casey smart guide / suggestion system (`casey-guide.js` — `suggest()`, `recordEvent()`, `getProgress()`) — distinct from basic progress already in `casebook-companion-v1`
-- Casey style anchors + premium art regen (SVG body colour has drift) — see `frontendcs-corpus/prompt-casey-style-anchors.md`
-- Casey hub hero WebP (currently uses `wave.svg`) — see `frontendcs-corpus/prompt-casey-hub-hero.md`
+- New pose art (SVG vectorization / AI regeneration) and real Lottie motion — see `src/assets/casey/ART-GENERATION-HANDOFF.md` for current state + researched open-source tool options before picking either up
 
 **Auth**
 - Transactional email for real magic links (Resend / Postmark) — replaces copy-link beta UX
@@ -150,4 +151,3 @@ Key contracts:
 
 **Future UX**
 - `case-share.njk` Web Share API (partial built, not wired)
-- DotLottie hub idle animations for Casey
