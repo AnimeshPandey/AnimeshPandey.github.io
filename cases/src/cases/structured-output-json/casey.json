@@ -1,0 +1,148 @@
+{
+  "slug": "structured-output-json",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "An LLM asked for JSON often replies with a friendly sentence wrapped around the actual object, which breaks a plain JSON.parse call.",
+      "mid": "Regex-stripping surrounding text around a model's JSON reply works until the model changes its phrasing or wraps it in a code fence.",
+      "staff": "Structured output constrains the model's response at generation time to match a schema exactly, removing the need for prose extraction entirely."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The broken mode shows a real reply with a sentence wrapped around the JSON, and the parse failing. The fixed mode's response is already valid JSON, nothing to strip.",
+      "mid": "Compare the two raw response strings directly: one needs extraction logic, one is ready for JSON.parse as-is.",
+      "staff": "The fixed mode's response is schema-constrained at the API level, not just prompted to look like JSON \u2014 that's the actual guarantee being demonstrated."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Structured output is like a form the model has to fill in, instead of a blank page where it might write anything.",
+      "mid": "You pass a JSON schema describing the exact fields and types you need, and the API guarantees the response matches it.",
+      "staff": "This is enforced token-by-token during generation, a stronger guarantee than prompting for JSON and validating the response afterward."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Use an enum field for anything that can only ever be one of a few options, so the model can't return a value your UI doesn't know how to handle.",
+      "mid": "Version your schemas like an API contract \u2014 a new required field means old logged responses won't have it.",
+      "staff": "Schema conformance guarantees shape, not correctness. A schema-valid response can still contain a hallucinated value; validate semantic constraints separately."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're fixing the classic problem of an AI model wrapping the JSON you asked for in a friendly sentence.",
+        "mid": "This case covers structured output: schema-constrained model responses that remove the need for fragile JSON extraction.",
+        "staff": "We're covering schema design, versioning schemas like an API contract, and the difference between shape guarantees and correctness guarantees."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Structured output is like a form the model fills in, instead of a blank page it could write anything on.",
+        "mid": "A JSON schema describes the exact fields and types you need, and the API guarantees the response matches it exactly.",
+        "staff": "The constraint is enforced token by token during generation, which is stronger than prompting for JSON and validating afterward."
+      },
+      {
+        "chapter": "demo",
+        "junior": "The broken response has a sentence wrapped around the JSON. The fixed response is already valid JSON, nothing to extract.",
+        "mid": "Compare the two raw response strings directly to see which one needs extraction logic.",
+        "staff": "The fixed response is schema-constrained at the API level, not just prompted to resemble JSON."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Don't ask a model for JSON in plain prose and hope it formats it right. Use structured output so the response is guaranteed to parse.",
+        "mid": "A JSON schema constrains the model\u2019s output at generation time, removing the need for regex extraction or a parse-retry loop.",
+        "staff": "Schema conformance guarantees shape, not correctness. Validate semantic constraints separately from parsing."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

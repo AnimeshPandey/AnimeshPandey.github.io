@@ -1,0 +1,148 @@
+{
+  "slug": "raf-throttle-scroll",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A scroll handler runs on every scroll event, which can fire far more often than the screen can repaint. That mismatch is what makes scrolling feel sticky.",
+      "mid": "Scroll events can fire 100+ times a second on a fast trackpad or fling gesture \u2014 way past the ~60 times a second the browser can actually paint.",
+      "staff": "requestAnimationFrame throttling ties your handler to the paint cycle itself, not a guessed millisecond constant, so it adapts to whatever refresh rate the display actually supports."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Watch the event counter in 'broken' mode climb fast during a scroll. In 'fixed' mode, the actual work only runs once per frame no matter how many raw events fired.",
+      "mid": "The raw scroll-event count is identical in both modes \u2014 only how often the handler does real work differs.",
+      "staff": "Both modes log the raw event count and the actual-work count separately, so the coalescing ratio is directly visible, not just claimed."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Set a flag when a scroll happens, then check it once per animation frame \u2014 that turns any number of scroll events into at most one real update.",
+      "mid": "The tick-flag plus rAF pattern is the standard way to throttle high-frequency DOM events to the paint cycle without a fixed-timing debounce/throttle utility.",
+      "staff": "Unlike a millisecond-based throttle, rAF-based coalescing self-adjusts to the display refresh rate \u2014 60Hz, 120Hz, whatever the device actually paints at."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Add { passive: true } to scroll listeners that never call preventDefault \u2014 it lets the browser start scrolling immediately instead of waiting on your handler.",
+      "mid": "Cancel any pending requestAnimationFrame handle on cleanup with cancelAnimationFrame, so a queued frame never runs against DOM nodes that are already gone.",
+      "staff": "Read layout-dependent values like scrollY inside the rAF callback, not the raw scroll handler, to avoid racing the browser\u2019s own scroll-position bookkeeping."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today we're fixing a scroll handler that runs way more often than it needs to, making the page feel sticky while you scroll.",
+        "mid": "This case covers throttling scroll handlers to the animation frame cycle instead of running on every raw scroll event.",
+        "staff": "We're covering the tick-flag rAF pattern, passive listeners, and reading layout values safely inside a throttled scroll handler."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Set a flag on scroll, then do the real work once per animation frame. Any number of scroll events between frames collapses into one update.",
+        "mid": "The rAF-based pattern ties your throttle to the actual paint cycle, not a guessed timing constant, so it adapts to the display\u2019s real refresh rate.",
+        "staff": "This differs from a fixed-millisecond debounce or throttle utility precisely because it\u2019s tied to paint timing, not a constant."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Watch the counters: raw scroll events climb fast, but the actual work counter barely moves in fixed mode. That's the coalescing in action.",
+        "mid": "Both modes log the raw event count separately from the actual-work count, so you can see the coalescing ratio directly.",
+        "staff": "Open DevTools Performance while scrolling in each mode to compare the number of script-execution blocks tied to the handler."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Don't do real work inside a raw scroll handler. Set a flag, and do the work once per animation frame instead.",
+        "mid": "The tick-flag plus requestAnimationFrame pattern coalesces any number of scroll events between frames into a single update.",
+        "staff": "Always add passive true to scroll listeners that never call preventDefault, and cancel any pending animation frame on cleanup."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "MutationObserver vs Polling"
+description: "Why polling the DOM on a timer wastes cycles and misses precise timing, and how MutationObserver notifies your code the instant a real change happens."
+slug: mutation-observer-vs-polling
+track: browser-dom
+readMin: 10
+flagship: false
+demoType: code-only
+principle: DOM observation
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/mutation-observer-vs-polling-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>A setInterval that checks the DOM 10 times a second, forever</h2>
+  <div class="tone-junior">
+    <p>
+      A third-party widget injects a chat bubble into your page after it loads, and you need to react when it appears, maybe to reposition it. You write <code>setInterval(() => { if (document.querySelector('.widget')) ... }, 100)</code>.
+    </p>
+    <p>
+      It works, but now your page is running a DOM query ten times a second, forever, even ten minutes after the widget already appeared and nothing is going to change again.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Polling for a DOM change is wasteful in the common case (nothing changed yet, so every check is empty) and imprecise in the case you actually care about (it can take up to your polling interval to notice a real change).
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>MutationObserver</code> is the browser's own answer to this: instead of the page asking "did anything change?" on a timer, the browser tells the page exactly when something changed, with zero polling overhead in between.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>undefined</h2>
+  <div class="tone-junior">
+    <p>
+      MutationObserver watches a specific part of the page and calls your function the moment something you asked about changes, instead of you having to keep asking.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      You create an observer with a callback, then call <code>observe()</code> on a target node with a config object describing what to watch: child elements being added or removed, attribute changes, or text content changes.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Internally, mutation observers batch their notifications into microtasks, so many rapid DOM changes in the same tick are delivered as one array of mutation records, not one callback invocation per change, which is part of why they're cheap even on busy pages.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Waiting for a third-party script that loads on its own schedule</h2>
+  <div class="tone-junior">
+    <p>
+      A page embeds a support-chat widget that injects its own DOM after a script loads asynchronously, sometimes after 200ms, sometimes after 3 seconds depending on the user's connection.
+    </p>
+    <p>
+      The original code polled every 100ms to check if the widget's container existed yet, so it could apply custom styling to it. It worked, but left the interval running even after the widget appeared, and even on pages where the widget failed to load at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Switching to a MutationObserver on <code>document.body</code> watching for child-list changes meant the styling code ran exactly once, immediately when the widget's node actually appeared, and the observer was disconnected right after, no wasted checks before or after.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team also added a timeout fallback, disconnecting the observer and logging a warning if the widget never appeared within 10 seconds, since an observer alone doesn't tell you when to give up waiting for something that may never arrive.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">setInterval polling every 100ms (broken) vs. MutationObserver firing exactly on change (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Polling on a timer vs. reacting to the actual change</h2>
+  <div class="tone-junior">
+    <p>The counter below tracks how many times each approach checks the DOM while waiting for a widget to appear.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Polling mode keeps counting for the full simulated wait; observer mode stops the instant the target node appears.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Both modes wait for the same simulated async widget injection; only the detection mechanism differs.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="DOM change detection comparison: setInterval polling vs MutationObserver"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="mutation-observer-vs-polling">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares polling the DOM on a timer against MutationObserver-based detection; it requires JavaScript to simulate the async DOM change in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: poll on a timer, forever, even after the change happened
+const interval = setInterval(() =&gt; {
+  if (document.querySelector('.widget')) {
+    clearInterval(interval);
+    onWidgetReady();
+  }
+}, 100);
+
+// Fixed: get notified exactly when it happens, then disconnect
+const observer = new MutationObserver((records, obs) =&gt; {
+  if (document.querySelector('.widget')) {
+    obs.disconnect();
+    onWidgetReady();
+  }
+});
+observer.observe(document.body, { childList: true, subtree: true });</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Scoping the observer and disconnecting when you're done</h2>
+  <div class="tone-junior">
+    <p>
+      Watch as narrow a part of the page as you can, not the whole <code>document</code>, and set <code>subtree: true</code> only if you actually need to see changes in descendant elements too, not just direct children.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Call <code>observer.disconnect()</code> once you've gotten the change you were waiting for, or in a cleanup function (a React effect's return, for example). An observer left running for the page's whole lifetime for a one-time check is its own kind of waste.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      For high-frequency mutation sources, batch your own handling inside the callback rather than reacting per mutation record; the callback already receives an array, so iterate once and derive the minimal update instead of triggering a re-render per individual DOM change.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">
+    Don't poll the DOM on a timer for a change you're waiting for. MutationObserver tells you the moment it happens.
+  </div>
+        <div class="tone-mid">
+    Scope the observer as narrowly as possible, and disconnect it once you've gotten what you needed.
+  </div>
+        <div class="tone-staff">
+    Mutation callbacks are batched into microtasks and deliver an array of records, so handle them in one pass rather than reacting per mutation.
+  </div>
+      </li>
+    </ul>
+  </div>
+</section>

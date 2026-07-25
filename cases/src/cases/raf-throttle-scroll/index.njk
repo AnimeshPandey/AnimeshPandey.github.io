@@ -1,0 +1,187 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "rAF Throttle for Scroll Handlers"
+description: "Why raw scroll handlers stutter, and the requestAnimationFrame tick pattern that throttles any number of scroll events down to one update per frame."
+slug: raf-throttle-scroll
+track: animation-motion
+readMin: 10
+flagship: false
+demoType: code-only
+principle: Performance
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/raf-throttle-scroll-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>A scroll handler that fires 200 times before you've scrolled an inch</h2>
+  <div class="tone-junior">
+    <p>
+      You add a scroll listener to update a "back to top" button's visibility. It works, but scrolling the page suddenly feels sticky and laggy, especially on a trackpad or phone.
+    </p>
+    <p>
+      The problem: the <code>scroll</code> event can fire dozens of times per second, and your handler runs every single time, even though the screen can only actually repaint about 60 times a second.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Scroll events fire far more often than the browser can usefully paint. On a fast trackpad or a fling gesture on mobile, you can see 100+ scroll events in under a second, each one running your full handler.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix is not debouncing, which delays the response entirely, it's throttling to the paint cycle using <code>requestAnimationFrame</code>, so your handler runs at most once per frame no matter how many scroll events fired in between.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Coalescing scroll events to one update per frame</h2>
+  <div class="tone-junior">
+    <p>
+      The trick: instead of doing work directly inside the scroll handler, just record that a scroll happened. Then, once per animation frame, check if a scroll happened and do the actual work then.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The pattern uses a boolean flag and <code>requestAnimationFrame</code>: the scroll listener sets a "ticking" flag and schedules a frame; the frame callback does the real work and clears the flag, so a burst of scroll events between frames only produces one update.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This differs from debounce/throttle utility functions with a fixed millisecond window: rAF-based throttling is tied directly to the browser's own paint cadence, so it self-adjusts to the display's actual refresh rate (60Hz, 120Hz, or whatever the device supports) instead of guessing a timing constant.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The sticky header that made scrolling feel broken</h2>
+  <div class="tone-junior">
+    <p>
+      A team added a sticky header that shrinks as you scroll down. The scroll handler recalculated header height and updated several CSS custom properties on every single scroll event.
+    </p>
+    <p>
+      On a MacBook trackpad this looked fine, since trackpad scroll events are relatively spaced out. On a phone, the same handler firing on every touch-move event made scrolling visibly stutter.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix took one afternoon: wrap the recalculation in the tick/rAF pattern, no other logic changed. The scroll handler itself still fires at native frequency, it just does almost nothing anymore, only setting a flag.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team also added a Long Animation Frame check in their RUM setup afterward, specifically watching for scroll-adjacent frames over 16ms, since that's the class of regression this fix targets and the class most likely to silently reappear if someone adds new work to the handler later.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Scroll handler runs 100+ times/sec (broken) vs. once per animation frame via the tick-flag pattern (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Coalescing scroll events into one update per frame</h2>
+  <div class="tone-junior">
+    <p>Watch the raw scroll-event counter and the actual-work counter side by side while you scroll below.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Both counters log independently, so the coalescing ratio between raw events and real work is directly visible.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The fixed version wraps the update in the tick-flag plus requestAnimationFrame pattern; the broken version runs the same update directly in the scroll handler.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Scroll event throttling comparison: broken (per-event) vs fixed (per-frame)"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="raf-throttle-scroll">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares raw scroll-handler execution against requestAnimationFrame-throttled execution; it requires JavaScript to count real events in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: real work runs on every single scroll event
+window.addEventListener('scroll', () =&gt; {
+  updateHeaderHeight(); // can run 100+ times/sec
+});
+
+// Fixed: work coalesces to at most once per animation frame
+let ticking = false;
+window.addEventListener('scroll', () =&gt; {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() =&gt; {
+    updateHeaderHeight(); // runs at most once per frame
+    ticking = false;
+  });
+}, { passive: true });</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Passive listeners and cancelling stale frames</h2>
+  <div class="tone-junior">
+    <p>
+      Always add <code>{ passive: true }</code> when you register a scroll listener that never calls <code>preventDefault()</code>. It tells the browser it can start scrolling immediately instead of waiting to see if your handler blocks it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Cancel any pending rAF handle when the component unmounts or the listener is removed, using <code>cancelAnimationFrame</code>, otherwise a queued frame can run its callback against DOM nodes that are already gone.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      For scroll-linked animation (parallax, progress bars tied to scroll position), read layout values like <code>scrollY</code> inside the rAF callback, not inside the raw scroll handler, to avoid forcing a synchronous layout read at a moment the browser hasn't finished its own scroll-position bookkeeping yet.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">
+    Don't do real work inside a raw scroll handler. Set a flag, and do the work once per animation frame instead.
+  </div>
+        <div class="tone-mid">
+    The tick-flag plus requestAnimationFrame pattern coalesces any number of scroll events between frames into a single update.
+  </div>
+        <div class="tone-staff">
+    Always add passive: true to scroll listeners that never call preventDefault, and cancel any pending animation frame on cleanup.
+  </div>
+      </li>
+    </ul>
+  </div>
+</section>
