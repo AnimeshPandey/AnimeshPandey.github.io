@@ -1,0 +1,103 @@
+{
+  "slug": "content-visibility-sections",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Initial render got dramatically faster, then someone scrolled down and the scrollbar started visibly jumping around — worse than before.",
+      "mid": "content-visibility: auto skips layout and paint for irrelevant sections, but doesn't reserve any space for what it's skipping.",
+      "staff": "Not a bug — auto applies size containment as part of skipping render, and size containment means computing size without looking at contents at all."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Each section really does carry content-visibility auto — click Auto-scroll and watch the layout-jumps counter react.",
+      "mid": "Broken has no contain-intrinsic-size, so unrendered sections collapse and the container height snaps around as you pass them.",
+      "staff": "Try DevTools' Rendering panel with Layout Shift Regions enabled while scrolling broken mode — the highlights fire on every section boundary."
+    },
+    {
+      "chapter": "concept",
+      "junior": "contain-intrinsic-size gives the browser a placeholder height to use while a section is skipped, so total page height stays roughly correct.",
+      "mid": "Use the auto keyword form — the fallback covers the first render, then the browser remembers the real measured height after that.",
+      "staff": "The fallback doesn't need to be exact, just close enough to keep the placeholder-to-real shift under your CLS budget — size it per section type, not one constant."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Apply content-visibility to individual sections, not one wrapper around the whole page — a single wrapper just moves the all-or-nothing cost around.",
+      "mid": "Find-in-page and #fragment links both work correctly through skipped content — the browser temporarily renders a matched section, no workaround needed.",
+      "staff": "Test sticky or fixed descendants explicitly — size containment on the ancestor can affect how their containing block resolves, breaking sticky positioning."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a long page that got faster with one CSS property, then started visibly jumping around the moment someone scrolled it.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is a second property, contain intrinsic size, set right alongside it. It tells the browser roughly how tall a skipped section is, so the page doesn't keep resizing itself as you scroll.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Auto-scroll through the same eight sections in both modes and watch the layout jump counter react to the same behavior the spec describes.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Content visibility auto skips rendering to save time, but it needs a size hint or the page will jump around as you scroll. Always pair the two.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

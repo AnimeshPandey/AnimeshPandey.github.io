@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Per-Session Cost Caps in the UI"
+description: "Why an agent feature with no visible per-session cost signal can burn through a token budget silently, and how a live cost meter plus a hard cap that degrades gracefully catches it before the invoice does."
+slug: cost-cap-token-budget
+track: agent-architecture
+readMin: 10
+flagship: false
+demoType: animation
+principle: FinOps
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/cost-cap-token-budget-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The support bot that retried itself into a five-figure line item</h2>
+  <div class="tone-junior">
+    <p>
+      A team shipped an "agent mode" for their support widget: instead of one model call per reply, it could call tools in a loop — search docs, check order status, retry if a call failed — until the task looked done. One session hit a tool call that kept failing validation. The agent didn't give up, it retried. Sixty-some times, over about twenty minutes, before anyone noticed.
+    </p>
+    <p>
+      Nothing in the product showed that session's running cost. No one saw a number climbing. The first sign anything had gone wrong was the monthly API invoice, not the UI.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Every retry re-sent the conversation so far — including the growing pile of previous failed attempts and their error messages — so each retry's token count, and therefore its cost, was larger than the last. A retry loop with no visible cost signal and no cap doesn't fail loud, it just quietly compounds.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This isn't a "the model is too expensive" problem, it's a missing-feedback-loop problem. Every other metered resource in a product — API rate limits, storage quota, compute minutes — gets a visible running total somewhere. Token spend on an agent loop usually doesn't, because it wasn't designed as a resource with a budget, it was designed as a chat feature that happens to call an API.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Track it live, show it live, cap it hard</h2>
+  <div class="tone-junior">
+    <p>
+      The fix has three parts. First, count tokens (and their dollar cost) per session as the agent runs, not after the fact. Second, show that running total somewhere in the UI — even a small live number is enough to make cost visible instead of invisible. Third, set a hard per-session budget: when the session hits it, something has to change automatically, not wait for a human to notice.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      "Something has to change" means graceful degradation, not a silent continue and not a hard crash. A common pattern: at a warning threshold (say 70% of budget), switch the session to a cheaper model for the rest of the conversation; at the hard cap, stop making further tool calls and tell the user their session budget is used up, rather than returning a raw 402 or quietly eating the overage.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The budget should be scoped to a session, not a global daily total — a global cap just delays the same failure mode until day's end and then blocks every user at once, while a per-session cap contains a single runaway loop to the one conversation that's misbehaving. Track cumulative input and output tokens separately too; a retry loop that keeps re-sending growing context inflates input tokens specifically, which is a different signal than a session that's just long.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The doc-search agent that never said no to itself</h2>
+  <div class="tone-junior">
+    <p>
+      A SaaS company's in-app help widget used an agent loop to search documentation and, if needed, look up the user's account details through an internal tool. One user's phrasing tripped a bug in the tool's argument parser — every call came back "invalid arguments," and the agent's own retry logic just tried again, tweaking its request slightly each time, convinced it was one attempt away from success.
+    </p>
+    <p>
+      It wasn't capped, so it kept going. Each retry appended the previous failure to the context it sent, so each one cost more than the last. The session ran for twenty minutes and burned through roughly what a thousand normal sessions cost, combined, before the user finally closed the tab.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team added two things: a per-session token/cost counter surfaced as a small live number in the widget's debug corner (and logged server-side regardless of whether the UI is visible), and a hard cap. At 70% of the cap, the session automatically switches from their primary model to a cheaper, smaller one for the remainder of the conversation — retries still work, just cheaper. At 100%, tool calls stop and the widget tells the user to start a new conversation.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also fixed the actual parser bug that started the loop, but kept the cap — the cap isn't a substitute for fixing bugs, it's a backstop for the next bug they haven't found yet. They set the cap per session rather than per user or per day specifically because the failure mode they'd just seen was one conversation going wrong, not aggregate usage drifting up; a daily cap would have let that one session run just as long before hitting it.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Agent retry loop runs with no visible cost signal or cap (broken) vs. a live per-session cost meter that downgrades the model, then blocks further calls at a hard budget (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Run the retry loop both ways</h2>
+  <div class="tone-junior">
+    <p>Click "Simulate session" in each mode. Both simulate the same failing tool call being retried — watch what each one shows you, and when (or whether) it stops.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken mode has no meter and no cap, so the loop just keeps running and getting more expensive per retry. The fixed mode shows the running cost, swaps to a cheaper model at the warning threshold, and hard-stops at the cap.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the per-retry cost itself grows in both modes — that's the re-sent, growing context. The fixed mode doesn't stop that growth, it just makes it visible and bounded instead of invisible and unbounded.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Agent retry loop with no cost signal or cap (broken) vs. a live cost meter with a hard budget cap (fixed)"
+           data-required="true"
+           data-demo-type="animation"
+           data-demo-slug="cost-cap-token-budget">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a runaway agent retry loop with no cost signal against the same loop with a live cost meter and hard budget cap; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No cost signal
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Live meter + hard cap
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Live meter + hard cap</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:200px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The meter has to survive the loop that's breaking the budget</h2>
+  <div class="tone-junior">
+    <p>
+      The cost meter and the cap have to live outside the thing they're watching. If the counter only updates after the agent's loop finishes its turn, a loop that never finishes a turn never updates the counter either — track and check the budget between individual tool calls, not just between full agent turns.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Decide up front what "graceful" means for your product before you're debugging it live: a downgrade to a cheaper model changes response quality, a hard block ends the interaction. Both are better than a silent overrun, but which one fires at which threshold is a product decision worth writing down, not improvising during an incident.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Enforce the cap server-side, not just in the UI — a client-rendered meter that stops updating is a display bug, not a spend control, if the backend will still happily process the next tool call. The UI meter is for visibility and trust; the actual budget enforcement needs to be a check the server makes before it spends money, independent of whether the tab is even open.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A retry loop with no visible running cost doesn't fail loud — it quietly compounds until the invoice shows up.</div>
+        <div class="tone-mid">Track cost per session live, surface it in the UI, and set a hard cap that degrades gracefully — cheaper model at a warning threshold, blocked calls at the limit.</div>
+        <div class="tone-staff">Scope the cap to the session, check it between individual tool calls rather than full turns, and enforce it server-side — a UI meter alone is visibility, not a spend control.</div>
+      </li>
+    </ul>
+  </div>
+</section>

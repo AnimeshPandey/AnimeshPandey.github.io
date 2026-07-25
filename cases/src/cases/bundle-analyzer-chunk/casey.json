@@ -1,0 +1,103 @@
+{
+  "slug": "bundle-analyzer-chunk",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "main.js jumped from 210 KB to 380 KB gzipped after a merge touching five files — 'look at the code' doesn't tell you which import cost 170 KB.",
+      "mid": "A single gzipped-size number is a symptom, not a diagnosis — it says the bundle grew, not which dependency grew it.",
+      "staff": "Same shape as a memory leak — an aggregate metric moved, and the fix means switching from 'what's the number' to 'what's inside it.'"
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle to the treemap and click through the boxes — the biggest one is the culprit, before you even click it.",
+      "mid": "Box area is proportional to gzipped size, same convention real analyzers use — the oversized module is visually obvious.",
+      "staff": "Real analyzers show the resolved path on hover — useful for spotting the same package bundled twice at two different versions."
+    },
+    {
+      "chapter": "concept",
+      "junior": "A treemap draws every module as a box sized by bytes — a tiny helper is a tiny box, a fully-imported library is a big one.",
+      "mid": "Compare before/after treemaps and look for the box that appeared or grew — usually a dependency imported more broadly than intended.",
+      "staff": "Toggle stat/parsed/gzip size modes — a module can look huge in source but compress away, or the reverse; which mode matters depends what you're optimizing for."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Reading a treemap by hand finds one culprit — once you know the pattern, write a rule that catches it automatically next time.",
+      "mid": "A per-PR size budget in CI catches the regression, but only a treemap tells you which import to fix — a budget failure alone hands the investigation back to you.",
+      "staff": "Watch for the same module twice at different sizes — that's usually a duplicated transitive dependency; deduplicating it often recovers more size than any single import fix."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a bundle that grew by 170 kilobytes after a merge, and nobody could tell from the code which import caused it.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is a bundle analyzer treemap: every module gets drawn as a box sized by how many bytes it actually takes up, so the oversized one is just visually obvious.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Toggle between a raw size number and the treemap, then click through the boxes to find which one is actually huge.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A total size number can't tell you what's inside it. Open the treemap, look for the biggest box, and click it before you guess.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

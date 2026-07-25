@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Bundle Analyzer: Find the Chunk"
+description: "A bundle size regression lands in CI and nobody can point at the import that caused it — how to read a bundle analyzer treemap to find the specific culprit dependency, not just watch the total grow."
+slug: bundle-analyzer-chunk
+track: build-tooling
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Analysis
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/bundle-analyzer-chunk-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>main.js went from 210 KB to 380 KB and nobody could say why</h2>
+  <div class="tone-junior">
+    <p>
+      CI flags a bundle size regression: gzipped <code>main.js</code> jumped from 210 KB to 380 KB after a merge that touched five different files by three different people. The PR that broke it isn't obvious from the diff, every change looks small on its own. Someone has to actually find which import added 170 KB, and "look at the code" doesn't answer that — code doesn't show you byte sizes.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A single gzipped-size number is a symptom, not a diagnosis. It tells you the bundle grew, not which dependency grew it, whether it's your own code or a library, or whether that library is pulling in far more than the one function you actually imported.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the same class of problem as a memory leak: an aggregate metric moved, and the fix requires switching from "what's the number" to "what's inside the thing producing the number." A bundle analyzer is that instrument — most teams have one installed and never open the output until a regression forces them to.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The treemap turns "the bundle got bigger" into "this specific module got bigger"</h2>
+  <div class="tone-junior">
+    <p>
+      A bundle analyzer (<code>webpack-bundle-analyzer</code>, or <code>rollup-plugin-visualizer</code> for Rollup/Vite) draws every module in your final bundle as a box, sized proportionally to how many bytes it takes up. A tiny helper function is a tiny box. A library that got imported in full is a big box. You don't read file sizes in a list, you look for the biggest box.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The useful move is comparing two treemaps, before and after the regression, and looking for the box that appeared or grew. It's very often not your own application code, it's a dependency that got imported more broadly than intended — the whole library instead of one function, or every locale instead of the one your app uses.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Toggle the analyzer's size mode between "stat" (source size), "parsed" (post-minification), and "gzip" — a module can look large in stat size but compress away almost entirely (repetitive generated code), or the reverse (already-dense binary-like data that gzip can't shrink). Which mode you should trust depends on what you're actually optimizing for: parse/execute cost cares about parsed size, network transfer cares about gzip size.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The date picker that packed every locale</h2>
+  <div class="tone-junior">
+    <p>
+      A team added a date-range picker component from a popular library. The import looked innocent: <code>import { DateRangePicker } from 'date-picker-lib'</code>. What nobody noticed in review was that the library's default export path pulls in its full locale data, all 200-plus locales, not just the one or two the app actually offers.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Opening the treemap made it immediate: one box took up nearly half the entire bundle, clearly bigger than React itself. Clicking into it showed the locale files stacked inside, dozens of small boxes for languages the product doesn't even support. The fix was importing the library's locale-scoped entry point instead of the default one, cutting that box down to the two locales actually used.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They added a CI step that regenerates the treemap JSON on every PR and diffs the top-10-by-size module list against main, flagging any module whose size increased by more than 10 KB. That catches the next version of this same mistake automatically, instead of waiting for someone to notice the aggregate number drifted and go spelunking after the fact.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A raw gzipped-size number that grew, with no way to tell which import caused it (broken) vs. a treemap where the oversized module is visually obvious and clickable (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Find the 170 KB culprit</h2>
+  <div class="tone-junior">
+    <p>Toggle to the fixed mode and click through the boxes — the biggest one is the answer. Toggle back to broken to see why staring at the raw number (or the import list) doesn't get you there.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Box area is proportional to gzipped size in this demo, same convention real analyzers use — the dominant box is visually obvious before you even click it.</p>
+  </div>
+  <div class="tone-staff">
+    <p>In a real analyzer, hovering shows the module's full resolved path — useful for telling two same-named files in different node_modules trees apart, a real thing that happens with duplicate transitive dependencies at different versions.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A raw bundle size number with no breakdown (broken) vs. a clickable treemap that surfaces the oversized module (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="bundle-analyzer-chunk">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a raw bundle size number against a clickable treemap that surfaces which module caused a size regression; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Raw size number
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Treemap
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Treemap</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>A treemap finds the culprit once — CI stops it every time after</h2>
+  <div class="tone-junior">
+    <p>
+      Reading a treemap by hand is a debugging skill for when a regression has already landed. Once you've found one culprit pattern (a library with a heavy default export, an accidentally-duplicated dependency), it's worth writing a rule that catches that specific pattern automatically next time, rather than re-diagnosing it from scratch.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A per-PR bundle size budget in CI catches the regression before merge, but only a treemap (or a diff of the per-module breakdown) tells you which import to revert or fix — a budget check that just fails with "bundle exceeded 300 KB" hands the investigation right back to you.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Watch for the same module appearing twice in the treemap at different sizes — that's usually two different versions of the same transitive dependency, resolved separately because of how your package manager's dependency tree collapsed (or didn't). Deduplicating that (a lockfile fix, a resolutions/overrides entry) often recovers more size than any single import-path fix.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A gzipped-size number tells you the bundle grew, not which import grew it — a treemap shows every module sized by actual bytes, so the culprit is visually obvious.</div>
+        <div class="tone-mid">Compare before/after treemaps and look for the box that appeared or grew — it's very often a dependency imported more broadly than intended, not your own code.</div>
+        <div class="tone-staff">Automate the diagnosis you did by hand once — a CI check that diffs the top-N modules by size against main catches the next version of the same regression before merge.</div>
+      </li>
+    </ul>
+  </div>
+</section>

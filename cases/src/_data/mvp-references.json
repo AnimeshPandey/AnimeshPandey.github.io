@@ -507,5 +507,69 @@
       "<a href=\"https://react.dev/reference/react/StrictMode\" rel=\"noopener noreferrer\">React — StrictMode</a>",
       "<a href=\"https://react.dev/learn/synchronizing-with-effects\" rel=\"noopener noreferrer\">React — Synchronizing with Effects</a>"
     ]
+  },
+  "cost-cap-token-budget": {
+    "junior": [
+      "<a href=\"https://developers.openai.com/api/docs/guides/rate-limits\" rel=\"noopener noreferrer\">OpenAI — API rate limits and usage tiers</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developers.openai.com/api/docs/guides/rate-limits\" rel=\"noopener noreferrer\">OpenAI — API rate limits and usage tiers</a>",
+      "<a href=\"https://platform.claude.com/docs/en/api/rate-limits\" rel=\"noopener noreferrer\">Anthropic — Rate limits and spend limits</a>"
+    ],
+    "staff": [
+      "<a href=\"https://platform.claude.com/docs/en/api/rate-limits\" rel=\"noopener noreferrer\">Anthropic — Rate limits and spend limits</a>",
+      "<a href=\"https://developers.openai.com/api/docs/guides/rate-limits\" rel=\"noopener noreferrer\">OpenAI — API rate limits and usage tiers</a>"
+    ]
+  },
+  "bundle-analyzer-chunk": {
+    "junior": [
+      "<a href=\"https://github.com/webpack-contrib/webpack-bundle-analyzer\" rel=\"noopener noreferrer\">webpack-bundle-analyzer — GitHub</a>"
+    ],
+    "mid": [
+      "<a href=\"https://github.com/btd/rollup-plugin-visualizer\" rel=\"noopener noreferrer\">rollup-plugin-visualizer — GitHub</a>",
+      "<a href=\"https://bundlephobia.com\" rel=\"noopener noreferrer\">Bundlephobia — package cost before you install</a>"
+    ],
+    "staff": [
+      "<a href=\"https://webpack.js.org/guides/code-splitting/\" rel=\"noopener noreferrer\">webpack — Code splitting & bundle analysis</a>",
+      "<a href=\"https://github.com/webpack-contrib/webpack-bundle-analyzer\" rel=\"noopener noreferrer\">webpack-bundle-analyzer — GitHub</a>"
+    ]
+  },
+  "content-visibility-sections": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility\" rel=\"noopener noreferrer\">MDN — content-visibility</a>"
+    ],
+    "mid": [
+      "<a href=\"https://web.dev/articles/content-visibility\" rel=\"noopener noreferrer\">web.dev — content-visibility: the CSS containment property</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/contain-intrinsic-size\" rel=\"noopener noreferrer\">MDN — contain-intrinsic-size</a>",
+      "<a href=\"https://web.dev/articles/content-visibility\" rel=\"noopener noreferrer\">web.dev — content-visibility: the CSS containment property</a>"
+    ]
+  },
+  "image-lazy-above-fold": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#loading\" rel=\"noopener noreferrer\">MDN — img loading attribute</a>"
+    ],
+    "mid": [
+      "<a href=\"https://web.dev/articles/lcp\" rel=\"noopener noreferrer\">web.dev — Largest Contentful Paint</a>",
+      "<a href=\"https://web.dev/articles/lcp-lazy-loading\" rel=\"noopener noreferrer\">web.dev — The performance effects of too much lazy loading</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/fetch-priority\" rel=\"noopener noreferrer\">web.dev — Fetch Priority API</a>",
+      "<a href=\"https://web.dev/articles/lcp-lazy-loading\" rel=\"noopener noreferrer\">web.dev — The performance effects of too much lazy loading</a>"
+    ]
+  },
+  "finite-state-machines-ui": {
+    "junior": [
+      "<a href=\"https://kentcdodds.com/blog/stop-using-isloading-booleans\" rel=\"noopener noreferrer\">Kent C. Dodds — Stop using isLoading booleans</a>"
+    ],
+    "mid": [
+      "<a href=\"https://stately.ai/docs/xstate\" rel=\"noopener noreferrer\">Stately — XState documentation</a>",
+      "<a href=\"https://kentcdodds.com/blog/stop-using-isloading-booleans\" rel=\"noopener noreferrer\">Kent C. Dodds — Stop using isLoading booleans</a>"
+    ],
+    "staff": [
+      "<a href=\"https://statecharts.dev/\" rel=\"noopener noreferrer\">statecharts.dev — Statechart design patterns</a>",
+      "<a href=\"https://stately.ai/docs/xstate\" rel=\"noopener noreferrer\">Stately — XState documentation</a>"
+    ]
   }
 }
