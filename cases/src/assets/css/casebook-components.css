@@ -1541,3 +1541,98 @@ a.casebook-search__result:hover {
   text-transform: capitalize;
 }
 .casebook-subscribe--inline .casebook-subscribe__desc  { font-size: 0.875rem; margin-bottom: 12px; }
+
+/* ── Interview mode ── */
+.casebook-interview-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: var(--casebook-accent);
+  color: var(--casebook-accent-contrast, #fff);
+  font-size: 0.85rem;
+}
+.casebook-interview-banner__label {
+  font-weight: 600;
+}
+.casebook-interview-banner__reveal,
+.casebook-interview-banner__done {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 5px 12px;
+  border: 1px solid currentColor;
+  border-radius: 100px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.casebook-interview-banner__done {
+  margin-left: auto;
+  font-weight: 600;
+}
+/* Fixed to the viewport bottom (not part of the static top banner) so it
+   stays reachable regardless of scroll position — it only becomes hidden
+   = false once the user has scrolled down to the takeaway chapter, which
+   is exactly when a top-anchored element would already be off-screen.
+   The [hidden] rule below matters: a bare `.casebook-interview-assess {
+   display: flex }` has the same specificity as the browser's UA-default
+   `[hidden] { display: none }`, and author styles always win ties over
+   UA styles — so without this, the element was visible from creation
+   regardless of its hidden property, defeating the whole "reveal after
+   case-case-completed" mechanism (confirmed via getComputedStyle:
+   hidden === true but display was still "flex"). */
+.casebook-interview-assess[hidden] {
+  display: none;
+}
+.casebook-interview-assess {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 100px;
+  background: var(--casebook-accent);
+  color: var(--casebook-accent-contrast, #fff);
+  font-size: 0.85rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+.casebook-interview-assess button {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 5px 12px;
+  border: 1px solid currentColor;
+  border-radius: 100px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.casebook-interview-assess button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Hints hidden by default in interview mode — the Casey coach card
+   carries the hint bubble; a "Show hints" toggle in the banner above
+   flips .casebook-interview-hints-shown back on. */
+html.casebook-interview-active .casey-coach {
+  display: none;
+}
+/* :not(.casey-coach--dock-bottom) matters: the mobile dock instance has
+   its own higher-specificity `display: none` at desktop widths (see
+   .casey-coach--dock-bottom above) that this reveal-toggle must not
+   override, or the fixed-position dock reappears on desktop and covers
+   the header/banner, intercepting clicks meant for elements beneath it
+   (confirmed via a real Playwright click failing with "intercepts
+   pointer events" against exactly this element). */
+html.casebook-interview-active.casebook-interview-hints-shown .casey-coach:not(.casey-coach--dock-bottom) {
+  display: unset; /* falls back to the normal cascade (hidden on mobile, block on desktop), not forced */
+}
+
+/* ── Interview setup / summary page ── */
+.casebook-interview-page .casebook-search__result-meta {
+  text-transform: none;
+}

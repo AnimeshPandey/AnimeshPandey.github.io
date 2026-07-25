@@ -1,0 +1,60 @@
+---
+layout: layouts/casebook-layout.njk
+navActive: cases
+title: Interview mode — The Frontend Casebook
+description: Practice a curated run through live cases, hints hidden, self-assessed.
+noindex: true
+hubStyles: true
+slug: interview
+permalink: /interview/index.html
+---
+
+<div class="casebook-hub casebook-interview-page" id="interview-page">
+
+  <header class="casebook-hub__hero">
+    <h1 class="casebook-hub__title">Interview mode</h1>
+    <p class="casebook-hub__subtitle">
+      A timed run through a curated set of cases — hints hidden by default, self-assessed at the end of each one.
+      <a href="{{ '/index.html' | url }}">← Interactive cases</a>
+    </p>
+  </header>
+
+  <form id="interview-setup" class="casebook-search__box" style="display:flex;flex-direction:column;gap:16px;max-width:420px;">
+    <div>
+      <label for="interview-track" class="hub-toolbar__label">Track</label>
+      <select id="interview-track" class="hub-select hub-toolbar__select" style="width:100%;">
+        <option value="">Mixed — all tracks</option>
+        {% set tracks = [] %}
+        {% for c in liveCases %}
+          {% if c.track not in tracks %}
+            {% set tracks = (tracks.push(c.track), tracks) %}
+            <option value="{{ c.track }}">{{ c.track | replace("-", " ") | title }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="interview-count" class="hub-toolbar__label">How many cases</label>
+      <select id="interview-count" class="hub-select hub-toolbar__select" style="width:100%;">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="all">All matching</option>
+      </select>
+    </div>
+    <button type="submit" class="casey-hub__action casey-hub__action--primary" style="align-self:flex-start;">
+      Start session
+    </button>
+    <p id="interview-setup-error" class="casebook-search__count" style="color:var(--casebook-critical, #b23b3b);" hidden></p>
+  </form>
+
+  <section id="interview-summary" class="casebook-search__box" hidden style="max-width:560px;">
+    <h2>Session summary</h2>
+    <p id="interview-summary-meta" class="casebook-search__count"></p>
+    <ul id="interview-summary-list" class="casebook-search__results"></ul>
+    <p style="margin-top:16px;"><a href="{{ '/interview/' | url }}" class="casey-hub__action">Start another session</a></p>
+  </section>
+
+</div>
+
+<script type="application/json" id="interview-live-cases">{{ liveCases | dump | safe }}</script>
+<script src="{{ '/assets/js/casebook-interview.js' | url }}" defer></script>
