@@ -68,4 +68,58 @@ test.describe('Casey voice playback', () => {
     // a real, stable value — not stuck, not throwing.
     await expect(voiceBtn).toHaveAttribute('aria-pressed', /^(true|false)$/);
   });
+
+  test('"listen to whole case" starts with the first chapter and is visible when multiple voice chapters exist', async ({ page }) => {
+    const audioRequests: string[] = [];
+    page.on('request', (r) => {
+      if (r.url().includes('/assets/casey/voice/')) audioRequests.push(r.url());
+    });
+
+    await page.goto('/cases/key-prop-identity/'); // has hook/concept/demo/takeaway voice content
+    const allBtn = page.locator('.casey-coach__voice-all').first();
+    await expect(allBtn).toBeVisible();
+    await expect(allBtn).not.toHaveAttribute('aria-pressed', 'true');
+
+    await allBtn.click();
+    await expect(allBtn).toHaveAttribute('aria-pressed', 'true');
+    await expect(allBtn).toHaveAttribute('aria-label', 'Stop listening to whole case');
+
+    expect(audioRequests[0]).toContain('key-prop-identity/hook-junior.mp3');
+  });
+
+  test('stopping "listen to whole case" mid-sequence prevents the next chapter from starting', async ({ page }) => {
+    const audioRequests: string[] = [];
+    page.on('request', (r) => {
+      if (r.url().includes('/assets/casey/voice/')) audioRequests.push(r.url());
+    });
+
+    await page.goto('/cases/key-prop-identity/');
+    const allBtn = page.locator('.casey-coach__voice-all').first();
+    await allBtn.click();
+    await expect(allBtn).toHaveAttribute('aria-pressed', 'true');
+
+    // Stop immediately — this is exactly the race the shared playToken
+    // guard exists for: a naive implementation could still let the
+    // in-flight chapter's completion handler queue up the next one.
+    await allBtn.click();
+    await expect(allBtn).toHaveAttribute('aria-pressed', 'false');
+
+    // Give a real second chapter every chance to have started if the stop
+    // leaked — it must not have.
+    await page.waitForTimeout(1500);
+    expect(audioRequests).toHaveLength(1);
+    expect(audioRequests[0]).toContain('hook-junior.mp3');
+  });
+
+  test('clicking the per-chapter Listen button while "listen to whole case" is active stops the sequence', async ({ page }) => {
+    await page.goto('/cases/key-prop-identity/');
+    const allBtn = page.locator('.casey-coach__voice-all').first();
+    const oneBtn = page.locator('.casey-coach__voice').first();
+
+    await allBtn.click();
+    await expect(allBtn).toHaveAttribute('aria-pressed', 'true');
+
+    await oneBtn.click();
+    await expect(allBtn).toHaveAttribute('aria-pressed', 'false');
+  });
 });

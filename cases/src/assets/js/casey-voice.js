@@ -74,15 +74,27 @@ function initCaseyVoice() {
 
   const voiceBtns = document.querySelectorAll('.casey-coach__voice');
   if (!voiceBtns.length) return;
+  const continuousBtns = document.querySelectorAll('.casey-coach__voice-all');
 
   let speaking = false;
+  // Ordered chapter ids still queued for "listen to whole case" playback,
+  // or null when not in continuous mode. Deliberately NOT touched by the
+  // shared stop() below — stop() runs at the top of every speak() call
+  // too, including the ones this module makes internally to advance from
+  // one queued chapter to the next, so if stop() cleared this the queue
+  // would wipe itself after exactly one chapter every time.
+  let continuousChapters = null;
   const audioEl = new Audio();
   audioEl.preload = 'none';
   // Bumped on every stop()/speak() so a stale async callback from a
   // superseded attempt (e.g. play()'s promise rejecting with AbortError
   // because stop() paused/cleared src while it was still pending) can
   // recognize it's no longer current and no-op instead of re-flipping
-  // playback state after the fact.
+  // playback state after the fact. Continuous playback reuses this same
+  // token for its own cancellation: a stale "chapter N finished, advance
+  // to N+1" callback checks it exactly like the single-chapter path does,
+  // so stop() (from either the per-chapter or continuous-play button)
+  // halts the whole sequence, not just the chapter in flight.
   let playToken = 0;
 
   function getChapterVoice(chapter, tone) {
@@ -124,7 +136,7 @@ function initCaseyVoice() {
     document.dispatchEvent(new CustomEvent('casey-voice-stop'));
   }
 
-  function speakWithSynthesis(text, tone, token) {
+  function speakWithSynthesis(text, tone, token, onEnded) {
     const profile = getVoiceProfile(tone);
     const utt = new SpeechSynthesisUtterance(text);
     utt.rate = profile.rate ?? 0.95;
@@ -133,6 +145,7 @@ function initCaseyVoice() {
       if (token !== playToken) return;
       setSpeaking(false);
       document.dispatchEvent(new CustomEvent('casey-voice-stop'));
+      if (onEnded) onEnded();
     };
     utt.onerror = () => {
       if (token !== playToken) return;
@@ -144,14 +157,19 @@ function initCaseyVoice() {
     window.speechSynthesis.speak(utt);
   }
 
-  function speak(text, tone, chapter) {
+  // onEnded fires only on a genuine natural completion (audio file ended,
+  // or speechSynthesis utterance ended) for THIS call's token — never on
+  // error or on an interrupting stop()/newer speak() — which is exactly
+  // the signal continuous playback needs to safely advance to the next
+  // chapter without racing a cancellation.
+  function speak(text, tone, chapter, onEnded) {
     if (!text) return;
     stop();
     const callToken = playToken;
 
     const audioUrl = audioUrlFor(chapter, tone);
     if (!audioUrl) {
-      speakWithSynthesis(text, tone, callToken);
+      speakWithSynthesis(text, tone, callToken, onEnded);
       return;
     }
 
@@ -170,13 +188,14 @@ function initCaseyVoice() {
     const onAudioError = () => {
       if (fellBack || thisToken !== playToken) return;
       fellBack = true;
-      speakWithSynthesis(text, tone, thisToken);
+      speakWithSynthesis(text, tone, thisToken, onEnded);
     };
     audioEl.onerror = onAudioError;
     audioEl.onended = () => {
       if (thisToken !== playToken) return;
       setSpeaking(false);
       document.dispatchEvent(new CustomEvent('casey-voice-stop'));
+      if (onEnded) onEnded();
     };
     audioEl.src = audioUrl;
     setSpeaking(true);
@@ -184,9 +203,71 @@ function initCaseyVoice() {
     audioEl.play().catch(onAudioError);
   }
 
+  function setContinuousUi(active) {
+    continuousBtns.forEach((btn) => {
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.setAttribute('aria-label', active ? 'Stop listening to whole case' : 'Listen to whole case');
+      btn.classList.toggle('casey-coach__voice-all--active', active);
+    });
+  }
+
+  // Called whenever playback starts from a source OTHER than the
+  // continuous queue itself (the per-chapter button, a tone/color change,
+  // etc.) so an in-progress "listen to whole case" run doesn't keep
+  // running invisibly with its button still showing "active".
+  function interruptContinuous() {
+    if (continuousChapters === null) return;
+    continuousChapters = null;
+    setContinuousUi(false);
+  }
+
+  function playNextContinuous(tone) {
+    if (!continuousChapters || !continuousChapters.length) {
+      continuousChapters = null;
+      setContinuousUi(false);
+      return;
+    }
+    const chapter = continuousChapters.shift();
+    const text = getChapterVoice(chapter, tone);
+    if (!text) {
+      playNextContinuous(tone);
+      return;
+    }
+    const chapterEl = document.querySelector('.case-chapter[data-chapter="' + chapter + '"]');
+    if (chapterEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      chapterEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    // speak() calls stop() internally at its own start on every chapter
+    // transition — that's expected and fine, it only clears audio/synth
+    // state and bumps playToken, never continuousChapters (see the
+    // declaration above for why that split matters).
+    speak(text, tone, chapter, () => playNextContinuous(tone));
+  }
+
+  function voiceChaptersForTone(tone) {
+    const sections = (caseyData && caseyData.voice && caseyData.voice.sections) || [];
+    const order = Array.from(document.querySelectorAll('.case-chapter[data-chapter]'))
+      .map((el) => el.dataset.chapter);
+    return order.filter((chapter) => {
+      const section = sections.find((s) => s.chapter === chapter);
+      return section && (section[tone] || section.junior);
+    });
+  }
+
   voiceBtns.forEach((btn) => {
     btn.hidden = false;
     btn.addEventListener('click', () => {
+      // setSpeaking() flips every .casey-coach__voice button's state
+      // whenever ANY playback is active, including chapters driven by the
+      // continuous queue — so `speaking` alone can't tell this click apart
+      // from "stop the sequence I'm mid-way through". Check continuous
+      // mode first and treat a click here as "stop everything" for it,
+      // same as clicking the continuous button itself would.
+      if (continuousChapters !== null) {
+        stop();
+        interruptContinuous();
+        return;
+      }
       if (speaking) {
         stop();
         return;
@@ -198,7 +279,36 @@ function initCaseyVoice() {
     });
   });
 
-  document.addEventListener('casebook-tone-change', () => stop());
+  if (continuousBtns.length) {
+    const tone0 = getStoredTone();
+    const eligible = voiceChaptersForTone(tone0).length > 1;
+    continuousBtns.forEach((btn) => { btn.hidden = !eligible; });
+    continuousBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (continuousChapters !== null) {
+          stop();
+          continuousChapters = null;
+          setContinuousUi(false);
+          return;
+        }
+        const tone = getStoredTone();
+        const chapters = voiceChaptersForTone(tone);
+        if (!chapters.length) return;
+        continuousChapters = chapters;
+        setContinuousUi(true);
+        playNextContinuous(tone);
+      });
+    });
+  }
+
+  document.addEventListener('casebook-tone-change', () => {
+    stop();
+    interruptContinuous();
+    if (continuousBtns.length) {
+      const eligible = voiceChaptersForTone(getStoredTone()).length > 1;
+      continuousBtns.forEach((btn) => { btn.hidden = !eligible; });
+    }
+  });
   document.addEventListener('casebook-color-change', () => stop());
   document.addEventListener('casey-companion-event', (e) => {
     if (e.detail && e.detail.type === 'casey-intensity-change') stop();
