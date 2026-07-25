@@ -1,0 +1,182 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Derived State Anti-Pattern"
+description: "Why storing a value in state that could instead be computed from other state creates a sync bug the moment one updates without the other, and why the fix is to stop storing it at all."
+slug: derived-state-anti-pattern
+track: state-architecture
+readMin: 10
+flagship: false
+demoType: code-only
+principle: Derived data
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/derived-state-anti-pattern-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The filtered list that showed items you'd just deleted</h2>
+  <div class="tone-junior">
+    <p>
+      You've got a list of items and a search box. Instead of filtering on every render, you store the filtered result in its own piece of state, updated by an effect whenever the items or the search text changes. It mostly works, until someone deletes an item and the filtered list still shows it for a moment, or forever if the effect's dependency array is slightly wrong.
+    </p>
+    <p>
+      The bug isn't really in the effect. It's that <code>filteredItems</code> exists as its own state at all, two things pretending to be independent when one is really just a computation over the other.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Storing a value that's fully computable from other state (<code>filteredItems</code> from <code>items</code> + <code>searchText</code>) creates a second source of truth. It's fine right up until one update path forgets to trigger the recompute, at which point the two go out of sync and nothing in the type system or the framework tells you.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a category error, not a missing dependency. A <code>useEffect</code> that exists solely to keep one state variable in sync with another is a sign the derived value shouldn't be state in the first place, it should be an expression evaluated during render.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>If you can compute it, don't store it</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of keeping <code>filteredItems</code> as its own <code>useState</code>, just calculate it directly from <code>items</code> and <code>searchText</code> every time the component renders. There's nothing to "keep in sync" because there's only ever one value, computed fresh, never stale.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>const filteredItems = items.filter(i => i.name.includes(searchText));</code> run inline during render replaces both the extra state variable and the effect that used to update it. If the computation is expensive, wrap it in <code>useMemo</code> for performance, not correctness, the memoized version still recomputes whenever its dependencies change; it just skips redoing the work when they haven't.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The general rule: state should hold the smallest set of values that can't be derived from anything else already in state or props. Everything else is a view over that minimal set, computed on demand. This eliminates an entire class of bugs by construction, there's no code path where the derived value can diverge from its inputs, because it's never assigned independently of them.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The dashboard total that didn't match the rows</h2>
+  <div class="tone-junior">
+    <p>
+      A team's dashboard showed a list of transactions and a running total, kept as separate state, the total updated by an effect whenever the list changed. A support ticket came in: the total on screen didn't match the sum of the visible rows. Nobody could figure out why from the code alone, it looked correct.
+    </p>
+    <p>
+      The real cause: a bulk-delete action removed several rows in one state update, but the effect updating the total was debounced for performance and fired before the delete had fully propagated through a second piece of derived state the total actually depended on.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix removed the total as stored state entirely and replaced it with <code>transactions.reduce((sum, t) => sum + t.amount, 0)</code> computed inline. The debounce, the effect, and the dependency-array tuning all disappeared along with the bug, there was no longer a window where the total and the list could disagree.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team generalized this into a lightweight review rule: any <code>useEffect</code> whose only job is <code>setSomeState(computeFromOtherState())</code> is treated as a smell during code review, not automatically wrong, but requiring a one-line justification for why the value can't just be computed during render instead.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A computed value stored as its own state, kept in sync via an effect (broken, can drift) vs. the same value computed inline during render (fixed, cannot drift)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Two ways to keep a filtered list, one of them can lie</h2>
+  <div class="tone-junior">
+    <p>Both versions filter the same list by the same search text. One stores the result separately and updates it via an effect; the other just computes it every render.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The comparison below is static, deliberately, since the bug is about a synchronization gap over time, not something a single render can show live — read the two code paths side by side.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the fixed version has no dependency array to get wrong, no effect to forget to run, and no window where <code>filteredItems</code> and <code>items</code> can disagree.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Derived state kept as separate synced state (broken) vs. computed inline during render (fixed)"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="derived-state-anti-pattern">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a filtered list kept as separate synced state against one computed inline during render; it requires JavaScript to load the code comparison in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: a second source of truth that can drift
+const [items, setItems] = useState(initialItems);
+const [searchText, setSearchText] = useState('');
+const [filteredItems, setFilteredItems] = useState(initialItems);
+
+useEffect(() =&gt; {
+  setFilteredItems(items.filter(i =&gt; i.name.includes(searchText)));
+}, [items, searchText]); // ← miss a dependency here and it silently goes stale
+
+// Fixed: nothing to keep in sync, because nothing is stored twice
+const [items, setItems] = useState(initialItems);
+const [searchText, setSearchText] = useState('');
+const filteredItems = useMemo(
+  () =&gt; items.filter(i =&gt; i.name.includes(searchText)),
+  [items, searchText]
+); // useMemo here is for perf only — correctness holds even as a plain expression</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>When derived state actually earns its keep</h2>
+  <div class="tone-junior">
+    <p>
+      Not every computed value should skip <code>useState</code>. If a value needs to persist even after its original inputs change or disappear (like "the last search result before the list was cleared"), that's a real, independent piece of state, not something to compute inline.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The test is whether the value has meaning independent of its current inputs. If it's always "whatever you'd get from recomputing right now," it's derived. If it needs to remember something the current inputs no longer contain, it's genuinely separate state.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This same anti-pattern shows up outside component state too: a Redux selector that's memoized correctly is the derived-state pattern done right; a reducer that duplicates data another slice already owns, updated by a second action creator "to keep it in sync," is the exact same bug at the store level, and just as fixable by deleting the duplicate and selecting instead.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">If a value can be calculated from other state, calculate it every render instead of storing it separately — there's nothing to keep in sync if there's only one copy.</div>
+        <div class="tone-mid">A useEffect whose only job is setting one state variable from another is a sign the derived value should be a plain expression (or useMemo for performance) instead of its own state.</div>
+        <div class="tone-staff">State should hold the smallest set of values that can't be derived from anything else — everything else is a view computed on demand, which can't drift by construction.</div>
+      </li>
+    </ul>
+  </div>
+</section>

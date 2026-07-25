@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Approval Gates Before Production Actions"
+description: "Why an agent that can execute a production-affecting action the moment it decides on one is one bad plan away from a real incident, and why an explicit approval step before execution is not optional for anything with real side effects."
+slug: human-approval-gate-deploy
+track: agent-architecture
+readMin: 10
+flagship: false
+demoType: toggle
+principle: HITL
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/human-approval-gate-deploy-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The agent deleted the right thing, in the wrong environment</h2>
+  <div class="tone-junior">
+    <p>
+      You asked an agent to clean up old test data. It reasoned correctly about which rows were old test data, wrote a correct delete query, and ran it immediately, against production, because that's the database connection it happened to have open. Every individual step was right. The outcome wasn't.
+    </p>
+    <p>
+      The problem was never the agent's reasoning. It was that "decide" and "execute" were the same step, with nothing in between where a human could have looked at the plan and said "wait, which database is this."
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Giving an agent tool access to production-affecting actions (deploys, deletes, config changes, sending real emails) without a review step before execution means every mistake in its plan becomes a mistake in production, instantly, with no chance to catch it in between.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This isn't primarily an AI-safety framing, it's the same reason production deploys have had a review-then-execute step for humans for decades: the cost of an irreversible action is high enough that a cheap review gate is worth the friction, whether the plan came from a person or a model.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Separate proposing an action from executing it</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of the agent calling a tool and having it run immediately, the tool call becomes a proposal: here's exactly what I'm about to do, shown clearly to a human, with Approve and Reject buttons. Nothing happens until someone clicks Approve.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The agent's tool-calling interface stays the same, what changes is what the tool actually does when called: instead of executing, it enqueues the action with its full parameters and returns a pending state. A separate execute step only fires after an explicit human approval event.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The gate needs to show the actual parameters the action will run with, not a paraphrase, a human approving "delete old test rows" without seeing the real <code>WHERE</code> clause is approving a summary, not the action, which defeats the point.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The config change that shipped itself</h2>
+  <div class="tone-junior">
+    <p>
+      A team built an internal agent that could adjust feature-flag percentages based on error-rate monitoring, meant to slowly dial back a risky rollout automatically. It worked well in testing. In production, a monitoring blip made it read a temporary spike as sustained, and it dialed a completely unrelated flag to 0% for every user, instantly.
+    </p>
+    <p>
+      Nobody had done anything wrong in the agent's logic reading THAT particular signal, the actual bug was subtle and took a while to find. What was avoidable immediately was the blast radius: the change went live the second the agent decided on it, with no step where a human on-call could have seen "wait, that's the wrong flag" before it took effect.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix added an approval gate specifically for any flag change affecting more than 5% of users: the agent still proposed changes automatically and immediately, but execution required a human click, shown with the flag name, the before/after percentage, and the triggering metric, in a Slack message the on-call engineer could approve or reject in seconds.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They deliberately didn't gate every action, small, easily-reversible flag nudges under 5% still executed automatically, since gating everything would have trained the on-call engineer to rubber-stamp approvals without really reading them. The gate's value depends on staying reserved for genuinely high-blast-radius actions.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Agent proposes and immediately executes a production action (broken) vs. the same proposal sitting in a pending-approval state until a human explicitly approves it (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch the same proposed action take two different paths</h2>
+  <div class="tone-junior">
+    <p>Same agent, same proposed action, toggle between it running instantly and it waiting for your explicit click.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The pending state shows the real parameters, not a summary, which is exactly what makes the approval meaningful.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice Reject is a real, first-class outcome here, not just "don't click Approve" — it explicitly cancels the queued action.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Agent action execution: immediate auto-execute (broken) vs. approval-gated execution (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="human-approval-gate-deploy">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares an agent action that executes immediately against one that requires explicit human approval first; it requires JavaScript to run the simulated action queue in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Auto-execute
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Approval gate
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Approval gate</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The gate's UI is the whole product</h2>
+  <div class="tone-junior">
+    <p>
+      An approval gate is only as good as what it actually shows. If the pending action is described vaguely, approval becomes a formality instead of a real check, show the specific, real details every time.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Add a timeout or expiry to pending actions, a stale approval request for a plan based on data that's now an hour old shouldn't still be one click away from executing without re-confirming the underlying state hasn't changed.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Log every approval and rejection with who approved it and the exact parameters shown, this is the audit trail that matters after an incident, not the agent's internal reasoning trace, since the reasoning didn't cause the outcome, the click did.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">An agent that decides and executes in the same step turns every mistake in its plan into a mistake in production, instantly.</div>
+        <div class="tone-mid">Separate proposing an action from executing it — show the real parameters, require an explicit approval click before anything runs.</div>
+        <div class="tone-staff">Reserve the gate for genuinely high-blast-radius actions, gating everything trains reviewers to rubber-stamp instead of actually reading.</div>
+      </li>
+    </ul>
+  </div>
+</section>

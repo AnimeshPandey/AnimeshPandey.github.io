@@ -1,0 +1,115 @@
+{
+  "slug": "bundle-budget-ci-gate",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A budget in a doc only works if someone remembers to check it, every single time, forever. That's not a plan, that's hoping.",
+      "mid": "The failure mode here is a slow leak, not one bad PR. Every individual change looks fine in review.",
+      "staff": "Zero cost to violate plus zero signal when it happens converges to 'the biggest size nobody complained about yet,' not the agreed number."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Same starting number, two very different results, depending on whether anything actually checks it on every change.",
+      "mid": "The CI-gated version fails at the exact PR that crossed the line, with the size delta right there.",
+      "staff": "The tool existing in a doc nobody's CI reads is functionally the same as the tool not existing."
+    },
+    {
+      "chapter": "concept",
+      "junior": "size-limit measures your real build output and fails the PR if it's over the number you set. No remembering required.",
+      "mid": "The config lives in the repo, reviewed like any other code, not in a wiki page someone has to go check by hand.",
+      "staff": "This turns a social problem, remembering or challenging a PR on size, into a mechanical one: the check is red or it isn't."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Treat a crossed budget like a failing test: fix the size, or make a deliberate, visible decision to raise the number.",
+      "mid": "Track every meaningful entry point, not just main.js, a lazy-loaded route can regress invisibly if only the main bundle is watched.",
+      "staff": "Measure gzip or brotli size, not raw bytes, that's what actually crosses the network and what your budget should reflect."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a bundle-size budget that only lived in a doc, and grew from 180 kilobytes to 340 kilobytes without a single PR looking like the one that broke it.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is making the budget a real CI check, using something like size-limit, so it fails the pull request the moment your build goes over.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Compare a budget that only exists in a wiki page against one wired into CI, and see which one actually catches the regression.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A documented budget is a wish. A CI-enforced budget is a gate. Only one of them actually holds.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

@@ -423,5 +423,89 @@
       "<a href=\"https://web.dev/articles/vitals\" rel=\"noopener noreferrer\">web.dev — Core Web Vitals</a>",
       "<a href=\"https://www.w3.org/TR/input-events/\" rel=\"noopener noreferrer\">W3C — Input Events</a>"
     ]
+  },
+  "bundle-budget-ci-gate": {
+    "junior": [
+      "<a href=\"https://github.com/ai/size-limit\" rel=\"noopener noreferrer\">size-limit — GitHub</a>"
+    ],
+    "mid": [
+      "<a href=\"https://github.com/ai/size-limit\" rel=\"noopener noreferrer\">size-limit — GitHub</a>",
+      "<a href=\"https://www.npmjs.com/package/bundlesize\" rel=\"noopener noreferrer\">bundlesize — npm</a>"
+    ],
+    "staff": [
+      "<a href=\"https://github.com/ai/size-limit\" rel=\"noopener noreferrer\">size-limit — GitHub (webpack/file/time plugins, CI presets)</a>",
+      "<a href=\"https://www.npmjs.com/package/bundlesize\" rel=\"noopener noreferrer\">bundlesize — npm</a>"
+    ]
+  },
+  "human-approval-gate-deploy": {
+    "junior": [
+      "<a href=\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\" rel=\"noopener noreferrer\">OWASP LLM Top 10</a>"
+    ],
+    "mid": [
+      "<a href=\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\" rel=\"noopener noreferrer\">OWASP LLM Top 10 — Excessive Agency (LLM06:2025)</a>"
+    ],
+    "staff": [
+      "<a href=\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\" rel=\"noopener noreferrer\">OWASP LLM Top 10 — Excessive Agency (LLM06:2025): excessive functionality, permissions, and autonomy</a>"
+    ]
+  },
+  "tree-shaking-side-effects": {
+    "junior": [
+      "<a href=\"https://webpack.js.org/guides/tree-shaking/\" rel=\"noopener noreferrer\">webpack — Tree Shaking guide</a>"
+    ],
+    "mid": [
+      "<a href=\"https://webpack.js.org/guides/tree-shaking/\" rel=\"noopener noreferrer\">webpack — Tree Shaking guide (sideEffects field)</a>"
+    ],
+    "staff": [
+      "<a href=\"https://webpack.js.org/guides/tree-shaking/\" rel=\"noopener noreferrer\">webpack — Tree Shaking guide: include/skip/exclude evaluation, CSS side-effect gotcha</a>"
+    ]
+  },
+  "derived-state-anti-pattern": {
+    "junior": [
+      "<a href=\"https://react.dev/learn/choosing-the-state-structure\" rel=\"noopener noreferrer\">React — Choosing the State Structure</a>"
+    ],
+    "mid": [
+      "<a href=\"https://react.dev/learn/choosing-the-state-structure\" rel=\"noopener noreferrer\">React — Avoid redundant state</a>"
+    ],
+    "staff": [
+      "<a href=\"https://react.dev/learn/choosing-the-state-structure\" rel=\"noopener noreferrer\">React — Choosing the State Structure</a>",
+      "<a href=\"https://react.dev/reference/react/useMemo\" rel=\"noopener noreferrer\">React — useMemo</a>"
+    ]
+  },
+  "layout-animation-flip": {
+    "junior": [
+      "<a href=\"https://aerotwist.com/blog/flip-your-animations/\" rel=\"noopener noreferrer\">Paul Lewis — FLIP Your Animations</a>"
+    ],
+    "mid": [
+      "<a href=\"https://aerotwist.com/blog/flip-your-animations/\" rel=\"noopener noreferrer\">Paul Lewis — FLIP Your Animations</a>",
+      "<a href=\"https://web.dev/articles/animations-guide\" rel=\"noopener noreferrer\">web.dev — Animations guide</a>"
+    ],
+    "staff": [
+      "<a href=\"https://aerotwist.com/blog/flip-your-animations/\" rel=\"noopener noreferrer\">Paul Lewis — FLIP Your Animations</a>",
+      "<a href=\"https://web.dev/articles/animations-guide\" rel=\"noopener noreferrer\">web.dev — Animations guide</a>"
+    ]
+  },
+  "websocket-reconnect": {
+    "junior": [
+      "<a href=\"https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/\" rel=\"noopener noreferrer\">AWS Architecture Blog — Exponential Backoff and Jitter</a>"
+    ],
+    "mid": [
+      "<a href=\"https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/\" rel=\"noopener noreferrer\">AWS Architecture Blog — Exponential Backoff and Jitter</a>"
+    ],
+    "staff": [
+      "<a href=\"https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/\" rel=\"noopener noreferrer\">AWS Architecture Blog — Exponential Backoff and Jitter</a>"
+    ]
+  },
+  "use-effect-runs-twice": {
+    "junior": [
+      "<a href=\"https://react.dev/reference/react/StrictMode\" rel=\"noopener noreferrer\">React — StrictMode</a>"
+    ],
+    "mid": [
+      "<a href=\"https://react.dev/reference/react/StrictMode\" rel=\"noopener noreferrer\">React — StrictMode</a>",
+      "<a href=\"https://react.dev/learn/synchronizing-with-effects\" rel=\"noopener noreferrer\">React — Synchronizing with Effects</a>"
+    ],
+    "staff": [
+      "<a href=\"https://react.dev/reference/react/StrictMode\" rel=\"noopener noreferrer\">React — StrictMode</a>",
+      "<a href=\"https://react.dev/learn/synchronizing-with-effects\" rel=\"noopener noreferrer\">React — Synchronizing with Effects</a>"
+    ]
   }
 }

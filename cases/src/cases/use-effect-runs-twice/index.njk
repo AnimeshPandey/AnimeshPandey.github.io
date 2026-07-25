@@ -1,0 +1,176 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Why useEffect Ran Twice (Strict Mode)"
+description: "Why React 18 Strict Mode deliberately double-invokes your effects in development, and why the real fix is almost never 'stop it from running twice' — it's making the effect safe to run twice at all."
+slug: use-effect-runs-twice
+track: react
+readMin: 10
+flagship: false
+demoType: code-only
+principle: Strict mode
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/use-effect-runs-twice-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The subscription that fired twice, and the "fix" that made it worse</h2>
+  <div class="tone-junior">
+    <p>
+      You add a <code>useEffect</code> that opens a subscription, and notice it's somehow firing twice on mount in development, two log lines, two network calls, sometimes two visible copies of whatever the effect does. The instinct is to find whatever's "causing" the double call and stop it.
+    </p>
+    <p>
+      There's nothing to find. React 18's Strict Mode does this on purpose, specifically in development, specifically to catch effects like yours before they cause a real bug in production.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      In development, Strict Mode intentionally mounts, cleans up, and re-mounts every component once, which means every effect runs, its cleanup function runs, and then it runs again. This never happens in production, it's a development-only diagnostic.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Strict Mode's double-invoke is simulating a real scenario your effect will eventually hit anyway, StrictMode is rehearsing what happens when React needs to unmount and remount a component and reuse its state (a real feature planned for future React versions), so it surfaces the bug now, in dev, on your terms, instead of later, in production, on a user's.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The bug was always "no cleanup," not "runs twice"</h2>
+  <div class="tone-junior">
+    <p>
+      If your effect sets something up (a subscription, a timer, an event listener) but the cleanup function doesn't properly tear it down, running the effect twice leaves two copies of that thing active at once. The fix isn't stopping the double-run, it's writing a cleanup function that actually undoes what the effect did.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      An effect that's correctly idempotent, its cleanup exactly reverses its setup, behaves identically whether it runs once or twice: mount → cleanup → mount ends up in the exact same state as a single mount would have. The double-invoke only exposes bugs in effects that were never safe to run more than once to begin with.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This generalizes beyond subscriptions: any effect performing a side effect without a matching, complete inverse in its cleanup (partial cleanup, cleanup that doesn't cancel an in-flight request, cleanup that doesn't unregister every listener the setup registered) will misbehave under Strict Mode's double-invoke, and is a latent production bug even if double-invoke never happened at all, it just needs the right timing to trigger.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The chat app that showed every message twice, only in dev</h2>
+  <div class="tone-junior">
+    <p>
+      A team's chat component opened a WebSocket connection in a <code>useEffect</code> and appended incoming messages to a list, with no cleanup function at all. Every message appeared twice in the development build. Someone "fixed" it by wrapping the effect body in a ref-based flag that skipped the second invocation, silencing the symptom entirely.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      That flag-based workaround shipped to production, where Strict Mode's double-invoke doesn't even happen, so it did nothing there except mask the fact that the effect still had no real cleanup. Weeks later, an unrelated change caused the same component to genuinely remount (a route change, a key prop update), and the exact same double-subscription bug appeared in production, now with no Strict Mode warning to point at it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The actual fix, applied later, added a real cleanup function that closed the WebSocket connection and removed its message listener, then deleted the ref-flag workaround entirely. The component now behaves correctly whether it mounts once, twice, or genuinely remounts for any real reason, the ref flag had only ever been hiding one specific trigger of a bug that had several.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">An effect with no (or incomplete) cleanup, breaking under Strict Mode's dev-only double-invoke (broken) vs. the same effect with a cleanup that fully reverses its setup, safe to run any number of times (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Same effect, with and without real cleanup</h2>
+  <div class="tone-junior">
+    <p>Both versions subscribe to something in a useEffect. Only one of them actually undoes that subscription when the effect cleans up.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The comparison is static, since the actual failure only shows up over the mount→cleanup→mount sequence Strict Mode runs, not within a single render.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Trace through what happens to the subscription count under Strict Mode's double-invoke for each version — the broken one ends with two active subscriptions, the fixed one ends with exactly one.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="An effect without proper cleanup breaking under Strict Mode double-invoke, vs. the same effect with correct cleanup"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="use-effect-runs-twice">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a useEffect without proper cleanup against the same effect with correct cleanup, under React Strict Mode's double-invoke; it requires JavaScript to load the code comparison in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: no cleanup — Strict Mode's double-invoke leaks a second subscription
+useEffect(() =&gt; {
+  const sub = chatSocket.subscribe(msg =&gt; addMessage(msg));
+  // no return — nothing undoes the subscribe on cleanup
+}, []);
+// mount → cleanup (does nothing) → mount again → TWO active subscriptions
+
+// Fixed: cleanup fully reverses the setup
+useEffect(() =&gt; {
+  const sub = chatSocket.subscribe(msg =&gt; addMessage(msg));
+  return () =&gt; sub.unsubscribe(); // cleanup undoes exactly what setup did
+}, []);
+// mount → cleanup (unsubscribes) → mount again → exactly ONE active subscription</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Don't reach for a ref-flag workaround</h2>
+  <div class="tone-junior">
+    <p>
+      A common "fix" is a ref-based flag that skips the effect's second run in development. Don't do this, it silences the warning without fixing the underlying bug, and the same bug will resurface the moment the component genuinely remounts for an unrelated reason in production.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>fetch</code> calls inside effects need the same treatment: use an <code>AbortController</code> in the cleanup to cancel an in-flight request, rather than letting a stale response from the first invocation land after the second invocation has already started its own request.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Strict Mode's double-invoke is dev-only and doesn't run in production builds at all, so an effect that "passes" by never being tested under it can still hide a real production bug, the double-invoke is a detector, not the actual risk. Treat any Strict Mode warning as a genuine correctness bug to fix, not a development-environment quirk to route around.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">React Strict Mode double-invokes effects in development on purpose, to catch effects that aren't safe to run more than once before that becomes a real bug.</div>
+        <div class="tone-mid">The fix is never "stop it from running twice" — it's writing a cleanup function that fully reverses whatever the effect's setup did.</div>
+        <div class="tone-staff">A ref-flag workaround that skips the second invocation only hides the symptom in dev — the same bug resurfaces in production the moment the component genuinely remounts.</div>
+      </li>
+    </ul>
+  </div>
+</section>

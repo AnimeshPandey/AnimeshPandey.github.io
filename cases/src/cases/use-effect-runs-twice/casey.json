@@ -1,0 +1,88 @@
+{
+  "slug": "use-effect-runs-twice",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "There's nothing to find and stop — React 18 Strict Mode double-invokes effects in development on purpose, to catch bugs before production does.",
+      "mid": "Strict Mode mounts, cleans up, and re-mounts every component once in development, running every effect and its cleanup twice — this never happens in production.",
+      "staff": "The double-invoke rehearses a real scenario React needs to handle: unmounting and remounting a component while reusing its state."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Only one version actually undoes its subscription when the effect cleans up — trace what that means for the subscription count.",
+      "mid": "The broken version ends the mount→cleanup→mount sequence with two active subscriptions; the fixed version ends with exactly one.",
+      "staff": "This comparison is static because the failure only shows up across the mount→cleanup→mount sequence, not within a single render."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The bug was never 'runs twice' — it's that the cleanup function doesn't actually undo what the effect set up.",
+      "mid": "An effect whose cleanup exactly reverses its setup behaves identically whether it runs once or twice — the double-invoke can't expose a bug that isn't there.",
+      "staff": "Any effect without a complete inverse in its cleanup is a latent production bug already — Strict Mode just needs the right timing to trigger it, dev or not."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Don't reach for a ref-flag that skips the second run — it hides the warning without fixing the bug, which resurfaces the moment a real remount happens.",
+      "mid": "fetch calls inside effects need the same fix — cancel the in-flight request in cleanup with AbortController, don't let a stale response land late.",
+      "staff": "Strict Mode's double-invoke never runs in production — treat any warning as a real correctness bug to fix, not a dev-only quirk to route around."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a useEffect that seemed to run twice for no reason — spoiler, it's on purpose, React Strict Mode does this deliberately in development.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The real fix isn't stopping the double run — it's writing a cleanup function that actually undoes whatever the effect set up, so running it twice is perfectly safe.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Compare two versions of the same effect — only one of them has a cleanup function that actually reverses the subscription it created.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Strict Mode's double-invoke is a diagnostic, not the bug. Fix the missing cleanup, don't silence the warning.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

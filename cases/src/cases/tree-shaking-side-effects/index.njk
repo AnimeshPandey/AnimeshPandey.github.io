@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "sideEffects: false and Tree Shaking"
+description: "Why importing one function from a utility library can still pull the whole thing into your bundle, and how a single package.json field lets the bundler safely throw away the rest."
+slug: tree-shaking-side-effects
+track: build-tooling
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Bundle size
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/tree-shaking-side-effects-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>You imported one function. The bundle grew by 80KB anyway</h2>
+  <div class="tone-junior">
+    <p>
+      <code>import { debounce } from 'utils-lib'</code>. One function. But the built bundle jumped by 80KB, roughly the size of the entire library. The bundler didn't remove the 40 other functions you never touched.
+    </p>
+    <p>
+      This isn't a bundler bug. The bundler is being cautious on purpose, because it genuinely can't prove those other 40 functions are safe to delete.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Without an explicit signal, a bundler has to assume any module-level code in a file might have a side effect, something that runs and matters even if nothing imports the value it produces, like registering a global, patching a prototype, or running analytics on import. Deleting "unused" code that might do that would be an unsafe, incorrect optimization.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Tree shaking is fundamentally a proof problem: the bundler must prove an export is unreachable and side-effect-free before removing it, and JavaScript's dynamic nature makes that proof genuinely hard to construct automatically for most real code.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Tell the bundler which files are actually safe to prune</h2>
+  <div class="tone-junior">
+    <p>
+      <code>"sideEffects": false</code> in a package's <code>package.json</code> is a promise from the library author: none of these files do anything meaningful just by being imported. With that promise, the bundler can safely drop any export nothing actually uses.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      If a package genuinely does have a few side-effectful files (a CSS import, a polyfill that patches a global), list them explicitly instead of marking the whole package: <code>"sideEffects": ["./src/polyfill.js", "*.css"]</code>. Everything not listed is fair game for removal.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This only helps if the library is also authored as real ES modules (not transpiled to CommonJS as the primary entry point), static <code>import</code>/<code>export</code> syntax is what lets the bundler statically analyze reachability at all, a CommonJS <code>require()</code> graph is opaque to this analysis.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The utility library that quietly doubled a bundle</h2>
+  <div class="tone-junior">
+    <p>
+      A team's marketing site imported a single date-formatting helper from a general-purpose utility package. Nobody thought to check the bundle report, until a routine Lighthouse audit flagged a huge JS payload on a page that visibly only formatted one date string.
+    </p>
+    <p>
+      The utility package had no <code>sideEffects</code> field at all. By default, that means "assume side effects everywhere," the safest possible assumption for the bundler, and the worst possible one for bundle size.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team couldn't change the library's own package.json (it was a third-party dependency), so they added a per-import override in their bundler config declaring that specific package side-effect-free, verified by actually reading through its source for anything that ran on import, and found nothing that did.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also added a bundle-analyzer step to CI afterward specifically to catch this class of regression automatically, since the failure mode is invisible in code review, a reasonable-looking one-line import that happens to drag in an entire library looks identical to a genuinely small import until someone measures the actual output.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">No sideEffects declaration, bundler keeps the whole library "just in case" (broken) vs. sideEffects: false, bundler safely tree-shakes everything the app doesn't actually use (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Same one-function import, two very different bundles</h2>
+  <div class="tone-junior">
+    <p>Toggle between a library with no sideEffects declaration and one that has it, and watch the simulated bundle size.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The import statement in the app code never changes, only the library's own package.json field does.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This is entirely a build-time, static-analysis difference, nothing about runtime behavior changes either way.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Tree shaking comparison: no sideEffects declaration (broken) vs. sideEffects: false (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="tree-shaking-side-effects">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a bundler's output size for one function imported from a utility library, with and without a sideEffects declaration; it requires JavaScript to render the simulated bundle breakdown in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No sideEffects field
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            sideEffects: false
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: sideEffects: false</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The promise has to actually be true</h2>
+  <div class="tone-junior">
+    <p>
+      Only mark a package <code>sideEffects: false</code> if it's actually true. If the bundler removes code that secretly did matter, because a file was wrongly marked safe, you get a silent runtime bug, not a build error.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Global CSS imports are the most common accidental violation: a component file that does <code>import './styles.css'</code> has a real side effect (injecting styles), and needs to be excluded from the sideEffects-false list even if the rest of the package is genuinely pure.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Verify tree shaking actually happened with a real bundle analyzer, not just by trusting the config, a <code>sideEffects: false</code> field that's present but ineffective (because the bundler's minifier ran before dead-code elimination, or the import is dynamic) gives you false confidence with zero size benefit.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Without a sideEffects field, bundlers assume the safest option — keep everything — which means one small import can pull in a whole library.</div>
+        <div class="tone-mid">"sideEffects": false in package.json tells the bundler it's safe to remove any export the app doesn't actually use.</div>
+        <div class="tone-staff">List real side-effectful files explicitly rather than marking a whole package false, and verify the reduction actually happened with a bundle analyzer, not just the config.</div>
+      </li>
+    </ul>
+  </div>
+</section>

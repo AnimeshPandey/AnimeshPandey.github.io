@@ -1,0 +1,88 @@
+{
+  "slug": "derived-state-anti-pattern",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The bug isn't the effect's dependency array — it's that the filtered list existed as its own state at all, a second copy of something already knowable from items + search text.",
+      "mid": "A stored derived value plus an effect to sync it is a second source of truth waiting for one update path to forget to trigger it.",
+      "staff": "A useEffect whose only job is keeping one state variable in sync with another is a category error, not a missing dependency."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Read both versions side by side — the fixed one has no separate filteredItems state at all, so there's nothing left to go stale.",
+      "mid": "The fixed version's useMemo is there for performance only, not correctness — a plain inline expression would be just as correct, only slower.",
+      "staff": "No dependency array to get wrong, no effect to forget — the fixed version structurally cannot let filteredItems and items disagree."
+    },
+    {
+      "chapter": "concept",
+      "junior": "If you can calculate a value from state you already have, calculate it every render instead of storing a second copy.",
+      "mid": "useMemo here only skips redoing the work when dependencies haven't changed — it still recomputes correctly whenever they have.",
+      "staff": "State should hold the smallest set of values that can't be derived from anything else — everything else is a view computed on demand."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Not everything computed should skip state — if a value needs to remember something its current inputs no longer contain, it's real state.",
+      "mid": "The test: does the value have meaning independent of its current inputs, or is it always just 'whatever recomputing right now would give'?",
+      "staff": "The same bug shows up in Redux: a reducer duplicating data another slice owns, synced by a second action creator, is this exact pattern at the store level."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a filtered list that showed items you'd already deleted, because the filtered result was stored as its own state instead of just being computed.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is simple: if you can calculate a value from state you already have, just calculate it every render instead of keeping a second copy around.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Compare the two code paths — one keeps a separate synced copy that can drift, the other computes the value fresh every time so there's nothing to keep in sync.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "If it can be computed from state you already have, don't give it its own state. Compute it every render instead, and the sync bug becomes impossible.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

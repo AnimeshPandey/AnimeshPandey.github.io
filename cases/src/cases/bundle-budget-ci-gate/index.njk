@@ -1,0 +1,192 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Bundle Budgets as CI Gates (Not Slide Decks)"
+description: "Why a bundle-size limit that only lives in a wiki page gets silently violated within months, and how a real CI check that fails the build is the only version of a budget that actually holds."
+slug: bundle-budget-ci-gate
+track: advanced-frontend
+readMin: 10
+flagship: false
+demoType: code-only
+principle: Performance budget
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/bundle-budget-ci-gate-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The 180KB bundle everyone agreed to is now 340KB and nobody noticed</h2>
+  <div class="tone-junior">
+    <p>
+      Six months ago, the team wrote "keep the main bundle under 200KB" in a performance doc everyone nodded along to in a meeting. Nobody enforced it anywhere. Today it's 340KB, and no single PR looks like the one that broke it, because none of them did, on their own.
+    </p>
+    <p>
+      A budget that only exists as a sentence in a document isn't a budget. It's a wish. The bundle grows one reasonable-looking dependency at a time until, one day, someone actually measures it and is shocked.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is the classic slow-leak failure mode: every individual PR that adds 3-8KB looks completely reasonable in review, and no reviewer has the full historical context to say "that's the fifteenth 5KB addition this quarter." The budget needed to be enforced at the only point where the full picture is visible, in CI, automatically, on every PR.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The deeper problem is that a documented budget with no automated check has zero cost to violate and zero signal when it happens, so it converges to "the largest bundle size nobody complained about yet" rather than to the number that was actually agreed on.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Make the budget a build step, not a policy</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of trusting people to remember and check a number by hand, a tool like <code>size-limit</code> or <code>bundlesize</code> measures your actual built output in CI and fails the pull request if it's over the limit you configured. No PR merges without either staying under budget or someone deliberately raising it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The config lives in the repo, next to the code, reviewed the same way as everything else: <code>{ "path": "dist/main.js", "limit": "200 KB" }</code>. When a PR pushes past it, the CI check goes red with the exact before/after size in the PR itself, at the moment someone can still easily see which change caused it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This converts a social problem (remembering to check, or challenging someone else's PR on size) into a mechanical one (the CI check is red or it isn't). Raising the budget is still possible and sometimes correct, but it now requires a deliberate, visible diff to the budget file itself, not silence.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The performance doc nobody opened again</h2>
+  <div class="tone-junior">
+    <p>
+      A team wrote a performance budget doc after a slow launch scared everyone into caring. It had real numbers: 200KB JS, 100KB CSS, 2.5s Time to Interactive on a mid-tier phone. It was linked from the README. Nobody opened it again until a customer complained about load time fourteen months later.
+    </p>
+    <p>
+      By then the JS bundle was 410KB. Every individual PR along the way had passed code review just fine, because "does this look reasonable" and "does this keep us under budget" are different questions, and only the doc, which nobody was checking, was tracking the second one.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix wasn't a new doc or a stricter review process, it was <code>size-limit</code> wired into CI with the same 200KB number, now enforced automatically. The first PR after it landed immediately failed, on a change that had already been approved and merged in review the week before, on a completely unrelated feature.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They set the initial limit slightly above the current real size rather than the original aspirational 200KB, specifically so the gate would start green and force a deliberate, tracked reduction plan afterward, rather than immediately blocking all merges on day one with an already-blown budget.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Bundle budget documented in a wiki page, silently violated over months (broken) vs. a size-limit CI check that fails the build the moment a PR crosses the line (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>What a documented budget looks like vs. an enforced one</h2>
+  <div class="tone-junior">
+    <p>Same starting budget, two very different outcomes six months later, depending on whether anything actually checks it.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The CI-gated version fails loudly and immediately, at the exact PR that crossed the line, with the size delta right there in the check.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the failure mode isn't "the tool is missing," it's "the tool exists in a document nobody's CI reads."</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Bundle budget as documentation vs. bundle budget as a CI gate"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="bundle-budget-ci-gate">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a wiki-documented bundle budget against a real size-limit CI configuration; it requires JavaScript to load the code comparison in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: the "budget" is a sentence in a doc nobody's CI reads
+// docs/performance.md
+//   "Please try to keep the main bundle under 200KB."
+
+// Six PRs later, dist/main.js is 340KB. Every individual
+// PR review approved cleanly — nothing checked the total.
+
+
+// Fixed: the budget is a config file CI actually enforces
+// .size-limit.json
+[
+  {
+    "path": "dist/main.js",
+    "limit": "200 KB"
+  }
+]
+
+// package.json
+{
+  "scripts": { "size": "size-limit" }
+}
+
+// .github/workflows/ci.yml
+- run: npm run size
+  # fails the PR check the instant a build exceeds 200 KB,
+  # with the exact before/after size posted on the PR</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Budgets need teeth, and they need a way to be raised on purpose</h2>
+  <div class="tone-junior">
+    <p>
+      A budget check that can be silently skipped or overridden by anyone at any time isn't much better than no check, treat crossing the line the same way you'd treat a failing test: fix the size, or make a deliberate, reviewed decision to raise the number.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Track more than one bundle if your app ships more than one meaningful entry point, a single "main.js" number hides regressions in a lazy-loaded route or a vendor chunk that users on that specific page still have to download.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Prefer a tool that reports gzip or brotli size, not raw bytes, since that's what actually crosses the network, and set the limit against the compressed size your CDN actually serves, a budget measured on the wrong number gives you false confidence either direction.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A bundle-size limit that only lives in a doc gets silently violated, because nothing actually checks it on every change.</div>
+        <div class="tone-mid">A CI tool like size-limit or bundlesize turns the budget into a build step that fails the PR the moment it's crossed, with the exact size delta visible right there.</div>
+        <div class="tone-staff">Track every meaningful entry point on compressed (gzip/brotli) size, and require a deliberate, reviewed change to the budget file itself to raise the limit — never a silent one.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,103 @@
+{
+  "slug": "websocket-reconnect",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A server hiccup drops everyone at once — if every client reconnects instantly, that flood is often what turns a hiccup into a real outage.",
+      "mid": "Instant reconnect works fine for one client's own drop, but fails badly for a correlated event that disconnects many clients at the same moment.",
+      "staff": "A recovering server needs headroom — an instant-retry client population removes exactly the headroom the recovery needs."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click simulate disconnect a few times and watch the timestamps between reconnect attempts in each mode.",
+      "mid": "The broken mode's attempts land almost back to back; the fixed mode's intervals visibly grow with each attempt.",
+      "staff": "This shows one client's own backoff curve — the real population-level benefit is many jittered curves not overlapping, which one client can only gesture at."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Wait a little longer after each failed attempt — 1s, then 2, then 4 — instead of retrying instantly every time.",
+      "mid": "Jitter matters too — without it every client computes the same delay sequence and they all retry in sync anyway, just less often.",
+      "staff": "Full jitter (random between 0 and the exponential cap) spreads the retry distribution wider than small-jitter variants under real correlated load."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Always cap the max delay — uncapped backoff eventually makes a client wait absurdly long, which feels broken even though it's 'working as designed.'",
+      "mid": "Reset the backoff counter after a connection stays up a while, or one bad patch throttles every later, unrelated reconnect too.",
+      "staff": "Distinguish disconnect reasons where possible — a clean server-initiated close can skip the initial backoff step; an abnormal close should always back off."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a WebSocket client that reconnected instantly after every disconnect, and how that turned a brief server hiccup into a full outage.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is exponential backoff with jitter — wait a bit longer after each failed attempt, and spread those attempts out randomly so clients don't all retry in the same instant.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Simulate a few disconnects in each mode and watch how the timing between reconnect attempts differs.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Don't reconnect instantly on every disconnect. Back off exponentially, add jitter, and cap the maximum delay.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

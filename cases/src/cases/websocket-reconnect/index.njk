@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "WebSocket Reconnect with Backoff"
+description: "Why a WebSocket client that reconnects immediately after every disconnect turns a server hiccup into a retry storm, and how exponential backoff with jitter gives the server room to actually recover."
+slug: websocket-reconnect
+track: networking
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Realtime
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/websocket-reconnect-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The outage that got worse the moment it started</h2>
+  <div class="tone-junior">
+    <p>
+      Your app keeps a live WebSocket connection open, and reconnects the instant it drops, seems reasonable, you want to be reconnected as fast as possible. Then the server has a brief hiccup and drops every client's connection at once. Every single client reconnects immediately, all at the same moment, and that flood of simultaneous reconnect attempts is often what turns a brief hiccup into a real outage.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Immediate reconnect on every disconnect works fine for the common case, a single client's connection dropping for its own reasons. It fails badly for the correlated case, a server-side event that disconnects many clients simultaneously, since "many clients reconnecting instantly" is functionally a self-inflicted traffic spike at the worst possible moment.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      A recovering server needs headroom to actually recover. An instant-retry client population removes exactly that headroom, every reconnect attempt competes with the server's own recovery work for the same limited resources.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Back off exponentially, and spread attempts out with jitter</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of reconnecting instantly every time, wait a little longer after each failed attempt, 1 second, then 2, then 4, then 8, and so on. This gives a struggling server progressively more breathing room instead of a constant hammering.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Exponential backoff alone still has a problem: every client computes the exact same delay sequence, so they all retry in sync, still a synchronized spike, just a less frequent one. Adding jitter, a small random offset to each computed delay, spreads the retries out across time instead of them landing in the same instant.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      "Full jitter" (a random delay uniformly chosen between 0 and the exponential cap, rather than the exponential value plus a small random wobble) tends to outperform smaller-jitter variants under real correlated-failure load, because it spreads the retry distribution much wider rather than clustering near the exponential curve's exact value.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The five-second outage that took twenty minutes to recover from</h2>
+  <div class="tone-junior">
+    <p>
+      A team's realtime dashboard used a WebSocket client that reconnected immediately on any disconnect, no delay at all. A routine server restart dropped every connected client for about five seconds. When the server came back up, it was immediately hit by the full reconnect flood, thousands of clients reconnecting in the same second, and the resulting load spike itself caused the server to become unresponsive again.
+    </p>
+    <p>
+      This repeated in a loop, brief recovery, immediate flood, unresponsive again, for roughly twenty minutes before the team manually throttled connections at the load balancer to break the cycle.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The actual fix was exponential backoff with full jitter on the client side, capped at a reasonable maximum delay (30 seconds), so a real five-second server restart now resolves in roughly that same five seconds, clients spread their reconnect attempts out instead of arriving as one synchronized wave.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also added a reconnect counter reset on any successfully-sustained connection (staying connected for more than some threshold resets the backoff to its minimum), so a client that reconnects successfully after a brief drop doesn't stay artificially throttled the next time it needs to reconnect for an unrelated reason.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Every client reconnects instantly after a disconnect, flooding a recovering server (broken) vs. exponential backoff with jitter spreading reconnect attempts out over time (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Simulate repeated disconnects, watch the retry timing</h2>
+  <div class="tone-junior">
+    <p>Click "Simulate disconnect" a few times in a row and watch the timestamps between each reconnect attempt.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken mode's attempts land almost immediately after each other; the fixed mode's intervals grow with each attempt.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This demo shows one client's own backoff curve — the real-world benefit is population-level, many clients' jittered curves not overlapping, which a single-client demo can only gesture at.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="WebSocket reconnect: immediate retry (broken) vs. exponential backoff with jitter (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="websocket-reconnect">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates repeated WebSocket disconnects, comparing immediate reconnect against exponential backoff with jitter; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Immediate retry
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Backoff + jitter
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Backoff + jitter</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:180px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Backoff needs a ceiling, and a reset condition</h2>
+  <div class="tone-junior">
+    <p>
+      Always cap the maximum delay (30-60 seconds is common). Uncapped exponential backoff eventually makes a client wait absurdly long between attempts, which feels broken from the user's side even though it's technically "working as designed."
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Reset the backoff counter once a connection has stayed up for a meaningful duration, otherwise a client that hits one bad patch stays throttled on every subsequent, unrelated disconnect for the rest of the session.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Distinguish reconnect reasons where possible, a clean server-initiated close code (like a deploy) can reasonably skip the initial backoff step entirely on the assumption the server is intentionally cycling, while an abnormal close or repeated failures should always back off, conflating every disconnect reason into one retry policy under- or over-reacts depending on the actual cause.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Reconnecting instantly after every disconnect can turn a brief server hiccup into a real outage when many clients all retry at once.</div>
+        <div class="tone-mid">Exponential backoff with jitter spreads reconnect attempts out over time instead of every client hammering the server in the same instant.</div>
+        <div class="tone-staff">Cap the maximum delay, reset the backoff after a sustained connection, and treat different disconnect reasons differently rather than one uniform retry policy.</div>
+      </li>
+    </ul>
+  </div>
+</section>
