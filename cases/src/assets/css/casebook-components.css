@@ -1682,3 +1682,99 @@ html.casebook-interview-active.casebook-interview-hints-shown .casey-coach:not(.
 .casebook-interview-page .casebook-search__result-meta {
   text-transform: none;
 }
+
+/* ── First-visit onboarding tour ── */
+.casey-onboarding__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+.casey-onboarding__card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--casebook-surface);
+  border: 1px solid var(--casebook-border);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  outline: none;
+}
+.casey-onboarding__img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+.casey-onboarding__title {
+  font-size: 1.1rem;
+  margin: 4px 0 0;
+}
+.casey-onboarding__body {
+  font-size: 0.9rem;
+  color: var(--casebook-ink-2);
+  line-height: 1.5;
+  margin: 0;
+}
+.casey-onboarding__dots {
+  display: flex;
+  gap: 6px;
+  margin: 6px 0;
+}
+.casey-onboarding__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--casebook-border);
+}
+.casey-onboarding__dot--active {
+  background: var(--casebook-accent);
+}
+.casey-onboarding__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 8px;
+  gap: 12px;
+}
+.casey-onboarding__skip {
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  background: transparent;
+  border: none;
+  color: var(--casebook-ink-faint);
+  cursor: pointer;
+  min-height: 44px;
+  padding: 0 8px;
+}
+.casey-onboarding__skip:hover {
+  color: var(--casebook-ink);
+}
+.casey-onboarding__next {
+  font-family: var(--mono, monospace);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: var(--casebook-accent);
+  color: var(--casebook-bg);
+  cursor: pointer;
+  min-height: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .casey-onboarding__overlay,
+  .casey-onboarding__card {
+    animation: none;
+    transition: none;
+  }
+}
