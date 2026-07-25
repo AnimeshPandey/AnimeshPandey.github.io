@@ -31,6 +31,19 @@
     <span class="visually-hidden">Listen with Casey</span>
   </button>
 
+  {# Auto-advances through every chapter this case has voice content for,
+     at the reader's current tone — hidden by JS when the case has one or
+     fewer voice-enabled chapters (nothing to queue). #}
+  <button type="button" class="casey-coach__voice-all" aria-label="Listen to whole case"
+          title="Listen to whole case" hidden>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+      <line x1="19" y1="3" x2="19" y2="21"/>
+    </svg>
+    <span class="visually-hidden">Listen to whole case</span>
+  </button>
+
   {# Cycles the same hint's other reading-level phrasings without changing
      the reader's chosen tone for the rest of the page — hidden by JS when
      the current chapter's hint only has one usable tone. #}
