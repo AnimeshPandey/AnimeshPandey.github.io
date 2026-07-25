@@ -94,4 +94,63 @@ test.describe('Casebook interview mode', () => {
     expect(labels.length).toBe(sessionLen);
     expect(labels.every((l) => ['Got it', 'Partial', 'Needs review'].includes(l))).toBe(true);
   });
+
+  test('Casey shows a pre-session line on the setup page', async ({ page }) => {
+    await page.goto('/cases/interview/');
+    await expect(page.locator('#interview-casey-bubble .casey-about-bubble__text')).toBeVisible();
+    const text = await page.locator('#interview-casey-bubble .casey-about-bubble__text').innerText();
+    expect(text.length).toBeGreaterThan(0);
+  });
+
+  test('Casey shows a reaction after self-assessment before advancing', async ({ page }) => {
+    await page.goto('/cases/interview/');
+    await page.selectOption('#interview-track', { index: 1 });
+    await page.selectOption('#interview-count', '5');
+    await Promise.all([
+      page.waitForURL(/\?interview=/),
+      page.click('#interview-setup button[type=submit]'),
+    ]);
+    const case1Url = page.url();
+
+    await page.click('#casebook-interview-done');
+    await page.click('#casebook-interview-assess button[data-result="yes"]');
+
+    // The reaction renders into the same assessBar element before the
+    // delayed navigation fires — must be visible in that window, not just
+    // eventually true after the URL has already changed.
+    await expect(page.locator('#casebook-interview-assess .casey-about-bubble__text')).toBeVisible();
+
+    await page.waitForURL((url) => url.toString() !== case1Url);
+    await expect(page.locator('.casebook-interview-banner__label')).toContainText('case 2 of');
+  });
+
+  test('Casey shows a results-scaled line on the summary page', async ({ page }) => {
+    await page.goto('/cases/interview/');
+    await page.selectOption('#interview-track', { index: 1 });
+    await page.selectOption('#interview-count', '5');
+    await Promise.all([
+      page.waitForURL(/\?interview=/),
+      page.click('#interview-setup button[type=submit]'),
+    ]);
+
+    var sessionMatch = page.url().match(/interview=([^&]+)/);
+    var sessionLen = await page.evaluate((sid) => {
+      var s = JSON.parse(localStorage.getItem('casebook-interview-v1'));
+      return s && s.id === sid ? s.caseSlugs.length : 0;
+    }, sessionMatch![1]);
+
+    for (let i = 0; i < sessionLen; i++) {
+      const beforeUrl = page.url();
+      await page.click('#casebook-interview-done');
+      await page.locator('#casebook-interview-assess').waitFor({ state: 'visible' });
+      await Promise.all([
+        page.waitForURL((url) => url.toString() !== beforeUrl),
+        page.click('#casebook-interview-assess button[data-result="yes"]'), // all correct → strong-session line
+      ]);
+    }
+
+    await expect(page).toHaveURL(/\/interview\/\?session=.*done=1/);
+    const summaryLine = await page.locator('#interview-summary-casey-bubble .casey-about-bubble__text').innerText();
+    expect(summaryLine.length).toBeGreaterThan(0);
+  });
 });

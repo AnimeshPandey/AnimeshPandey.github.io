@@ -19,6 +19,8 @@ permalink: /interview/index.html
     </p>
   </header>
 
+  <div id="interview-casey-bubble"></div>
+
   <form id="interview-setup" class="casebook-search__box" style="display:flex;flex-direction:column;gap:16px;max-width:420px;">
     <div>
       <label for="interview-track" class="hub-toolbar__label">Track</label>
@@ -49,6 +51,7 @@ permalink: /interview/index.html
 
   <section id="interview-summary" class="casebook-search__box" hidden style="max-width:560px;">
     <h2>Session summary</h2>
+    <div id="interview-summary-casey-bubble"></div>
     <p id="interview-summary-meta" class="casebook-search__count"></p>
     <ul id="interview-summary-list" class="casebook-search__results"></ul>
     <p style="margin-top:16px;"><a href="{{ '/interview/' | url }}" class="casey-hub__action">Start another session</a></p>
@@ -57,4 +60,6 @@ permalink: /interview/index.html
 </div>
 
 <script type="application/json" id="interview-live-cases">{{ liveCases | dump | safe }}</script>
+{% include 'partials/casey-companion-lines.njk' %}
+<script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
 <script src="{{ '/assets/js/casebook-interview.js' | url }}" defer></script>

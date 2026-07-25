@@ -1,0 +1,44 @@
+---
+layout: layouts/casebook-layout.njk
+navActive: cases
+title: Review session — The Frontend Casebook
+description: A Casey-led run through cases due for spaced review, hints hidden, self-assessed.
+noindex: true
+hubStyles: true
+slug: review
+permalink: /review/index.html
+---
+
+<div class="casebook-hub casebook-interview-page" id="review-page">
+
+  <header class="casebook-hub__hero">
+    <h1 class="casebook-hub__title">Review session</h1>
+    <p class="casebook-hub__subtitle">
+      Cases due for a spaced review pass — same format as interview mode, hints hidden, self-assessed.
+      <a href="{{ '/index.html' | url }}">← Interactive cases</a>
+    </p>
+  </header>
+
+  <div id="review-casey-bubble"></div>
+
+  <form id="interview-setup" data-interview-mode="review" class="casebook-search__box" style="display:flex;flex-direction:column;gap:16px;max-width:420px;">
+    <p id="review-count-label" class="casebook-search__count">Checking what's due…</p>
+    <button type="submit" class="casey-hub__action casey-hub__action--primary" style="align-self:flex-start;">
+      Start review session
+    </button>
+  </form>
+
+  <section id="interview-summary" class="casebook-search__box" hidden style="max-width:560px;">
+    <h2>Review summary</h2>
+    <div id="interview-summary-casey-bubble"></div>
+    <p id="interview-summary-meta" class="casebook-search__count"></p>
+    <ul id="interview-summary-list" class="casebook-search__results"></ul>
+    <p style="margin-top:16px;"><a href="{{ '/index.html' | url }}" class="casey-hub__action">Back to cases</a></p>
+  </section>
+
+</div>
+
+<script type="application/json" id="interview-live-cases">{{ liveCases | dump | safe }}</script>
+{% include 'partials/casey-companion-lines.njk' %}
+<script src="{{ '/assets/js/casey-companion.js' | url }}" defer></script>
+<script src="{{ '/assets/js/casebook-interview.js' | url }}" defer></script>

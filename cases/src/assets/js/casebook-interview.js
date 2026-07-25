@@ -56,9 +56,37 @@
     return out;
   }
 
-  // ── Role 1: setup page ──────────────────────────────────────────────
+  // Casey integration — deliberately lightweight (no CaseyCompanion.init()
+  // surface, just the two pure lookups it exposes) since interview mode has
+  // no chapter/FSM concept to hook into, unlike the hub/case surfaces.
+  function caseyLine(path) {
+    if (!window.CaseyCompanion || !window.CaseyCompanion.lineAt) return '';
+    var tier = window.CaseyCompanion.readTier ? window.CaseyCompanion.readTier() : 'junior';
+    return window.CaseyCompanion.lineAt(path, tier) || '';
+  }
+
+  function caseyPoseUrl(pose) {
+    var tier = window.CaseyCompanion && window.CaseyCompanion.readTier ? window.CaseyCompanion.readTier() : 'junior';
+    var assetBase = document.documentElement.dataset.assetBase || '/cases/assets/casey/';
+    return assetBase.replace(/\/?$/, '/') + tier + '/' + pose + '.png';
+  }
+
+  function renderCaseyBubble(container, path, pose) {
+    if (!container) return;
+    var text = caseyLine(path);
+    if (!text) { container.innerHTML = ''; return; }
+    container.innerHTML =
+      '<div class="casey-about-bubble" role="note">' +
+      '<img class="casey-about-bubble__img" src="' + caseyPoseUrl(pose) + '" width="64" height="64" alt="" />' +
+      '<p class="casey-about-bubble__text"></p>' +
+      '</div>';
+    container.querySelector('.casey-about-bubble__text').textContent = text;
+  }
+
+  // ── Role 1: setup page (also handles /review/, see isReview below) ──
   var setupForm = document.getElementById('interview-setup');
   if (setupForm) {
+    var isReview = setupForm.dataset.interviewMode === 'review';
     var liveCasesEl = document.getElementById('interview-live-cases');
     var liveCases = [];
     try { liveCases = liveCasesEl ? JSON.parse(liveCasesEl.textContent) : []; } catch (e) { /* ignore */ }
@@ -88,30 +116,74 @@
       }
       setupForm.hidden = true;
       if (summaryEl) summaryEl.hidden = false;
+
+      // Scaled to the actual hit rate, not just "session done" — a strong
+      // run and a rough one deserve different framing, and the "weak"
+      // line is deliberately not discouraging (see companion-lines.json).
+      var yesCount = Object.keys(results).filter(function (s) { return results[s] === 'yes'; }).length;
+      var rate = answered > 0 ? yesCount / answered : 0;
+      var summaryPath = rate >= 0.7 ? 'interview.summaryStrong' : rate >= 0.4 ? 'interview.summaryMixed' : 'interview.summaryWeak';
+      var summaryPose = rate >= 0.7 ? 'celebrate' : rate >= 0.4 ? 'nod' : 'support';
+      renderCaseyBubble(document.getElementById('interview-summary-casey-bubble'), summaryPath, summaryPose);
       return true;
     }
 
     if (!renderSummary()) {
+      if (isReview) {
+        var dueSlugs = (window.CaseyCompanion && window.CaseyCompanion.dueForReview)
+          ? window.CaseyCompanion.dueForReview(window.CaseyCompanion.getState().caseProgress)
+          : [];
+        var countLabel = document.getElementById('review-count-label');
+        var submitBtn = setupForm.querySelector('button[type=submit]');
+        if (!dueSlugs.length) {
+          if (countLabel) countLabel.textContent = "Nothing due right now — check back after you've completed a few more cases.";
+          if (submitBtn) submitBtn.hidden = true;
+        } else {
+          if (countLabel) countLabel.textContent = dueSlugs.length + ' case' + (dueSlugs.length === 1 ? '' : 's') + ' due for review.';
+          renderCaseyBubble(document.getElementById('review-casey-bubble'), 'interview.reviewStart', 'point');
+        }
+      } else {
+        renderCaseyBubble(document.getElementById('interview-casey-bubble'), 'interview.start', 'present');
+      }
+
       setupForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        var track = document.getElementById('interview-track').value;
-        var countRaw = document.getElementById('interview-count').value;
-        var errorEl = document.getElementById('interview-setup-error');
+        var caseSlugs;
+        var track;
 
-        var pool = track ? liveCases.filter(function (c) { return c.track === track; }) : liveCases.slice();
-        if (!pool.length) {
-          if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'No live cases in that track yet.'; }
-          return;
+        if (isReview) {
+          var due = (window.CaseyCompanion && window.CaseyCompanion.dueForReview)
+            ? window.CaseyCompanion.dueForReview(window.CaseyCompanion.getState().caseProgress)
+            : [];
+          // Only slugs still live — a case can fall off the manifest's
+          // live set after a reader completed it (rare, but the pool
+          // must stay real).
+          var liveSlugSet = {};
+          liveCases.forEach(function (c) { liveSlugSet[c.slug] = true; });
+          caseSlugs = due.filter(function (s) { return liveSlugSet[s]; });
+          if (!caseSlugs.length) return; // nothing due after the live-set filter; submit shouldn't be reachable anyway
+          track = 'review';
+        } else {
+          track = document.getElementById('interview-track').value;
+          var countRaw = document.getElementById('interview-count').value;
+          var errorEl = document.getElementById('interview-setup-error');
+
+          var pool = track ? liveCases.filter(function (c) { return c.track === track; }) : liveCases.slice();
+          if (!pool.length) {
+            if (errorEl) { errorEl.hidden = false; errorEl.textContent = 'No live cases in that track yet.'; }
+            return;
+          }
+          var shuffled = shuffle(pool);
+          var count = countRaw === 'all' ? shuffled.length : Math.min(Number(countRaw) || 5, shuffled.length);
+          caseSlugs = shuffled.slice(0, count).map(function (c) { return c.slug; });
         }
-        var shuffled = shuffle(pool);
-        var count = countRaw === 'all' ? shuffled.length : Math.min(Number(countRaw) || 5, shuffled.length);
-        var caseSlugs = shuffled.slice(0, count).map(function (c) { return c.slug; });
 
         var session = {
           id: buildSessionId(),
           startedAt: new Date().toISOString(),
+          mode: isReview ? 'review' : 'interview',
           track: track || 'mixed',
-          count: count,
+          count: caseSlugs.length,
           caseSlugs: caseSlugs,
           results: {},
         };
@@ -167,9 +239,10 @@
   var banner = document.createElement('div');
   banner.className = 'casebook-interview-banner';
   banner.setAttribute('role', 'region');
-  banner.setAttribute('aria-label', 'Interview mode');
+  var bannerModeLabel = session.mode === 'review' ? 'Review' : 'Interview';
+  banner.setAttribute('aria-label', bannerModeLabel + ' mode');
   banner.innerHTML =
-    '<span class="casebook-interview-banner__label">Interview: case ' + (idx + 1) + ' of ' + session.caseSlugs.length + '</span>' +
+    '<span class="casebook-interview-banner__label">' + bannerModeLabel + ': case ' + (idx + 1) + ' of ' + session.caseSlugs.length + '</span>' +
     '<button type="button" class="casebook-interview-banner__reveal" id="casebook-interview-reveal">Show hints</button>' +
     '<button type="button" class="casebook-interview-banner__done" id="casebook-interview-done">I’m done with this case</button>';
   var progressBar = document.getElementById('casebook-progress');
@@ -200,14 +273,13 @@
     });
   }
 
-  function advance(result) {
-    session.results[currentSlug] = result;
-    saveSession(session);
+  function navigateNext() {
     var nextIdx = idx + 1;
     if (nextIdx < session.caseSlugs.length) {
       window.location.href = pathPrefix + session.caseSlugs[nextIdx] + '/?interview=' + session.id;
     } else {
-      window.location.href = pathPrefix + 'interview/?session=' + session.id + '&done=1';
+      var backTo = session.mode === 'review' ? 'review' : 'interview';
+      window.location.href = pathPrefix + backTo + '/?session=' + session.id + '&done=1';
     }
   }
 
@@ -224,7 +296,28 @@
       btn.addEventListener('click', function () {
         if (advanced) return;
         advanced = true;
-        advance(btn.dataset.result);
+        var result = btn.dataset.result;
+        session.results[currentSlug] = result;
+        saveSession(session);
+
+        // Skip the reaction (and its delay) entirely under reduced-motion
+        // or "off" intensity — an interview run should stay snappy for a
+        // reader who's opted out of Casey's other UI, not gain a forced
+        // pause they didn't ask for.
+        var showReaction =
+          window.CaseyCompanion &&
+          window.CaseyCompanion.shouldShowCaseyBehavior &&
+          window.CaseyCompanion.shouldShowCaseyBehavior('bubble');
+        if (!showReaction) {
+          navigateNext();
+          return;
+        }
+        var reactionPath =
+          result === 'yes' ? 'interview.reactionYes' : result === 'partial' ? 'interview.reactionPartial' : 'interview.reactionNo';
+        var reactionPose = result === 'yes' ? 'proud' : result === 'partial' ? 'nod' : 'support';
+        assessBar.innerHTML = '';
+        renderCaseyBubble(assessBar, reactionPath, reactionPose);
+        setTimeout(navigateNext, 1100);
       });
     });
   }

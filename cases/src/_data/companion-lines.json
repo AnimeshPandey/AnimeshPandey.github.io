@@ -104,6 +104,48 @@
       "staff": "Org context first; patterns in cases are vendor-agnostic."
     }
   },
+  "interview": {
+    "start": {
+      "junior": "Interview mode: hints are hidden until you ask for them. Take your time — this is practice, not a test.",
+      "mid": "Hints are hidden by default here — try to reason it out first, then reveal if you're stuck.",
+      "staff": "No hints unless you ask. Self-assess honestly — this is only useful if the signal is real."
+    },
+    "reviewStart": {
+      "junior": "These are cases you've already read — this is just about keeping them fresh.",
+      "mid": "Spaced review pass — same hints-hidden format, just aimed at what's starting to fade.",
+      "staff": "Same self-assessment format, sourced from the review ladder instead of a fresh track."
+    },
+    "reactionYes": {
+      "junior": "Nice — you've got this one.",
+      "mid": "Solid. On to the next.",
+      "staff": "Confirmed. Moving on."
+    },
+    "reactionPartial": {
+      "junior": "Partial credit — worth a second look later.",
+      "mid": "Noted as partial — this one's a good review-queue candidate.",
+      "staff": "Partial. Flag this pattern for a follow-up pass."
+    },
+    "reactionNo": {
+      "junior": "That's what practice is for — you'll see this one again.",
+      "mid": "No shame in this one — it'll come back around for review.",
+      "staff": "Gap noted. Worth revisiting before this comes up for real."
+    },
+    "summaryStrong": {
+      "junior": "You got most of these — really solid run.",
+      "mid": "Strong session — most of these landed cleanly.",
+      "staff": "Strong signal here. Ready for the next track."
+    },
+    "summaryMixed": {
+      "junior": "A solid mix — the ones you missed are exactly what to review next.",
+      "mid": "Mixed results — a fair, honest read on where the gaps are.",
+      "staff": "Mixed. The misses here are your actual priority list, not the hits."
+    },
+    "summaryWeak": {
+      "junior": "Rough session, but now you know exactly what to focus on next.",
+      "mid": "Tough set — worth a slower pass through these before the next attempt.",
+      "staff": "Low hit rate — treat this as a targeted gap list, not a discouraging score."
+    }
+  },
   "milestones": {
     "firstCaseCompleted": {
       "pose": "proud",
