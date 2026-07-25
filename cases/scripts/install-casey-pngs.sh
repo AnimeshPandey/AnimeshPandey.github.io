@@ -4,7 +4,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CASEY="$ROOT/src/assets/casey"
-SRC="${CASEY_SRC:-$HOME/.cursor/projects/Users-animeshpandey-Desktop-Codebases/assets}"
+SRC="${CASEY_SRC:-$HOME/.cursor/projects/Users-animeshpandey-Documents-Codebases/assets}"
 PREVIEW="$CASEY/style-anchor/preview-ai"
 
 CORE_POSES=(idle blink perk point think celebrate sleep wave)

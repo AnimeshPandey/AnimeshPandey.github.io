@@ -8,7 +8,7 @@ from pathlib import Path
 
 from PIL import Image
 
-DEFAULT_SRC = Path.home() / ".cursor/projects/Users-animeshpandey-Desktop-Codebases/assets"
+DEFAULT_SRC = Path.home() / ".cursor/projects/Users-animeshpandey-Documents-Codebases/assets"
 TIERS = ("junior", "mid", "staff")
 CORE = ("idle", "blink", "perk", "point", "think", "celebrate", "sleep", "wave")
 GUIDE = ("welcome", "present", "proud", "support", "read")

@@ -9,15 +9,16 @@
 - Clean vector mascot: **thick dark outlines**, flat/soft cel fills, premium-cute (Notion/Linear editorial — not stock clipart).
 - **viewBox:** `0 0 100 100` for all pose SVGs; character ~65% of frame; 8px padding.
 - **Runtime assets:** raster PNG (512px max edge) per pose, **RGBA with true transparency** (run `scripts/fix-casey-transparency.py` after AI export or `install-casey-pngs.sh`).
-- **Regen:** AI anchors in `style-anchor/preview-ai/` → pose batch → `scripts/install-casey-pngs.sh`.
+- **Regen:** AI anchors in `style-anchor/preview-ai/` → pose batch → `scripts/install-casey-pngs.sh`. Full operational loop: [REGENERATION.md](REGENERATION.md).
 
 ## Tier proportions
 
 | Tier | Head | Eyes | Body | Accessories |
 |------|------|------|------|-------------|
-| **junior** | Largest (rx≈24) | Largest iris | Roundest; sage hoodie `#8BAF9F` | Tiny laptop hint optional |
-| **mid** | Medium (rx≈22) | Standard | Leaner; hoodie `#7CA897` | Headphones band |
-| **staff** | Smallest (rx≈20) | Slightly smaller | Sweater `#D4C5B0` | Reading glasses (eyes visible) |
+| **Junior** | Largest | Largest iris | Roundest; oversized sage hoodie `#8BAF9F` | Tiny laptop hint optional |
+| **Mid** | Same cute kawaii face as junior | Same large sparkling eyes | Slightly less round but still chubby/adorable — never skinny “cool IC”; fitted hoodie `#7CA897` | Headphones around neck; never arms-crossed swagger |
+| **Staff** | Same cute face | Eyes fully visible | Composed; sweater `#D4C5B0` | Reading glasses |
+
 
 ## Pose inventory
 
@@ -35,7 +36,7 @@
 | `proud` | Case takeaway chapter |
 | `support` | Demo broken toggle |
 
-Primary poses: AI-generated PNGs via `scripts/install-casey-pngs.sh`. Spec: `ideas/.../CASEY-AI-GENERATION.md`. Fallback SVG: `scripts/generate-casey-svgs.mjs`.
+Primary poses: AI-generated PNGs via `scripts/install-casey-pngs.sh`. Spec: [REGENERATION.md](REGENERATION.md). Fallback SVG: `scripts/generate-casey-svgs.mjs`.
 
 Motion: `casey-breathing`, `casey-bounce-once`, `casey-tier-fade` in `casebook-components.css`.
 
@@ -43,5 +44,7 @@ Motion: `casey-breathing`, `casey-bounce-once`, `casey-tier-fade` in `casebook-c
 
 - [ ] Catchlight visible at 80px
 - [ ] Fur warm off-white (not green body, not tabby)
+- [ ] Paws, feet, and tail solid white — no mottled/static/glitch fill
+- [ ] No horizontal seam/glitch at neck
 - [ ] Collar tag readable
 - [ ] Same outline weight across tier grid
