@@ -54,6 +54,11 @@ run('node', ['scripts/sync-live-slugs.mjs'], path.join(ROOT, 'tests'));
 console.log('→ Installing casebook dependencies…');
 run('npm', ['install'], path.join(ROOT, 'cases'));
 
+// Must run before the casebook build below — writes into src/assets/,
+// which that build passthrough-copies verbatim.
+console.log('→ Building search index…');
+run('node', ['scripts/build-search-index.mjs'], path.join(ROOT, 'cases'));
+
 console.log('→ Building casebook…');
 run('npm', ['run', 'build'], path.join(ROOT, 'cases'), { ELEVENTY_OUTPUT_DIR: CASES_OUT });
 excludeFromICloudSync(CASES_OUT);

@@ -42,6 +42,9 @@
 
       <div class="nav-utilities">
         {% if product == 'casebook' %}
+        <a href="{{ '/search/' | url }}" class="platform-icon-btn" aria-label="Search the Casebook">
+          <svg class="icon-sm" aria-hidden="true"><use href="#i-search"/></svg>
+        </a>
         {% include "partials/casebook-preferences.njk" %}
         <div class="casebook-prefs">
           <button type="button" class="casebook-prefs__trigger casey-panel__trigger platform-icon-btn" id="casebook-prefs-btn"
