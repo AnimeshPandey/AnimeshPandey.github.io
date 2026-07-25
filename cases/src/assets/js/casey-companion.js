@@ -32,9 +32,9 @@
   var CHAPTER_POSES = {
     hook: 'perk',
     concept: 'think',
-    'story-1': 'idle',
-    'story-2': 'idle',
-    'ui-strip': 'idle',
+    'story-1': 'curious',
+    'story-2': 'curious',
+    'ui-strip': 'point',
     demo: 'point',
     'fe-depth': 'think',
     references: 'read',
@@ -231,14 +231,33 @@
     return out;
   }
 
-  function singleImgInFrame(frame) {
+  function primaryImgInFrame(frame) {
     if (!frame) return null;
+    var primary = frame.querySelector('img.casey-avatar-frame__img:not(.casey-avatar-frame__img--incoming)');
+    if (primary) return primary;
     var imgs = frame.querySelectorAll('img');
-    if (!imgs.length) return null;
-    var primary = imgs[0];
-    for (var i = 1; i < imgs.length; i++) imgs[i].remove();
-    primary.classList.add('casey-avatar-frame__img');
-    return primary;
+    return imgs.length ? imgs[0] : null;
+  }
+
+  function clearIncomingLayers(frame, keep) {
+    if (!frame) return;
+    frame.querySelectorAll('img.casey-avatar-frame__img--incoming').forEach(function (el) {
+      if (el !== keep) el.remove();
+    });
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function onPrefersReducedMotionChange(handler) {
+    var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mq.addEventListener) mq.addEventListener('change', handler);
+    else if (mq.addListener) mq.addListener(handler);
+    return function () {
+      if (mq.removeEventListener) mq.removeEventListener('change', handler);
+      else if (mq.removeListener) mq.removeListener(handler);
+    };
   }
 
   function setImgPose(img, assetBase, ext, tier, pose, opts) {
@@ -246,7 +265,7 @@
     img = ensureAvatarFrame(img);
     opts = opts || {};
     var frame = img.closest('.casey-avatar-frame');
-    img = singleImgInFrame(frame) || img;
+    img = primaryImgInFrame(frame) || img;
     if (frame && tier) frame.dataset.caseyTier = tier;
 
     if (!frame.dataset.caseyFrameId) {
@@ -256,33 +275,110 @@
     var url = avatarSrc(assetBase, ext, tier, pose);
     var token = (frameSwapToken[frameId] || 0) + 1;
     frameSwapToken[frameId] = token;
+    var prm = prefersReducedMotion();
+    var allowCrossfade = !prm && opts.crossfade !== false && opts.tierFade !== true;
 
     function sameUrl(a, b) {
-      try { return new URL(a, location.href).pathname + new URL(a, location.href).search
-                === new URL(b, location.href).pathname + new URL(b, location.href).search; }
-      catch (_) { return false; }
+      try {
+        return new URL(a, location.href).pathname + new URL(a, location.href).search
+          === new URL(b, location.href).pathname + new URL(b, location.href).search;
+      } catch (_) {
+        return false;
+      }
     }
 
-    function commit() {
-      if (frameSwapToken[frameId] !== token) return;
-      if (img.src && sameUrl(img.src, url)) return; // already showing this pose
-      img.src = url;
-      if (img.decode) img.decode().catch(function () {});
-      img.style.opacity = '';
+    function finishPrimary() {
+      if (opts.alt) img.alt = opts.alt;
       img.classList.remove(
         'casey-avatar-fade-swap',
-        'casey-pose-enter',
-        'casey-avatar-frame__img--in',
         'casey-avatar-frame__img--out',
         'casey-avatar-frame__img--visible'
       );
-      if (opts.alt) img.alt = opts.alt;
-      if (opts.tierFade && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      img.style.opacity = '';
+      if (opts.enter && !prm) {
+        img.classList.remove('casey-pose-enter');
+        void img.offsetWidth;
+        img.classList.add('casey-pose-enter');
+        setTimeout(function () { img.classList.remove('casey-pose-enter'); }, 300);
+      }
+      if (opts.tierFade && !prm) {
         img.classList.remove('casey-tier-fade');
         void img.offsetWidth;
         img.classList.add('casey-tier-fade');
         setTimeout(function () { img.classList.remove('casey-tier-fade'); }, 280);
       }
+    }
+
+    function commitHard() {
+      if (frameSwapToken[frameId] !== token) return;
+      clearIncomingLayers(frame, null);
+      if (img.src && sameUrl(img.src, url)) {
+        finishPrimary();
+        return;
+      }
+      img.src = url;
+      if (img.decode) img.decode().catch(function () {});
+      finishPrimary();
+    }
+
+    function commitCrossfade() {
+      if (frameSwapToken[frameId] !== token) return;
+      if (!img.src || sameUrl(img.src, url)) {
+        finishPrimary();
+        return;
+      }
+      clearIncomingLayers(frame, null);
+      var incoming = document.createElement('img');
+      incoming.className = img.className
+        .replace(/\bcasey-avatar-frame__img--incoming\b/g, '')
+        .trim();
+      if (incoming.className.indexOf('casey-avatar-frame__img') === -1) {
+        incoming.className += ' casey-avatar-frame__img';
+      }
+      incoming.classList.add(
+        'casey-avatar-frame__img--incoming',
+        'casey-avatar-fade-swap'
+      );
+      incoming.width = img.width || 52;
+      incoming.height = img.height || 52;
+      incoming.alt = '';
+      incoming.setAttribute('aria-hidden', 'true');
+      incoming.style.opacity = '0';
+      incoming.src = url;
+      frame.appendChild(incoming);
+
+      function swap() {
+        if (frameSwapToken[frameId] !== token) {
+          incoming.remove();
+          return;
+        }
+        img.classList.add('casey-avatar-fade-swap', 'casey-avatar-frame__img--out');
+        incoming.classList.add('casey-avatar-frame__img--visible');
+        img.style.opacity = '0';
+        incoming.style.opacity = '1';
+        setTimeout(function () {
+          if (frameSwapToken[frameId] !== token) {
+            incoming.remove();
+            return;
+          }
+          img.src = url;
+          img.style.opacity = '';
+          finishPrimary();
+          incoming.remove();
+        }, 230);
+      }
+
+      if (incoming.decode) {
+        incoming.decode().then(swap).catch(swap);
+      } else {
+        incoming.onload = swap;
+        incoming.onerror = commitHard;
+      }
+    }
+
+    function commit() {
+      if (allowCrossfade) commitCrossfade();
+      else commitHard();
     }
 
     if (opts.preload === false) {
@@ -291,7 +387,7 @@
     }
     var probe = new Image();
     probe.onload = commit;
-    probe.onerror = commit;
+    probe.onerror = commitHard;
     probe.src = url;
   }
 
@@ -483,9 +579,22 @@
     return out;
   }
 
+  function clearBlinkTimers() {
+    if (activeTimers.blink) clearTimeout(activeTimers.blink);
+    if (activeTimers.blinkEnd) clearTimeout(activeTimers.blinkEnd);
+    activeTimers.blink = null;
+    activeTimers.blinkEnd = null;
+  }
+
   function scheduleBlink(avatars, assetBase, ext, getTier, cards, getRestPose) {
-    var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prm || !interactionsCfg || !shouldShowCaseyBehavior('rotate')) return;
+    clearBlinkTimers();
+    var prm = prefersReducedMotion();
+    if (prm || !interactionsCfg || !shouldShowCaseyBehavior('rotate')) {
+      avatars.forEach(function (img) {
+        img.classList.toggle('casey-breathing', !prm && shouldShowCaseyBehavior('rotate'));
+      });
+      return;
+    }
     var blinkRule = (interactionsCfg.interactions || []).filter(function (r) {
       return r.id === 'blink';
     })[0];
@@ -533,8 +642,17 @@
     var actions = (caseyData && caseyData.actions) || [];
     var chapterActions = actions.filter(function (a) { return a.chapter === chapter; });
     var chips = chapterActions.length
-      ? (chapterActions[0][tone] || chapterActions[0].junior || [])
+      ? (chapterActions[0][tone] || chapterActions[0].junior || []).slice()
       : [];
+
+    if (chapter === 'concept') {
+      var hasDemoChip = chips.some(function (c) {
+        return c && c.target && String(c.target).indexOf('demo') !== -1;
+      });
+      if (!hasDemoChip && document.querySelector('[data-chapter="demo"]')) {
+        chips.push({ label: 'Try the demo', target: '[data-chapter=demo]' });
+      }
+    }
 
     containers.forEach(function (container) {
       container.innerHTML = '';
@@ -550,7 +668,20 @@
           el.addEventListener('click', function () {
             var target = document.querySelector(chip.target);
             if (target) {
-              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              if (String(chip.target).indexOf('demo') !== -1) {
+                setManyPoses(
+                  document.querySelectorAll('[data-casey-avatar]'),
+                  document.documentElement.dataset.assetBase || '/cases/assets/casey/',
+                  'png',
+                  readTier(),
+                  'point',
+                  { preload: false }
+                );
+              }
+              target.scrollIntoView({
+                behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+                block: 'center',
+              });
               if (target.focus) target.focus({ preventScroll: true });
             }
           });
@@ -695,7 +826,7 @@
     if (!caseyData) return null;
 
     var html = document.documentElement;
-    var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var prm = prefersReducedMotion();
     var assetBase = html.dataset.assetBase || '/cases/assets/casey/';
     var assetExt = 'png';
     var pathPrefix = html.dataset.pathPrefix || '/cases/';
@@ -706,6 +837,7 @@
     var takeawayTimer = null;
     var demoIdleTimer = null;
     var slug = caseyData.slug || (window.location.pathname.split('/').filter(Boolean).pop());
+    var coachEntered = false;
 
     var cards = document.querySelectorAll('.casey-coach__card');
     var bubbles = document.querySelectorAll('.casey-coach__bubble');
@@ -774,12 +906,51 @@
     function setPose(pose, opts) {
       opts = opts || {};
       if (Date.now() < overridePoseUntil && !opts.force) return;
+      if (!coachEntered && !prm) {
+        opts = Object.assign({}, opts, { enter: true });
+        coachEntered = true;
+      }
       setManyPoses(avatars, assetBase, assetExt, currentTone, pose, opts);
       cards.forEach(function (card) {
         card.dataset.caseyTier = currentTone;
         card.dataset.caseyState = resolvePose(pose);
       });
     }
+
+    function restartCoachMotion() {
+      clearBlinkTimers();
+      avatars.forEach(function (img) { img.classList.remove('casey-breathing'); });
+      if (intensityOff || prm) {
+        setPose('sleep', { force: true, crossfade: false });
+        return;
+      }
+      loadInteractions(assetBase).then(function (cfg) {
+        applyMotionTokens(cfg, currentTone, cards);
+        scheduleBlink(
+          avatars,
+          assetBase,
+          assetExt,
+          function () { return currentTone; },
+          cards,
+          function () {
+            if (!currentChapter) return prm ? 'sleep' : 'idle';
+            var hint = getHint(caseyData, currentChapter, currentTone);
+            return chapterPose(currentChapter, !!hint, prm);
+          }
+        );
+      });
+      if (currentChapter) {
+        var hint = getHint(caseyData, currentChapter, currentTone);
+        setPose(chapterPose(currentChapter, !!hint, prm), { force: true });
+      } else {
+        setPose('idle', { force: true });
+      }
+    }
+
+    onPrefersReducedMotionChange(function () {
+      prm = prefersReducedMotion();
+      restartCoachMotion();
+    });
 
     function applyTierLabels(cfg) {
       if (!cfg || !cfg.tierLabels) return;
@@ -980,13 +1151,28 @@
       var restorePose = currentChapter
         ? chapterPose(currentChapter, !!hint, prm)
         : (prm ? 'sleep' : 'idle');
-      setPose(restorePose, { tierFade: true, force: true });
-      var toneLine = lineAt('case.toneSwitch', newTone);
-      setBubble(hint || toneLine || voiceLineForChapter(caseyData, currentChapter || 'hook', newTone) || '');
+      var tipKey = 'tone-switch-discover';
+      var st = loadState();
+      var firstToneSwitch = st.dismissedTips.indexOf(tipKey) === -1;
+      if (firstToneSwitch && !prm) {
+        setPose('perk', { tierFade: true, force: true });
+        var discoverLine = lineAt('case.toneSwitchDiscover', newTone) || lineAt('case.toneSwitch', newTone);
+        setBubble(discoverLine || hint || '', true);
+        st.dismissedTips.push(tipKey);
+        saveState(st);
+        setTimeout(function () {
+          setPose(restorePose, { force: true });
+          if (hint) setBubble(hint, true);
+        }, 1600);
+      } else {
+        setPose(restorePose, { tierFade: true, force: true });
+        var toneLine = lineAt('case.toneSwitch', newTone);
+        setBubble(hint || toneLine || voiceLineForChapter(caseyData, currentChapter || 'hook', newTone) || '');
+      }
       if (currentChapter) renderActionChips(caseyData, currentChapter, newTone, actionContainers);
       if (interactionsCfg) applyMotionTokens(interactionsCfg, newTone, cards);
       if (interactionsCfg) applyTierLabels(interactionsCfg);
-      ['idle', 'blink', 'nod', 'sleep', restorePose].forEach(function (p) {
+      ['idle', 'blink', 'nod', 'sleep', 'perk', restorePose].forEach(function (p) {
         if (p) preloadPose(assetBase, assetExt, newTone, p);
       });
     });
@@ -1078,7 +1264,7 @@
     if (!hubEl) return null;
 
     var hubData = opts.hubData || {};
-    var prm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var prm = prefersReducedMotion();
     var assetBase = document.documentElement.dataset.assetBase || '/cases/assets/casey/';
     var assetExt = 'png';
     var pathPrefix = document.documentElement.dataset.pathPrefix || '/cases/';
@@ -1194,6 +1380,41 @@
       return { slug: pick.slug, title: pick.title };
     }
 
+    function pickUnreadSuggestion() {
+      var titles = readCaseTitles();
+      var completed = {};
+      state.casesCompleted.forEach(function (s) { completed[s] = true; });
+      if (state.lastSlug && !completed[state.lastSlug]) {
+        return {
+          slug: state.lastSlug,
+          title: titles[state.lastSlug] || state.lastSlug,
+          kind: 'continue',
+        };
+      }
+      var nextTrack = suggestNextInTrack();
+      if (nextTrack) {
+        return { slug: nextTrack.slug, title: nextTrack.title, kind: 'next' };
+      }
+      var hubCases = readHubCases();
+      for (var i = 0; i < hubCases.length; i++) {
+        if (!completed[hubCases[i].slug]) {
+          return {
+            slug: hubCases[i].slug,
+            title: hubCases[i].title || titles[hubCases[i].slug] || hubCases[i].slug,
+            kind: 'unread',
+          };
+        }
+      }
+      if (flagshipSlug && !completed[flagshipSlug]) {
+        return {
+          slug: flagshipSlug,
+          title: titles[flagshipSlug] || flagshipSlug,
+          kind: 'flagship',
+        };
+      }
+      return null;
+    }
+
     function renderHubActions() {
       if (!actionsEl) return;
       actionsEl.innerHTML = '';
@@ -1217,12 +1438,6 @@
           primary: true,
         });
       }
-      // Turns the passive hub.reviewDue greeting text into something
-      // actually clickable — previously a reader could see "X is due for
-      // review" with no way to act on it besides finding the case
-      // themselves. Ranked above "Next in track" since it's the more
-      // time-sensitive nudge, same priority order suggest() already gives
-      // reviewDue over the other greeting branches.
       var dueSlugs = dueForReview(state.caseProgress);
       if (dueSlugs.length) {
         items.push({
@@ -1237,8 +1452,29 @@
           label: 'Next in track: ' + (nextTrack.title.length > 28 ? nextTrack.title.slice(0, 26) + '…' : nextTrack.title),
         });
       }
-      items.push({ href: pathPrefix + 'library/', label: 'Reading library' });
-      items.push({ href: pathPrefix + 'about/', label: 'How this works' });
+
+      // Static CTAs from casey-hub.json when present (library / about / subscribe)
+      var dataActions = (hubData.actions || []).filter(function (a) {
+        if (a.when === 'newsletter-enabled' && !document.getElementById('subscribe')) return false;
+        if (a.useFlagshipSlug) return false; // already handled above
+        return a.href || a.id === 'library' || a.id === 'about';
+      });
+      if (dataActions.length) {
+        dataActions.forEach(function (a) {
+          var href = a.href || '';
+          if (href.indexOf('/cases/') === 0) href = href.replace(/^\/cases\//, pathPrefix);
+          else if (href.charAt(0) === '/' && pathPrefix !== '/') {
+            /* keep root-relative as-is for #subscribe etc. */
+          }
+          if (!href && a.id === 'library') href = pathPrefix + 'library/';
+          if (!href && a.id === 'about') href = pathPrefix + 'about/';
+          if (!href) return;
+          items.push({ href: href, label: a.label });
+        });
+      } else {
+        items.push({ href: pathPrefix + 'library/', label: 'Reading library' });
+        items.push({ href: pathPrefix + 'about/', label: 'How this works' });
+      }
 
       items.slice(0, 3).forEach(function (item) {
         var li = document.createElement('li');
@@ -1246,6 +1482,7 @@
         a.href = item.href;
         a.className = 'casey-hub__action' + (item.primary ? ' casey-hub__action--primary' : '');
         a.textContent = item.label;
+        if (item.primary) a.classList.add('case-continue__btn--pulse');
         a.addEventListener('click', function () {
           if (!prm && avatar) {
             setImgPose(avatar, assetBase, assetExt, currentTier, 'nod', { preload: false });
@@ -1268,7 +1505,7 @@
     var hubActionHoverTimer = null;
 
     function safeHubPose(pose) {
-      if (pose === 'wave' || pose === 'perk' || pose === 'welcome') return 'present';
+      // wave / welcome / perk are first-class hub poses (do not collapse to present)
       return pose || 'present';
     }
 
@@ -1276,6 +1513,10 @@
       if (getIntensity() === 'off') return 'sleep';
       if (prm) return 'sleep';
       return 'present';
+    }
+
+    function hubSettlePose() {
+      return hubBasePose();
     }
 
     function hubMotionAllowed() {
@@ -1304,8 +1545,11 @@
         var roll = Math.random();
         var pose = null;
         var hold = 380;
-        if (roll < 0.55) pose = 'blink';
-        else if (roll < 0.75) pose = 'nod';
+        if (roll < 0.42) pose = 'blink';
+        else if (roll < 0.58) pose = 'nod';
+        else if (roll < 0.70) { pose = 'wave'; hold = 720; }
+        else if (roll < 0.82) { pose = 'perk'; hold = 650; }
+        else if (roll < 0.90) { pose = 'think'; hold = 700; }
         if (!pose) {
           hubIdleTimer = setTimeout(tick, 5000 + Math.random() * 4000);
           return;
@@ -1314,7 +1558,7 @@
         setImgPose(avatar, assetBase, assetExt, currentTier, pose, {});
         if (pose === 'nod' && Math.random() < 0.35) burstHubSparkles(hubEl);
         hubIdleTimer = setTimeout(function () {
-          setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), {});
+          setImgPose(avatar, assetBase, assetExt, currentTier, hubSettlePose(), {});
           setHubBreathing(true);
           hubIdleTimer = setTimeout(tick, 4500 + Math.random() * 5500);
         }, hold);
@@ -1335,28 +1579,31 @@
       if (!avatar) return;
       var alt = 'Casey, ' + currentTier + ' developer kitten';
       if (prm || getIntensity() === 'off') {
-        setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { alt: alt });
+        setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { alt: alt, enter: true });
         return;
       }
       if (!visited) {
-        setImgPose(avatar, assetBase, assetExt, currentTier, 'present', { alt: alt });
+        setImgPose(avatar, assetBase, assetExt, currentTier, 'wave', { alt: alt, enter: true });
         setTimeout(function () {
           setImgPose(avatar, assetBase, assetExt, currentTier, 'nod', {});
           setTimeout(function () {
-            setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), {});
+            setImgPose(avatar, assetBase, assetExt, currentTier, hubSettlePose(), {});
             startHubIdleLoop();
             enableHubFloat();
           }, 650);
-        }, 480);
+        }, 520);
       } else {
-        setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { alt: alt });
-        startHubIdleLoop();
-        enableHubFloat();
+        setImgPose(avatar, assetBase, assetExt, currentTier, 'welcome', { alt: alt, enter: true });
+        setTimeout(function () {
+          setImgPose(avatar, assetBase, assetExt, currentTier, hubSettlePose(), {});
+          startHubIdleLoop();
+          enableHubFloat();
+        }, 900);
       }
     }
 
     function preloadHubBundle(done) {
-      var poses = ['present', 'blink', 'nod', hubBasePose(), 'sleep'];
+      var poses = ['present', 'blink', 'nod', 'wave', 'welcome', 'perk', 'think', hubBasePose(), 'sleep'];
       var seen = {};
       var list = poses.filter(function (p) {
         if (!p || seen[p]) return false;
@@ -1389,13 +1636,32 @@
         setHubBreathing(false);
         burstHubSparkles(hubEl);
         hubAvatarWiggle(hubPlayEl);
-        setImgPose(avatar, assetBase, assetExt, currentTier, 'nod', { preload: false });
-        var quip = lineAt('hub.clickHi', currentTier);
-        if (quip && shouldShowCaseyBehavior('bubble')) setGreetingText(quip);
+        var next = pickUnreadSuggestion();
+        if (next && shouldShowCaseyBehavior('bubble')) {
+          setImgPose(avatar, assetBase, assetExt, currentTier, 'point', { preload: false });
+          var suggestLine = lineAt('hub.clickSuggest', currentTier, { title: next.title });
+          setGreetingText(
+            suggestLine ||
+              ('Try “' + next.title + '” next — tap the button below when you’re ready.')
+          );
+          // Pulse the primary CTA when we recommended something concrete
+          if (actionsEl) {
+            var primary = actionsEl.querySelector('.casey-hub__action--primary');
+            if (primary) {
+              primary.classList.remove('case-continue__btn--pulse');
+              void primary.offsetWidth;
+              primary.classList.add('case-continue__btn--pulse');
+            }
+          }
+        } else {
+          setImgPose(avatar, assetBase, assetExt, currentTier, 'nod', { preload: false });
+          var quip = lineAt('hub.clickHi', currentTier);
+          if (quip && shouldShowCaseyBehavior('bubble')) setGreetingText(quip);
+        }
         setTimeout(function () {
           setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), { preload: false });
           startHubIdleLoop();
-        }, 720);
+        }, 900);
       }
 
       hubPlayEl.addEventListener('click', waveAtCasey);
@@ -1460,7 +1726,11 @@
     if (tierLabelEl && interactionsCfg && interactionsCfg.tierLabels) {
       tierLabelEl.textContent = interactionsCfg.tierLabels[currentTier];
     }
-    setGreetingText(pickInitialGreeting(currentTier));
+    // Visit greetings: CaseyGuide owns them when loaded (casey-hub.js).
+    // Companion still owns click / filter / tone lines so they don't fight.
+    if (!window.CaseyGuide) {
+      setGreetingText(pickInitialGreeting(currentTier));
+    }
     renderHubActions();
     ['present', 'blink', 'nod', hubBasePose()].forEach(function (p) {
       preloadPose(assetBase, assetExt, currentTier, p);
@@ -1537,6 +1807,25 @@
       }
       if (greetingEl) greetingEl.hidden = !shouldShowCaseyBehavior('bubble');
       if (actionsEl) actionsEl.hidden = !shouldShowCaseyBehavior('chips');
+    });
+
+    onPrefersReducedMotionChange(function () {
+      prm = prefersReducedMotion();
+      stopHubIdleLoop();
+      setHubBreathing(false);
+      if (hubPlayEl) hubPlayEl.classList.remove('casey-hub__avatar-wrap--float');
+      stopRotation();
+      if (avatar) {
+        setImgPose(avatar, assetBase, assetExt, currentTier, hubBasePose(), {
+          preload: false,
+          crossfade: false,
+        });
+      }
+      if (hubMotionAllowed()) {
+        startHubIdleLoop();
+        enableHubFloat();
+        startRotation();
+      }
     });
 
     document.addEventListener('casey-hub-filter', function (e) {

@@ -63,22 +63,29 @@
 
   function milestoneRows(state) {
     var rows = [
-      { id: 'first-case-completed', label: 'First case completed' },
-      { id: 'five-cases', label: 'Five cases completed' },
-      { id: 'ten-cases', label: 'Ten cases completed' },
-      { id: 'twenty-cases', label: 'Twenty cases completed' },
-      { id: 'hub-visit', label: 'Visited the hub' },
+      { id: 'first-case-completed', label: 'First case completed', stamp: 'first-case' },
+      { id: 'five-cases', label: 'Five cases completed', stamp: 'five-cases' },
+      { id: 'ten-cases', label: 'Ten cases completed', stamp: 'streak' },
+      { id: 'twenty-cases', label: 'Twenty cases completed', stamp: 'streak' },
+      { id: 'hub-visit', label: 'Visited the hub', stamp: 'interview' },
     ];
     var ms = state.milestones || [];
+    var assetBase = (document.documentElement.dataset.assetBase || '/cases/assets/casey/').replace(/\/?$/, '/');
     return rows
       .map(function (r) {
         var done = ms.indexOf(r.id) !== -1;
+        var stamp = assetBase + 'brand/milestones/' + r.stamp + '.svg';
         return (
           '<li class="casey-prefs-milestone' +
           (done ? ' casey-prefs-milestone--done' : '') +
           '">' +
+          '<img class="casey-prefs-milestone__stamp" src="' +
+          stamp +
+          '" width="28" height="28" alt="" />' +
+          '<span>' +
           (done ? '✓ ' : '○ ') +
           r.label +
+          '</span>' +
           '</li>'
         );
       })

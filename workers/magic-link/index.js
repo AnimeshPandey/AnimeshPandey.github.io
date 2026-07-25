@@ -99,9 +99,12 @@ async function handleSend(request, env) {
       from: 'Casey <casey@anmshpndy.com>',
       to: [email],
       subject: 'Your Frontend Casebook sign-in link',
-      html: `<p>Click below to sign in to The Frontend Casebook:</p>
-             <p><a href="${magicLink}" style="background:#4E7A68;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;">Sign in to Casebook</a></p>
-             <p style="color:#888;font-size:12px;">Link expires in 15 minutes. If you didn't request this, ignore this email.</p>`,
+      html: `<div style="font-family:system-ui,sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+               <img src="${env.SITE_URL}/cases/assets/casey/brand/status/email-header.png" width="600" height="200" alt="Casey" style="display:block;width:100%;max-width:360px;height:auto;margin-bottom:16px;border-radius:12px;" />
+               <p>Click below to sign in to The Frontend Casebook:</p>
+               <p><a href="${magicLink}" style="background:#4E7A68;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block;">Sign in to Casebook</a></p>
+               <p style="color:#888;font-size:12px;">Link expires in 15 minutes. If you didn't request this, ignore this email.</p>
+             </div>`,
     }),
   });
 

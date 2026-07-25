@@ -122,11 +122,45 @@
       });
     }
 
+    function applyAccountCaseyPose() {
+      var img = document.getElementById('account-casey-img');
+      var milestoneEl = document.getElementById('account-casey-milestone');
+      if (!img) return;
+      var completed = 0;
+      try {
+        var raw = localStorage.getItem('casebook-companion-v1');
+        if (raw) {
+          var st = JSON.parse(raw);
+          completed = (st.casesCompleted || []).length;
+        }
+      } catch (e) { /* ignore */ }
+      var assetBase = (document.documentElement.dataset.assetBase || '/cases/assets/casey/').replace(/\/?$/, '/');
+      var pose = 'present';
+      var note = '';
+      if (completed >= 5) {
+        pose = 'celebrate';
+        note = completed + ' cases completed — nice streak.';
+      } else if (completed >= 1) {
+        pose = 'proud';
+        note = completed + ' case' + (completed === 1 ? '' : 's') + ' under your belt.';
+      } else {
+        pose = 'wave';
+        note = 'Signed in — pick a case on the hub to get started.';
+      }
+      img.src = assetBase + 'junior/' + pose + '.png';
+      img.alt = pose === 'celebrate' || pose === 'proud' ? 'Casey celebrating your progress' : 'Casey waving hello';
+      if (milestoneEl) {
+        milestoneEl.hidden = !note;
+        milestoneEl.textContent = note;
+      }
+    }
+
     function refresh() {
       var auth = loadAuth();
       if (auth && auth.email) {
         if (signedInEmail) signedInEmail.textContent = auth.email;
         showPanel(signedIn);
+        applyAccountCaseyPose();
         return;
       }
       showPanel(signedOut);

@@ -93,5 +93,6 @@ echo "Matte removal + RGBA export…"
 python3 "$ROOT/scripts/fix-casey-transparency.py"
 python3 "$ROOT/scripts/casey-images.py" webp
 python3 "$ROOT/scripts/casey-images.py" lottie
+python3 "$ROOT/scripts/generate-casey-brand-pack.py"
 
 echo "Done."

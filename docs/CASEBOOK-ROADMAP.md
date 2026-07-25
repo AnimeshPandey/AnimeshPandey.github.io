@@ -243,6 +243,7 @@ Small, independent improvements that collectively raise the quality ceiling.
 | ~~Skeleton on library card load~~ | `reading-card.njk`, `casebook-components.css` | **✅ Shipped** — the old `.hub-grid--filtering .case-card` rule was dead code (never matched; that class only toggles on `/library/`'s `.reading-card`, not the hub's `.case-card`). Replaced with a real content-shaped skeleton (catalog stamp, chip row, two title lines, one body line) on `.reading-card` itself, reusing the existing shimmer demo's technique |
 | Confetti on Pro unlock | `pro-gate.js` | Fire confetti (same system as case completion) when user first unlocks Pro |
 | Resume CTA on hub 404 | `cases/src/404.njk` | Add Casey `curious` pose + "Explore all cases" CTA |
+| **Casey charm / brand IP** | `docs/superpowers/specs/2026-07-25-casey-charm-design.md` | **✅ Shipped (roadmap)** — pose crossfade + hub wave/welcome; teachable coach moments; Casey favicon/reactions/status/OG packs. Ops: `cases/src/assets/casey/REGENERATION.md` §8 |
 
 ---
 

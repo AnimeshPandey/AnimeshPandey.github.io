@@ -221,7 +221,36 @@ Do **not** weaken thresholds to greenwash a bad export.
 
 ---
 
-## 8. Do / don’t
+## 8. Brand IP packs (beyond coach poses)
+
+Runtime coach still uses the 16 PNG poses. Brand packs live under `cases/src/assets/casey/brand/` and are generated from **approved junior poses** (no hand-pixel edits):
+
+```bash
+python3 cases/scripts/generate-casey-brand-pack.py
+```
+
+| Pack | Path | Use |
+|------|------|-----|
+| **Chrome** | `brand/chrome/` + `/brand/casey-*.png` + `casebook-favicon.svg` | Favicon, apple-touch, PWA 192/512, `casebook.webmanifest` |
+| **Reactions** | `brand/reactions/*.png` (128²) | Interview/search micro-acks (`casey-reaction-chip`) |
+| **Status** | `brand/status/{404,empty-filter,error,loading,email-header}.png` | Empty/error/404/email headers |
+| **Social** | `brand/social/og-casey-forward.png` (+ LinkedIn/X) | Default OG (`brand/themes/casey-share-premium.png`) |
+| **Milestones** | `brand/milestones/*.svg` | Prefs milestone stamps |
+
+### When to add a pose vs a sticker
+
+| Need | Prefer |
+|------|--------|
+| Coach/hub FSM state the reader sees for seconds | **Pose** (full body, tiered) |
+| Tiny inline ack (toast, interview chip, 48px) | **Reaction sticker** |
+| Full-bleed empty/error/email/social | **Status / social scene** |
+| Badge in prefs / takeaway flash | **Milestone stamp** |
+
+Fresh AI exports for brand packs (optional quality bump): put sources in `CASEY_SRC` as `casey-brand-{pack}-{name}.png`, then extend `generate-casey-brand-pack.py` — until then, derived junior crops are the shipped baseline.
+
+---
+
+## 9. Do / don’t
 
 **Do**
 
@@ -229,6 +258,7 @@ Do **not** weaken thresholds to greenwash a bad export.
 - Run the full install script (transparency + webp + lottie)
 - Keep extremities assert green before merge
 - Document new poses here
+- Re-run `generate-casey-brand-pack.py` after junior pose regen if faces changed
 
 **Don’t**
 
@@ -237,3 +267,4 @@ Do **not** weaken thresholds to greenwash a bad export.
 - Commit only some tiers of a pose set
 - Point `CASEY_SRC` at stale Desktop paths on this machine
 - Lower QA thresholds to pass mottled art
+- Add a new coach pose when a reaction sticker would do

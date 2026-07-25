@@ -45,6 +45,11 @@
       "mid": "Still here when you need a nudge. Filters narrow the grid; flagship is the on-ramp.",
       "staff": "Wave returned. Jump into a case or the library — I'll stay out of the way."
     },
+    "clickSuggest": {
+      "junior": "Try “{title}” next — I think you'll like that one.",
+      "mid": "Suggested next: {title}. Open it from the button below when you're ready.",
+      "staff": "Next unread worth your time: {title}."
+    },
     "actionHover": {
       "junior": "That one's a good next step — go for it.",
       "mid": "Solid pick — that link will take you straight in.",
@@ -71,6 +76,11 @@
       "junior": "New tone — I'll explain things at this level now.",
       "mid": "Tone switched — scroll back if you want the other depth.",
       "staff": "Staff depth — skipping hand-holding on fundamentals."
+    },
+    "toneSwitchDiscover": {
+      "junior": "Whoa — I just grew up a bit. Junior → Staff changes how deep I go. Try scrolling a hint again!",
+      "mid": "Tone switch unlocked: same case, different depth. Peek the hint again if you want the other phrasing.",
+      "staff": "Tone switch noted — Staff skips basics. Flip back anytime; content rewrites in place."
     }
   },
   "library": {
@@ -146,6 +156,11 @@
       "junior": "That's what practice is for — you'll see this one again.",
       "mid": "No shame in this one — it'll come back around for review.",
       "staff": "Gap noted. Worth revisiting before this comes up for real."
+    },
+    "stuckNudge": {
+      "junior": "Feeling stuck is normal — try the Reveal hints button once, then keep going. No spoilers from me.",
+      "mid": "A couple of soft misses in a row — reveal hints if you want a scaffold, then re-assess honestly.",
+      "staff": "Pattern of partials/misses — use Reveal sparingly; the gap list on the summary is the real artifact."
     },
     "summaryStrong": {
       "junior": "You got most of these — really solid run.",

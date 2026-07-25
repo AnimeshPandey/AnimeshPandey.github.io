@@ -28,9 +28,12 @@
 <meta name="twitter:image" content="{{ pageOgImage }}" />
 <meta name="twitter:image:alt" content="{{ title | default(site.name) }} — The Frontend Casebook" />
 
-{# ── Icons & manifest: from portfolio root, not /cases/ ── #}
+{# ── Icons & manifest: Casey IP chrome ── #}
 <link rel="icon" type="image/svg+xml" href="/brand/casebook-favicon.svg" />
-<link rel="manifest" href="/site.webmanifest" />
+<link rel="apple-touch-icon" href="/brand/casey-apple-touch.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/brand/casey-icon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="/brand/casey-icon-512.png" />
+<link rel="manifest" href="/brand/casebook.webmanifest" />
 
 {% include 'partials/platform-fonts.njk' %}
 

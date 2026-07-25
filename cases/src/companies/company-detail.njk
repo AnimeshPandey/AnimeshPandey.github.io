@@ -72,6 +72,13 @@ permalink: /companies/{{ company.slug }}/index.html
        rendered as an unstyled, left-aligned, default-margin paragraph —
        the only empty state on the site that didn't match the other two. #}
     <div class="hub-empty">
+      <div class="casey-avatar-frame hub-empty__avatar" data-casey-tier="junior">
+        <img class="hub-empty__img casey-avatar-frame__img"
+             src="{{ '/assets/casey/junior/support.png' | url }}?v=__AP_BUILD_ID__"
+             alt=""
+             width="80" height="80"
+             loading="lazy" />
+      </div>
       <p class="hub-empty__msg">No articles from {{ company.name }} in the reading library yet.</p>
     </div>
   {% endif %}

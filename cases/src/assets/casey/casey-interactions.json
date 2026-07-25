@@ -121,16 +121,16 @@
     {
       "id": "hub-first-visit",
       "trigger": "hub-first-visit",
-      "pose": "present",
-      "durationMs": 400,
-      "thenPose": "wave"
+      "pose": "wave",
+      "durationMs": 520,
+      "thenPose": "present"
     },
     {
       "id": "hub-return",
       "trigger": "hub-return",
       "pose": "welcome",
-      "animation": "breathe",
-      "loop": true
+      "durationMs": 900,
+      "thenPose": "present"
     }
   ],
   "guidePoses": ["welcome", "proud", "support", "read", "present"],
