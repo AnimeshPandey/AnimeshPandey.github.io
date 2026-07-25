@@ -61,8 +61,11 @@
       </div>
     </div>
     <div class="mobile-nav-footer__casey">
-      {% set panelIdPrefix = "mobile-" %}
-      {% include "partials/casey-companion-prefs.njk" %}
+      <details class="casey-mobile-prefs">
+        <summary>Casey settings</summary>
+        {% set panelIdPrefix = "mobile-" %}
+        {% include "partials/casey-companion-prefs.njk" %}
+      </details>
     </div>
   </div>
 </nav>

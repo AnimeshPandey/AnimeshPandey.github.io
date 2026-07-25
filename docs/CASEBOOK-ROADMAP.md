@@ -237,13 +237,16 @@ Small, independent improvements that collectively raise the quality ceiling.
 | Case OG images | `cases/src/cases/{slug}/og.png` | 1200×630 WebP per case; use UI-strip screenshot as base |
 | ~~Hub card hover state~~ | `casebook-layout.css` | **✅ Shipped** — `.case-card:hover` already has `translateY(-2px)` + shadow lift |
 | Smooth scroll to next chapter | `case-scroll.js` | Already exists; verify no jank on iOS Safari |
-| Casey voice speed control | `casey-voice.js` | Add `playbackRate` slider in `casey-companion-prefs.njk` (0.75× / 1× / 1.25×) |
+| Casey voice speed control | `casey-voice.js`, `casey-companion-prefs.njk` | Add `playbackRate` 0.75× / 1× / 1.25× in the Casey prefs panel (roadmap gap; not yet wired to `casey-voice.js`) |
 | Dark/high-contrast toggle shortcut | `casebook-preferences.js` | Keyboard shortcut `D` to toggle dark mode on Casebook (matches portfolio `hire` shortcut pattern) |
 | ~~Chapter progress dots~~ | `chapter-progress.js` | **✅ Shipped**, and better than scoped: dots are built from whichever real `.case-chapter[data-chapter]` elements are actually present on the page (capped at 5), not a hardcoded 5-dot set — `IntersectionObserver`-driven active state as planned |
 | ~~Skeleton on library card load~~ | `reading-card.njk`, `casebook-components.css` | **✅ Shipped** — the old `.hub-grid--filtering .case-card` rule was dead code (never matched; that class only toggles on `/library/`'s `.reading-card`, not the hub's `.case-card`). Replaced with a real content-shaped skeleton (catalog stamp, chip row, two title lines, one body line) on `.reading-card` itself, reusing the existing shimmer demo's technique |
 | Confetti on Pro unlock | `pro-gate.js` | Fire confetti (same system as case completion) when user first unlocks Pro |
 | Resume CTA on hub 404 | `cases/src/404.njk` | Add Casey `curious` pose + "Explore all cases" CTA |
 | **Casey charm / brand IP** | `docs/superpowers/specs/2026-07-25-casey-charm-design.md` | **✅ Shipped (roadmap)** — pose crossfade + hub wave/welcome; teachable coach moments; Casey favicon/reactions/status/OG packs. Ops: `cases/src/assets/casey/REGENERATION.md` §8 |
+| Wire or delete hub hero WebPs | `cases/src/assets/casey/hub/`, hub templates | `casey-companion-hero.webp` (+ @2x) and `casey-empty.png` exist under `casey/hub/` but are **not** wired into hub templates — either `<picture>` them (see §5b) or delete to kill drift |
+| Unify first-visit choreography | `casey-companion.js`, onboarding | First visit fires **onboarding + hub both `wave`** (600ms delay only mitigates). Collapse into one timeline so wave isn’t double-booked |
+| ~~Stage root `/brand/` in deploy~~ | `static-pages.yml`, `build-deploy.mjs` | **✅ Shipped (audit follow-up)** — rsync repo `brand/` into `_deploy/brand/` so favicon/PWA/OG stop 404ing on Pages |
 
 ---
 

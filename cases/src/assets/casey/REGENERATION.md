@@ -248,6 +248,10 @@ python3 cases/scripts/generate-casey-brand-pack.py
 
 Fresh AI exports for brand packs (optional quality bump): put sources in `CASEY_SRC` as `casey-brand-{pack}-{name}.png`, then extend `generate-casey-brand-pack.py` — until then, derived junior crops are the shipped baseline.
 
+**QA scope:** Brand packs are **not** coach poses. The old enclosed-hole / stray-pixel / alpha unit scanners were removed (#81); do not reintroduce scanners that walk `brand/` as if it were `junior|mid|staff` pose dirs. Pose coverage stays on `tests/static/assert-casey-pose-coverage.mjs` (the 16 named poses × 3 tiers).
+
+**Deploy:** Repo-root `brand/` (favicon, PWA icons, `casebook.webmanifest`, themes OG) is outside Eleventy — `static-pages.yml` / `build-deploy.mjs` must rsync it into `_deploy/brand/`. Casebook stickers under `cases/src/assets/casey/brand/` ship via the cases Eleventy passthrough as `/cases/assets/casey/brand/`.
+
 ---
 
 ## 9. Do / don’t

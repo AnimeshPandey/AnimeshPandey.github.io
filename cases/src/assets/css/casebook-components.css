@@ -774,6 +774,59 @@ html.casebook--reduce-motion .case-chapter.is-visible {
   min-width: 0;
   text-align: center;
 }
+/* Panel radios use aria-checked; shared .case-tone__btn only styles aria-pressed */
+.casey-panel__tier .casey-panel__tier-btn[aria-checked="true"],
+.casey-panel__tier-btn[role="radio"][aria-checked="true"] {
+  background: var(--casebook-accent);
+  color: var(--casebook-accent-ink, #fff);
+  border-color: var(--casebook-accent);
+  font-weight: 500;
+}
+.casey-panel .case-tone {
+  margin-bottom: 0;
+}
+.casey-panel__section--compact {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.casey-panel__section--compact .casey-panel__motion-status {
+  margin: 0;
+  font-size: 12px;
+  color: var(--casebook-ink-faint);
+  line-height: 1.4;
+}
+.mobile-nav-footer__casey details.casey-mobile-prefs {
+  border: 1px solid var(--casebook-border);
+  border-radius: 10px;
+  background: var(--casebook-surface-2);
+  margin-top: 8px;
+}
+.mobile-nav-footer__casey details.casey-mobile-prefs > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--casebook-ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+.mobile-nav-footer__casey details.casey-mobile-prefs > summary::-webkit-details-marker {
+  display: none;
+}
+.mobile-nav-footer__casey details.casey-mobile-prefs > summary::after {
+  content: '+';
+  font-family: var(--mono, monospace);
+  color: var(--casebook-ink-faint);
+}
+.mobile-nav-footer__casey details.casey-mobile-prefs[open] > summary::after {
+  content: '−';
+}
+.mobile-nav-footer__casey details.casey-mobile-prefs .casey-panel {
+  border-top: 1px solid var(--casebook-border);
+}
 .casey-panel__intensity {
   width: 100%;
   text-align: left;
