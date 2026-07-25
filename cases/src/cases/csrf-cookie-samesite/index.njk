@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "SameSite Cookies and CSRF"
+description: "What SameSite=Lax and SameSite=Strict actually block on a session cookie, the top-level-GET gap that survives Lax by design, and where a real CSRF token is still the only fix."
+slug: csrf-cookie-samesite
+track: security
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Cookies
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/csrf-cookie-samesite-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The security audit closed the CSRF ticket, then the pentest reopened it</h2>
+  <div class="tone-junior">
+    <p>
+      A team adds <code>SameSite=Lax</code> to their session cookie after a security review flags missing CSRF protection. It ships, the ticket closes, everyone moves on. A pentest six months later still finds a working CSRF exploit, on an action that deletes an API key through a plain link the admin panel happened to implement as <code>GET</code>.
+    </p>
+    <p>
+      <code>SameSite=Lax</code> did exactly what it says: it blocks the cookie from being sent on cross-site <code>POST</code> requests. It was never going to stop a cross-site <code>GET</code>, because Lax mode explicitly allows the cookie through for top-level navigations using a "safe" HTTP method, and <code>GET</code> counts as safe regardless of what the endpoint actually does with it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      "We set SameSite, CSRF is handled" treats the attribute as a blanket fix rather than what it actually is: a browser-enforced rule about when a cookie is attached to a request, scoped to specific request shapes. Any state-changing endpoint that doesn't match those scoped rules, most commonly a <code>GET</code> route, sits entirely outside what SameSite protects.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The deeper issue is treating "site" and "origin" as the same boundary. SameSite's notion of "same site" is the registrable domain, not the exact origin, so a request from a different subdomain of the same registrable domain is still same-site as far as the cookie is concerned. If any subdomain is attacker-influenced (user-generated content served on a shared domain, a compromised internal tool on a sibling subdomain), SameSite provides no protection against it at all.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>What Lax and Strict actually gate, and what they don't touch</h2>
+  <div class="tone-junior">
+    <p>
+      <code>SameSite=Strict</code> never sends the cookie on a cross-site request of any kind, including a link a user clicks from an email or another site. <code>SameSite=Lax</code> is the middle ground: it blocks the cookie on cross-site <code>POST</code>s, image loads, iframe loads, and fetch/XHR calls, but still sends it when the user's browser does a top-level navigation (typing a URL, following a link, a page-level redirect) using a safe method like <code>GET</code>. That one carve-out is deliberate, without it, following a link into a site you're logged into would log you out.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Concretely: an attacker page with <code>&lt;a href="https://victim.com/settings/revoke-session?id=42"&gt;</code>, or JavaScript that redirects the top-level page there, counts as a top-level navigation with a safe method. The Lax-scoped cookie goes along for the ride. The same attacker page trying the equivalent via a hidden auto-submitting <code>&lt;form method="POST"&gt;</code>, or an <code>&lt;img&gt;</code> tag pointed at that URL, does not get the cookie attached, both are exactly the shapes Lax was built to block.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This means the SameSite attribute only closes the gap for requests it was designed to gate; it does nothing to fix an application that exposes state changes over <code>GET</code> in the first place, that's a separate, older mistake (GET should be safe/idempotent per the HTTP spec) that SameSite can't retroactively patch. A real CSRF token remains necessary wherever a state-changing action can't be moved off <code>GET</code>, wherever a same-registrable-domain subdomain isn't fully trusted, or as defense-in-depth against a browser or proxy that doesn't correctly enforce SameSite (older WebViews, some non-browser HTTP clients ignore the attribute entirely since it's a client-side cookie-jar behavior, not something the server can verify happened).
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The "quick revoke" link that outlived the migration to SameSite</h2>
+  <div class="tone-junior">
+    <p>
+      An admin panel had a "revoke session" action implemented years earlier as a plain link, <code>GET /settings/revoke-session?id=42</code>, because at the time it was the fastest way to ship a one-click action with no JavaScript required. When the security team added <code>SameSite=Lax</code> to the session cookie during a later hardening pass, this endpoint didn't come up in the review, it wasn't flagged as unusual, GET links are everywhere in the admin UI.
+    </p>
+    <p>
+      A pentest found it within an hour: a page hosted elsewhere with a link styled to look like a normal outbound link, and a short script that auto-triggered a top-level navigation to it if the visitor didn't click fast enough. Any logged-in admin who opened that page had their own session silently revoked by their own browser, carrying their own valid SameSite=Lax cookie straight to a GET endpoint that never should have been allowed to change state.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix had two parts, not one: the revoke action moved to <code>POST</code> with a CSRF token validated server-side, and the team added a lint rule flagging any route handler that mutated data while only accepting <code>GET</code>. SameSite stayed in place, it was correctly protecting every other endpoint, this one had simply never been inside the boundary it draws.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The retrospective's real finding wasn't "SameSite doesn't work," it was that the security review had validated the cookie attribute in isolation without auditing which endpoints could actually mutate state and by what method, the two need to be checked together, one without the other leaves exactly this kind of gap invisible until someone goes looking for it on purpose.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">State-changing action reachable via plain GET with no SameSite restriction (broken, a cross-site top-level navigation fires it) vs. the action requiring POST plus a CSRF token, with SameSite=Lax on the cookie (fixed, cross-site POST is blocked and GET can no longer mutate anything)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Simulate a cross-site attack against each version of the endpoint</h2>
+  <div class="tone-junior">
+    <p>Click "Simulate cross-site attack" in each mode and watch whether the simulated attacker page manages to trigger the state change.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The vulnerable version fires over a plain GET link, the SameSite=None cookie rides along, the action fires. The hardened version blocks the GET from mutating anything and rejects the cross-site POST attempt too, for two independent reasons.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the hardened log shows two separate rejections, not one, the SameSite cookie policy blocks the cross-site POST attempt on its own, and the missing CSRF token would have blocked it even if the cookie had somehow been sent, that overlap is the defense-in-depth point.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Cross-site attack against a GET-based revoke action with no SameSite (broken) vs. a POST-based action with SameSite=Lax and a CSRF token (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="csrf-cookie-samesite">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a cross-site attack attempt against a session-revoke endpoint, comparing a GET-based endpoint with no SameSite restriction against a POST-based endpoint with SameSite=Lax and a CSRF token; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            GET + no SameSite
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            POST + SameSite + token
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: POST + SameSite + token</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:200px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The subdomain gap, and why the browser can't be the only enforcement point</h2>
+  <div class="tone-junior">
+    <p>
+      Never implement a state-changing action, anything that deletes, revokes, transfers, or updates something, so that it can be triggered by a plain <code>GET</code> request. This is true independent of SameSite entirely, it's the older and more fundamental rule that GET requests should be safe to fire without side effects, SameSite=Lax's carve-out for top-level GET is exactly why that older rule still matters today.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      SameSite's "same site" boundary is the registrable domain, so <code>uploads.victim.com</code> and <code>app.victim.com</code> are the same site to a cookie scoped there, even though they're different origins and may be operated by different, less-trusted teams. If either subdomain can be influenced by an attacker (unsanitized user-uploaded HTML served from it, a lower-security internal tool on it), that subdomain can issue same-site requests carrying the cookie, and SameSite offers zero protection against that path.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      SameSite is enforced entirely by the browser reading a cookie attribute, it verifies nothing server-side, and it isn't sent at all by non-browser HTTP clients or older WebView-based apps that don't implement the SameSite cookie-jar rules correctly. A server that has no CSRF-token check at all, relying purely on the client to have honored SameSite correctly, has no way to detect or reject a request from a client that simply didn't. Server-side token validation is the only half of this defense the server can actually verify happened.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">SameSite=Lax blocks a cookie from being sent on cross-site POST requests and subresource loads, but still sends it on a cross-site top-level GET navigation — a state change reachable via a plain link is not protected by SameSite at all.</div>
+        <div class="tone-mid">Never implement a state-changing action behind GET. SameSite is scoped to specific request shapes, it can't retroactively protect an endpoint that was never inside the boundary it draws.</div>
+        <div class="tone-staff">SameSite's "same site" is the registrable domain, not the origin, so an untrusted subdomain is unprotected, and the browser-enforced attribute can't be verified server-side — a real CSRF token is still the only check the server can actually confirm happened.</div>
+      </li>
+    </ul>
+  </div>
+</section>

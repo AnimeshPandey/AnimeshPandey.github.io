@@ -1,4 +1,65 @@
 {
+  "csv-export-main-thread": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers\" rel=\"noopener noreferrer\">MDN — Using Web Workers</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers\" rel=\"noopener noreferrer\">MDN — Using Web Workers</a>",
+      "<a href=\"https://web.dev/articles/off-main-thread\" rel=\"noopener noreferrer\">web.dev — Use web workers to run JavaScript off the main thread</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/off-main-thread\" rel=\"noopener noreferrer\">web.dev — Use web workers to run JavaScript off the main thread</a>"
+    ]
+  },
+  "coverage-myth-lines": {
+    "junior": [
+      "<a href=\"https://martinfowler.com/bliki/TestCoverage.html\" rel=\"noopener noreferrer\">Martin Fowler — Test Coverage</a>"
+    ],
+    "mid": [
+      "<a href=\"https://martinfowler.com/bliki/TestCoverage.html\" rel=\"noopener noreferrer\">Martin Fowler — Test Coverage</a>",
+      "<a href=\"https://stryker-mutator.io/docs/\" rel=\"noopener noreferrer\">Stryker Mutator — What is mutation testing?</a>"
+    ],
+    "staff": [
+      "<a href=\"https://stryker-mutator.io/docs/\" rel=\"noopener noreferrer\">Stryker Mutator — What is mutation testing?</a>"
+    ]
+  },
+  "accessibility-axe-ci": {
+    "junior": [
+      "<a href=\"https://github.com/dequelabs/axe-core/blob/develop/doc/API.md\" rel=\"noopener noreferrer\">axe-core — API documentation</a>"
+    ],
+    "mid": [
+      "<a href=\"https://github.com/dequelabs/axe-core/blob/develop/doc/API.md\" rel=\"noopener noreferrer\">axe-core — API documentation</a>",
+      "<a href=\"https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright\" rel=\"noopener noreferrer\">@axe-core/playwright — package docs</a>"
+    ],
+    "staff": [
+      "<a href=\"https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright\" rel=\"noopener noreferrer\">@axe-core/playwright — package docs</a>"
+    ]
+  },
+  "csrf-cookie-samesite": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite\" rel=\"noopener noreferrer\">MDN — Set-Cookie SameSite attribute</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite\" rel=\"noopener noreferrer\">MDN — Set-Cookie SameSite attribute</a>",
+      "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — Cross-Site Request Forgery Prevention Cheat Sheet</a>"
+    ],
+    "staff": [
+      "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — Cross-Site Request Forgery Prevention Cheat Sheet</a>"
+    ]
+  },
+  "ai-widget-third-party": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#sandbox\" rel=\"noopener noreferrer\">MDN — &lt;iframe&gt; sandbox attribute</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#sandbox\" rel=\"noopener noreferrer\">MDN — &lt;iframe&gt; sandbox attribute</a>",
+      "<a href=\"https://web.dev/articles/csp\" rel=\"noopener noreferrer\">web.dev — Content Security Policy</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/csp\" rel=\"noopener noreferrer\">web.dev — Content Security Policy</a>",
+      "<a href=\"https://content-security-policy.com/\" rel=\"noopener noreferrer\">content-security-policy.com — connect-src / frame-src reference</a>"
+    ]
+  },
   "skeleton-screens-perceived-speed": {
     "junior": [
       "<a href=\"https://growth.design/case-studies/labor-perception-bias\" rel=\"noopener noreferrer\">Growth.Design — Labor perception bias</a>",

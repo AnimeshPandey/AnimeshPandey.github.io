@@ -1,0 +1,194 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Million-Row Export Without Freezing Chrome"
+description: "Why building a 250,000-row CSV as one synchronous string-concatenation pass locks up the entire tab for seconds, and how moving the serialization into a Web Worker with progress reporting keeps the UI alive the whole time."
+slug: csv-export-main-thread
+track: advanced-frontend
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Main thread
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/csv-export-main-thread-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The "Export all" button that people mistook for a crash</h2>
+  <div class="tone-junior">
+    <p>
+      An analytics dashboard has an "Export to CSV" button. In every test anyone ran during development, it worked instantly, a few hundred rows, done in a blink. A large customer clicks it on their real dataset, 250,000 transaction rows, and the entire tab stops responding. No spinner updates, no scroll, no click registers anywhere on the page, for several seconds straight. Support tickets came in describing it as "the app crashed."
+    </p>
+    <p>
+      It hadn't crashed. It was doing exactly what the code told it to: build the entire CSV as one giant string, all 250,000 rows joined together, in a single synchronous pass, then wrap that string in a <code>Blob</code> and trigger a download, all on the same thread that's also responsible for repainting the page and responding to every click.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      JavaScript in a browser tab runs on one thread. Anything synchronous and long-running on it, a loop building a multi-hundred-megabyte string, blocks everything else that thread is responsible for: layout, paint, and every event handler, including the ones that would normally show a "please wait" state. The freeze isn't a bug in the export logic's correctness, the CSV comes out right, it's a bug in where that work runs.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This scales badly in a specific way worth naming: dev and QA datasets are almost always small, so the synchronous cost is invisible until a real customer's dataset is orders of magnitude larger, at which point it ships to production with no load test having ever exercised the actual failure mode. The bug is latent until someone's data grows into it.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Move the serialization off the main thread, report progress back</h2>
+  <div class="tone-junior">
+    <p>
+      A Web Worker runs JavaScript on a genuinely separate thread, one with no access to the DOM, but full access to everything needed to build a CSV string: loops, string operations, <code>Blob</code>. Hand the worker the row data (or have it fetch its own), let it build the CSV there instead of on the main thread, and the main thread stays completely free to keep the page responsive while that work happens.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The worker can't trigger a file download itself, no DOM access means no <code>&lt;a download&gt;</code> element to click, so the pattern is: main thread <code>postMessage()</code>s the export request to the worker, the worker serializes the CSV and periodically <code>postMessage()</code>s progress updates back (row count processed, percent complete), then posts the finished result once done. The main thread updates a progress bar off those messages and, on the final message, creates the actual <code>Blob</code>/download from the returned data.
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// main thread
+const worker = new Worker('csv-export.worker.js');
+worker.postMessage({ type: 'export', rows });
+worker.onmessage = (e) =&gt; {
+  if (e.data.type === 'progress') updateProgressBar(e.data.percent);
+  if (e.data.type === 'done') triggerDownload(e.data.csv);
+};
+
+// worker
+self.onmessage = (e) =&gt; {
+  const rows = e.data.rows;
+  let csv = '';
+  for (let i = 0; i &lt; rows.length; i++) {
+    csv += toCsvLine(rows[i]) + '\n';
+    if (i % 5000 === 0) {
+      self.postMessage({ type: 'progress', percent: Math.round(i / rows.length * 100) });
+    }
+  }
+  self.postMessage({ type: 'done', csv });
+};</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>postMessage</code> uses the structured clone algorithm by default, the data is copied across the thread boundary, not shared, so handing a worker a huge array of row objects has its own real cost. For genuinely large exports, prefer having the worker fetch the raw data itself (its own network request, same as the main thread could make) over copying an already-fetched array across, and consider transferable objects (an <code>ArrayBuffer</code> built with <code>TextEncoder</code>) for the return trip instead of one giant string, which avoids a second full copy of the final payload.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The customer who refreshed six times and made it worse</h2>
+  <div class="tone-junior">
+    <p>
+      The dashboard's largest customer ran a report covering a full fiscal year, roughly 250,000 transaction rows, and clicked "Export all." Nothing happened, no loading state, the page just stopped responding to anything. Assuming the tab had crashed, they refreshed. The refresh itself was slow to register, because the page was still mid-freeze, so they refreshed again, and again, four more times over the next two minutes, each attempt kicking off a fresh synchronous export before the previous one had even finished, compounding the exact problem that was freezing the tab in the first place.
+    </p>
+    <p>
+      By the time it was reported, the customer described "the export feature completely crashing the app," and the on-call engineer's first reproduction attempt with a small test dataset couldn't reproduce anything, it worked instantly, because nobody's test data was anywhere close to 250,000 rows.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Reproducing it required generating a fixture dataset at the customer's actual scale. Once reproduced locally, DevTools' Performance panel showed a single, unbroken 4.8-second "Long task" on the main thread, string concatenation, <code>Blob</code> construction, and the synthetic anchor click all inside it, with zero yield points where the browser could paint a frame or process an input event. The six refresh attempts had each queued their own long task behind the last, extending the effective freeze well past what a single export would have caused alone.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix moved CSV serialization into a Web Worker, with the main thread rendering a progress bar off periodic postMessage updates and, critically, keeping the export button responsive so a second click during an in-flight export triggered a visible "export already in progress" state instead of silently queuing another synchronous freeze on top of the first, the actual mechanism that had turned one slow export into the customer's six-refresh spiral.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Building a large CSV as one synchronous pass on the main thread freezes the entire tab for the duration (broken) vs. serializing it in a Web Worker with periodic progress messages back, keeping the main thread fully responsive the whole time (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch the heartbeat while a real export runs</h2>
+  <div class="tone-junior">
+    <p>The number in the corner ticks up roughly ten times a second on its own, independent of the export, as long as the main thread is free to run it. Click "Export rows to CSV" in each mode and watch whether it keeps ticking.</p>
+  </div>
+  <div class="tone-mid">
+    <p>This runs a real CPU-bound export, not a fake delay, timed to run for about a second either on the main thread directly or inside an actual Web Worker created for this demo. The heartbeat count before and after tells you exactly how many ticks the main thread managed during that second.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The worker here is created from an inline Blob URL so this demo needs no separate file, the pattern is identical to a real <code>csv-export.worker.js</code>, just packaged for a self-contained page. Try "Cancel export" mid-run in the fixed mode, <code>worker.terminate()</code> actually stops it, something the broken mode's synchronous loop structurally cannot offer.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Building a CSV synchronously on the main thread, freezing a live heartbeat counter (broken) vs. building it in a Web Worker while the heartbeat keeps ticking (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="csv-export-main-thread">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo runs a real CPU-bound CSV export, comparing one run on the main thread against one inside a Web Worker, while a live heartbeat counter shows whether the page stays responsive; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Main thread export
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Web Worker export
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Web Worker export</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>What the worker can't do alone, and how to let people cancel</h2>
+  <div class="tone-junior">
+    <p>
+      A worker has no DOM access, it can't create the <code>&lt;a download&gt;</code> element and click it. The download trigger always has to happen back on the main thread, off the worker's final message, the worker's job ends at handing back the finished data.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Give the export a real cancel button, not just a visual "loading" state. <code>worker.terminate()</code> stops the worker immediately, mid-loop, something a synchronous main-thread export can never offer since there's no opportunity for anything else to run, including a cancel handler, until the loop finishes on its own. Also debounce or disable the export trigger while one is in flight, a second click starting a second concurrent export is a real failure mode users hit exactly when they're frustrated that the first one seems stuck.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      For truly enormous exports (millions of rows), avoid building one final giant string even inside the worker, the structured-clone copy back to the main thread and the eventual <code>Blob</code> construction both still pay for a single huge in-memory buffer. Streaming the CSV out in chunks, via the File System Access API's <code>createWritable()</code> stream where available, or a chunked <code>ReadableStream</code> fed to a service-worker-backed download, avoids ever holding the complete export in memory twice (once assembled in the worker, once again as the Blob), which matters once row counts move from hundreds of thousands into the millions.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Building a large CSV as one synchronous string-concatenation pass blocks the entire tab, no clicks, no scrolling, no repaints, for however long that pass takes.</div>
+        <div class="tone-mid">Move the serialization into a Web Worker and have it postMessage progress back periodically — the main thread stays free to update a progress bar and respond to input the whole time.</div>
+        <div class="tone-staff">Give the export a real cancel button backed by worker.terminate(), guard against a second concurrent export, and for very large datasets avoid ever holding the full export as one in-memory string or Blob, stream it out in chunks instead.</div>
+      </li>
+    </ul>
+  </div>
+</section>

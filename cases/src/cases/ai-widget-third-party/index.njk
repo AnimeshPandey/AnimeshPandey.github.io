@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Third-Party AI Widgets and Data Leak"
+description: "Why dropping a third-party AI chat widget's <script> tag straight into your page hands it the same DOM and cookie access as your own code, and how CSP, a sandboxed iframe, and an explicit field allowlist scope it back down."
+slug: ai-widget-third-party
+track: security
+readMin: 10
+flagship: false
+demoType: toggle
+principle: AI security
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/ai-widget-third-party-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The support widget that read the support agent's notes</h2>
+  <div class="tone-junior">
+    <p>
+      A third-party AI chat or support widget usually ships as one line: a <code>&lt;script src="https://widget.vendor.com/embed.js"&gt;</code> tag pasted into your page. That script doesn't run in some isolated sandbox, it runs with the exact same permissions as your own first-party JavaScript. It can read anything visible in the DOM, read any cookie your page can read, and call its own backend with whatever it finds, no confirmation dialog, no visible sign anything happened.
+    </p>
+    <p>
+      "AI-powered" widgets make this worse in a specific way: many of them scrape the visible page text on load and send it to their backend as "context" so the assistant can answer questions about what the user is looking at. If your page's DOM contains anything sensitive, an account balance, a support agent's internal note, a half-filled form, that text goes with it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      There's no browser-level distinction between "your script" and "their script" once both are loaded into the same page origin. A widget's script tag gets full <code>document</code> access (every DOM node, <code>document.cookie</code> for any non-HttpOnly cookie, <code>localStorage</code>, <code>sessionStorage</code>) and can issue its own <code>fetch()</code>/<code>XMLHttpRequest</code> calls to any origin the page's CSP allows, by default, no origin restriction at all.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This isn't a vendor being malicious, it's the default trust model of the same-origin script tag being a poor fit for third-party code that has its own incentive to collect data (training signal, usage analytics, upsell targeting). The failure mode is silent: nothing in the browser's normal behavior signals "a third party just read your cookies and posted your DOM text to their server," you'd only catch it by actually inspecting the widget's network requests.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Scope the widget down: CSP, a sandboxed iframe, and an explicit allowlist</h2>
+  <div class="tone-junior">
+    <p>
+      Three layers, each closing a different gap. A Content-Security-Policy <code>connect-src</code> directive limits which network destinations any script on the page, including the widget's, is allowed to call, so it can't quietly send data somewhere unexpected. Loading the widget inside a sandboxed <code>&lt;iframe&gt;</code> puts it in its own browsing context, it can no longer read your page's cookies or DOM at all. And instead of letting the widget read the page itself, you pass it only the specific fields it actually needs, by name, through a message you send.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>&lt;iframe sandbox="allow-scripts" src="https://widget.vendor.com/embed.html"&gt;</code> (no <code>allow-same-origin</code>) puts the widget in a unique, opaque origin: <code>document.cookie</code> inside that frame is empty, <code>window.parent.document</code> throws a cross-origin error, and it cannot read anything from your page except what you explicitly hand it via <code>postMessage</code>. CSP's <code>connect-src https://widget.vendor.com</code> then constrains where any script-initiated request can go, catching the case where the widget (or code it pulls in) tries to call an origin you didn't expect, including its own third-party trackers.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The allowlist step matters independently of the sandboxing: even a perfectly sandboxed widget can still be handed too much if your integration code passes it a whole user object instead of the two fields the chat flow needs. Treat the data you pass to a third-party widget the same way you'd treat a request body to an external API, minimum necessary fields, named explicitly, never "just serialize the current user" for convenience. CSP and the iframe sandbox stop the widget from reaching for data on its own; the allowlist stops you from handing it more than it asked for.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The internal note that became AI training context</h2>
+  <div class="tone-junior">
+    <p>
+      A support team added an AI chat widget to their internal ticket-view page so agents could ask it questions about a customer's history. It was integrated the fast way: one script tag at the bottom of the page template, no extra configuration. The page's DOM also happened to contain an "internal notes" textarea, visible to agents only, where notes like "customer's card was declined 3x, possible fraud, escalate to risk team" got typed during a call.
+    </p>
+    <p>
+      Because the widget scraped the page's visible text on load to build its assistant context, every internal note an agent had ever typed into a ticket got sent to the vendor's backend as part of that page's "context," the same backend the vendor used to improve their assistant's responses across all customers. Nobody on the support team had opted into sharing internal fraud notes with a third party; the widget's default behavior did it automatically, the moment the note was on the page and the widget loaded.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      It surfaced when a different agent, on an unrelated ticket, asked the assistant a general question and it responded referencing "prior fraud escalation patterns" in language close enough to the leaked note that it was clearly not a coincidence, the vendor's context window had apparently been pooling scraped text across sessions longer than expected. Security review found the widget's outbound requests included the full <code>innerText</code> of the ticket page, notes field included, on every load.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix wasn't a vendor contract renegotiation, it was moving the widget behind a sandboxed iframe with no DOM read access to the host page, and rebuilding the integration to pass only the specific ticket fields the assistant actually needed (customer name, product tier, ticket subject) via <code>postMessage</code>, with the internal-notes field deliberately excluded from what the integration code ever serialized. The assistant lost the ability to "just see the whole page," which was the point.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Widget script loaded directly into the page, reading DOM text and cookies and posting them to its own backend (broken) vs. widget confined to a sandboxed iframe, receiving only an explicit allowlist of fields via postMessage (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch what the widget can see in each mode</h2>
+  <div class="tone-junior">
+    <p>Click "Load AI widget" in each mode and watch the simulated network log below the mock page — it shows exactly what the widget's script would be able to read and what it would send.</p>
+  </div>
+  <div class="tone-mid">
+    <p>In "Direct script tag" mode, the simulated widget reads the mock page's visible text and its mock session cookie, then "POSTs" both to its backend as context. In "Sandboxed + allowlist" mode, the widget only receives the two fields explicitly passed to it.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This simulates the mechanism without a real network call or a real vendor, no request actually leaves your browser, the log is generated locally to show what a real widget integrated either way would be able to observe and transmit.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="AI widget with direct DOM/cookie access (broken) vs. sandboxed iframe with explicit field allowlist (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="ai-widget-third-party">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates what a third-party AI widget script can read from a mock page and send to its backend, comparing a direct script-tag embed against a sandboxed iframe with an explicit field allowlist; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Direct script tag
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Sandboxed + allowlist
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Sandboxed + allowlist</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The widget's own third parties, and how to actually verify the fix</h2>
+  <div class="tone-junior">
+    <p>
+      Don't stop at the vendor you chose, some widgets pull in their own analytics or error-tracking scripts, which are additional third parties your CSP also has to account for. If your <code>connect-src</code> only allowlists the main widget domain, a second script it loads can still get blocked (good) or, if you widen the policy carelessly to make it stop erroring, silently allowed (bad). Check the widget vendor's docs for a list of every domain their script talks to, not just their main one.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Verify the fix by actually opening DevTools → Network while the widget loads, filter by the widget's domain, and read the request payloads, don't assume the sandbox worked because there were no console errors. A sandboxed iframe with <code>allow-scripts</code> but no <code>allow-same-origin</code> will throw if the widget's own code tries something that needs same-origin access, which is useful signal: if you see no errors and no unexpected payload contents, that's your actual verification, not the absence of a red console line.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Two things worth pinning down beyond the initial setup: Subresource Integrity (<code>integrity="sha384-…"</code> on the script tag) so a compromised or silently-updated vendor script can't change behavior under you without the browser refusing to execute it, though most AI widget vendors ship frequently-changing bundles that make a hash-pinned SRI value impractical to maintain, in which case pinning to a versioned URL rather than a "latest" alias is the realistic middle ground. And check the vendor's data-use terms specifically for whether page content sent as "context" is used for model training by default, that's a separate question from where the data is stored, and it's the one most likely to matter for a compliance review.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A third-party widget script tag runs with the same DOM and cookie access as your own code — it can read whatever's visible on the page and send it to its own backend, with nothing in the browser stopping it by default.</div>
+        <div class="tone-mid">CSP's connect-src limits where any script can send data, a sandboxed iframe (allow-scripts, no allow-same-origin) stops the widget reading your page's DOM and cookies at all, and an explicit field allowlist stops your own integration code from handing it more than it needs.</div>
+        <div class="tone-staff">Check what other domains the widget's own script calls, verify the fix by reading actual network payloads in DevTools rather than trusting the absence of console errors, and confirm whether the vendor uses page content sent as "context" for model training by default.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,103 @@
+{
+  "slug": "csrf-cookie-samesite",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "SameSite=Lax blocks cross-site POSTs — it does not block a cross-site GET, and GET links show up in admin panels more than you'd expect.",
+      "mid": "\"We set SameSite, CSRF is handled\" treats a scoped browser rule as a blanket fix — any endpoint outside that scope, most often a GET route, isn't protected at all.",
+      "staff": "SameSite's 'same site' is the registrable domain, not the origin — an attacker-influenced subdomain of your own domain is still 'same-site' to the cookie."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click 'Simulate cross-site attack' in each mode and watch whether the simulated attacker page manages to trigger the state change.",
+      "mid": "The vulnerable version fires over a plain GET link and the cookie rides along; the hardened version blocks both the GET-based mutation and the cross-site POST attempt.",
+      "staff": "The hardened log shows two independent rejections — the SameSite cookie policy blocks the cross-site POST on its own, and the missing CSRF token would've blocked it too, that overlap is the defense-in-depth point."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Strict never sends the cookie cross-site at all, even for a clicked link. Lax sends it for a top-level GET navigation but blocks it on cross-site POSTs, image loads, and fetch calls.",
+      "mid": "A hidden auto-submitting cross-site POST form or an img tag pointed at your endpoint doesn't get the Lax cookie attached — that's exactly the shape Lax was built to block. A clicked link or JS-driven top-level redirect does.",
+      "staff": "SameSite closes the gap only for requests shaped the way it was designed to gate — it does nothing to fix an app that exposes state changes over GET, that's a separate, older mistake SameSite can't retroactively patch."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Never implement a delete/revoke/transfer action behind a plain GET link — that rule predates SameSite and is exactly why the Lax carve-out for top-level GET still matters.",
+      "mid": "uploads.victim.com and app.victim.com are the same registrable domain, so a cookie scoped there treats both as same-site even if one is a lower-trust subdomain an attacker can influence.",
+      "staff": "SameSite is enforced client-side only — non-browser HTTP clients and some WebViews don't implement it correctly, and the server has no way to verify a client honored it. Server-side token validation is the only half the server can actually check."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about SameSite cookies and CSRF — specifically the gap that survives even after you've set SameSite equals Lax correctly, because Lax was never designed to block a plain cross-site GET request.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "Strict blocks the cookie on every cross-site request, even a clicked link. Lax blocks cross-site posts and subresource loads, but still allows the cookie through on a top-level GET navigation, which is exactly the gap that matters here.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try simulating a cross-site attack against each version of the endpoint and watch whether the action actually fires.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Never put a state-changing action behind a GET request. SameSite is scoped protection, not a blanket fix, and a real CSRF token is still the check the server can actually verify.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try vulnerable", "target": "[data-demo-state=broken]" },
+        { "label": "Try hardened", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle vulnerable", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle hardened", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Vulnerable state", "target": "[data-demo-state=broken]" },
+        { "label": "Hardened state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
