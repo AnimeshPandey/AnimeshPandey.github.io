@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Alt Text vs Decorative Images"
+description: "The empty string in alt=\"\" tells a screen reader to skip an image on purpose — a missing alt attribute means something else entirely, and the two get swapped constantly."
+slug: alt-text-decorative
+track: accessibility
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Images
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/alt-text-decorative-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The chart went silent and the banner announced its own filename</h2>
+  <div class="tone-junior">
+    <p>
+      A product page ships with two images: a decorative header graphic used purely for visual flair, and a bar chart showing real quarterly numbers. A screen reader user opens the page and hears, right at the top, "Image, hero-banner-final-v3 dot j p g" — the decorative graphic's raw filename, read aloud as if it were a sentence. A few seconds later, the chart goes by in complete silence. No numbers, no chart, nothing announced at all.
+    </p>
+    <p>
+      Both images have something wrong with their <code>alt</code> attribute, and they're wrong in exactly opposite ways: the decorative one is missing <code>alt</code> entirely, and the chart has <code>alt=""</code>. One pair of empty quotes is the entire difference between "skip this, it's decoration" and "nobody described this."
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>alt=""</code> and a missing <code>alt</code> attribute look almost interchangeable in a code review — both render nothing visible, both seem to say "no text here." They don't mean the same thing to a screen reader, and swapping them swaps which image goes silent and which one announces noise.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The bug here isn't really about alt text — it's about two independent authoring paths converging on the same visual output (no visible caption) while diverging completely in the accessibility tree. A CMS default that sets <code>alt=""</code> for any image without manually-entered text, and a component that never had an <code>alt</code> prop wired up at all, produce identical screenshots and completely different accessible-name computations. Nothing in a visual QA pass catches that.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Three states of alt, and only one of them means "decorative"</h2>
+  <div class="tone-junior">
+    <p>
+      There are three different things an <code>&lt;img&gt;</code>'s <code>alt</code> attribute can be, and screen readers treat all three differently. A real description like <code>alt="a bar chart showing revenue"</code> gets read aloud. <code>alt=""</code> — an explicit, empty string — tells the screen reader "this image carries no information, skip it silently." And no <code>alt</code> attribute at all is treated as a failure state by most screen readers: they have to say something, so some fall back to announcing the image's filename or URL path instead.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The decision rule is one question: does this image convey information the surrounding text doesn't already say? If yes, write real alt text describing that information — what the image communicates, not what it looks like. If no, because it's pure decoration or a caption right next to it already says everything the image shows, mark it <code>alt=""</code> explicitly. The one answer that's never correct is leaving the attribute off.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>alt=""</code> isn't "no alt text" — it's a deliberate accessibility-tree instruction to remove the image from the tree entirely, not even expose it as an unlabeled node. A missing attribute leaves the accessible-name computation with nothing to work from, and implementations are free to fall back to other content, historically the <code>src</code> or <code>title</code>, which is exactly the filename-reading behavior showing up here. Neither result is a screen-reader bug; both are the browser and assistive tech doing precisely what the presence or absence of the attribute told them to do.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The chart nobody could hear had shipped for six weeks</h2>
+  <div class="tone-junior">
+    <p>
+      A design system's image component had a CMS integration: editors could type descriptive text into an "Alt text" field, and if they left it blank, the component defaulted to <code>alt=""</code> — a sensible default for genuinely decorative content, like the header's background graphic. The problem showed up on a different image entirely: a quarterly-revenue chart, uploaded by an editor who assumed the visible chart title already explained it and left the alt field blank, same as they always did for decorative banners. The CMS couldn't tell those two intentions apart, and defaulted both to silence.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Nobody caught it in review because nothing looked wrong — the chart rendered fine, the page read fine visually, and the missing description produced no console warning, no broken layout, no visual signal of any kind. It surfaced only because a support ticket came in: a screen reader user asking, politely, whether the page "was supposed to have a chart in it," because as far as their screen reader was concerned, it didn't.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix wasn't "add an alt text field" — that field already existed and was already being used correctly for actually-decorative images. The fix was splitting the CMS field into two concepts the editor UI made unmissable: a "this image is decorative" checkbox that sets <code>alt=""</code> and hides the text field entirely, versus a required "describe this image's content" field for anything else. That removed both the option to silently leave a content-bearing image undescribed and the temptation to describe genuinely decorative images just to fill in a field that looked mandatory.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A decorative banner with no alt attribute gets its filename read aloud while the real chart stays silent (broken) vs. alt="" on the banner and a real description on the chart (fixed) — same two images, opposite screen-reader experience</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Run a simulated screen-reader pass over both versions of the page</h2>
+  <div class="tone-junior">
+    <p>Click "Run screen reader pass" in each mode and watch what actually gets announced for each image.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken version's decorative banner announces a raw filename while the real chart goes completely silent. The fixed version reverses both: the banner is silently skipped, and the chart's actual content gets read aloud.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the fixed log doesn't just add wording to the chart — it also removes an announcement from the banner. Fixing this bug touches both images at once, because "missing alt" and "wrongly-decorative alt" are the same root mistake pointed in opposite directions.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A decorative banner image with no alt attribute and a data chart marked alt='' (broken) vs. the banner correctly marked alt='' and the chart given real descriptive alt text (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="alt-text-decorative">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a screen reader pass over a decorative banner image and a data chart, comparing a version with no alt attribute on the banner and alt="" on the chart against a version with alt="" correctly on the banner and real descriptive alt text on the chart; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Missing / wrong alt
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Correct alt
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Correct alt</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Functional images, complex images, and the CMS-default trap</h2>
+  <div class="tone-junior">
+    <p>
+      An image inside a link or button, an icon-only "delete" button, say, needs alt text describing the action it performs, not what the icon looks like: <code>alt="Delete"</code>, not <code>alt="trash can icon"</code>. The user needs to know what clicking it does, not what it depicts.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A chart or infographic usually holds more information than a short <code>alt</code> string can comfortably carry. The fix isn't cramming a paragraph into <code>alt</code> — it's keeping <code>alt</code> short (what the image shows, in brief) and putting the full data somewhere a screen reader already reaches: an adjacent data table, a caption, or text linked via <code>aria-describedby</code>.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Watch for this pattern specifically: a CMS or component library that defaults every image without manually-entered text to <code>alt=""</code>. That default is correct for images that are genuinely decorative and silently wrong for every other image an editor forgets to fill in, and because both outcomes render identically on screen, this class of bug survives visual QA indefinitely. Audit for it by grepping rendered HTML for <code>alt=""</code> on images inside content areas, not template chrome, rather than by looking at the page.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">alt="" and a missing alt attribute are not the same thing — only one of them means "skip this"; the other makes some screen readers announce the filename instead.</div>
+        <div class="tone-mid">Ask one question per image: does it convey information the surrounding text doesn't already say? Yes — write real alt text. No — alt="". Never leave the attribute off entirely.</div>
+        <div class="tone-staff">The failure mode is an implicit default doing the wrong thing silently and identically on screen either way — audit for missing alt attributes and blanket CMS-default alt="" separately, since they hide opposite problems and neither shows up in a visual review.</div>
+      </li>
+    </ul>
+  </div>
+</section>

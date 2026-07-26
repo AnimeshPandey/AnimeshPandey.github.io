@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Agent Cards and Discovery (A2A)"
+description: "How an orchestrator UI that routes tasks across multiple agents should discover what each agent can actually do — via A2A's Agent Card — before routing to it, not after."
+slug: a2a-agent-card-discovery
+track: agent-architecture
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Inter-agent
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/a2a-agent-card-discovery-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The orchestrator that routed a refund to an agent that couldn't do refunds</h2>
+  <div class="tone-junior">
+    <p>
+      A team built a dashboard that split customer requests across three backend agents — one for scheduling callbacks, one for account lookups, one labeled "Billing Agent" for anything money-related. The routing logic was simple: if the request mentioned "refund" or "charge," send it to the Billing Agent. No check of what that agent could actually do — just a name that sounded right.
+    </p>
+    <p>
+      The Billing Agent's real capabilities only covered read-only invoice lookups. It had no refund-processing skill at all — that lived on a different agent the dashboard hadn't even wired up yet. The refund request got sent anyway, the agent declined it, and the dashboard just showed "Submitted" — because nothing in the routing step had ever asked the agent what it could do before handing it the task.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Under the A2A (Agent2Agent) protocol, every compliant agent is expected to be interrogated before it's trusted with a task — it publishes an Agent Card describing exactly what it supports. An orchestrator that routes by name convention instead of reading that card has no way to know it guessed wrong until the agent's own response says so, and not every agent responds with an error a UI bothers to surface. This one just silently declined, and the UI had nothing better to show than "Submitted."
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a discovery problem, not a routing-logic problem — "route billing-shaped requests to the agent named Billing" is a reasonable rule given the information it chose to use. The bug is treating an agent's name as its interface, when A2A explicitly hands you the real interface as structured data: the Agent Card's <code>skills</code> array and <code>securitySchemes</code> object are meant to be fetched and matched against a task before a single request goes out, not inferred from branding or prior assumption.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Fetch the Agent Card before you trust the agent</h2>
+  <div class="tone-junior">
+    <p>
+      The Agent Card is a JSON document every A2A-compliant agent publishes at a fixed, predictable address on its own domain: <code>/.well-known/agent-card.json</code> — the same "well-known URI" pattern the web already uses for things like <code>/.well-known/security.txt</code>. Before an orchestrator routes a task to an agent, it fetches that file and reads what's actually in it: the agent's name, the specific skills it declares, and what it needs for authentication.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Concretely: a <code>GET</code> to <code>https://{agent-domain}/.well-known/agent-card.json</code> returns an Agent Card with a <code>skills</code> array of named, described capabilities (each with its own id, so "refund-processing" and "invoice-lookup" are distinguishable, not lumped under one vague "billing" label) plus a <code>securitySchemes</code> object listing what auth it accepts — API key, OAuth2, HTTP bearer token. A task should only be routed to an agent whose skills list contains something that actually matches what's being asked.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Two checks matter here, and they're independent. Skill match: does the card's <code>skills</code> array contain something matching the task. Auth match: does the orchestrator hold credentials satisfying one of the card's declared <code>securitySchemes</code>. A card check that only inspects skills and ignores security schemes will still send unroutable requests — they'll just fail on a 401 instead of "skill not found." The card also separately declares <code>capabilities</code> (streaming, push notifications), which govern how you talk to an agent once you've routed to it, not whether you should route there — don't collapse that into the same check.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>A support-ops team's three-agent dashboard</h2>
+  <div class="tone-junior">
+    <p>
+      The team behind that dashboard eventually pulled the routing logic apart to find out why refunds kept silently failing. The problem wasn't a bug in the refund logic — there wasn't any refund logic in the Billing Agent at all. Its Agent Card, if anyone had fetched it, declared exactly one skill: <code>invoice-lookup</code>, read-only. Refund processing existed on a completely separate agent that the dashboard had never been told about.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix wasn't just "connect the right agent" — it was adding a discovery step at all. On startup, the dashboard now fetches every connected agent's Agent Card and caches its declared skills and auth scheme. When a request comes in, routing checks that cache first: does any connected agent's <code>skills</code> list contain something matching this task, and does the orchestrator hold credentials for that agent's declared scheme. Only then does a request go out.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They changed the UI alongside the routing logic, not just the logic itself — instead of a bare "Submitted," the dashboard now shows why a task went where it went: "Routed to Refunds Agent — skill <code>refund-processing</code> matched, auth: Bearer token accepted." That mattered as much as the discovery step: discovery without visibility just moves the guessing from the orchestrator's code into a debugging session six weeks later, when someone's trying to figure out why a different task went to the wrong place.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Orchestrator UI guesses which agent handles a task by name (broken) vs. fetches each agent's Agent Card and routes only to a declared, auth-compatible skill (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Route a refund request both ways</h2>
+  <div class="tone-junior">
+    <p>Click "Route refund request" in each mode and watch which agent it ends up at — and whether anything checked first that the agent could actually do it.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode picks an agent by matching the task's keywords against agent names, with no verification. Fixed mode fetches each connected agent's Agent Card, checks its declared skills and security scheme, and only routes to a real match.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Watch the auth check in the fixed mode too, not just the skill match — the Refunds Agent both declares the matching skill and accepts the credential the orchestrator is holding. Those are two separate conditions the fixed path verifies before it sends anything.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Orchestrator that routes by agent name with no verification (broken) vs. one that fetches each agent's Agent Card and matches skill plus auth before routing (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="a2a-agent-card-discovery">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares an orchestrator that routes a refund request by guessing an agent's name against one that fetches Agent Cards and matches skill plus auth first; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Route by name
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Discover via Agent Card
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Discover via Agent Card</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Cache the card, but don't trust it forever</h2>
+  <div class="tone-junior">
+    <p>
+      Fetching every agent's card on every single task would be slow, so orchestrators usually cache the result after the first fetch. That's fine, but it means the cache can go stale — an agent's actual capabilities can change after you've cached an old version of its card, so a orchestrator that never re-checks can end up making the exact same wrong-guess mistake, just against cached data instead of a name string.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A reasonable middle ground: cache the card with a short TTL, and always re-fetch (or at least re-validate) before routing anything security-sensitive, even if the skill-match cache is still considered fresh. Skill lists change slowly in practice; auth requirements are the kind of thing that changes on a deploy and should be checked more defensively.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Also don't assume a card fetch itself is trustworthy without thinking about it — you're pulling JSON from a domain you don't control and using it to decide what credentials to send. Treat the fetch like any other cross-origin resource: verify you're talking to the domain you expect (no silent redirect to somewhere else), and don't blindly forward every credential type you hold just because a card claims to accept it. Discovery reduces the guessing problem; it doesn't remove the need to still validate what you're trusting.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">An agent's name isn't its interface — routing by name guesses what an agent can do instead of checking, and a wrong guess can fail silently.</div>
+        <div class="tone-mid">Fetch the Agent Card at <code>/.well-known/agent-card.json</code> and match the task against its declared <code>skills</code> before routing anything to that agent.</div>
+        <div class="tone-staff">Skill match and auth match are independent checks against the card's <code>skills</code> and <code>securitySchemes</code> — verify both, cache with a short TTL, and re-validate before anything security-sensitive.</div>
+      </li>
+    </ul>
+  </div>
+</section>

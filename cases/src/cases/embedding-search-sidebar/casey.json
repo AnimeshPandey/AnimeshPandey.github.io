@@ -1,0 +1,103 @@
+{
+  "slug": "embedding-search-sidebar",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The new semantic search felt smarter but slower — every keystroke round-tripped to a server for a docs set of maybe 40 pages that rarely changed.",
+      "mid": "400-700ms per query, paid on a corpus small and static enough that a one-time client-side load would have made queries after the first essentially free.",
+      "staff": "The mistake was defaulting to server-side without checking whether this corpus's size and change frequency actually justified a round trip per keystroke."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Type a search term in each mode — one waits on a network call every time, the other loads once and answers instantly after.",
+      "mid": "Broken mode simulates a real round trip per query. Fixed mode simulates one model load, then zero-network local search after.",
+      "staff": "The fixed mode's cost isn't gone, it moved earlier — compare the one-time load against the broken mode's cost repeating on every query."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Client-side downloads a model and the docs' vectors once, then searches locally. Server-side sends the query and waits for a round trip, every time.",
+      "mid": "Client-side pays a one-time cold start; server-side pays a per-query round trip — which wins depends on corpus size and search volume.",
+      "staff": "A third variable beyond size: change frequency. Client-side needs a re-shipped index on every content change; server-side re-indexes independently of any deploy."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "This demo's corpus is eight documents on purpose — a client-side index at that size is nothing. Hundreds of pages changes the math.",
+      "mid": "No fixed page-count flips the answer — model size, searches per session, and whether the download can be prefetched all factor in.",
+      "staff": "A hybrid is legitimate: client-side index for the fixed core, server-side fallback for anything not yet baked into the shipped index."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! This one's about a docs sidebar that got a smarter search feature and somehow got slower at the same time, because every single search had to round-trip to a server for a doc set that barely ever changed.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "There are really two ways to run this kind of search. Ship the model to the browser and search locally after one upfront download, or send every query to a server and wait for a response each time. Which one wins depends on how big your content is and how often it changes.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try searching the same small set of documents both ways. One mode makes a real network call on every search. The other loads once, up front, and then every search after that is instant.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "For a small set of content that doesn't change much, doing search fully in the browser after one upfront load usually wins. For a big or fast-changing set, sending the query to a server usually wins. Pick based on your actual content, not on which one sounds more advanced.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

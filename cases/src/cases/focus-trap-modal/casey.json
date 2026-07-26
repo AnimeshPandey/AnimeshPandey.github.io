@@ -1,0 +1,103 @@
+{
+  "slug": "focus-trap-modal",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Tabbing through the fields in order isn't the same as trapping focus — the boundary where focus tries to leave is the part that actually matters.",
+      "mid": "\"The fields tab through in order\" and \"focus is trapped inside the dialog\" are different claims — a lot of implementations only build the first one.",
+      "staff": "Reacting to any focus change by yanking it back can fight a screen reader's virtual cursor, which moves independently of DOM focus and doesn't expect the page to fight it."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Open the dialog, then use 'Press Tab' and 'Close dialog' and watch the log and the highlighted element to see exactly where focus moves in each mode.",
+      "mid": "Broken: Tab on the last field escapes onto the decoy 'page content' element behind the dialog. Fixed: Tab wraps back to the name input, and closing refocuses the trigger.",
+      "staff": "Both modes call real .focus() on real elements here — this is the actual DOM focus mechanism at work, not an animation standing in for it."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Two obligations: Tab from the last field wraps to the first (and back with Shift+Tab), and closing returns focus to whatever opened the dialog.",
+      "mid": "Capture Tab at keydown, check the currently focused element against the dialog's focusable-elements list, and explicitly .focus() the wrap target — none of this happens by default.",
+      "staff": "Computing the focusable-elements list once at dialog-open time goes stale the moment a disabled button becomes enabled or a field appears — recompute it at each Tab press instead."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "The native dialog element's showModal() gets you a correct focus trap and Escape-to-close for free, with no hand-written keydown handler.",
+      "mid": "When hand-rolling is the real constraint, build against the WAI-ARIA APG dialog pattern's exact Tab-wrapping and focus-return requirements, not intuition.",
+      "staff": "A visual overlay does nothing for the accessibility tree — apply inert (or aria-hidden) to everything outside the dialog, or a screen reader's virtual cursor can still browse through the backdrop."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about focus traps in modals — specifically a confirmation dialog that looked keyboard accessible because you could tab through its fields, but was never actually trapping focus at the one moment that mattered.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "A correct focus trap does two things. Tab from the last field wraps back to the first instead of leaving the dialog, and closing the dialog returns focus to whatever button opened it, instead of resetting to the top of the page.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try opening the dialog and pressing tab past the last field in each mode, then watch where focus actually ends up.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Fields tabbing through in order is not the same as a real focus trap. Check the boundary: does tab wrap at the ends, and does closing the dialog give focus back to whatever opened it?",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
