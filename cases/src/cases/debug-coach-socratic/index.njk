@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Socratic Debug Coach (Don't Paste Yet)"
+description: "Pasting a stack trace straight into an AI chat and getting the diff handed back in one turn feels efficient — but it short-circuits the exact diagnostic reasoning that would let you catch the same bug class yourself next time."
+slug: debug-coach-socratic
+track: agentic-ai
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Pedagogy
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/debug-coach-socratic-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The fix worked. Two weeks later, the same bug came back wearing a different hat</h2>
+  <div class="tone-junior">
+    <p>
+      A developer hits a <code>TypeError: Cannot read properties of undefined</code>, pastes the full stack trace into an AI chat, and gets back a working diff in about ten seconds: add a fallback, ship it. It works. Two weeks later, a teammate hits what is structurally the same bug, data used before it's finished loading, in a different component, with a different error message. The first developer can't recognize it, because they never actually diagnosed the first one. They pasted a symptom and received a cure; the reasoning in between never happened where they could learn it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Instant-answer AI debugging optimizes the metric that's easiest to measure, time to green, at the direct expense of the one that's harder to measure and actually matters longer-term: whether the person doing the debugging built a reusable mental model of the failure. A diff that fixes the symptom without the person ever forming a hypothesis, testing it, and watching it confirmed is a fix with no attached learning event.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the AI-assistant version of a well-known problem in worked examples research: handing a novice a fully-worked solution reduces the extraneous cognitive load of solving it themselves, which helps early on, but it also removes the retrieval practice and self-explanation that produce durable, transferable understanding. An AI debugging assistant that defaults to instant answers is, by design, always choosing the low-transfer path, because that's the path that resolves the current ticket fastest, not the one that improves the next ticket.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Ask before answering: guided questions instead of an instant diff</h2>
+  <div class="tone-junior">
+    <p>
+      A Socratic debug coach asks two to four guiding questions before it reveals anything: what did you expect to happen versus what actually happened, what's the last state you know was working, have you checked where the data actually comes from. Answering those questions forces the same diagnostic steps a senior engineer runs silently in their head, out loud, where the person doing it actually has to do the reasoning instead of skipping straight to the result.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The mechanism isn't "withhold the answer to be difficult," it's that each question targets a specific diagnostic move, expected-vs-actual narrows the search space, last-known-good isolates when the bug was introduced, "where does this value come from" traces data flow back to its source, that a fluent debugger already runs automatically. A user who answers these questions has, by construction, walked the same path a fluent debugger walks, whether or not the AI ever states the root cause explicitly.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The design has to include an escalation path, or it just becomes an obstacle: if two or three guided questions go nowhere (the user answers "I don't know" honestly, or the questions aren't converging), the coach should offer progressively more direct hints rather than stonewalling indefinitely. Pure withholding isn't pedagogically better than instant answers, it's just differently unhelpful; the actual goal is scaffolded struggle with a real floor under it, not struggle for its own sake.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The metric that went up while the skill went down</h2>
+  <div class="tone-junior">
+    <p>
+      A team adopted an AI pair-programming assistant with instant-answer debugging as the default. In week one, "bugs resolved per week" went up sharply, every stack trace pasted in got a fix back in one turn. By week six, a senior engineer noticed something in code review: junior engineers submitting AI-suggested fixes couldn't explain why the fix worked when asked. The same categories of bug, kept recurring under slightly different symptoms, because nobody had actually learned to recognize the category, only to paste and apply.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team reconfigured the assistant so guided, question-first debugging was the default mode, and "just give me the fix" became an explicit opt-out a user had to ask for, rather than the default behavior. The immediate effect was that debugging sessions took longer per-incident, which the team expected and accepted. The effect they were betting on took three sprints to show up: junior engineers started catching and fixing the same bug category themselves, before ever opening the assistant, because the guided questions from prior sessions had actually built the recognition pattern.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      What made the reconfiguration defensible, and not just a vibes-based process change, was that they could point to a concrete mechanism: the guided-question sessions were functioning as spaced retrieval practice on the same handful of diagnostic moves, every session that made it to "where does this value come from" was rehearsing that specific move again, regardless of which bug prompted it. Instant-answer sessions had zero equivalent rehearsal built in; the fix was correct, but nothing about receiving it required exercising the skill the team actually needed more of.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Paste a stack trace, get a diff back in one turn, no diagnostic model built (broken) vs. the assistant asks 2-4 guiding questions first, so the reasoning transfers to the next bug (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Same bug, two conversations — click through both</h2>
+  <div class="tone-junior">
+    <p>Click the button in each mode to step through a debugging conversation about the same bug. Watch how many turns it takes to reach the fix, and what the user actually has to do to get there.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode reaches a working diff in one assistant turn. Fixed mode walks through expected-vs-actual, then traces the data source, then confirms the timing issue, before the user reaches their own conclusion.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Note what fixed mode's last turn actually does: it doesn't state the root cause for the user, it asks how they'd guard for it, handing the final inferential step back rather than completing it.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A debugging chat that hands back a fix in one turn with no guided reasoning (broken) vs. one that asks guiding questions before revealing anything (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="debug-coach-socratic">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo steps through two scripted debugging chats about the same bug, comparing an assistant that hands back an instant fix against one that asks guiding questions first; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Instant answer
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Socratic coach
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Socratic coach</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Scaffolding, not stonewalling — and why this is a UX decision, not a prompt-tuning one</h2>
+  <div class="tone-junior">
+    <p>
+      Making a debug assistant "Socratic" isn't about writing a stricter system prompt that refuses to answer, it's a UX decision: what's the default mode, how many questions before a hint appears anyway, and is there always a visible "just show me" escape hatch so a genuinely stuck or time-pressured user isn't trapped. Get any of those wrong and the feature reads as the assistant being unhelpfully cagey instead of pedagogically useful.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The escalation ladder matters more than the first question does: question one, then a more specific question if that stalls, then a strong hint that names the area without naming the fix, then the full answer, is very different from three vague questions in a row followed by silence. Each rung should narrow the search space further than the last, or the user is just being asked the same question three different ways, which reads as friction, not guidance.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Current research on this exact interaction, LLM-driven Socratic debugging support for student programmers, is explicit that the hard part isn't generating a plausible-sounding question, it's generating one that's actually diagnostic for <em>this specific bug and this specific learner's stated understanding</em>, not a generic "have you checked your inputs?" that would apply to any bug. A production version of this feature needs the guiding questions grounded in the actual stack trace and the actual prior turns, the same discipline this project's own Casey hints are held to, or it degrades into the same recognizable boilerplate that defeats the point.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Pasting a stack trace and getting a fix back in one turn feels efficient, but it skips the reasoning that would let you recognize the same bug next time. A coach that asks a few guiding questions first makes you do that reasoning yourself.</div>
+        <div class="tone-mid">Default to guided questions (expected vs. actual, last known-good state, where the data comes from) before revealing a fix — make instant-answer an explicit opt-out, not the default, so the diagnostic steps actually get rehearsed.</div>
+        <div class="tone-staff">Build a real escalation ladder — each unanswered question should offer a more specific hint than the last, with a visible "just show me" escape hatch — pure withholding is exactly as unhelpful as instant answers, just in the opposite direction.</div>
+      </li>
+    </ul>
+  </div>
+</section>

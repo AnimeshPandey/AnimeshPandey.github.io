@@ -1,4 +1,53 @@
 {
+  "container-queries-component": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries\" rel=\"noopener noreferrer\">MDN — CSS container queries</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries\" rel=\"noopener noreferrer\">MDN — CSS container queries</a>",
+      "<a href=\"https://web.dev/learn/css/container-queries\" rel=\"noopener noreferrer\">web.dev — Container queries</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/learn/css/container-queries\" rel=\"noopener noreferrer\">web.dev — Container queries</a>"
+    ]
+  },
+  "debug-coach-socratic": {
+    "junior": [
+      "<a href=\"https://en.wikipedia.org/wiki/Socratic_method\" rel=\"noopener noreferrer\">Wikipedia — Socratic method</a>"
+    ],
+    "mid": [
+      "<a href=\"https://en.wikipedia.org/wiki/Socratic_method\" rel=\"noopener noreferrer\">Wikipedia — Socratic method</a>",
+      "<a href=\"https://arxiv.org/abs/2511.00371\" rel=\"noopener noreferrer\">arXiv — Reasoning Trajectories for Socratic Debugging of Student Code</a>"
+    ],
+    "staff": [
+      "<a href=\"https://arxiv.org/abs/2511.00371\" rel=\"noopener noreferrer\">arXiv — Reasoning Trajectories for Socratic Debugging of Student Code</a>"
+    ]
+  },
+  "etag-conditional": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag\" rel=\"noopener noreferrer\">MDN — ETag header</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag\" rel=\"noopener noreferrer\">MDN — ETag header</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304\" rel=\"noopener noreferrer\">MDN — 304 Not Modified</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/304\" rel=\"noopener noreferrer\">MDN — 304 Not Modified</a>"
+    ]
+  },
+  "css-transition-gpu": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/transform\" rel=\"noopener noreferrer\">MDN — transform</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/transform\" rel=\"noopener noreferrer\">MDN — transform</a>",
+      "<a href=\"https://web.dev/articles/stick-to-compositor-only-properties-and-manage-layer-count\" rel=\"noopener noreferrer\">web.dev — Stick to compositor-only properties and manage layer count</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/stick-to-compositor-only-properties-and-manage-layer-count\" rel=\"noopener noreferrer\">web.dev — Stick to compositor-only properties and manage layer count</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/will-change\" rel=\"noopener noreferrer\">MDN — will-change</a>"
+    ]
+  },
   "csv-export-main-thread": {
     "junior": [
       "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers\" rel=\"noopener noreferrer\">MDN — Using Web Workers</a>"

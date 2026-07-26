@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "ETags and 304 Not Modified"
+description: "Polling an API for freshness doesn't have to mean re-downloading the full response every time — ETag + If-None-Match lets a client confirm nothing changed and get a 304 with no body instead."
+slug: etag-conditional
+track: networking
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Validation
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/etag-conditional-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Polling every 10 seconds for data that changes every 10 minutes</h2>
+  <div class="tone-junior">
+    <p>
+      A dashboard polls <code>/api/summary</code> every 10 seconds to stay fresh. The underlying numbers actually change maybe once every few minutes. Every single poll, whether the data moved or not, downloads the entire JSON body again, a few kilobytes, dozens of times a minute, almost all of it identical to what's already on screen. On a slow connection or a metered plan, that's real, wasted bandwidth spent re-fetching data the client already has.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The naive fix, cache the response for some TTL and skip the network entirely, trades one problem for another: pick the TTL too long and a real update sits stale on screen; pick it too short and you're back to over-fetching. Neither a live poll nor a blind cache actually answers the question that matters, has this specific resource changed since I last saw it, one of them always asks (wastefully), the other never does (riskily).
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      What's missing is a validation step that's cheap enough to do on every request but only pays the transfer cost when there's actually new data. That's a different shape of caching than a TTL: instead of guessing how long data stays fresh, the client asks the server directly, and the server answers honestly, ideally in a response that costs almost nothing to send when the answer is "no change."
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>ETag + If-None-Match: validate freshness without re-downloading the body</h2>
+  <div class="tone-junior">
+    <p>
+      The first request to a resource gets back a normal <code>200 OK</code>, the full body, plus a response header called <code>ETag</code>, a short identifier for that exact version of the data (like <code>"abc123"</code>). The client remembers it. The next request sends that value back in a request header called <code>If-None-Match: "abc123"</code>. If the data hasn't changed, the server replies <code>304 Not Modified</code> with no body at all, just headers, and the client keeps using what it already has. If the data has changed, the server sends a normal <code>200</code> with the new body and a new ETag.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is conditional GET: the request is unconditionally sent (the client still has to ask), but the response is conditional on whether the server's current ETag matches the one the client already holds. A <code>304</code> response is deliberately body-less, the client's job on receiving one is to keep serving its cached copy and just note that it's still valid, not to treat the response as new data to render.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The real gain over TTL-based caching is that ETag validation is correct by construction rather than by tuning: the client never serves data staler than "since my last request," and it never re-transfers a body the server can prove is identical to what the client already has. A TTL is a bet on how often the data changes; an ETag is a direct check of whether it did.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>90% of polls came back empty, and nobody had to guess a TTL</h2>
+  <div class="tone-junior">
+    <p>
+      A team's "recently viewed items" panel polls its API regularly and can't tolerate a real update sitting stale for more than a few seconds, so a long TTL-based cache was never an option. They added ETag support: the server hashes the response body into an ETag, the client stores the last ETag per endpoint and sends it as <code>If-None-Match</code> on the next poll. Once shipped, real-user monitoring showed about 90% of polls coming back as a <code>304</code> with an empty body instead of the full multi-kilobyte payload, without loosening the freshness guarantee at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The part that made this a clean win rather than a trade-off: nobody had to pick a cache duration and hope it matched real update frequency. The client always has data that's correct as of its most recent request, the same guarantee an uncached poll gives, but at a fraction of the transfer cost, because most of those requests now cost one round trip of headers instead of headers plus a full body.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The one thing they had to get right on the client was not assuming every response has a body: a naive <code>fetch()</code> wrapper that always tries to <code>.json()</code> the response will throw on a <code>304</code>, since there's nothing to parse. The fetch layer needed an explicit branch, check <code>response.status === 304</code> first, fall back to the last cached payload, and only parse the body on an actual <code>200</code>.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Every poll re-downloads the full JSON body even when nothing changed (broken) vs. ETag + If-None-Match gets back a 304 with no body when the data is unchanged (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Poll the same endpoint repeatedly and watch the transfer total</h2>
+  <div class="tone-junior">
+    <p>Click "Poll" several times in each mode and watch the request/response log and the running transfer total. The simulated data actually changes every fourth poll.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode always sends a plain GET and always gets a full body back. Fixed mode sends If-None-Match after the first request and gets a 304 with 0 bytes whenever the ETag still matches.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The ETag increments only when the simulated data version actually changes, mirroring a real server that hashes the current representation rather than issuing a new ETag on every request regardless of content.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="An API poller that re-downloads the full body every time, even when nothing changed (broken) vs. one using ETag and If-None-Match to get a 304 with no body when the data is unchanged (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="etag-conditional">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates repeatedly polling an API endpoint and compares always re-downloading the full body against using ETag and If-None-Match to get a 304 with no body when nothing changed; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Plain polling
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            ETag + If-None-Match
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: ETag + If-None-Match</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Weak vs. strong validators, and the frontend's job on a 304</h2>
+  <div class="tone-junior">
+    <p>
+      ETags come in two flavors: a plain <code>"abc123"</code> is a strong validator (byte-for-byte identical), and a <code>W/"abc123"</code> with a <code>W/</code> prefix is a weak validator (semantically equivalent, but not guaranteed byte-identical, fine for "should I re-render this" but not for things like resuming a partial download). Most application APIs that hash a JSON payload for freshness checks use weak ETags, since exact byte identity usually isn't the property that actually matters.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>Last-Modified</code> / <code>If-Modified-Since</code> is the older, lower-resolution sibling mechanism, second-level timestamp precision instead of a content hash, cheaper to compute when hashing the full response body isn't worth the cost. Servers can and do support both; a client only needs to send whichever validator the previous response actually provided.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      On the frontend, the easy mistake is a fetch wrapper that assumes every response has a parseable body: calling <code>.json()</code> unconditionally throws on a real <code>304</code>, which has no body by definition. The fetch layer needs to branch on <code>response.status === 304</code> before attempting to parse anything, and fall back to the last cached payload. It's also worth pairing this with <code>Cache-Control: no-cache</code> deliberately, despite the name, that directive doesn't mean "don't cache," it means "cache, but always revalidate before use," which is exactly the semantics ETag validation is built to support cheaply.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Send back the ETag you were given as If-None-Match on the next request — if nothing changed, the server replies 304 Not Modified with no body, and you keep using what you already had.</div>
+        <div class="tone-mid">This validates freshness without guessing a cache TTL: the client always has data correct as of its last request, at a fraction of the transfer cost of a full re-download, because most responses become header-only 304s.</div>
+        <div class="tone-staff">Handle 304 explicitly in your fetch layer before parsing a body — a naive .json() call throws on a real, body-less 304 — and pair ETag validation with Cache-Control: no-cache, which means "revalidate before use," not "don't cache."</div>
+      </li>
+    </ul>
+  </div>
+</section>

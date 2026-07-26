@@ -1,0 +1,103 @@
+{
+  "slug": "debug-coach-socratic",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Pasting a symptom and getting a cure back means the reasoning in between never happened where you could learn it.",
+      "mid": "A diff that fixes the symptom without a hypothesis ever being formed, tested, and confirmed is a fix with no attached learning event.",
+      "staff": "An AI debugging assistant that defaults to instant answers is always choosing the low-transfer path — it resolves the current ticket fastest, not the next one."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Step through both conversations and count how many turns it takes to reach the fix in each — and notice what the user has to do to get there.",
+      "mid": "Broken mode resolves in one assistant turn. Fixed mode walks expected-vs-actual, then data source, then timing, before the user reaches their own conclusion.",
+      "staff": "Fixed mode's last turn hands the final inferential step back to the user instead of stating the root cause for them — that's deliberate, not an incomplete answer."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Answering guiding questions forces the same diagnostic steps a senior engineer runs silently — out loud, where you actually have to do the reasoning.",
+      "mid": "Each question targets a specific diagnostic move — expected-vs-actual, last-known-good, trace-the-data-source — that a fluent debugger already runs automatically.",
+      "staff": "Without an escalation path after 2-3 stalled questions, this just becomes an obstacle — pure withholding isn't pedagogically better than instant answers, it's differently unhelpful."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "This is a UX decision, not a stricter system prompt — default mode, how many questions before a hint, and a visible 'just show me' escape hatch all matter.",
+      "mid": "The escalation ladder matters more than the first question — each rung should narrow the search space further than the last, not just rephrase the same question.",
+      "staff": "The hard part is generating a question that's diagnostic for this specific bug and this learner's stated understanding — a generic 'have you checked your inputs?' degrades into the same boilerplate the case warns against."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a developer who pasted a stack trace into an AI chat, got a working fix back in ten seconds, and then couldn't recognize the exact same bug two weeks later, because they never actually diagnosed it the first time.",
+        "mid": "Instant-answer debugging optimizes time to green at the expense of whether anyone actually built a reusable mental model of the failure.",
+        "staff": "This is the assistant version of a known problem in learning research — handing over a fully worked solution removes the retrieval practice that produces durable, transferable understanding."
+      },
+      {
+        "chapter": "concept",
+        "junior": "A Socratic debug coach asks a few guiding questions before it reveals anything. What did you expect versus what actually happened, what's the last state you know was working, where does this data actually come from.",
+        "mid": "Each question targets a specific diagnostic move that a fluent debugger already runs automatically, just made explicit and out loud.",
+        "staff": "The design needs an escalation path. If a few guided questions go nowhere, offer a more direct hint rather than stonewalling — the goal is scaffolded struggle with a floor under it, not struggle for its own sake."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try clicking through both conversations and see how differently each one gets to the fix.",
+        "mid": "Watch how many turns each mode takes, and notice who's actually doing the reasoning at each step.",
+        "staff": "Pay attention to the very last turn in the guided version — it asks the user how they'd guard for the bug instead of just telling them."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Getting a fix handed to you in one turn feels fast, but it skips the reasoning that would let you catch the same bug next time on your own.",
+        "mid": "Default to guided questions before revealing a fix, and make instant answers an explicit opt-out instead of the default behavior.",
+        "staff": "Build a real escalation ladder with a visible escape hatch — withholding answers indefinitely is just as unhelpful as handing them over instantly, in the opposite direction."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
