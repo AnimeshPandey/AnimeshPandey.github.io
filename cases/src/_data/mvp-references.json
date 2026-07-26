@@ -632,5 +632,74 @@
       "<a href=\"https://statecharts.dev/\" rel=\"noopener noreferrer\">statecharts.dev — Statechart design patterns</a>",
       "<a href=\"https://stately.ai/docs/xstate\" rel=\"noopener noreferrer\">Stately — XState documentation</a>"
     ]
+  },
+  "alt-text-decorative": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img\" rel=\"noopener noreferrer\">MDN — &lt;img&gt;: The Image Embed element (alt attribute)</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img\" rel=\"noopener noreferrer\">MDN — &lt;img&gt;: The Image Embed element (alt attribute)</a>",
+      "<a href=\"https://www.w3.org/WAI/tutorials/images/decision-tree/\" rel=\"noopener noreferrer\">W3C WAI — An alt Decision Tree</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/WAI/tutorials/images/decision-tree/\" rel=\"noopener noreferrer\">W3C WAI — An alt Decision Tree</a>"
+    ]
+  },
+  "async-await-sequential-trap": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function\" rel=\"noopener noreferrer\">MDN — async function statement</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function\" rel=\"noopener noreferrer\">MDN — async function statement</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all\" rel=\"noopener noreferrer\">MDN — Promise.all()</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all\" rel=\"noopener noreferrer\">MDN — Promise.all()</a>"
+    ]
+  },
+  "a2a-agent-card-discovery": {
+    "junior": [
+      "<a href=\"https://a2a-protocol.org/latest/topics/agent-discovery/\" rel=\"noopener noreferrer\">A2A Protocol — Agent Discovery</a>"
+    ],
+    "mid": [
+      "<a href=\"https://a2a-protocol.org/latest/topics/agent-discovery/\" rel=\"noopener noreferrer\">A2A Protocol — Agent Discovery</a>"
+    ],
+    "staff": [
+      "<a href=\"https://a2a-protocol.org/latest/topics/agent-discovery/\" rel=\"noopener noreferrer\">A2A Protocol — Agent Discovery</a>"
+    ]
+  },
+  "embedding-search-sidebar": {
+    "junior": [
+      "<a href=\"https://ai.google.dev/gemini-api/docs/embeddings\" rel=\"noopener noreferrer\">Gemini API — Embeddings</a>"
+    ],
+    "mid": [
+      "<a href=\"https://ai.google.dev/gemini-api/docs/embeddings\" rel=\"noopener noreferrer\">Gemini API — Embeddings</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API\" rel=\"noopener noreferrer\">MDN — Fetch API</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API\" rel=\"noopener noreferrer\">MDN — Fetch API</a>"
+    ]
+  },
+  "controlled-uncontrolled-inputs": {
+    "junior": [
+      "<a href=\"https://react.dev/reference/react-dom/components/input\" rel=\"noopener noreferrer\">React — &lt;input&gt; (controlled vs uncontrolled)</a>"
+    ],
+    "mid": [
+      "<a href=\"https://react.dev/reference/react-dom/components/input\" rel=\"noopener noreferrer\">React — &lt;input&gt; (controlled vs uncontrolled)</a>"
+    ],
+    "staff": [
+      "<a href=\"https://react.dev/reference/react-dom/components/input\" rel=\"noopener noreferrer\">React — &lt;input&gt; (controlled vs uncontrolled)</a>"
+    ]
+  },
+  "focus-trap-modal": {
+    "junior": [
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Dialog (Modal) Pattern</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Dialog (Modal) Pattern</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Dialog (Modal) Pattern</a>"
+    ]
   }
 }

@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Focus Traps That Don't Trap Keyboard Users"
+description: "A modal's focus trap that only handles the happy path — Tab off the last field escapes into the page still hidden behind it, and closing never gives focus back."
+slug: focus-trap-modal
+track: browser-dom
+readMin: 10
+flagship: false
+demoType: toggle
+principle: a11y
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/focus-trap-modal-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>QA said the modal was keyboard accessible. Tabbing past the last field said otherwise</h2>
+  <div class="tone-junior">
+    <p>
+      A team ships a "Delete project" confirmation modal. Tab moves through its fields correctly, name input, checkbox, Cancel, Delete, so the ticket gets marked keyboard-accessible and closed. A week later someone reports that pressing Tab one more time, right after landing on the Delete button, doesn't loop back to the name input. It moves focus onto a link in the page behind the modal, a page that's still fully there, still fully interactive, just visually covered by the dialog on top of it.
+    </p>
+    <p>
+      The modal was never actually "trapping" anything. It handled Tab moving forward through its own fields and stopped there, the one moment that mattered most, the boundary where focus tries to leave, was never handled at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      "The fields tab through in order" and "focus is trapped inside the dialog" are not the same claim, and a lot of modal implementations only actually build the first one. The second one requires explicitly intercepting Tab at both ends of the tab sequence, wrapping last back to first and first back to last, plus a separate, easy-to-forget obligation: returning focus to whatever triggered the dialog once it closes.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The deeper failure mode is building a trap that only reacts to keyboard-driven Tab and nothing else, or conversely, one that reacts to <em>any</em> focus change by yanking focus back on a timer. Both are wrong in different directions: the first leaves a real leak for sighted keyboard users, the second can fight a screen reader's own virtual-cursor navigation, which moves an internal reading position independently of DOM focus and doesn't expect the page to fight it.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Two separate obligations, both required: wrap the ends, return focus on close</h2>
+  <div class="tone-junior">
+    <p>
+      A correct focus trap does two things. First, Tab from the last focusable element inside the dialog moves focus to the first one instead of leaving the dialog, and Shift+Tab from the first element moves to the last one, so focus can never escape while the dialog is open. Second, when the dialog closes, focus goes back to whatever element opened it, the button the user's hand is already near, not to the top of the page.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Implementing the wrap correctly means capturing the <code>keydown</code> event for Tab, checking whether the currently focused element is the last (or first) focusable element inside the dialog's container, and if so, calling <code>preventDefault()</code> and explicitly moving focus with <code>.focus()</code>. Implementing the return means saving a reference to <code>document.activeElement</code> at the moment the dialog opens, that's the trigger, and calling <code>.focus()</code> on it explicitly when the dialog closes. Neither of these happens automatically; a dialog that's simply hidden or removed from the DOM leaves focus wherever the browser's default fallback puts it, usually <code>&lt;body&gt;</code>.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      A common way the wrap breaks in practice: computing the list of focusable elements once, at dialog-open time, and never recomputing it. If a disabled submit button becomes enabled mid-interaction, or a conditional field appears, the cached first/last elements go stale and the trap starts wrapping to the wrong place, or to an element that's no longer actually focusable. The robust version recomputes the focusable-elements list at the moment Tab is pressed, not once up front.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The trap that fought the screen reader instead of the page</h2>
+  <div class="tone-junior">
+    <p>
+      An earlier version of the same modal did attempt to handle the escape case, but the wrong way: instead of intercepting the Tab key, it listened for any <code>focus</code> event anywhere in the document and, if the newly focused element was outside the dialog, immediately called <code>.focus()</code> back onto the dialog's first field. For a sighted mouse user this looked fine. For a screen reader user navigating in browse mode, where the assistive technology moves its own internal reading cursor across the page independently of where DOM focus actually is, this handler fired constantly, yanking real focus back into the dialog every time their virtual cursor happened to pass an element outside it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The reporter described it as the page "fighting" their screen reader, every attempt to read past the dialog's boundary got forcibly interrupted. The team's first instinct was to fix the timing; the actual fix was architectural, stop reacting to focus events after the fact and instead intercept the Tab keydown before the browser moves focus at all, which only fires on an actual keyboard Tab press and never on the screen reader's own internal navigation.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The retrospective's real lesson was that "trap focus" had been treated as one job when it's really two, keep keyboard <code>Tab</code> cycling inside the dialog, and separately, mark the dialog's boundary declaratively (<code>role="dialog"</code>, <code>aria-modal="true"</code>, and <code>inert</code> or an equivalent on everything outside it) so assistive technology understands the boundary on its own terms instead of the page trying to enforce it by force-focusing elements after the fact.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Tab from the dialog's last field escapes onto page content still hidden behind it, and closing never returns focus to the trigger (broken) vs. Tab wraps last-to-first inside the dialog and closing refocuses the trigger button (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Open the dialog, press Tab past the last field, and watch where focus goes</h2>
+  <div class="tone-junior">
+    <p>Click "Open dialog," then use the "Press Tab" and "Close dialog" buttons and watch the log, and the highlighted element, to see exactly where focus moves in each mode.</p>
+  </div>
+  <div class="tone-mid">
+    <p>In broken mode, pressing Tab on the Delete button (the last field) moves focus onto the decoy element representing page content behind the dialog. In fixed mode, the same Tab press wraps back to the name input, and closing the dialog explicitly refocuses the "Open dialog" trigger.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Both modes call real <code>.focus()</code> on real elements in this demo, this is the actual DOM focus mechanism at work, not an animation standing in for it. The difference is entirely in whether a keydown handler intercepts Tab at the boundary.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A confirmation dialog whose Tab key handling lets focus escape onto page content and never returns focus on close (broken) vs. Tab correctly wrapping inside the dialog and focus returning to the trigger on close (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="focus-trap-modal">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo opens a simulated confirmation dialog and lets you step through Tab presses, comparing a version where focus escapes the dialog onto page content behind it against a version where focus wraps correctly and returns to the trigger on close; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No focus trap
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Correct focus trap
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Correct focus trap</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The native &lt;dialog&gt; element, and why hand-rolling still happens anyway</h2>
+  <div class="tone-junior">
+    <p>
+      The native <code>&lt;dialog&gt;</code> element's <code>.showModal()</code> method gets you a correct focus trap and closing on Escape for free, in modern browsers, with no hand-written keydown handler at all. If a new modal doesn't need custom open/close animation choreography that <code>&lt;dialog&gt;</code> can't easily do, start there instead of building the trap by hand.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Teams still hand-roll modals for real reasons: custom enter/exit animations, needing the dialog to coexist with other overlay layers in a specific stacking order, or supporting older browsers. When hand-rolling is the actual constraint, the WAI-ARIA Authoring Practices Guide's dialog pattern is the spec to build against, not intuition, it defines the exact Tab/Shift+Tab wrapping behavior and the focus-return-to-trigger requirement this case demonstrates.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      A hand-rolled trap also needs to hide the rest of the page from assistive technology, not just visually cover it, or a screen reader's virtual cursor can still browse "through" a backdrop into content that's supposed to be inert while the dialog is open. Applying <code>inert</code> to everything outside the dialog (or <code>aria-hidden="true"</code> on sibling containers, for browsers without <code>inert</code> support) closes that gap; a semi-transparent visual overlay by itself does nothing for the accessibility tree.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A focus trap needs two things: Tab from the last field wraps to the first (and back), and closing the dialog returns focus to whatever opened it. Fields tabbing through in order alone isn't a trap.</div>
+        <div class="tone-mid">Intercept Tab at the keydown level and check against a freshly computed focusable-elements list, not a cached one from dialog-open time — and explicitly save and restore focus to the trigger element on close, the browser won't do either for you.</div>
+        <div class="tone-staff">Reacting to focus events after the fact to yank focus back can fight a screen reader's own virtual-cursor navigation. Mark the boundary declaratively with role="dialog", aria-modal="true", and inert on everything outside it, so assistive tech understands the boundary instead of the page enforcing it by force.</div>
+      </li>
+    </ul>
+  </div>
+</section>

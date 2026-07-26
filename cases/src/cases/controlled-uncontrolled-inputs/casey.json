@@ -1,0 +1,103 @@
+{
+  "slug": "controlled-uncontrolled-inputs",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "value starts as undefined while data loads, then becomes a real string once it arrives — React calls that switching from uncontrolled to controlled.",
+      "mid": "Typing during the loading window puts text only in the DOM node, nowhere else — the moment value becomes defined, that text gets forcibly overwritten.",
+      "staff": "The prop's shape changes across renders, not just its content — that's exactly the sequence React's own warning is built to catch."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Type a name before clicking Load profile, then click it and watch what happens to what you typed.",
+      "mid": "Broken mode has no value attribute until the fetch resolves. Fixed mode is controlled with an empty-string default from the first render.",
+      "staff": "Because fixed mode's value was real state the whole time, it can decide whether to keep typed text — that decision doesn't exist in broken mode."
+    },
+    {
+      "chapter": "concept",
+      "junior": "value={user?.name ?? ''} makes the input controlled from the very first render — undefined never appears as the value at all.",
+      "mid": "Any way of guaranteeing a string every render works — useState('') instead of useState(), or normalizing data the moment it lands.",
+      "staff": "checked needs the identical treatment for booleans, and the same undefined-then-defined sequence can come from localStorage or conditional props, not just fetches."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "The bug hides well — the field looks and works fine the whole time it's loading, until the exact moment data arrives.",
+      "mid": "defaultValue and value on the same element trips a different React warning — an easy trap to land in while patching this one.",
+      "staff": "The durable fix is modeling 'not loaded yet' as its own explicit state, not letting undefined stand in for it inside a real form field's props."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! This one's about a name field on an edit-profile form that would sometimes just erase whatever you'd typed, right as the page finished loading your data. Nobody could figure out why for months.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is one small change. Give the input a real starting value, an empty string, instead of leaving it undefined while data is still loading. Then it's controlled from the very first render, and it never has that flip that causes the problem.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try typing a name into the field right when it appears, before clicking load. Then watch what happens to your typing once the simulated data finishes loading, in each mode.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Never let a form field's value start out undefined while you wait for real data. Give it an empty string as a starting point instead, and it'll behave the same way from the very first render to the last.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

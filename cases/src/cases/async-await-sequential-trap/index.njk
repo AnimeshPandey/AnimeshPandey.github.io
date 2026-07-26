@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "async/await Looks Sequential (It Isn't)"
+description: "Two independent await calls, written one after another because that's how the code reads, quietly serialize two API requests that could have run at the same time."
+slug: async-await-sequential-trap
+track: javascript
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Async illusion
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/async-await-sequential-trap-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The dashboard's "one slow endpoint" was two fast ones, waiting in line</h2>
+  <div class="tone-junior">
+    <p>
+      A dashboard takes 1.6 seconds to load its header. Someone opens the network tab expecting to find one slow request and instead finds two, each around 700-900ms, that never overlap — the second one doesn't even start until the first one finishes. The code reads <code>const user = await fetchUser(); const settings = await fetchSettings();</code>, written in the order a reasonable person would write it, top to bottom. Nothing about the code looks wrong. It just isn't fast.
+    </p>
+    <p>
+      <code>fetchSettings()</code> doesn't need anything from <code>fetchUser()</code>'s result. There was never a reason for the second request to wait for the first one, other than that <code>await</code> on line one makes the function pause there before line two ever executes.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>await</code> only pauses the <em>function</em> it's written in, not the two operations relative to each other. Code that reads top-to-bottom looks like it executes top-to-bottom, and for a function with dependent steps, it does. For two independent calls sitting on consecutive lines, that visual read is misleading: nothing forced them into that order except where the <code>await</code> keywords happened to land.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a readability property working against a performance property. <code>async/await</code> was specifically designed to make asynchronous code <em>look</em> synchronous, so it reads as intent, do this, then this. That's a genuine win for code with real dependencies. Applied by habit to two calls with no dependency between them, the same visual cue that makes dependent code readable makes independent code silently slower, and nothing in the syntax marks the difference.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>One question decides sequential vs. concurrent: does this line need the last one's result?</h2>
+  <div class="tone-junior">
+    <p>
+      <code>await fetchUser(); await fetchSettings();</code> starts <code>fetchUser</code>, waits for it to fully finish, and only then starts <code>fetchSettings</code>. Total time is roughly the first call's duration plus the second's. <code>Promise.all([fetchUser(), fetchSettings()])</code> starts both calls in the same tick, then waits for whichever one finishes last. Total time is roughly whichever call was slower, not the sum of both.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix isn't "always use <code>Promise.all</code>" — it's asking one question per <code>await</code>: does this line need a value produced by the line before it? If yes, sequential is correct and necessary, you have nothing to run concurrently yet. If no, calling both functions first (which starts both promises immediately) and awaiting the combined result afterward lets their underlying work, usually network I/O, overlap instead of queue.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      "Concurrent" isn't "parallel" here, and the distinction matters for reasoning about this correctly. JavaScript still runs one line of your code at a time on one thread. What overlaps when you call both functions before awaiting either is the <em>waiting</em>, both requests are in flight on the network simultaneously, even though the JS engine itself never executes two of your statements at once. The speedup comes from no longer serializing I/O latency you never needed to serialize, not from literal parallel execution of your code.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Nobody wrote the slow version on purpose</h2>
+  <div class="tone-junior">
+    <p>
+      A checkout page fetched the user's saved shipping address and the cart's shipping-rate options as two separate calls to two separate services, written as consecutive <code>await</code> lines because that's the natural way to type "get the address, get the rates." Both calls existed for over a year before anyone profiled the page. The address call took about 650ms, the rates call about 850ms, and the two together took about 1.5 seconds, every time, because the rates call never started until the address call had fully returned.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      An engineer investigating unrelated checkout-abandonment numbers opened the network waterfall and noticed the two requests stacked instead of overlapping. Swapping the two sequential <code>await</code>s for a single <code>Promise.all</code> around both calls dropped the combined wait from about 1.5 seconds to about 850ms, roughly the slower of the two calls alone, with no change to either backend endpoint.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team's actual follow-up was a lint pattern, not just this one fix: they started grepping for consecutive top-level <code>await</code> statements inside the same function with no data dependency between them, which turned up two more instances elsewhere in the codebase doing the same thing on other pages. The bug class was never really "this one endpoint is slow," it was "our code reads in an order that happens to match how well-written dependent async code looks," which is exactly the trap, and exactly why it's easy to reproduce by accident more than once.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">await fetchUser(); await fetchSettings(); serializes two independent calls to roughly their combined time (broken) vs. Promise.all([fetchUser(), fetchSettings()]) running them concurrently, bounded by the slower call alone (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Measure the real wall-clock difference between the two versions</h2>
+  <div class="tone-junior">
+    <p>Click "Run page load" in each mode and watch the timing bars — the total at the bottom is measured live, not hard-coded.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Both simulated calls take roughly the same time in each mode. The only thing that changes is whether the second call's timer starts after the first one finishes, or at the same instant as the first one.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Watch the start offset of the second bar, not just the total. In the fixed version both bars start at 0ms — the calls were genuinely issued together, not staggered by a few milliseconds of scheduling.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Two independent simulated API calls awaited sequentially (broken) vs. started together with Promise.all (fixed), with real measured timing for each"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="async-await-sequential-trap">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo runs two simulated API calls, comparing sequential await statements against Promise.all, and measures real wall-clock time for each; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Sequential await
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Promise.all
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Promise.all</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The loop version of this trap, and where Promise.all is the wrong fix too</h2>
+  <div class="tone-junior">
+    <p>
+      The same mistake generalizes to loops: <code>for (const id of ids) { await fetchOne(id); }</code> awaits each fetch before starting the next one, serializing however many independent requests are in the list. <code>Promise.all(ids.map(id => fetchOne(id)))</code> starts them all at once instead.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>Promise.all</code> rejects the whole batch the instant any single promise rejects, which is fine for a checkout page's two required calls but wrong for a dashboard with several optional widgets, one flaky widget's fetch failing shouldn't blank the entire page. <code>Promise.allSettled</code> keeps the same concurrency win while letting you render whatever did succeed and handle each failure independently.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Firing every request in a large list simultaneously via <code>Promise.all(ids.map(...))</code> can trade one problem for another: a list of 200 IDs becomes 200 simultaneous requests, which can hit a browser's per-origin connection limit or a backend rate limit and get some of them queued or throttled anyway. For genuinely large independent batches, a bounded-concurrency pattern, running a fixed number at a time and starting the next as one finishes, gets the overlap win without the burst. The fix for this case's two-call trap is unconditional; the fix for an n-item loop needs that extra judgment call.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Code that reads top-to-bottom with await looks sequential because that's how you read it, not because the two calls need to run in that order — check whether the second call actually needs the first one's result.</div>
+        <div class="tone-mid">Ask one question per await: does this line need the value from the line before it? If not, start both calls first and await the combined result with Promise.all so their wait time overlaps instead of stacking.</div>
+        <div class="tone-staff">Promise.all gives you concurrency, not parallelism — JS still runs one statement at a time, the win is overlapping I/O wait, not executing your code simultaneously. And Promise.all's fail-fast behavior and unbounded fan-out both need their own judgment calls for optional widgets and large batches.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Controlled vs Uncontrolled Forms"
+description: "A name field that starts life with value={undefined} and later gets a real string once data loads flips from uncontrolled to controlled mid-flight — and can silently erase whatever the user just typed."
+slug: controlled-uncontrolled-inputs
+track: react
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Forms
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/controlled-uncontrolled-inputs-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The name field that erased what you just typed</h2>
+  <div class="tone-junior">
+    <p>
+      An edit-profile form fetches the current user and pre-fills a name field from it: <code>&lt;input value={user?.name} onChange={...} /&gt;</code>. While that fetch is in flight, <code>user</code> is <code>undefined</code>, so <code>value</code> is <code>undefined</code> too — React treats a missing <code>value</code> prop as "this input manages its own text," an uncontrolled input.
+    </p>
+    <p>
+      If someone starts typing while the page is still loading — a completely normal thing an impatient user does — that typed text lives only in the input's own DOM node, nowhere else. The instant the fetch resolves, the same input gets handed a real string value. React logs a warning, and the freshly-typed text is gone, replaced by whatever the server sent back.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is <code>value</code> going from <code>undefined</code> to a defined string across two renders of the same input, in that exact order — and React's rule is that a given input can't switch from uncontrolled to controlled (or back) over its lifetime. When it does anyway, the DOM node gets forcibly reconciled to whatever the newly-defined <code>value</code> prop says, silently discarding whatever the input's own keystrokes had put there.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      React's own docs name this exact failure mode directly: "if you provide a <code>value</code> to the component, it must remain a string throughout its lifetime. You cannot pass <code>value={undefined}</code> first and later pass <code>value="some string"</code> because React won't know whether you want the component to be uncontrolled or controlled." The bug here isn't a typo, it's a sequencing problem — the prop's *shape* changes across renders, not just its content.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Give value a real string from the very first render</h2>
+  <div class="tone-junior">
+    <p>
+      <code>value={user?.name ?? ''}</code> fixes this. Even before the fetch resolves, <code>value</code> is <code>''</code> — an actual string, not <code>undefined</code> — so React manages the input as controlled starting on the very first render. The timing of when data loads no longer changes whether the input is controlled, only what text it currently holds.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix isn't limited to the <code>??</code> operator — anything that guarantees a string on every single render works: seed the backing state with <code>useState('')</code> instead of a bare <code>useState()</code>, or normalize the field the moment data lands rather than passing a possibly-undefined value straight through to the JSX.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The same rule and the same fix apply to <code>checked</code> on checkboxes and radios — it must always be a boolean, never <code>undefined</code> or <code>null</code>. And it's not limited to network-fetched data: state read from <code>localStorage</code>, a lazily-initialized context value, or a prop passed down conditionally can all produce the same undefined-then-defined sequence. The invariant to hold: whatever produces a piece of controlled state must produce a same-shaped value on the very first render, not "eventually, once it's ready."
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The profile team's console warning nobody understood</h2>
+  <div class="tone-junior">
+    <p>
+      A team's edit-profile page had been shipping this bug for months. Support tickets occasionally mentioned "sometimes when I type my name fast it disappears" — nobody connected it to a warning that only showed up in local dev builds, because production strips console warnings and the field just silently loses whatever was typed.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team eventually reproduced it locally: type in the name field the instant the page loads, before the profile fetch resolves, and watch the value vanish the moment the fetch completes. Once they spotted the console warning in dev mode, the fix took about ten minutes — seed the field's state with <code>''</code> in <code>useState</code>, then let <code>onChange</code> do the rest.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also audited every other field on the page and found two more with the exact same missing default — same bug, different field, because the habit of spreading a fetched object straight into initial form values had been copy-pasted across all three. Fixing one field caught one instance of a systemic authoring pattern, not a one-off typo — worth grepping for a bare <code>useState()</code> paired with a <code>value=</code> prop fed by async data anywhere else in the codebase.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Input's value starts undefined and becomes a defined string once async data loads, flipping uncontrolled → controlled mid-flight and clobbering typed text (broken) vs. value defaults to '' from the first render, controlled the whole time (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Type before the data loads, both ways</h2>
+  <div class="tone-junior">
+    <p>Type a name into the field right away, before clicking "Load profile" — then click it and watch what happens to what you typed.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode's input has no value attribute until the simulated fetch resolves — uncontrolled, then forced controlled. Fixed mode's input is controlled with an empty-string default from the start.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The fixed mode doesn't just avoid the console warning — because the value was real controlled state the whole time, the component can make an actual product decision about whether loaded data should overwrite what the user already typed, instead of that being decided as a side effect of the bug.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Name field that starts uncontrolled and flips to controlled once data loads, clobbering typed text (broken) vs. one controlled from the first render with an empty-string default (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="controlled-uncontrolled-inputs">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a name field that starts uncontrolled and flips to controlled once simulated data loads against one that's controlled with an empty-string default from the start; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            value={undefined} at first
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            value={state ?? ''}
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: value={state ?? ''}</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The same rule, in the places it's easy to miss</h2>
+  <div class="tone-junior">
+    <p>
+      This bug hides especially well because the input looks and works fine the entire time the page is loading — it's only the moment data actually arrives that anything goes wrong, and by then whoever's testing the form may have already moved their attention elsewhere.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Checkboxes and radios need the identical treatment for <code>checked</code> (<code>checked={someBoolean ?? false}</code>), and mixing <code>defaultValue</code> and <code>value</code> on the same element is its own separate React warning — not the one this case covers, but it's an easy trap to reach for when patching this one and land in a different warning instead.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The more durable fix, when it's practical, is to not let "no data yet" and "empty string" be different states your component has to reason about at all — model loading as its own explicit UI state (a skeleton, a disabled field) rather than rendering the real form early with placeholder-shaped props. That sidesteps the undefined-value problem structurally instead of patching it with <code>?? ''</code> at every call site that touches async data.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">An input can't switch from uncontrolled to controlled mid-life — if value starts as undefined and later becomes a string, React warns, and the field's contents can get silently overwritten.</div>
+        <div class="tone-mid">Give value (and checked) a real, same-shaped default from the very first render — value={"{state ?? ''}"} or useState('') instead of a bare useState() — so the input is controlled from render one, not eventually.</div>
+        <div class="tone-staff">The same invariant applies anywhere state can start undefined and later resolve — fetched data, localStorage, conditional props — and the more durable fix is modeling "not loaded yet" as its own explicit UI state rather than rendering the real form with placeholder-shaped props.</div>
+      </li>
+    </ul>
+  </div>
+</section>

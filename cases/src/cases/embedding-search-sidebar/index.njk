@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Client-Side vs Server-Side Embedding Search"
+description: "A docs sidebar's semantic search got smarter and laggier at the same time — the real tradeoff between shipping the embedding model to the browser and round-tripping every query to a server."
+slug: embedding-search-sidebar
+track: ai-frontend-integration
+readMin: 10
+flagship: false
+demoType: toggle
+principle: RAG UX
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/embedding-search-sidebar-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The docs sidebar that got laggier the smarter it got</h2>
+  <div class="tone-junior">
+    <p>
+      A team replaced the keyword filter in their docs sidebar with semantic search — type "how do I reset my password" and it finds the right page even without those exact words. They built it server-side: every keystroke-driven query got sent to an API, which turned it into an embedding vector, compared it against the docs' precomputed vectors, and sent back the closest matches.
+    </p>
+    <p>
+      It worked, and it felt smart. It also felt slow. Every search round-tripped to the server, 400-700ms depending on the user's connection — for a sidebar covering maybe 40 doc pages that barely ever changed. The old dumb keyword filter, run entirely in the browser, had felt instant by comparison.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The round-trip latency was the visible symptom, but it was the wrong cost to be paying for this corpus: dozens of pages, shipped with the app, rarely changing — exactly the profile where computing the same semantic search entirely client-side (model and vector index downloaded once, then every query runs locally) would have made searches after the first effectively free.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The mistake wasn't choosing server-side embedding search, it was choosing it by default without checking whether this corpus's characteristics justified paying a network round trip on every keystroke. Server-side buys you a corpus that updates without a client redeploy and zero added client bundle weight — neither of which mattered here, since the docs already shipped inside the app bundle.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Where the vectors live changes what you're actually paying for</h2>
+  <div class="tone-junior">
+    <p>
+      Semantic search needs two things at query time: turning the query text into an embedding vector, and comparing that vector against every document's precomputed vector to find the closest matches. Client-side does both in the browser — download a (usually quantized, tens of megabytes) embedding model plus the docs' precomputed vectors once, then every search after that runs locally, no network call. Server-side sends the raw query to an API that does both steps on a server and returns just the matching results — nothing downloaded upfront, but every single search is a round trip.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The two costs are the same shape at opposite ends: client-side pays a one-time cold-start cost (the model download) before the first search can run at all; server-side pays a per-query cost (a network round trip and an embedding call, every time). Which wins depends on how many searches happen and how big the corpus is — a fixed, small doc set favors client-side (pay once, fast forever); a large or frequently-changing corpus favors server-side (nothing to re-ship when the content changes).
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      There's a third variable beyond corpus size: how often it changes. Client-side needs its vector index rebuilt and re-shipped whenever the underlying docs change — fine for content on a release cadence, painful for content that changes hourly. Server-side's vector store can be re-indexed independently of any client deploy. Offline capability is the other real differentiator: client-side search keeps working with zero network at all, something server-side fundamentally can't offer no matter how fast the API responds.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The support sidebar that split the difference</h2>
+  <div class="tone-junior">
+    <p>
+      The team behind the laggy sidebar didn't throw out server-side search entirely — they kept it for their public help center, which has thousands of articles a support team updates daily, where re-shipping a client bundle on every content edit isn't realistic. For the in-app docs sidebar specifically — around 40 pages, versioned with the app itself — they switched to a client-side embedding model with a precomputed index built at deploy time.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The cutover was per-surface, not global: the sidebar (small, fixed, ships with the app anyway) moved client-side; the public help center (large, updated independently of app releases) stayed server-side. Both use the same underlying embedding technique — the deciding factor was corpus size and change frequency, not which approach felt more current.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They measured before committing: the client-side model added roughly 25MB, quantized, cached after the first load, to the sidebar's cold-start cost — acceptable because the sidebar isn't the first thing rendered on page load, it lazy-loads on first open. If it had needed to be interactive immediately on page load, that download would have been a much harder trade to justify, and they'd likely have stayed server-side even with a corpus that otherwise fit the client-side profile.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Server-side search pays a network round trip on every keystroke-driven query, even for a small fixed doc set (broken framing) vs. client-side search pays one model download upfront, then every query runs locally with zero network cost (fixed framing)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Search the same small doc set both ways</h2>
+  <div class="tone-junior">
+    <p>Type a search term in each mode and watch what happens before results show up — one mode waits on a network call every time, the other loads once and then answers instantly.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode simulates a real round trip on every keystroke-driven query. Fixed mode simulates a one-time model download, then every search after that runs with no network call at all.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The fixed mode's cost isn't gone, it's moved earlier — watch the one-time load happen before the first query, then compare per-query latency after that against the broken mode's per-query network cost.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Semantic search over a small doc set: server-side round trip per query (broken) vs. client-side model loaded once, then instant local search (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="embedding-search-sidebar">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares server-side embedding search (a round trip per query) against client-side embedding search (a one-time model load, then instant local queries); it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Server round trip
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Client-side, loaded once
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Client-side, loaded once</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The tradeoff doesn't disappear, it just moves</h2>
+  <div class="tone-junior">
+    <p>
+      The corpus in this demo is small on purpose — eight documents. A client-side index at that size is nothing to download. Real docs sidebars can run to hundreds of pages, and at some point the download gets big enough that even a one-time cost stops being worth it — the answer flips back toward server-side.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      There's no fixed page-count where the answer flips — it depends on the actual model size chosen (a smaller, more quantized model trades search quality for a smaller download), how often the sidebar gets opened per session (amortizing a download over many searches is fine, over one search it isn't), and whether the download can happen ahead of time — prefetched on hover, loaded in the background after the page settles — rather than blocking the first search.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Don't treat this as one static decision either — a hybrid is legitimate: ship a small client-side index for the fixed core of your content (the material that rarely changes and needs to be fast) and fall back to a server-side call for anything outside that fixed set, like recently added content not yet baked into the shipped index. The two approaches aren't mutually exclusive within the same feature.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A small, mostly-static content set favors running search fully in the browser — no round trip per query, after a one-time load.</div>
+        <div class="tone-mid">Client-side pays once (model plus index download) and is free per query after that; server-side pays nothing upfront but costs a round trip on every query — match the choice to corpus size and change frequency.</div>
+        <div class="tone-staff">Corpus size, update frequency, and whether the UI needs to be interactive immediately are the variables that actually decide this — and the two approaches can coexist in the same feature rather than being all-or-nothing.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,103 @@
+{
+  "slug": "async-await-sequential-trap",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Two fast requests, stacked instead of overlapping — the code reads top to bottom, so it looks like it has to run that way. It doesn't.",
+      "mid": "await only pauses the function it's written in — nothing forces two unrelated calls on consecutive lines into that order except where the await keywords happen to land.",
+      "staff": "async/await was designed to make dependent async code read like synchronous code — that's a real win for dependent steps, and a silent tax when applied by habit to independent ones."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click 'Run page load' in each mode and watch the timing bars — the total at the bottom is measured live, not hard-coded.",
+      "mid": "Both simulated calls take about the same time either way — what changes is whether the second call's timer starts after the first finishes or at the same instant.",
+      "staff": "Watch the start offset of the second bar, not just the total — in the fixed version both bars start at 0ms because the calls were genuinely issued together."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Sequential await adds the two durations together. Promise.all runs both at once and waits for whichever finishes last.",
+      "mid": "One question per await: does this line need the value from the line before it? If not, start both calls first and await the combined result.",
+      "staff": "Concurrent isn't parallel — JS still runs one statement at a time. The win is overlapping I/O wait time, not literally executing two lines of your code simultaneously."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "The same trap shows up in loops: awaiting inside a for loop serializes every item instead of starting them together.",
+      "mid": "Promise.all rejects the whole batch on the first failure — Promise.allSettled keeps the concurrency win while letting independent widgets fail without blanking the page.",
+      "staff": "Firing Promise.all across a large list can trade one problem for another — hundreds of simultaneous requests can hit connection or rate limits. Bounded concurrency gets the overlap without the burst."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about async and await — specifically two independent API calls that were quietly running one after another because that's the order they were written in, not because either one needed the other.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is one question per await: does this line actually need the result from the line before it? If not, start both calls first and wait for both together with Promise dot all, so their wait time overlaps instead of stacking.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try running the page load simulation in both modes and watch how much the total time changes, measured live in each run.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Code that reads top to bottom with await looks sequential because that's how you're reading it, not because the calls need to run in that order. Check whether the second call actually needs the first one's result.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try sequential", "target": "[data-demo-state=broken]" },
+        { "label": "Try Promise.all", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle sequential", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle Promise.all", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Sequential state", "target": "[data-demo-state=broken]" },
+        { "label": "Concurrent state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "slug": "alt-text-decorative",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A missing alt attribute and alt=\"\" both look like 'no text' in the code — but only one of them tells a screen reader to skip the image.",
+      "mid": "The decorative banner and the real chart failed in opposite directions: one announced noise, the other announced nothing at all.",
+      "staff": "Same visual output, opposite accessibility-tree result — nothing in a screenshot-based QA pass would ever catch this."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click 'Run screen reader pass' in each mode and watch what actually gets announced for each image.",
+      "mid": "Broken: the banner announces its filename and the chart says nothing. Fixed: the banner goes silent and the chart's real content gets read.",
+      "staff": "The fixed log removes an announcement from one image and adds one to the other — this bug touches both images at once, not just the one that looked broken."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Three states: a real description (read aloud), alt=\"\" (skipped on purpose), and no attribute at all (screen readers often fall back to the filename).",
+      "mid": "One question per image: does it convey information the surrounding text doesn't already say? Yes, write it. No, alt=\"\".",
+      "staff": "alt=\"\" is a deliberate accessibility-tree removal instruction, not an absence of information — a missing attribute leaves the accessible-name computation nothing to work from but the filename."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "An icon-only button's alt text should describe the action ('Delete'), not the icon ('trash can').",
+      "mid": "A chart's alt text stays short; the full data goes in a caption, a table, or an aria-describedby target next to it.",
+      "staff": "Audit for a CMS or component default that sets alt=\"\" for anything without manually-entered text — it's correct for decoration and silently wrong for everything else, and it's invisible in a visual QA pass."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about alt text — specifically two images on the same page that were both wrong about their alt attribute, in exactly opposite directions.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "There are three states for an image's alt attribute: a real description that gets read aloud, an empty alt that tells the screen reader to skip it on purpose, and a missing attribute entirely, which often makes the screen reader fall back to reading the filename.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try running the simulated screen reader pass in each mode and listen to what actually gets announced for each image.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "An empty alt and a missing alt attribute are not the same thing. Ask whether the image conveys information the text around it doesn't already say — if yes, describe it, if no, mark it empty on purpose.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "slug": "a2a-agent-card-discovery",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The dashboard picked an agent by matching the word 'refund' to a name — nobody checked whether that agent could actually process refunds.",
+      "mid": "The Billing Agent's real skill list was invoice-lookup, read-only. Refund routing to it succeeded in the UI and failed everywhere else.",
+      "staff": "Routing by name treats a label as an interface — A2A hands you the real interface as data in the Agent Card, unused here."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Route refund request in each mode and see which agent gets picked — and whether anything checked first.",
+      "mid": "Broken mode name-matches keywords to an agent. Fixed mode fetches every Agent Card and checks skill plus auth before routing.",
+      "staff": "Watch for two separate checks in fixed mode: skill match against the card's skills array, and auth match against securitySchemes."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Every A2A agent publishes a JSON Agent Card at /.well-known/agent-card.json — fetch it before you trust the agent with a task.",
+      "mid": "The card's skills array names exactly what the agent supports; securitySchemes lists what auth it'll accept. Match both before routing.",
+      "staff": "Skill match and auth match are independent — a card check that only looks at skills still sends requests that fail on a 401 instead of a skill mismatch."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Caching a fetched card is fine, but a stale cache can send you back to guessing against outdated data instead of a name string.",
+      "mid": "Cache skill lists loosely, but re-validate auth requirements more defensively — those are the kind that change on a deploy.",
+      "staff": "A card fetch is still a cross-origin resource you don't control — verify the domain, don't blindly forward every credential type it claims to accept."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! This one's about a dashboard that routed customer refunds to an agent that literally could not process refunds, because it picked the agent by its name instead of checking what it could actually do.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is simple to say: every agent in this protocol publishes a card, a JSON file at a fixed address, listing exactly what it can do and what login it needs. Fetch that card first, match the task against it, then route.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try routing the same refund request both ways and watch what happens. One mode guesses from the agent's name. The other actually fetches each agent's card and checks it can do the job before sending anything.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "An agent's name is not its interface. Fetch the card, check the skill, check the login it needs, then route. Skipping that step doesn't make routing faster, it just makes the failure quieter.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
