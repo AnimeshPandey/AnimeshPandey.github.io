@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "transform/opacity vs layout properties"
+description: "Animating width, height, top, or left forces the browser to redo layout and paint on every single frame — animating transform or opacity can skip both and run on the compositor thread instead, staying smooth even while the main thread is busy."
+slug: css-transition-gpu
+track: animation-motion
+readMin: 10
+flagship: false
+demoType: animation
+principle: Compositing
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/css-transition-gpu-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The loading bar that froze the instant the app got busy</h2>
+  <div class="tone-junior">
+    <p>
+      A progress indicator slides left to right by animating its <code>left</code> CSS property. It looks smooth in isolation. The moment the app does real work on the main thread, parsing a large response, running a heavy computation, the bar visibly stutters or freezes mid-slide, then jumps to where it should be once the work finishes. Nothing about the animation code changed; what changed is that <code>left</code> can't move without the browser recomputing layout and repainting, and both of those need the same main thread the heavy work is currently occupying.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Not every CSS property costs the same to animate. Properties like <code>width</code>, <code>height</code>, <code>top</code>, and <code>left</code> sit at the "layout" stage of the browser's rendering pipeline, changing them can shift where every other element on the page needs to be, so the browser has to redo layout, then paint, then composite, every single frame. <code>transform</code> and <code>opacity</code> don't affect any other element's position or size; the browser can skip layout and paint for them entirely and hand the change straight to compositing.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The sharper version of the same fact: transform and opacity changes can be handled entirely by the compositor thread, a thread separate from the main thread that's running your application's JavaScript. That's not just "cheaper," it's structurally independent, a compositor-only animation can keep running smoothly during a stretch where the main thread is fully blocked, because it was never waiting on the main thread to produce each frame in the first place.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Layout properties re-run the whole pipeline; transform/opacity skip straight to compositing</h2>
+  <div class="tone-junior">
+    <p>
+      The browser turns a frame into pixels through a few stages: layout (where does everything go), paint (turn each element into pixels), and composite (combine the painted layers onto the screen). Changing <code>left</code> or <code>width</code> means the browser doesn't know where anything ends up until it reruns layout, so it has to do all three stages, every frame, for a smooth animation. Changing <code>transform: translateX(...)</code> instead moves an already-painted layer around without asking layout or paint to run again, only the last, cheapest stage, compositing, has to happen.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is often summarized as "stick to compositor-only properties": restrict animations to <code>transform</code> and <code>opacity</code> wherever the visual result can be achieved that way, a slide is a <code>translate</code>, a resize-in-place is a <code>scale</code>, a fade is <code>opacity</code>. The payoff isn't marginal, it's the difference between a pipeline stage that's proportional to the whole page's layout complexity and one that's a fixed, cheap operation regardless of how much else is on the page.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The compositor-thread independence is the part worth internalizing precisely: because transform/opacity animations don't require the main thread to compute each frame, they keep running even while the main thread is busy with something else entirely, a long synchronous computation, a big JSON parse, expensive React reconciliation. A layout-property animation has no such independence; every frame update is main-thread work competing with whatever else the main thread is doing, and under load it simply loses frames.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The onboarding animation that was smooth in dev and janky for real users</h2>
+  <div class="tone-junior">
+    <p>
+      A team built a slide-in onboarding tooltip animated by changing its <code>left</code> position across the screen. In local development, on an idle page, it looked perfectly smooth. In production, real-user monitoring showed it stuttering for a meaningful share of users, specifically ones where the tooltip appeared while the app was also fetching and rendering initial data, exactly the moment the main thread was busiest and least able to keep recomputing layout every frame.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix was mechanical once identified: swap the animation from changing <code>left</code> to changing <code>transform: translateX(...)</code>, same visual motion, same distance, same duration. The stutter disappeared under the exact same production conditions that had caused it, because the animation no longer needed the main thread to compute each frame at all, it just needed the compositor thread, which wasn't contending with the data-fetch work for anything.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      What made this easy to miss in development was that the bug was load-dependent, not code-dependent, the animation code was never "wrong" in isolation, it only degraded under exactly the kind of main-thread contention that a quiet local dev environment doesn't reproduce. The team's later process fix was a lint rule flagging <code>transition</code>/<code>animation</code> declarations targeting layout-triggering properties, catching the pattern at write-time instead of relying on production RUM to surface it after the fact.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Animating left/top/width forces layout + paint every frame, and stutters under main-thread load (broken) vs. animating transform/opacity skips straight to compositing, and keeps running smoothly even while the main thread is busy (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Two boxes, both moving — then block the main thread and watch what happens</h2>
+  <div class="tone-junior">
+    <p>Both boxes animate continuously, back and forth. Click "Block main thread" and watch closely: the layout-property box visibly freezes for the duration of the block, while the transform box keeps sliding.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode animates <code>left</code> with a CSS keyframe loop. Fixed mode animates <code>transform: translateX(...)</code> with the same timing and distance. The block button runs a real synchronous busy-loop on the main thread.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This is a live compositor-thread demonstration, not a simulation: the transform animation genuinely continues to progress during the busy-loop because the compositor thread that's driving it never needed the (currently blocked) main thread to compute the next frame.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A box animated via the left CSS property, which stutters when the main thread is busy (broken) vs. a box animated via CSS transform, which keeps moving smoothly during the same main-thread block (fixed)"
+           data-required="true"
+           data-demo-type="animation"
+           data-demo-slug="css-transition-gpu">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo runs two continuously animating boxes, one moved via the left CSS property and one via CSS transform, and lets you block the main thread to compare how each one behaves under load; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            left / top
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            transform
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: transform</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:200px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>will-change, layer cost, and knowing which properties are safe</h2>
+  <div class="tone-junior">
+    <p>
+      <code>will-change: transform</code> can hint to the browser that an element is about to animate, letting it prepare a compositor layer ahead of time instead of on the first frame of the animation. It's a targeted tool, not a default to sprinkle everywhere, applying it to too many elements creates too many layers, which costs memory and can itself slow things down.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Not every visual change has a compositor-only equivalent. A layout reflow that genuinely needs to push other elements around, an accordion expanding and shoving content below it down, can't be faked with <code>transform</code> alone; the honest options are accepting the layout cost for that specific interaction, or restructuring so the expanding content overlays instead of displacing (which <em>can</em> be transform-driven).
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Before reaching for any property outside <code>transform</code>/<code>opacity</code> in a hot animation path, check what pipeline stage it actually triggers, some properties assumed to be "layout" are actually paint-only (like <code>background-color</code> or <code>box-shadow</code>, cheaper than layout but still not compositor-only), and some genuinely require layout no matter how they're written. <code>will-change</code> should be applied via JavaScript just before the animation starts and removed after, not left permanently in a stylesheet, a layer that exists indefinitely for an element that's animating rarely is pure memory overhead with no offsetting benefit.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Animating left, top, width, or height forces the browser to redo layout and paint on every frame, and it stutters when the main thread is busy. Animating transform or opacity can skip straight to compositing, and keeps running smoothly.</div>
+        <div class="tone-mid">Wherever the visual result allows it, express slides as translate, resizes as scale, and fades as opacity — same visual outcome, a fraction of the rendering-pipeline cost.</div>
+        <div class="tone-staff">Compositor-only animations run on a thread independent of the main thread, so they keep progressing even while JavaScript is busy — that independence, not just raw speed, is why they stay smooth under real-world load where layout-property animations visibly drop frames.</div>
+      </li>
+    </ul>
+  </div>
+</section>

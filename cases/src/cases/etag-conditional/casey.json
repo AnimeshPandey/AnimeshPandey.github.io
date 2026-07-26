@@ -1,0 +1,103 @@
+{
+  "slug": "etag-conditional",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Every 10-second poll re-downloads the full body, even though the underlying numbers only actually change every few minutes.",
+      "mid": "A TTL cache trades one problem for another — too long and a real update sits stale, too short and you're back to over-fetching.",
+      "staff": "What's missing is a validation step that's cheap on every request but only pays the transfer cost when there's actually new data."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Poll several times in each mode and watch the transfer total — the simulated data actually changes every fourth poll.",
+      "mid": "Broken always sends a plain GET and gets a full body back. Fixed sends If-None-Match after the first request and gets a 304 with 0 bytes when the ETag still matches.",
+      "staff": "The simulated ETag only increments when the data version actually changes, mirroring a server that hashes the current representation rather than reissuing on every request regardless of content."
+    },
+    {
+      "chapter": "concept",
+      "junior": "First request: 200 OK, full body, plus an ETag. Next request sends that ETag back as If-None-Match — unchanged means a 304 with no body at all.",
+      "mid": "A 304 is deliberately body-less — the client's job is to keep serving its cached copy, not to treat the response as new data to render.",
+      "staff": "An ETag is correct by construction, not by tuning — the client never serves data staler than its last request, and never re-transfers a body the server can prove is identical."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A plain \"abc123\" ETag is a strong validator; a W/\"abc123\" with the W/ prefix is weak — semantically equivalent but not byte-identical.",
+      "mid": "Last-Modified / If-Modified-Since is the lower-resolution sibling — second-level timestamp precision instead of a content hash, cheaper when hashing the body isn't worth it.",
+      "staff": "A naive fetch wrapper that always calls .json() throws on a real 304 — branch on response.status === 304 before parsing, and fall back to the cached payload."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a dashboard that polls an API every ten seconds, downloading the full response every single time, even though the underlying data only actually changes every few minutes.",
+        "mid": "A blind cache trades one problem for another — pick the duration too long and a real update sits stale, too short and you're back to over-fetching.",
+        "staff": "What's missing is a cheap validation step on every request that only pays the transfer cost when there's actually new data to send."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The first request gets back the full body plus an e tag, a short identifier for that version of the data. The next request sends that e tag back, and if nothing changed, the server replies 304 not modified, with no body at all.",
+        "mid": "A 304 response is deliberately empty. The client's job is to keep using its cached copy, not to treat the response as new data.",
+        "staff": "The real gain over a time-based cache is that this is correct by construction. The client never serves data staler than its last request, and never re-transfers a body the server can prove hasn't changed."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try clicking poll a few times in each mode and watch what happens to the running transfer total.",
+        "mid": "Broken always downloads the full body. Fixed only downloads it when the simulated data actually changed.",
+        "staff": "Notice the e tag only increments when the underlying data version changes, not on every single poll."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Send back the e tag you were given on the next request. If nothing changed, you get an empty reply back instead of the whole payload again.",
+        "mid": "This validates freshness without guessing a cache duration, and most polls become nearly free once the client already has the current version.",
+        "staff": "Handle the empty response explicitly in your fetch layer before trying to parse a body, and remember that no-cache means revalidate before use, not don't cache."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "slug": "css-transition-gpu",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Nothing about the animation code changed — left just can't move without the browser recomputing layout and repainting, and both need the main thread the heavy work is occupying.",
+      "mid": "Layout properties (width, height, top, left) force layout + paint + composite every frame; transform and opacity can skip straight to compositing.",
+      "staff": "Transform/opacity changes can be handled entirely by the compositor thread — structurally independent of the main thread, not just cheaper."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click 'Block main thread' and watch closely — the left-animated box freezes for the block's duration, while the transform box keeps sliding.",
+      "mid": "Broken animates left with a CSS keyframe loop; fixed animates transform: translateX() with the same timing and distance. The block button runs a real synchronous busy-loop.",
+      "staff": "This is a live compositor-thread demonstration — the transform animation genuinely keeps progressing during the busy-loop because it never needed the blocked main thread to compute the next frame."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Changing left means the browser doesn't know where anything ends up until it reruns layout — every frame, all three pipeline stages. Changing transform skips straight to the cheapest one, compositing.",
+      "mid": "\"Stick to compositor-only properties\": express a slide as translate, a resize as scale, a fade as opacity, wherever the visual result allows it.",
+      "staff": "Because compositor animations don't need the main thread per frame, they keep running during a busy main thread — a layout-property animation has no such independence and simply loses frames under load."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "will-change: transform hints the browser to prepare a compositor layer ahead of time — a targeted tool, not a default to sprinkle everywhere.",
+      "mid": "Not every visual change has a compositor-only equivalent — an accordion genuinely pushing content down can't be faked with transform alone.",
+      "staff": "Some properties assumed to be 'layout' are actually paint-only (background-color, box-shadow) — cheaper than layout but still not compositor-only. Apply will-change via JS just before animating and remove it after."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a progress bar that looked perfectly smooth on an idle page, and then visibly froze the moment the app actually had real work to do on the main thread.",
+        "mid": "Not every CSS property costs the same to animate — layout properties force the browser to redo layout and paint on every frame, while transform and opacity don't.",
+        "staff": "The sharper version is that transform and opacity changes can run entirely on a thread separate from the one running your JavaScript, which is why they can keep going even while that thread is fully blocked."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The browser turns a frame into pixels through layout, paint, and composite. Changing left forces all three, every frame. Changing transform skips straight to the cheapest one.",
+        "mid": "Stick to compositor only properties. A slide is a translate, a resize is a scale, a fade is opacity, wherever the visual result allows it.",
+        "staff": "The independence from the main thread is the part worth remembering precisely. A layout property animation has no such independence, so under load it simply loses frames."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try clicking the block main thread button and watch what happens to each moving box.",
+        "mid": "One box is animated with left, the other with transform. Watch which one keeps moving once the main thread gets busy.",
+        "staff": "This is a real compositor thread demonstration running in your browser, not a simulated difference."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Animating left, top, width, or height forces the browser to redo layout every frame, and it stutters under load. Animating transform or opacity skips that entirely.",
+        "mid": "Express slides as translate, resizes as scale, and fades as opacity wherever you can, for a fraction of the rendering cost.",
+        "staff": "Compositor only animations run independently of the main thread, which is why they stay smooth under real load where layout property animations visibly drop frames."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

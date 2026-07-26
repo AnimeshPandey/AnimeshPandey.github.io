@@ -1,0 +1,103 @@
+{
+  "slug": "container-queries-component",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Same card, same browser window size, two different results — because the CSS was checking the window's width, not the card's own box.",
+      "mid": "@media (min-width: 300px) is true or false for the whole page — it can't tell a 320px grid cell apart from a 220px sidebar slot at the same viewport width.",
+      "staff": "The failure isn't the breakpoint value — it's that a media query only ever has one evaluation context, the document viewport, not any individual element's box."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Drag the slider in fixed mode and watch the card restack — then drag it in broken mode and watch nothing happen, even as the card overflows.",
+      "mid": "Broken uses a real @media rule (checks the actual browser viewport, ignores the slider). Fixed uses a real @container rule (checks the slider-controlled box). Both are live CSS, not a simulated toggle.",
+      "staff": "This demo runs real @container evaluation in your browser — the 300px crossover you're watching for in fixed mode is the browser recomputing containment on every resize of the bound box."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Two pieces: container-type: inline-size on the wrapper says 'you can be queried,' and @container on the component's own CSS asks about that wrapper's width instead of the viewport's.",
+      "mid": "@container resolves against the nearest ancestor with a containment context — found by walking up the DOM, narrowed with container-name if more than one ancestor qualifies.",
+      "staff": "inline-size containment specifically promises the container's own width doesn't depend on its children — that's what makes per-instance querying resolvable without a circular layout dependency."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "container-type: inline-size only queries width, which covers most real reflows — reach for container-type: size (needs an explicit height) if you truly need both axes.",
+      "mid": "Containment trades away shrink-to-fit sizing in the queried axis for a stable, queryable box — most real layout containers already behave this way, so the trade rarely bites.",
+      "staff": "cqw/cqi/cqb container-query units let type and spacing scale continuously with the container instead of stepping at a breakpoint — often a better fit than a hard flex-direction flip for deeply nested reusable components."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a card component that looked perfect in a three column grid, and then broke the moment someone reused it in a narrower sidebar, at the exact same browser window size.",
+        "mid": "The card's media query checked the browser's viewport width, not its own box, so the same component rendered at two different widths on the same page got identical layout, correct in one spot and wrong in the other.",
+        "staff": "This is really about evaluation context. A media query only ever has one answer per page, because there's only one viewport. A genuinely reusable component needs its layout to depend on its own box, which a viewport query structurally can't express."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Container queries fix this with two pieces. Set container type inline size on the wrapping box, so it becomes something the CSS inside it can ask about. Then swap the card's media query for a container query, asking about that wrapper's width instead of the browser window's.",
+        "mid": "The container query resolves against the nearest ancestor that's been marked as a containment context, walking up the DOM tree from the element that declares it.",
+        "staff": "The reason you can't query the same element that declares container type on itself is containment. The container's own size in the queried axis has to be settled before its descendants can be measured against it, which only works looking at an ancestor, not the element itself."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try dragging the slider in each mode and watch what actually happens to the card as the box gets narrower.",
+        "mid": "One card is wired to a real media query, the other to a real container query. The slider only changes the width the container query can see.",
+        "staff": "Watch the crossover point closely. That's live containment resolution happening in your browser as the bound box crosses the three hundred pixel threshold."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A media query only knows the browser window's width. Container queries let a component know its own box's width instead, which is what reusable components actually need.",
+        "mid": "Put container type inline size on the wrapping element, then swap at-media for at-container in the component's own styles, same shape of rule, completely different, per-instance meaning.",
+        "staff": "Containment isn't free, the container can't size itself from its own children in the queried axis, but for most real layout containers that's already true, so the constraint rarely costs you anything you were relying on."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

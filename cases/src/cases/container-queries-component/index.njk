@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Container Queries for Real Components"
+description: "A card component that looks right in a wide 3-column grid can overflow or cram its text the moment it ships into a narrower sidebar — at the exact same browser viewport width — because a media query has no idea how wide its own container actually is."
+slug: container-queries-component
+track: css-layout
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Container queries
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/container-queries-component-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The card that looked perfect in the grid and broke in the sidebar</h2>
+  <div class="tone-junior">
+    <p>
+      A shared <code>ProductCard</code> component ships in a three-column grid, where each card gets roughly 320px of horizontal space. It looks great, an image on the left, title and price on the right, all in one row. Someone reuses the same component in a "recently viewed" sidebar, and at the exact same browser window size, the card now has to fit into a strip that's only 220px wide. The image and text still try to sit side by side, because the CSS that decided "wide enough for a row layout" was never actually checking the card's own width, it was checking the browser window's width, which hadn't changed at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The card's layout switch was written as <code>@media (min-width: 300px) { .card { flex-direction: row; } }</code>. That query is true or false for the whole page, based on the viewport, not per-instance. So the same component, rendered twice on the same page in two different-width containers, gets the exact same computed layout in both places, correct in the grid and wrong in the sidebar, and there's no version of a viewport media query that can tell those two placements apart.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The root problem isn't the specific breakpoint value, it's that a media query's evaluation context is global to the document, there is exactly one viewport, so there is exactly one true/false answer per query, applied uniformly to every element that references it. A genuinely reusable component's ideal layout is a function of its own box's width, a per-instance, per-render-context value the viewport has no way to expose. Fixing this by adding more breakpoints, or JS-measuring the container and toggling a class, is treating a structural limitation as a tuning problem.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>container-type: inline-size turns an element into a query target for its own descendants</h2>
+  <div class="tone-junior">
+    <p>
+      Two pieces, both required. First, on the wrapping element (the grid cell, the sidebar slot), set <code>container-type: inline-size</code>, this tells the browser "let elements inside this box query its width." Second, inside the card's own CSS, replace the <code>@media</code> rule with <code>@container (min-width: 300px) { .card { flex-direction: row; } }</code>. Same-looking rule, completely different meaning: this one asks "is the <em>container</em> at least 300px," not "is the browser window at least 300px."
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>container-type</code> establishes a <em>containment context</em>, the element it's set on becomes the thing <code>@container</code> queries measure against, found by walking up the DOM to the nearest ancestor with a container context (optionally narrowed with <code>container-name</code> if there's more than one candidate ancestor). Because that ancestor is a real, per-instance box in the render tree, the grid's 320px cell and the sidebar's 220px slot each get their own independent true/false answer to the same <code>@container</code> rule, using the same card CSS in both places.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>inline-size</code> containment specifically constrains what the browser needs to compute before it can lay out the container's contents: it promises the container's own inline size doesn't depend on its children, which is what makes the query resolvable at all without a layout cycle that never terminates. That's also why you can't meaningfully query the same element that declares <code>container-type</code> on itself, the containment context has to be an ancestor. <code>container-name</code> exists for exactly the case where more than one ancestor in the chain declares a container context and an unscoped <code>@container</code> would resolve against the wrong one.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The same ProductCard, three placements, one CSS file</h2>
+  <div class="tone-junior">
+    <p>
+      A design-system team's <code>ProductCard</code> shipped in a 3-column grid (~320px per card), a "recently viewed" sidebar (~220px), and a full-width featured-product hero slot (~900px+). The original media-query version needed a maintainer to know, ahead of time, every place the card would ever be dropped into, and hand-tune breakpoints per surface. Switching the card's own CSS to <code>@container</code> queries, and adding one line, <code>container-type: inline-size</code>, to each surface's wrapping element, made all three placements correct simultaneously, without the card's CSS caring which surface it was in.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Before the fix, the sidebar instance was a special case: a <code>.sidebar .card</code> override forcing <code>flex-direction: column</code> regardless of viewport, a patch that worked only because someone remembered the sidebar was narrow and hand-wrote an exception for it. When the hero slot was added later, it needed its own override in the other direction. Two placements, two manual overrides, and a third placement would need a third. After the container-query rewrite, the override rules were deleted entirely, the card's own <code>@container</code> rule is correct in all three contexts because it's actually measuring each one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The interesting failure mode they'd been accumulating was that the "special case" overrides were per-surface, not per-card, so every new surface the card got dropped into needed a new override written by whoever added it, a maintenance cost that scaled with the number of places the component was reused, which is exactly backwards for a component meant to be reused freely. Container queries move that cost to zero per new surface: the wrapping element needs one <code>container-type</code> declaration (often already true of any real layout container), and the card's own CSS handles the rest.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A media query answers one true/false question for the whole page, so a 320px grid card and a 220px sidebar card get identical layout (broken) vs. container-type: inline-size + @container answers per-instance, so each placement gets the layout its own width actually calls for (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Drag the slider — only one of these actually looks at the box it's in</h2>
+  <div class="tone-junior">
+    <p>Drag the "container width" slider from wide to narrow in each mode. In fixed mode, the card visibly restacks as the box narrows. In broken mode, watch closely — nothing changes, even as the card starts to overflow its own box.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken card's CSS uses <code>@media (min-width: 300px)</code>, which checks this page's actual browser viewport, untouched by the slider, so it stays in row layout at every slider position. The fixed card uses <code>@container (min-width: 300px)</code> against the slider-controlled box itself.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Both rules are real, live CSS evaluated by your browser, not a JS-simulated switch — this is the actual <code>@media</code>-vs-<code>@container</code> evaluation-context difference, visible in real time as the containing box's computed width crosses the 300px threshold.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A card component whose layout is driven by a viewport media query and ignores its own box's width (broken) vs. the same card driven by a container query that responds to its own box's width (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="container-queries-component">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo lets you drag a slider to resize a card's containing box and compares a version whose layout is driven by a viewport media query (which ignores the slider) against a version driven by a real container query (which responds to it); it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Media query
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Container query
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Container query</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Containment has a cost, and container-type isn't free-form</h2>
+  <div class="tone-junior">
+    <p>
+      <code>container-type: inline-size</code> only lets you query the container's width, not its height, that covers the vast majority of real component reflows (most cards care about "how wide am I," not "how tall is my parent"). If a component genuinely needs to query both axes, <code>container-type: size</code> does that, but it requires the container to have an explicit height, since querying block-size containment on an auto-height box would create a layout cycle the browser can't resolve.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Containment changes what the browser is allowed to assume, which is why it isn't automatically applied everywhere: an element with <code>inline-size</code> containment can't let its own width be influenced by its content's natural width (no more shrink-to-fit based on children in that axis), that's the trade the browser needs in exchange for making the box a stable, queryable size. Most layout containers (grid cells, flex items with a defined width, sidebar columns) already behave this way in practice, so the constraint is rarely felt; it matters when someone reaches for <code>container-type</code> on an element whose width was supposed to be content-driven.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Container query units (<code>cqw</code>, <code>cqi</code>, <code>cqb</code>, <code>cqmin</code>, <code>cqmax</code>) are worth knowing alongside the at-rule itself, <code>font-size: clamp(0.85rem, 4cqi, 1.1rem)</code> lets type scale with the container continuously instead of stepping at breakpoints, which is the more common real need for deeply nested reusable components than a hard flex-direction flip. And because <code>@container</code> resolution happens per containment-context ancestor, a deeply nested component tree with containers at every level can mean more layout recalculation on resize than a single document-level media query, for most component-library use (a handful of container ancestors, not hundreds), this is not a practical concern, but it's the actual mechanism behind "don't declare container-type on every div out of habit."
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A media query only ever answers "how wide is the browser window," so two differently-sized placements of the same component can get the same layout by mistake. container-type: inline-size + @container answers "how wide is this specific box," so each placement gets the right one.</div>
+        <div class="tone-mid">Put container-type: inline-size on the wrapping element (the grid cell, the sidebar slot), then swap the component's own @media rules for @container rules — same syntax shape, but now scoped to that ancestor's actual rendered width instead of the viewport.</div>
+        <div class="tone-staff">Containment has real constraints (the container can't size itself off its own contents in the queried axis), and @container units (cqw/cqi/etc.) are often a better fit than a hard breakpoint for deeply reusable components — reach for those before reaching for more media-query overrides per surface.</div>
+      </li>
+    </ul>
+  </div>
+</section>
