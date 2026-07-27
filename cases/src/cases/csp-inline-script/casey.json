@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about adding a Content Security Policy header and watching the nav menu and other inline scripts quietly stop working.",
-        "mid": "",
-        "staff": ""
+        "mid": "script-src 'self' means only external scripts from the page's own origin execute — inline script and inline event handlers are untrusted by default, because an attacker who can inject markup can inject an inline script just as easily.",
+        "staff": "This is CSP doing its job, not a bug to route around — the fix isn't loosening the policy back to unsafe-inline, that reopens the exact hole CSP was added to close."
       },
       {
         "chapter": "concept",
         "junior": "The fix is a nonce, a random value generated fresh for every response, added to the policy and matched on the script tag you actually own.",
-        "mid": "",
-        "staff": ""
+        "mid": "A nonce-based policy gives every inline script you actually authored a matching nonce attribute generated fresh per response — an attacker's injected script was never given that nonce, so it gets blocked while yours executes.",
+        "staff": "Neither nonces nor hashes extend to inline event handler attributes like onclick — migrating to addEventListener in an external script is the more portable fix, and removes a legacy code smell independent of CSP."
       },
       {
         "chapter": "demo",
         "junior": "Toggle between a plain policy and a nonce based one, and watch whether your own script runs and whether an attacker's injected one does too.",
-        "mid": "",
-        "staff": ""
+        "mid": "The inline script's source text never changes — only the policy, and whether the script tag carries a matching nonce, changes what the browser allows.",
+        "staff": "The fixed state blocks the injected script for a different reason than the broken state blocks everything — the fixed policy discriminates by nonce, which is the entire point."
       },
       {
         "chapter": "takeaway",
         "junior": "Don't fix a CSP error by allowing unsafe inline scripts everywhere. Give your own inline script a nonce instead, and keep everything else blocked.",
-        "mid": "",
-        "staff": ""
+        "mid": "Never fix a CSP violation by adding unsafe-inline — use a per-response nonce on both the policy and the script tag instead.",
+        "staff": "Ship new policies as report-only first to find every inline dependency before enforcing."
       }
     ]
   },

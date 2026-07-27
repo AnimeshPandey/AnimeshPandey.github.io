@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about deleting one feature and having to hunt through four different folders just to find everything it owns.",
-        "mid": "",
-        "staff": ""
+        "mid": "Organizing by technical layer groups files by what kind of code they are, not what they're for — every feature ends up with its code smeared across all four folders.",
+        "staff": "The deeper cost isn't navigation friction, it's that layer-based folders provide no structural signal about coupling — nothing stops an unrelated feature from importing a util that never expressed which feature it belonged to."
       },
       {
         "chapter": "concept",
         "junior": "The fix is grouping files by what they're for instead of what type of file they are, so one feature's code lives in one folder.",
-        "mid": "",
-        "staff": ""
+        "mid": "The organizing question flips from what type of file is this to what does this belong to — a shared folder still exists, but reserved for things genuinely used by more than one feature.",
+        "staff": "A real feature-sliced convention typically enforces that other slices can only import from a feature's public entry point, not reach into its internals directly, turning an informal convention into something a lint rule can check."
       },
       {
         "chapter": "demo",
         "junior": "Toggle between a layer based tree and a feature based tree, and see what it takes to find and delete one feature in each.",
-        "mid": "",
-        "staff": ""
+        "mid": "The same eight files exist in both trees — only their grouping differs, one by file type, the other by feature.",
+        "staff": "In the layer tree, unrelated features' files sit directly beside each other in every folder — there's no boundary that would even hint one doesn't belong with the others."
       },
       {
         "chapter": "takeaway",
         "junior": "Group your files by feature, not by file type. It makes deleting or handing off a feature a one folder operation instead of a scavenger hunt.",
-        "mid": "",
-        "staff": ""
+        "mid": "Reserve shared folders for code genuinely used by more than one feature — a single-caller helper starts inside that feature's own folder.",
+        "staff": "Enforce the slice boundary with a lint rule restricting cross-feature imports to a public entry point, or feature folders degrade back into the same coupling."
       }
     ]
   },

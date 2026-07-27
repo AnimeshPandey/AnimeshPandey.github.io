@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a documented prop that hadn't actually existed on the real component for three months.",
-        "mid": "",
-        "staff": ""
+        "mid": "A markdown doc describing a component's API is a second, independent copy of information the source code already contains — the moment either copy changes without the other, they disagree, and nothing enforces they stay in sync.",
+        "staff": "This is the general problem with documentation that describes code rather than rendering it — nothing in a normal PR review flags a docs file as affected by a prop rename, unless a human specifically remembers to check."
       },
       {
         "chapter": "concept",
         "junior": "The fix is docs that render the real component, so the controls panel is generated from real prop types instead of hand typed text.",
-        "mid": "",
-        "staff": ""
+        "mid": "Storybook generates the controls panel from the component's actual prop types, not from anything a human typed into a separate file — a prop that no longer exists can't appear in the controls.",
+        "staff": "A story is also a rendered instance, so beyond prop-shape accuracy, a broken hover state or missing focus ring shows up by looking at the running story, not by reading a paragraph that claims the component is accessible."
       },
       {
         "chapter": "demo",
         "junior": "Toggle between a hand written markdown doc and a live controls panel, both describing the same button after a prop rename.",
-        "mid": "",
-        "staff": ""
+        "mid": "The markdown doc's content is frozen text, someone has to remember to edit it. The controls panel is generated from the component's real prop types every time it renders.",
+        "staff": "The markdown version doesn't error or warn — it just quietly shows a prop that silently no longer does anything, which is the dangerous part."
       },
       {
         "chapter": "takeaway",
         "junior": "A markdown doc describing your component's props will drift the moment the component changes. Render the real component instead, so the docs can't lie.",
-        "mid": "",
-        "staff": ""
+        "mid": "Storybook renders the real component with controls generated from its real prop types — the docs can't describe a prop that no longer exists.",
+        "staff": "Require a story per exported component in CI so a prop change's doc impact shows up in the same review, not as a deferred follow-up."
       }
     ]
   },
