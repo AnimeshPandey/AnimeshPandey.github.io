@@ -1,0 +1,103 @@
+{
+  "slug": "env-vars-build-time",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The staging build and the production build are actually two different files — the env var was different each time the build command ran.",
+      "mid": "This breaks \"build once, promote everywhere\" — redeploying the exact same files to production still points at whatever URL was baked in during the original build.",
+      "staff": "import.meta.env and DefinePlugin are text-substitution tools by design, not runtime config systems — the tool works exactly as documented, the mismatch is what it's being asked to do."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Switch \"Deployed to\" between Staging and Production and watch what the API URL actually does in each mode.",
+      "mid": "The Build ID never changes in either mode — it's the same bundle both times, only whether it produces the right backend differs.",
+      "staff": "Broken mode's API URL is a build-time constant baked into the bundle — switching the environment label doesn't touch the actual value the code holds."
+    },
+    {
+      "chapter": "concept",
+      "junior": "A small config.json fetched once at app boot holds the environment-specific values, so the exact same built JS runs everywhere.",
+      "mid": "Window-injected config works too — the HTML shell sets a global before the app's script runs, since the shell (unlike the JS bundle) gets templated per deploy anyway.",
+      "staff": "This buys a single build that's byte-for-byte identical across every environment — what got verified in staging is provably the same code running in production."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "There's a brief window before config.json resolves where the app doesn't know its own API URL yet — the boot sequence has to account for that.",
+      "mid": "Code that used to read import.meta.env at module scope has to be refactored to read from a config object threaded through app init instead.",
+      "staff": "config.json needs the opposite caching behavior from the rest of the bundle — fetched fresh every boot, never cached the way the content-hashed JS/CSS is."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a build that gets promoted from staging to production, files unchanged, that still quietly talks to the wrong backend.",
+        "mid": "An environment variable read at build time gets baked into the bundle as a literal string, so redeploying the same files elsewhere doesn't change what they actually do.",
+        "staff": "These build-time tools exist to let a minifier eliminate dead code for a given environment. Using them for config that needs to vary per deploy target is asking a compile-time tool to solve a runtime problem."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is a small file, fetched once when the app starts, that holds whatever's different about this particular environment.",
+        "mid": "That moves the question of which environment this is from build time to boot time, which is the point where the answer is actually knowable.",
+        "staff": "The real win is a single built artifact that's identical everywhere, so what was verified in staging is provably the same code running in production."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try switching the deployed environment in both modes and watch whether the API address actually follows along.",
+        "mid": "Notice the build identifier stays exactly the same in both modes. It's the same code either way, only the outcome differs.",
+        "staff": "In the broken mode, the label changes but the underlying constant never does. That's the whole bug in one interaction."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Env vars read at build time get frozen into the bundle — the same build can't move to a different environment without a rebuild.",
+        "mid": "Fetch environment-specific config at boot instead, so one built artifact runs correctly everywhere.",
+        "staff": "Runtime config isn't free. Code assuming synchronous env access needs refactoring, and the config file itself must never be cached the way the rest of the build is."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

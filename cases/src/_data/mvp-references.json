@@ -849,5 +849,65 @@
     "staff": [
       "<a href=\"https://jestjs.io/docs/timer-mocks\" rel=\"noopener noreferrer\">Jest — Timer Mocks</a>"
     ]
+  },
+  "design-system-major-version": {
+    "junior": [
+      "<a href=\"https://github.com/carbon-design-system/carbon/blob/main/docs/migration/v11.md\" rel=\"noopener noreferrer\">Carbon Design System — v10 to v11 migration guide</a>"
+    ],
+    "mid": [
+      "<a href=\"https://github.com/carbon-design-system/carbon/blob/main/docs/migration/v11.md\" rel=\"noopener noreferrer\">Carbon Design System — v10 to v11 migration guide</a>",
+      "<a href=\"https://polaris-react.shopify.com/version-guides\" rel=\"noopener noreferrer\">Shopify Polaris — Version guides</a>"
+    ],
+    "staff": [
+      "<a href=\"https://polaris-react.shopify.com/version-guides/migrating-from-v11-to-v12\" rel=\"noopener noreferrer\">Shopify Polaris — Migrating from v11 to v12 (polaris-migrator CLI)</a>"
+    ]
+  },
+  "feature-flag-ui-flicker": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Glossary/CLS\" rel=\"noopener noreferrer\">MDN — Cumulative Layout Shift (CLS)</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Glossary/CLS\" rel=\"noopener noreferrer\">MDN — Cumulative Layout Shift (CLS)</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/Performance\" rel=\"noopener noreferrer\">MDN — Web performance</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/LayoutShift\" rel=\"noopener noreferrer\">MDN — LayoutShift API</a>"
+    ]
+  },
+  "env-vars-build-time": {
+    "junior": [
+      "<a href=\"https://vite.dev/guide/env-and-mode\" rel=\"noopener noreferrer\">Vite — Env Variables and Modes</a>"
+    ],
+    "mid": [
+      "<a href=\"https://vite.dev/guide/env-and-mode\" rel=\"noopener noreferrer\">Vite — Env Variables and Modes</a>",
+      "<a href=\"https://webpack.js.org/plugins/define-plugin/\" rel=\"noopener noreferrer\">webpack — DefinePlugin</a>"
+    ],
+    "staff": [
+      "<a href=\"https://webpack.js.org/plugins/define-plugin/\" rel=\"noopener noreferrer\">webpack — DefinePlugin</a>"
+    ]
+  },
+  "esbuild-vs-webpack-dev": {
+    "junior": [
+      "<a href=\"https://esbuild.github.io/faq/\" rel=\"noopener noreferrer\">esbuild — FAQ: why is esbuild fast</a>"
+    ],
+    "mid": [
+      "<a href=\"https://esbuild.github.io/faq/\" rel=\"noopener noreferrer\">esbuild — FAQ: why is esbuild fast</a>",
+      "<a href=\"https://webpack.js.org/guides/build-performance/\" rel=\"noopener noreferrer\">webpack — Build Performance guide</a>"
+    ],
+    "staff": [
+      "<a href=\"https://webpack.js.org/guides/build-performance/\" rel=\"noopener noreferrer\">webpack — Build Performance guide</a>"
+    ]
+  },
+  "clickjacking-frame-ancestors": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/Clickjacking\" rel=\"noopener noreferrer\">MDN — Clickjacking</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors\" rel=\"noopener noreferrer\">MDN — CSP frame-ancestors directive</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options\" rel=\"noopener noreferrer\">MDN — X-Frame-Options header</a>"
+    ],
+    "staff": [
+      "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — Clickjacking Defense Cheat Sheet</a>"
+    ]
   }
 }

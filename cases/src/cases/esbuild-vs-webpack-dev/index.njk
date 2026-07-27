@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "esbuild vs webpack for Dev Speed"
+description: "esbuild's dramatically faster dev rebuilds aren't just \"esbuild is faster\" — a native-compiled, few-pass, parallel architecture beats webpack's JS-based loader chain, with real tradeoffs in plugin maturity that are worth knowing before switching."
+slug: esbuild-vs-webpack-dev
+track: build-tooling
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Bundlers
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/esbuild-vs-webpack-dev-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The same app: a coffee-break cold start vs. an instant one</h2>
+  <div class="tone-junior">
+    <p>
+      A mid-size app with a few hundred modules can take webpack several seconds to tens of seconds to cold-start its dev server, plus a noticeable pause on every file save while it re-bundles. The same app started with esbuild, or a tool built on it, often cold-starts in well under a second and rebuilds close to instantly. It's tempting to just say "esbuild is faster" and move on, but that's an assertion, not an explanation, and it skips real tradeoffs worth knowing before switching.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The speed difference isn't a tuning problem in webpack's config, it's architectural. Webpack's pipeline runs each module through a loader chain, babel-loader, ts-loader, css-loader, whatever a project's stack needs, where each loader is a separate JS function invoked per module, on top of webpack's own JS-based module-graph resolution and plugin hook system, all executing in a single Node.js process, in a JIT-compiled language that has to warm up before it runs fast.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      esbuild sidesteps most of that by being a different kind of program: written in Go, compiled to native machine code, with no per-module loader chain, its parser, transformer, and printer are built in rather than orchestrated as a pipeline of separate plugin calls, and it touches each file's syntax tree only a small, fixed number of times. None of that means webpack is "doing something wrong", webpack's architecture optimizes for configurability and a mature plugin ecosystem; esbuild's optimizes for raw throughput, at the cost of that same flexibility.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Why esbuild is fast: native code, minimal AST passes, real parallelism</h2>
+  <div class="tone-junior">
+    <p>
+      Three concrete, verifiable reasons, not "it's just faster": esbuild is written in Go and compiled to native machine code, so it runs at full speed from the first line, no JavaScript engine warm-up needed, unlike a JS-based bundler and its loaders, which V8 is still JIT-compiling at the same time they're compiling your code. It also touches each file's syntax tree only a few times, roughly: parse and resolve scope, transform and minify, print, instead of running the code through a chain of separate loader and plugin transforms that each re-parse and re-serialize it. And it's built to use every CPU core at once, not just across separate files, but within its own internal algorithms.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Concretely, per esbuild's own FAQ, the tool touches the AST three times total across a whole build; a webpack pipeline with babel-loader plus a couple of additional transform loaders effectively re-parses and re-serializes a module's code once per loader in that chain, on top of webpack's own module-graph bookkeeping in JS. Each of those extra passes separately allocates and walks large data structures, work esbuild's design avoids by keeping lexing, parsing, binding, transforming, and printing close together instead of spread across independently-authored loaders.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The parallelism point matters as much as the language choice: Go's goroutines share memory directly across threads, so esbuild's internal work-stealing across files is cheap to coordinate. A Node.js-based bundler doing real multi-core work has to either accept single-threaded execution for most of the pipeline or use worker threads with structured-clone message passing between them, real serialization overhead on every message. None of this means webpack does more work than necessary, it means webpack's plugin and loader model, the thing that gives it its flexibility, is fundamentally harder to parallelize and impossible to run at native speed, because the whole point of a loader is that it's arbitrary user JS.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>They didn't replace webpack, they split the dev loop from it</h2>
+  <div class="tone-junior">
+    <p>
+      A team's app had grown to a few hundred modules with a TypeScript, Sass, and SVG-loader webpack config accumulated over two years. Cold-starting the dev server took close to 30 seconds every morning, and each file save triggered a rebuild that took several seconds before hot-reload kicked in, long enough that developers would tab away and lose focus mid-edit.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      They moved local dev to an esbuild-based dev server, not a full production-build replacement, just the dev loop, and kept webpack for the production build, since some production-only plugins, notably a custom SVG-to-sprite plugin and a legacy CSS-modules setup, had no direct esbuild equivalent. Cold start dropped to under a second; rebuilds felt close to instant. The production build pipeline, and its output, stayed on webpack unchanged.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The real work was in the split: dev and prod didn't have to use the same tool. Dev-time speed and prod-time correctness and plugin completeness are different priorities, and esbuild being faster for the former didn't require it to match webpack's mature plugin ecosystem for the latter. This is the same shape Vite uses by default, esbuild for dev-time dependency pre-bundling and transforms, Rollup or webpack for the production bundle, rather than one tool trying to be the fastest at both jobs.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">webpack's dev rebuild runs every module through a loader chain in a single, JIT-warming JS process (slow) vs. esbuild's native-compiled, few-pass, parallel pipeline rebuilds close to instantly (fast)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Run the same 400 modules through each pipeline</h2>
+  <div class="tone-junior">
+    <p>Toggle between webpack's loader-chain pipeline and esbuild's native pipeline and watch how each processes the same simulated 400 modules. The numbers are illustrative of the mechanism, not a benchmark of any specific real project.</p>
+  </div>
+  <div class="tone-mid">
+    <p>webpack mode processes modules one loader stage at a time in a single JS thread. esbuild mode fans the same modules out across simulated CPU cores and does its parse, transform, and print work in far fewer passes.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Watch which stage each pipeline spends its time in — webpack's time is dominated by the loader-chain stage; esbuild's isn't dominated by any single stage, because there's no comparably expensive one to bottleneck on.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A simulated 400-module build comparing webpack's sequential, loader-chain dev pipeline against esbuild's native-compiled, parallel dev pipeline"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="esbuild-vs-webpack-dev">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates running the same 400 modules through webpack's sequential loader-chain dev pipeline and esbuild's native-compiled, parallel dev pipeline, illustrating the mechanism behind the speed difference; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            webpack pipeline
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            esbuild pipeline
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: esbuild pipeline</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Speed isn't free — esbuild's plugin API is real but narrower</h2>
+  <div class="tone-junior">
+    <p>
+      esbuild plugins only get two real extension points, <code>onResolve</code> and <code>onLoad</code>, hooking how a module is found and what content or loader is used for it. They can't reach into esbuild's own internal transform the way a webpack loader or Babel plugin can rewrite arbitrary JS, which rules out some tooling, certain codegen-heavy, macro-style plugins among them, that has no direct esbuild equivalent yet.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      webpack's decade-plus head start shows up as ecosystem maturity: Module Federation for micro-frontends, incremental and persistent build caching, and a large catalog of existing loaders and plugins for nearly every framework and asset type a team might already have config-hours invested in. Swapping the dev server doesn't require throwing that investment away, most real adoptions, Vite's default setup among them, keep esbuild for fast dev-time transforms and dependency pre-bundling while using Rollup or webpack for the production bundle, where the plugin ecosystem and code-splitting maturity matter more than raw speed.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Worth being precise about what's actually being compared: esbuild alone is a bundler and transpiler, not a dev server with HMR or a plugin lifecycle equivalent to webpack's. Most real "esbuild vs webpack for dev speed" comparisons are actually comparing a tool built on esbuild, Vite, or webpack with its transform step swapped to esbuild-loader, against a from-scratch webpack plus babel-loader plus ts-loader config, not esbuild's bare CLI against webpack's dev server directly. That's a fair comparison of dev-loop speed, but it's closer to "esbuild's transform step replaces the slowest part of a typical webpack config" than "esbuild replaces webpack."
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">esbuild's dev rebuilds are dramatically faster than a typical webpack config because it's a different kind of program, native-compiled, minimal AST passes, real multi-core parallelism, not because webpack is misconfigured.</div>
+        <div class="tone-mid">The speed gap comes from architecture: no per-module loader chain, few passes over the AST, native code instead of JIT-warming JS — which is why tools like Vite use esbuild specifically for the dev-time transform step rather than trying to make webpack itself faster.</div>
+        <div class="tone-staff">esbuild's plugin API is real but narrower than webpack's mature loader and plugin ecosystem, so most teams keep webpack or Rollup for production and use esbuild only where its speed matters most: the inner dev loop.</div>
+      </li>
+    </ul>
+  </div>
+</section>

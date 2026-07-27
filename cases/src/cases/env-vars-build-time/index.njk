@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Build-Time Env vs Runtime Config"
+description: "Env vars read at build time get inlined into the bundle as literal strings, so the same built artifact can't be promoted from staging to production without a rebuild — a config.json fetched at boot fixes that."
+slug: env-vars-build-time
+track: build-tooling
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Config
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/env-vars-build-time-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The same build works in staging and breaks in production</h2>
+  <div class="tone-junior">
+    <p>
+      A team builds their frontend once in CI, expecting to deploy that exact built artifact to staging, verify it, then promote the identical files to production. With Vite or webpack, if the API URL is set through an environment variable read at build time, <code>import.meta.env.VITE_API_URL</code> or <code>process.env.API_URL</code> through webpack's DefinePlugin, that value gets baked into the JavaScript bundle as a literal string the moment the build runs. The "staging" build and the "production" build are actually two different sets of files, because the env var was different each time the build command ran, even though the source code never changed.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This breaks the "build once, promote everywhere" model most teams assume they have. If a build was made with <code>VITE_API_URL=https://staging.api.example.com</code>, that URL is now a string literal sitting inside the minified bundle, there's no runtime lookup happening. Redeploying the exact same files to production still points at staging. The only way to get a production-pointing bundle is to run the build again with different env vars, producing a different artifact, one that technically never passed the staging verification the team thought they were relying on.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The root cause is that <code>import.meta.env</code> and DefinePlugin are text-substitution tools by design, not runtime configuration systems. They exist so a minifier can dead-code-eliminate environment-specific branches, <code>if (import.meta.env.PROD) { ... }</code>, which requires the value to already be a literal at build time. Using them for config that legitimately needs to vary per deploy target, API URLs, flag-service endpoints, analytics keys, is applying a compile-time tool to a runtime problem. The tool works exactly as documented; the mismatch is in what it's being asked to do.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Fetch config at boot instead of baking it in at build</h2>
+  <div class="tone-junior">
+    <p>
+      The fix is a small JSON file, say <code>/config.json</code>, served alongside the built app and fetched once when the app starts. It holds the environment-specific values, <code>{"apiUrl": "https://api.example.com"}</code>. The exact same built JS bundle runs in every environment; only <code>config.json</code> differs per deployment, and it can be swapped without touching or rebuilding the app's code at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A close variant is window-injected config: the HTML shell, which unlike the JS bundle usually is regenerated or templated per deploy, sets a global before the app's script tag runs, <code>&lt;script&gt;window.__APP_CONFIG__ = {"apiUrl": "..."}&lt;/script&gt;</code>, and the app reads from <code>window.__APP_CONFIG__</code> instead of <code>import.meta.env</code>. Either approach moves the "which environment am I in" question from build time to boot time, which is exactly the point at which the answer is actually knowable.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This gets teams the property they usually want without realizing they're asking for it: a single built artifact that's identical byte-for-byte across every environment, so what got verified in staging is provably the same code running in production, not "code built from the same source at a different time with different substitutions." The cost is one extra network request, or one extra inline script tag, at boot, and the app has to tolerate config not being synchronously available on the very first render, a real, if usually small, engineering cost worth being explicit about rather than papering over.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Same commit, same build, two different backends</h2>
+  <div class="tone-junior">
+    <p>
+      A team's CI pipeline built their frontend once per commit and pushed the resulting <code>dist/</code> folder to a staging bucket for QA sign-off, then, once approved, copied the identical files to the production bucket. It looked correct: same commit, same build, same files. But the build had run with <code>VITE_API_URL</code> pointing at staging, so the "promoted" production files were quietly still calling the staging API. They happened to be reading data close enough to production's that nobody noticed for two days.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team's mental model was "build once, promote the artifact", a standard and genuinely good practice for backend services with runtime env vars, but their frontend build baked the URL in as a literal string during the build step, so there wasn't actually one artifact being promoted, there were two different builds that happened to share a git commit. The fix wasn't a process change, sign off after building against prod-shaped config too, it was removing the env-var dependency from the build entirely.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They moved to a <code>config.json</code> fetched at app boot, generated by their deploy step rather than their build step, and placed alongside the already-built, environment-agnostic bundle. The actual <code>dist/</code> output now gets built once and stored in an artifact registry, and the same tarball is deployed to staging and production with a different <code>config.json</code> dropped next to it, which finally matched the mental model the team had assumed they had all along.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Env vars baked in at build time freeze one value into every deploy of that build, so promoting it across environments still points at the original one (broken) vs. a runtime-fetched config.json lets one build run correctly in any environment (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Deploy the same build to different environments</h2>
+  <div class="tone-junior">
+    <p>Switch "Deployed to" between Staging and Production in each mode, and watch what happens to the API URL the bundle actually talks to. The Build ID never changes, it's the same bundle both times.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode's API URL is a build-time constant baked into the bundle — switching environments only changes a label, not the actual value the code holds. Fixed mode fetches config.json for whichever environment is selected and updates the real value the app is using.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Watch the Build ID stay identical across every switch in both modes — the point isn't that the code differs, it's that in broken mode the same code produces the wrong backend for one of the two environments, and in fixed mode it doesn't.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A simulated single build deployed to Staging and Production, comparing a build-time-baked API URL that stays frozen regardless of which environment it's deployed to against a runtime config.json fetch that resolves the correct URL for each environment"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="env-vars-build-time">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates deploying one built bundle to both a staging and a production environment, comparing a build-time-baked API URL that stays frozen regardless of environment against a runtime config.json fetch that resolves the correct URL each time; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Baked at build time
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Fetched at runtime
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Fetched at runtime</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Runtime config has to tolerate not being there yet</h2>
+  <div class="tone-junior">
+    <p>
+      Fetching config.json at boot means there's a brief window before it resolves where the app doesn't know its own API URL yet. The boot sequence has to account for that, a small loading state, or blocking the very first render briefly on that one fast local fetch, rather than assuming config is synchronously available the way a build-time constant always is.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A build-time constant can be referenced anywhere, including inside modules evaluated before the app even mounts. A runtime-fetched config can't, so code that used to read <code>import.meta.env.VITE_API_URL</code> at module scope has to be refactored to read from a config object threaded through app initialization instead, a real one-time migration cost, not just a config-format swap.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>config.json</code> itself needs the opposite caching behavior from the rest of the bundle. The JS and CSS assets should be aggressively, immutably cached, they're content-hashed, but config.json has to be fetched fresh on every boot, <code>Cache-Control: no-cache</code> or a cache-busting query param, otherwise a stale cached config defeats the entire point of decoupling config from the build: a browser or CDN serving a day-old config.json is the same failure mode as a stale build-time constant, just moved one layer over.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Env vars read at build time, Vite's import.meta.env, webpack's DefinePlugin, get inlined into the bundle permanently — the same build can't be promoted across staging and production without a rebuild.</div>
+        <div class="tone-mid">A small config.json, or window-injected config, fetched at app boot lets one built artifact run correctly in any environment, because the environment-specific values live outside the bundle instead of inside it.</div>
+        <div class="tone-staff">Runtime config has real costs: code that assumed synchronous access to env vars needs refactoring, and config.json needs to be fetched fresh every boot, never cached the way the rest of the build is.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Feature Flags and UI Flicker on First Paint"
+description: "A client-side feature flag that resolves after the page has already painted swaps content in mid-read, shifting the layout under the reader — evaluating the flag before render removes the jump entirely."
+slug: feature-flag-ui-flicker
+track: advanced-frontend
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Release strategy
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/feature-flag-ui-flicker-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The banner appears 700ms after the reader already started scrolling</h2>
+  <div class="tone-junior">
+    <p>
+      A client-side feature flag, say, "show new pricing banner", is fetched from an API after the page has already painted. The page renders the default UI first, gets the flag response a few hundred milliseconds later, and swaps in the flagged variant. A chunk of new content appears above the fold and pushes everything below it down the page. A reader who'd already started reading or scrolling in that gap sees the page visibly jump under them.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This isn't a bug in the flag SDK, it's a sequencing problem: first paint happens before the flag resolves, because resolving the flag means waiting on a network response, and there's no way to know its value before that response lands. Any UI gated on the flag genuinely has two states across the page's lifetime, the "default" pre-flag render and the "resolved" post-flag render, and the transition between them is a real, user-visible layout event, not an implementation detail that disappears once the flag settles.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The flicker isn't really about the flag being slow, it's about the coupling between when the flag resolves and when the UI has already committed to a layout. A flag that resolves in 50ms still causes a visible shift if the browser has already painted and a reader's eyes have already landed on the pre-flag layout. The fix space is entirely about that coupling: either resolve the flag before the client renders anything, or make the pre-flag and post-flag layouts identical enough that resolving the flag doesn't move anything at all.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Move flag evaluation before first paint, or make the layout flag-proof</h2>
+  <div class="tone-junior">
+    <p>
+      There are two honest fixes. First: evaluate the flag on the server, as part of rendering the HTML, so the client's very first paint already reflects the right variant, no swap needed because there's nothing to swap in later. Second, if the flag genuinely has to resolve client-side, block rendering briefly on a fast local flag check, a cached value or one already delivered inline in the page's initial payload, rather than firing a separate network request after the page has already painted.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A third option, useful when neither of those is available, is to design the UI so the flagged and un-flagged states occupy the same space: reserve height for the banner whether or not it ends up populated, or default to a skeleton sized to match the eventual content. A late-resolving flag then changes what's inside a box, not the box's existence or size, so nothing else on the page has to move.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Server-side evaluation is the strongest fix because it collapses two request/response cycles, the page's HTML, then a separate flag fetch, into one: the initial HTML is already correct, so there's no client-side transition to be visible at all. The tradeoff is that it needs flag state available at request time on the server, a fast in-memory or edge-cached flag lookup synced from the flag provider, not a live network round-trip to the flag vendor's API per request, which would just relocate the latency problem instead of removing it.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Fixing the animation didn't fix the jump</h2>
+  <div class="tone-junior">
+    <p>
+      A growth team added a client-side feature flag that swapped in a promotional banner above the fold for a subset of users. It shipped fine in testing, on a fast local network the flag resolved in under 50ms and nobody noticed a jump. In production, on real mobile connections, the flag fetch regularly took 400 to 900ms, long enough that users had already started reading or scrolling by the time the banner appeared and pushed the actual content down.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Session recordings showed the pattern clearly: a user would start scrolling toward a specific section, the banner would pop in above the fold, and the same scroll position, still measured in pixels from the top, would suddenly point at different content than what the user had been reading a moment earlier. Support tickets described it only as "the page jumps," with nobody able to say exactly when or why.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team's first fix treated it as an animation-smoothness problem, adding a fade-and-slide transition to the banner's entrance. That didn't fix it, smoothing a transition doesn't remove a layout shift, it just makes the same shift take longer to finish moving the content underneath it. The actual fix was moving flag evaluation into their edge middleware, which already ran on every request and kept a flag cache synced from the flag provider with single-digit-millisecond lookups, so the HTML sent to the browser already had the right variant baked in before any client JavaScript ran at all.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Flag resolves after first paint, swapping content in and shifting the layout under the reader (broken) vs. flag resolved before paint means the first render is already correct (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Simulate a page load and watch the layout shift</h2>
+  <div class="tone-junior">
+    <p>Click "Simulate page load" in each mode. In the broken mode, watch the banner pop in after a delay and push the paragraph below it down. In the fixed mode, the banner is already there on the very first frame.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode paints the default layout first, waits to simulate an async flag fetch, then inserts the banner and measures how far the content below it moved. Fixed mode resolves the flag before paint, so the banner and the rest of the layout render together in one pass.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The measured shift in broken mode isn't a fixed number, it's the actual height of the inserted banner, read from the DOM after insertion, the same way a real Cumulative Layout Shift score is computed from actual element movement rather than an assumed constant.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A simulated article page comparing a feature flag that resolves after first paint and shifts the layout when its banner swaps in, against a flag resolved before paint with no visible shift"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="feature-flag-ui-flicker">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a page load with a client-side feature flag, comparing a flag that resolves after first paint and shifts the layout when its banner swaps in, against a flag resolved before paint with no visible shift; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Flag after paint
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Flag before paint
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Flag before paint</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>A fast flag can still shift layout — the fix is coupling, not speed</h2>
+  <div class="tone-junior">
+    <p>
+      Even a 50ms flag fetch can cause a visible shift if the browser has already painted and laid out the page before it resolves. Speeding the fetch up reduces the odds a reader notices, it doesn't remove the underlying mechanism, only removing the gap between paint and flag resolution does that.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Reserving space, a skeleton or placeholder sized to match the eventual banner, is a legitimate middle-ground fix when server-side evaluation genuinely isn't available. It prevents the shift itself even though content still swaps in inside that reserved box once the flag resolves.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Worth distinguishing two kinds of flags here: bucketing flags, deciding which variant a given user sees, are usually stable enough to resolve server-side, often from a hashed user ID, with no live network call needed at all. Killswitch flags, meant to instantly disable a broken feature without a deploy, genuinely need to stay pollable and fresh, so the fix there isn't "move it server-side," it's designing the flagged feature as additive UI that only ever appears, never replaces default content the reader has already started engaging with, so there's nothing to visibly swap out from under them.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A feature flag resolved after the page has already painted causes a visible jump when the flagged UI swaps in — evaluate the flag before rendering, or resolve it fast enough that nothing has painted yet.</div>
+        <div class="tone-mid">Move flag evaluation server-side, or into edge middleware, so the first HTML sent to the browser is already correct — that removes the client-side transition, and the layout shift, entirely.</div>
+        <div class="tone-staff">Speeding up a client-side flag fetch reduces how often the shift gets noticed, it doesn't fix the coupling between flag resolution and paint — and killswitch flags that must stay live client-side need additive, non-shifting UI instead of a swap.</div>
+      </li>
+    </ul>
+  </div>
+</section>

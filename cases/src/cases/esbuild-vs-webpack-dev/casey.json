@@ -1,0 +1,103 @@
+{
+  "slug": "esbuild-vs-webpack-dev",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "\"esbuild is faster\" is an assertion, not an explanation — the real reasons are architectural, not a webpack misconfiguration.",
+      "mid": "Webpack's loader chain runs each module through separately-authored JS functions in a single, JIT-warming Node process — that's the actual bottleneck, not a setting to tune.",
+      "staff": "esbuild optimizes for raw throughput at the cost of the flexibility webpack's loader/plugin model optimizes for — neither is doing it wrong."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle between the two pipelines and watch how each processes the same simulated 400 modules — the numbers are illustrative of the mechanism, not a real benchmark.",
+      "mid": "webpack mode processes modules one loader stage at a time in a single thread — esbuild mode fans them out across simulated cores in far fewer passes.",
+      "staff": "Watch which stage each pipeline spends its time in — webpack bottlenecks on the loader chain; esbuild has no comparably expensive stage to bottleneck on."
+    },
+    {
+      "chapter": "concept",
+      "junior": "esbuild is written in Go and compiled to native code, so it runs at full speed immediately — no JavaScript engine warm-up needed.",
+      "mid": "esbuild touches each file's AST only about three times total; a webpack loader chain re-parses and re-serializes once per loader in that chain.",
+      "staff": "Go's shared-memory threads make esbuild's internal parallelism cheap to coordinate — a Node bundler doing real multi-core work pays real serialization overhead between worker threads."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "esbuild plugins only get two real hooks, onResolve and onLoad — they can't rewrite arbitrary JS the way a webpack loader or Babel plugin can.",
+      "mid": "webpack's decade-plus head start shows up as ecosystem maturity — Module Federation, persistent caching, and loaders for nearly every asset type already exist.",
+      "staff": "Most \"esbuild vs webpack\" comparisons are really comparing a tool built on esbuild, like Vite, against a from-scratch webpack config — not esbuild's bare CLI against webpack's dev server."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case looks at why esbuild's dev rebuilds are so much faster than webpack's, and why that's an architecture question, not a tuning one.",
+        "mid": "Webpack's pipeline runs every module through a chain of separately authored loader functions, all inside a single JavaScript process that has to warm up before it runs fast.",
+        "staff": "esbuild optimizes for raw throughput. Webpack's loader and plugin model optimizes for flexibility. Those are different goals, not one tool doing it wrong."
+      },
+      {
+        "chapter": "concept",
+        "junior": "esbuild is written in Go and compiled to native code, so it runs at full speed right away, with no warm-up period the way a JavaScript program has.",
+        "mid": "It also touches each file's syntax tree only a handful of times in total, instead of re-parsing it once per loader in a chain.",
+        "staff": "Go's threads share memory directly, so esbuild can coordinate real parallel work cheaply, in a way a JavaScript bundler using worker threads can't."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try toggling between the two pipelines and watch how each one works through the same set of simulated modules.",
+        "mid": "Notice webpack's time is dominated by one particular stage, while esbuild doesn't really have an equivalent bottleneck.",
+        "staff": "The numbers here are meant to be illustrative of the mechanism. They're not a benchmark of any particular real project."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "esbuild is faster because it's a genuinely different kind of program, not because webpack is set up wrong.",
+        "mid": "The speed comes from native code, far fewer passes over the code, and real parallelism, which is why tools like Vite use esbuild specifically for the dev-time step.",
+        "staff": "esbuild's plugin surface is real but narrower, so most teams keep webpack or Rollup for production and use esbuild where its speed actually matters, the inner dev loop."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
