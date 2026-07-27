@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a list-reorder animation that looked fine with a few items and visibly stuttered once there were dozens.",
-        "mid": "",
-        "staff": ""
+        "mid": "Any animated property that affects layout, like top or left, triggers a full layout recalculation on every frame — transform and opacity don't.",
+        "staff": "The fix isn't animating faster, it's animating a fundamentally cheaper property for the same visual result — that's exactly what the FLIP technique does."
       },
       {
         "chapter": "concept",
         "junior": "The fix is the FLIP technique — measure the starting position, let the DOM jump straight to the end position, then fake the animation with a cheap transform instead of an expensive layout property.",
-        "mid": "",
-        "staff": ""
+        "mid": "Read the bounding rect before the reorder, let it happen instantly in the DOM, then invert the visual jump with a transform and no transition, and play it out on the next frame by removing the transform.",
+        "staff": "This works because transform changes are handled entirely by the compositor when the element is already its own layer — no main-thread layout or paint work per frame, regardless of how many other elements exist."
       },
       {
         "chapter": "demo",
         "junior": "Shuffle the list in both modes and watch how each one holds up as more items move at once.",
-        "mid": "",
-        "staff": ""
+        "mid": "The broken mode animates top and left directly; the fixed mode measures positions before and after, then animates only a transform.",
+        "staff": "Open DevTools' Performance panel while shuffling in each mode — the broken mode shows recurring layout work per frame that the fixed mode doesn't."
       },
       {
         "chapter": "takeaway",
         "junior": "Don't animate top or left for a list reorder. Measure before and after, then animate only a transform — same visual result, none of the layout cost.",
-        "mid": "",
-        "staff": ""
+        "mid": "Measure first, let the DOM jump to the end state, invert with a transform so it looks unmoved, then play by removing the transform with a transition.",
+        "staff": "Batch all your before-measurements before mutating the DOM and all after-measurements after, to avoid layout thrashing on longer lists."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

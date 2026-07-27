@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! This one's about a name field on an edit-profile form that would sometimes just erase whatever you'd typed, right as the page finished loading your data. Nobody could figure out why for months.",
-        "mid": "",
-        "staff": ""
+        "mid": "value going from undefined to a defined string across two renders of the same input is exactly the switch React's rule forbids — the DOM node gets forcibly reconciled to the new value, silently discarding whatever keystrokes were already there.",
+        "staff": "React's own docs name this exact failure mode — you can't pass value={undefined} first and later a real string, because React won't know whether you want the component controlled or uncontrolled."
       },
       {
         "chapter": "concept",
         "junior": "The fix is one small change. Give the input a real starting value, an empty string, instead of leaving it undefined while data is still loading. Then it's controlled from the very first render, and it never has that flip that causes the problem.",
-        "mid": "",
-        "staff": ""
+        "mid": "Anything that guarantees a string on every render works — seed the backing state with an empty-string default, or normalize the field the moment data lands rather than passing a possibly-undefined value straight through.",
+        "staff": "The same rule applies to checked on checkboxes — it must always be a boolean, never undefined. And it's not limited to fetched data — localStorage, a lazily-initialized context, or a conditional prop can produce the same sequence."
       },
       {
         "chapter": "demo",
         "junior": "Try typing a name into the field right when it appears, before clicking load. Then watch what happens to your typing once the simulated data finishes loading, in each mode.",
-        "mid": "",
-        "staff": ""
+        "mid": "Broken mode's input has no value attribute until the simulated fetch resolves — uncontrolled, then forced controlled. Fixed mode is controlled with an empty-string default from the start.",
+        "staff": "The fixed mode doesn't just avoid the console warning — because the value was real controlled state the whole time, the component can make an actual decision about whether loaded data should overwrite what the user already typed."
       },
       {
         "chapter": "takeaway",
         "junior": "Never let a form field's value start out undefined while you wait for real data. Give it an empty string as a starting point instead, and it'll behave the same way from the very first render to the last.",
-        "mid": "",
-        "staff": ""
+        "mid": "Give value and checked a real, same-shaped default from the very first render, so the input is controlled from render one, not eventually.",
+        "staff": "The more durable fix is modeling \"not loaded yet\" as its own explicit UI state, rather than rendering the real form with placeholder-shaped props."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

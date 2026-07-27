@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a long page that got faster with one CSS property, then started visibly jumping around the moment someone scrolled it.",
-        "mid": "",
-        "staff": ""
+        "mid": "content-visibility: auto skips rendering for sections that aren't relevant yet — no layout, no paint — but it doesn't reserve any space for what it's skipping.",
+        "staff": "This is a containment tradeoff, not a bug — content-visibility: auto applies size containment as part of skipping render work, so by definition it's also skipped knowing how tall the thing is."
       },
       {
         "chapter": "concept",
         "junior": "The fix is a second property, contain intrinsic size, set right alongside it. It tells the browser roughly how tall a skipped section is, so the page doesn't keep resizing itself as you scroll.",
-        "mid": "",
-        "staff": ""
+        "mid": "Use contain-intrinsic-size: auto with a fallback pixel value — the fallback covers a section that's never rendered, and auto remembers the real measured height after that.",
+        "staff": "The fallback doesn't need to be exact, it needs to keep the layout shift under whatever your CLS budget tolerates — a per-section-type estimate beats one constant applied everywhere."
       },
       {
         "chapter": "demo",
         "junior": "Auto-scroll through the same eight sections in both modes and watch the layout jump counter react to the same behavior the spec describes.",
-        "mid": "",
-        "staff": ""
+        "mid": "The broken mode has no contain-intrinsic-size, so unrendered sections collapse and the container's height snaps around as you scroll past them.",
+        "staff": "Open DevTools' Rendering panel and enable \"Layout Shift Regions\" while scrolling the broken mode — the highlight boxes fire on every section boundary."
       },
       {
         "chapter": "takeaway",
         "junior": "Content visibility auto skips rendering to save time, but it needs a size hint or the page will jump around as you scroll. Always pair the two.",
-        "mid": "",
-        "staff": ""
+        "mid": "Pair content-visibility: auto with contain-intrinsic-size: auto and a fallback — the fallback covers the first render, auto remembers the real size after that.",
+        "staff": "Size the fallback from real measured data per section type, and explicitly test sticky and fixed descendants before shipping the change."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

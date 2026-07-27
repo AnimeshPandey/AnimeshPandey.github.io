@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about importing one function from a utility library, and watching the bundle grow by the size of the whole thing anyway.",
-        "mid": "",
-        "staff": ""
+        "mid": "Without an explicit signal, a bundler has to assume any module-level code might have a side effect — deleting code that might do that would be an unsafe optimization.",
+        "staff": "Tree shaking is fundamentally a proof problem — the bundler must prove an export is unreachable and side-effect-free before removing it, and JavaScript's dynamic nature makes that hard to construct automatically."
       },
       {
         "chapter": "concept",
         "junior": "The fix is a single package.json field, sideEffects: false, telling the bundler it's safe to remove anything the app doesn't actually use.",
-        "mid": "",
-        "staff": ""
+        "mid": "If a package genuinely has a few side-effectful files, list them explicitly instead of marking the whole package — everything not listed is fair game for removal.",
+        "staff": "This only helps if the library is authored as real ES modules — static import and export syntax is what lets the bundler analyze reachability at all, a CommonJS require() graph is opaque to it."
       },
       {
         "chapter": "demo",
         "junior": "Toggle between a library with no sideEffects field and one that declares itself safe, and watch the simulated bundle breakdown change.",
-        "mid": "",
-        "staff": ""
+        "mid": "The import statement in the app code never changes — only the library's own package.json field does.",
+        "staff": "This is entirely a build-time, static-analysis difference — nothing about runtime behavior changes either way."
       },
       {
         "chapter": "takeaway",
         "junior": "Without a sideEffects signal, bundlers play it safe and keep everything. One field changes that.",
-        "mid": "",
-        "staff": ""
+        "mid": "sideEffects: false in package.json tells the bundler it's safe to remove any export the app doesn't use — list real side-effectful files explicitly rather than marking a whole package false.",
+        "staff": "Verify the reduction actually happened with a bundle analyzer, not just the config."
       }
     ]
   },

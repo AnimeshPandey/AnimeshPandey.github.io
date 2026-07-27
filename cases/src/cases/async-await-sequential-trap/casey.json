@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Today's case is about async and await — specifically two independent API calls that were quietly running one after another because that's the order they were written in, not because either one needed the other.",
-        "mid": "",
-        "staff": ""
+        "mid": "await only pauses the function it's written in, not two operations relative to each other — for two independent calls on consecutive lines, reading top to bottom is misleading.",
+        "staff": "async/await was designed to make asynchronous code look synchronous, a genuine win for dependent steps — applied by habit to independent calls, that same visual cue makes code silently slower."
       },
       {
         "chapter": "concept",
         "junior": "The fix is one question per await: does this line actually need the result from the line before it? If not, start both calls first and wait for both together with Promise dot all, so their wait time overlaps instead of stacking.",
-        "mid": "",
-        "staff": ""
+        "mid": "Ask one question per await: does this line need a value from the line before it? If yes, sequential is correct. If no, call both functions first and await the combined result so their work overlaps.",
+        "staff": "Concurrent isn't parallel — JavaScript still runs one line at a time. What overlaps is the waiting: both requests are in flight on the network simultaneously even though the engine never executes two statements at once."
       },
       {
         "chapter": "demo",
         "junior": "Try running the page load simulation in both modes and watch how much the total time changes, measured live in each run.",
-        "mid": "",
-        "staff": ""
+        "mid": "Both simulated calls take roughly the same time in each mode — the only thing that changes is whether the second call's timer starts after the first finishes, or at the same instant.",
+        "staff": "Watch the start offset of the second bar, not just the total — in the fixed version both bars start at 0ms, the calls were genuinely issued together."
       },
       {
         "chapter": "takeaway",
         "junior": "Code that reads top to bottom with await looks sequential because that's how you're reading it, not because the calls need to run in that order. Check whether the second call actually needs the first one's result.",
-        "mid": "",
-        "staff": ""
+        "mid": "Ask one question per await: does this line need the value from the line before it? If not, start both calls first and await the combined result so their wait time overlaps.",
+        "staff": "Promise.all gives you concurrency, not parallelism — the win is overlapping I/O wait, not executing your code simultaneously, and its fail-fast behavior needs its own judgment call for optional widgets."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try sequential", "target": "[data-demo-state=broken]" },
-        { "label": "Try Promise.all", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try sequential",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try Promise.all",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle sequential", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle Promise.all", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle sequential",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle Promise.all",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Sequential state", "target": "[data-demo-state=broken]" },
-        { "label": "Concurrent state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Sequential state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Concurrent state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]
