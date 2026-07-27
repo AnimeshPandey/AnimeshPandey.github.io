@@ -1,0 +1,115 @@
+{
+  "slug": "local-mcp-stdio-security",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A formatting server was spawned with the whole terminal's environment — including an unrelated AWS key it never asked for and never needed.",
+      "mid": "Full inheritance is the default for child_process.spawn without an explicit env option — not something MCP invented, but something MCP servers make riskier.",
+      "staff": "Full inheritance is what happens when nobody scopes anything — a least-privilege gap baked into default plumbing, not a deliberate choice."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Compare the two ways of launching the same server — one hands over everything in the shell, one hands over exactly what was declared.",
+      "mid": "The broken version is what you get from passing process.env directly. The fixed version builds env from an explicit allowlist.",
+      "staff": "The fixed allowlist is the same shape as the MCP TypeScript SDK's own getDefaultEnvironment() — not a novel pattern, just what the SDK does by default."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Build the env object as an allowlist of exactly what the server needs, not a passthrough of everything in the shell.",
+      "mid": "The MCP TypeScript SDK's stdio transport does exactly this by default via getDefaultEnvironment() — a hand-rolled spawn wrapper that skips it opts back into the less-safe behavior.",
+      "staff": "Scoping is a blast-radius decision, not a correctness one — the threat model is a supply-chain compromise or a bug that dumps process.env, not the server's own normal behavior."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Don't build one shared 'safe env' object for every server — a git helper needs different variables than a formatter does.",
+      "mid": "If a server's config declares its own required env keys, treat that declaration as the actual allowlist source, not documentation to duplicate by hand.",
+      "staff": "This reasoning extends past MCP — any subprocess spawn with broader env access than its job requires is making the same trade, worth checking on every spawn call in a codebase."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "So someone wired up a local formatting tool as an MCP server and just spawned it with the whole terminal's environment, because that's the easy way and it worked immediately.",
+        "mid": "That same terminal happened to have an AWS secret key sitting in it from something unrelated earlier that day, and nothing stopped the formatting server from reading it.",
+        "staff": "This is a least-privilege gap baked into the default plumbing, not a decision anyone actually made — full inheritance is just what happens when nobody scopes anything."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Instead of handing a spawned server your whole environment, build a small object with only the variables it actually needs and pass that instead.",
+        "mid": "The official MCP SDK already does this by default with a curated allowlist function, specifically to prevent this exact leak — skipping it means opting back into the riskier behavior.",
+        "staff": "Scoping is really about blast radius, not correctness — a supply-chain compromise or a crash that logs the environment both get neutralized by a secret that was never there to begin with."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Compare the two spawn calls here — one hands the server everything in the shell, the other hands it exactly what it declared it needs.",
+        "mid": "The broken version passes process.env straight through. The fixed version builds the environment from an explicit allowlist instead.",
+        "staff": "Notice the fixed allowlist is basically what the MCP SDK's own default environment function already does — this isn't a new idea, it's the safe default."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A locally spawned MCP server gets your whole environment by default unless you explicitly limit it, secrets and all.",
+        "mid": "Build the env you pass to a spawn call as an allowlist of exactly what that server needs, not a passthrough of everything you happen to have.",
+        "staff": "Scoping doesn't prevent a compromise, it caps what a compromise can reach — a scoped server can only leak what was actually in its own environment."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

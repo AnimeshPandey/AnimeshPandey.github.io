@@ -968,6 +968,68 @@
       "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — Clickjacking Defense Cheat Sheet</a>"
     ]
   },
+  "playwright-trace-debug": {
+    "junior": [
+      "<a href=\"https://playwright.dev/docs/trace-viewer\" rel=\"noopener noreferrer\">Playwright — Trace viewer</a>"
+    ],
+    "mid": [
+      "<a href=\"https://playwright.dev/docs/trace-viewer\" rel=\"noopener noreferrer\">Playwright — Trace viewer</a>",
+      "<a href=\"https://playwright.dev/docs/test-retries\" rel=\"noopener noreferrer\">Playwright — Retries</a>"
+    ],
+    "staff": [
+      "<a href=\"https://playwright.dev/docs/test-retries\" rel=\"noopener noreferrer\">Playwright — Retries</a>"
+    ]
+  },
+  "command-palette-keyboard": {
+    "junior": [
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/combobox/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Combobox Pattern</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/combobox/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Combobox Pattern</a>",
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Dialog (Modal) Pattern</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Dialog (Modal) Pattern</a>",
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/combobox/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Combobox Pattern</a>"
+    ]
+  },
+  "dark-mode-tokens": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme\" rel=\"noopener noreferrer\">MDN — prefers-color-scheme</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties\" rel=\"noopener noreferrer\">MDN — Using CSS custom properties (variables)</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme\" rel=\"noopener noreferrer\">MDN — prefers-color-scheme</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties\" rel=\"noopener noreferrer\">MDN — Using CSS custom properties (variables)</a>"
+    ]
+  },
+  "agent-loop-plan-act-observe": {
+    "junior": [
+      "<a href=\"https://openai.github.io/openai-agents-python/\" rel=\"noopener noreferrer\">OpenAI Agents SDK</a>"
+    ],
+    "mid": [
+      "<a href=\"https://openai.github.io/openai-agents-python/\" rel=\"noopener noreferrer\">OpenAI Agents SDK</a>",
+      "<a href=\"https://openai.github.io/openai-agents-python/running_agents/\" rel=\"noopener noreferrer\">OpenAI Agents SDK — Running agents</a>"
+    ],
+    "staff": [
+      "<a href=\"https://openai.github.io/openai-agents-python/running_agents/\" rel=\"noopener noreferrer\">OpenAI Agents SDK — Running agents</a>"
+    ]
+  },
+  "local-mcp-stdio-security": {
+    "junior": [
+      "<a href=\"https://www.anthropic.com/news/model-context-protocol\" rel=\"noopener noreferrer\">Anthropic — Introducing the Model Context Protocol</a>"
+    ],
+    "mid": [
+      "<a href=\"https://modelcontextprotocol.io/specification/2025-11-25/basic/transports\" rel=\"noopener noreferrer\">Model Context Protocol spec — Transports (stdio)</a>",
+      "<a href=\"https://platform.claude.com/docs/en/docs/agents-and-tools/mcp-connector\" rel=\"noopener noreferrer\">Anthropic — MCP connector</a>"
+    ],
+    "staff": [
+      "<a href=\"https://modelcontextprotocol.io/specification/2025-11-25/basic/transports\" rel=\"noopener noreferrer\">Model Context Protocol spec — Transports (stdio)</a>",
+      "<a href=\"https://platform.claude.com/docs/en/docs/agents-and-tools/mcp-connector\" rel=\"noopener noreferrer\">Anthropic — MCP connector</a>"
+    ]
+  },
   "indexeddb-offline-cache": {
     "junior": [
       "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB\" rel=\"noopener noreferrer\">MDN — Using IndexedDB</a>"

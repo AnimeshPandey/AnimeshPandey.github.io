@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Dark Mode via Design Tokens"
+description: "Why hardcoding colors per-component and overriding them with a flood of dark-mode selectors doesn't scale, and how design tokens turn a theme switch into one variable swap instead of hundreds of overrides."
+slug: dark-mode-tokens
+track: patterns-ux
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Theming
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/dark-mode-tokens-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The card that stayed white in dark mode, and the 40 selectors that fixed one of it</h2>
+  <div class="tone-junior">
+    <p>
+      A team added dark mode the fast way: ship the light-themed app, then go component by component adding a <code>.dark .card { background: #1e1e1e; }</code> override for anything that still looked wrong. It worked, sort of. Three weeks later a designer filed a bug: a pricing card nested inside a modal nested inside a dashboard widget was still rendering white-on-white in dark mode, because the override that would have fixed it targeted <code>.dark .card</code>, and this particular card was rendered by a component that used a different class name.
+    </p>
+    <p>
+      By then there were over 40 dark-mode-specific override rules scattered across a dozen files, and nobody could say with confidence whether they covered every component or just the ones someone had happened to notice were broken.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Hardcoded colors plus reactive overrides is an approach with no ceiling on how it fails — every new component is a new place a dark-mode override might be missing, and the override list only grows, it never gets structurally smaller. There's no single place to look to answer "is this themed correctly," only a growing list of patches applied after the fact.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The actual defect wasn't the missing 41st override, it was treating color as a per-component implementation detail instead of a themeable value with a single source of truth. Every hardcoded hex value is a value that has to be found and duplicated for every theme a product ever ships — a burden that compounds linearly with both component count and theme count, which is exactly the kind of growth a design system exists to prevent.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Name the role, not the color, and redefine it once per theme</h2>
+  <div class="tone-junior">
+    <p>
+      A design token is a CSS custom property that names what a color is <em>for</em>, not what it looks like — <code>--color-surface</code> instead of <code>#ffffff</code>, <code>--color-ink</code> instead of <code>#111111</code>. Components reference the token (<code>background: var(--color-surface)</code>), never the raw value. A theme is just a different set of values assigned to those same token names, defined once at the root.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Switching themes becomes swapping which value block is active — light theme sets <code>--color-surface: #ffffff</code> at <code>:root</code>, a <code>[data-theme="dark"]</code> selector (or a <code>prefers-color-scheme: dark</code> media query) redefines the same token to <code>#1e1e1e</code>. Every component that already referenced <code>var(--color-surface)</code> updates automatically — zero component code changes, because the component never knew a specific color, only a role.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is an inversion of where the theming decision lives: with hardcoded colors, "what should this look like in dark mode" is a question asked and answered separately for every component that has one. With tokens, it's asked and answered exactly once, at the theme root, and every consumer inherits the answer through normal CSS cascade and inheritance — the same mechanism that already makes CSS scale, applied to color instead of fought against.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The design system migration that took an afternoon instead of a sprint</h2>
+  <div class="tone-junior">
+    <p>
+      After the pricing-card incident, the team spent a sprint doing a real token migration: audit every hardcoded color in the codebase, map each one to a semantic token name (<code>--color-surface</code>, <code>--color-surface-raised</code>, <code>--color-border</code>, <code>--color-ink</code>, <code>--color-ink-muted</code>, <code>--color-accent</code>), replace every raw hex value with the matching <code>var()</code> reference, then delete all 40-plus dark-mode override rules — they were no longer needed, because every component now read from a token that dark mode already redefined.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Six months later, the design team wanted to add a third theme — a high-contrast mode for accessibility. Under the old override-per-component approach, that would have meant writing a second parallel set of 40-plus overrides. Under the token approach, it was one new value block at the root defining the same eight token names with high-contrast values. No component code touched. It shipped in an afternoon.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The token layer also caught a category of bug the override approach structurally couldn't: a few components turned out to be using <code>--color-ink</code> (primary text) where they actually needed <code>--color-ink-muted</code> (secondary text) — a distinction that was invisible in light mode because both values happened to have enough contrast against white, but became a real legibility problem once dark mode's much narrower contrast range exposed the difference. Naming the role forced someone to pick the correct role, which naming nothing (just a hex value) never had.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Hardcoded colors plus a growing pile of dark-mode override selectors (broken) vs. semantic design tokens redefined once at the theme root (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Add a component both ways</h2>
+  <div class="tone-junior">
+    <p>Toggle dark mode in each panel, then add a new card. Watch what happens to the new card's colors in each approach.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken panel's new card ships with a hardcoded light-mode color and needs its own override to fix. The token panel's new card already references the shared tokens and themes correctly with zero extra code.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This is the actual cost curve: broken mode's override count grows with every component; the token panel's override count is flat at "redefine 5 tokens once," regardless of how many components exist.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Dark mode via hardcoded colors and per-component overrides (broken) vs. semantic design tokens redefined once at the theme root (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="dark-mode-tokens">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares hardcoded per-component dark-mode overrides against theme-root design tokens; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Hardcoded + overrides
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Design tokens
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Design tokens</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Tokens are still a naming discipline, not a magic fix</h2>
+  <div class="tone-junior">
+    <p>
+      Naming matters: <code>--color-surface</code> (what role it plays) ages much better than <code>--color-gray-100</code> (what it currently looks like) — a gray that becomes the "surface" color in light mode might need to become a dark navy in dark mode, and a token named after its role can make that jump cleanly while one named after its current appearance reads as a contradiction.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A two-layer token system scales further: primitive tokens (<code>--gray-900: #111</code>) hold raw values, semantic tokens (<code>--color-ink: var(--gray-900)</code>) alias them to a role, and components only ever reference the semantic layer. This lets a theme remap which primitive backs a given semantic token without renaming anything components already depend on.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Watch inheritance and specificity: a token redefined on a scoped element (say, a themed sidebar nested inside a page using the opposite theme) cascades correctly to its descendants by default, since custom properties inherit like any other CSS property — but a component that reads the token via JS (<code>getComputedStyle</code>) rather than through CSS needs to re-read it on theme change, since JS doesn't get cascade updates for free the way CSS declarations do. The newer <code>light-dark()</code> CSS function and <code>@property</code> (for typed, non-inheriting custom properties) are worth knowing for cases where you want a token to explicitly *not* inherit or want both theme values expressed in one declaration.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Hardcoded colors plus reactive dark-mode overrides never stop growing — every new component is a new place an override can be missing.</div>
+        <div class="tone-mid">Name colors by role (<code>--color-surface</code>, <code>--color-ink</code>), reference the token everywhere, and redefine the token set once per theme at the root — components need zero changes to support a new theme.</div>
+        <div class="tone-staff">A two-layer token system (primitive values aliased to semantic roles) scales further, but the real win is structural: the theming decision moves from "asked per component" to "asked once at the root."</div>
+      </li>
+    </ul>
+  </div>
+</section>

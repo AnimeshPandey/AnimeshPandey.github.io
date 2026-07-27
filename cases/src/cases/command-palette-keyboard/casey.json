@@ -1,0 +1,148 @@
+{
+  "slug": "command-palette-keyboard",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Arrow keys did nothing, Enter did nothing — users had to click the result, which defeats the entire point of Cmd+K.",
+      "mid": "A search box that filters but needs a mouse for everything else is slower than the menu it replaced, because it forces an input-mode switch mid-task.",
+      "staff": "This is a focus-management problem wearing a search-UX costume — filtering is the easy 20%, focus trap and restoration are the invisible 80%."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Try navigating each mode using only your keyboard — type, arrow, Enter, Escape, no mouse.",
+      "mid": "Broken filters on type but ignores arrow keys and Enter entirely. Fixed supports full keyboard navigation and traps focus while open.",
+      "staff": "Tab in the fixed mode and it stays inside the palette — close it and check where focus actually lands."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Arrow keys move a highlight, Enter activates it, Escape closes and returns focus — all three, no clicking required.",
+      "mid": "The input keeps real DOM focus the whole time; aria-activedescendant just points at the currently-highlighted option's id.",
+      "staff": "Skip the accessibility layer and you get two compounding bugs: a keyboard trap that lets Tab escape into the page behind it, and focus silently falling to body on close."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Fuzzy match should reset the highlight to the top result on every keystroke, or a fast typist can Enter a stale selection.",
+      "mid": "Virtualized result lists need highlight-tracking against the full filtered data, not just the currently-rendered DOM slice.",
+      "staff": "Verify with a screen reader on: aria-activedescendant announcements, role=dialog with aria-modal, and aria-expanded kept in sync on the trigger — all three are easy to skip if you only checked visually."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "A team shipped a command-K palette that looked right, but the arrow keys did nothing and Enter did nothing — users had to click, which kind of defeats the whole point.",
+        "mid": "The entire value of a command palette is never touching the mouse, so a search box that only filters on type is actually slower than the menu it was meant to replace.",
+        "staff": "This turned out to be a focus-management problem dressed up as a search feature — the filtering was the easy part, focus handling was the part that got skipped."
+      },
+      {
+        "chapter": "concept",
+        "junior": "A real command palette needs three things: arrow keys move a highlight, Enter picks whatever's highlighted, and Escape closes it and sends focus back where it came from.",
+        "mid": "The trick is the input keeps real focus the whole time — aria-activedescendant just points at whichever option is currently highlighted, so it looks like focus moved without actually moving it.",
+        "staff": "Skip that layer and you get two bugs at once — Tab can escape the palette into the page behind it, and closing it can silently drop focus to the body with no trace of where the user was."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try each mode here using only your keyboard — type to filter, arrows to move, Enter to pick, Escape to close.",
+        "mid": "The broken version filters fine but ignores every other key. The fixed version handles all of it and keeps Tab trapped inside while it's open.",
+        "staff": "Tab around in the fixed mode and notice it never escapes the palette — then close it and check that focus actually lands back on the trigger."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "If arrow keys, Enter, and Escape don't all work with no mouse involved, it's not a command palette yet, no matter what shortcut opens it.",
+        "mid": "Track the highlight with aria-activedescendant instead of moving real focus per keystroke, and trap Tab inside the palette the whole time it's open.",
+        "staff": "Every single exit path has to restore focus the same way — Escape, click-outside, picking a result, even a route change — or the happy path ends up being the one case that loses it."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

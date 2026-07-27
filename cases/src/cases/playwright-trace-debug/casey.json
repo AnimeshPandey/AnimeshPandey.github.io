@@ -1,0 +1,148 @@
+{
+  "slug": "playwright-trace-debug",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The error said 'Target closed' and nothing else — no screenshot, no idea what the page looked like when it failed.",
+      "mid": "One log line is consistent with a crash, a redirect, an overlay stealing the click, or a slow render — four causes, one indistinguishable message.",
+      "staff": "A suite with no failure artifacts isn't missing debugging info by accident — that's exactly what you configured it to keep, which by default is stdout only."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click through both modes on the same failed test and see how much you can actually figure out in each one.",
+      "mid": "Broken mode gives you the log line and nothing else. Fixed mode gives you the DOM snapshot, screenshot, and network entry at the point of failure.",
+      "staff": "The overlay element that actually caused the failure only ever shows up in the DOM snapshot — it was never in the error message at all."
+    },
+    {
+      "chapter": "concept",
+      "junior": "trace: 'on-first-retry' (or 'retain-on-failure') saves a trace.zip for any failing test — open it in the Trace Viewer for a full timeline.",
+      "mid": "on-first-retry only records on a retry, so passing tests cost nothing; retain-on-failure records every test but keeps only the failures.",
+      "staff": "Traces reconstruct the real DOM and accessibility tree per action, plus expect diffs and source-mapped stack frames — not a pixel video, an inspectable state machine."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "The trace.zip has to actually leave the CI runner — upload it as a build artifact and link it from the failed job, or nobody finds it.",
+      "mid": "on-first-retry needs retries: 1 or higher configured to ever fire — a common gotcha is turning on tracing and seeing zero traces because retries are still 0.",
+      "staff": "Set a retention window for trace storage, and consider trace: 'on' scoped to one file while actively de-flaking a borderline test, not just the ones that hard-fail."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "So a checkout test failed overnight in CI, and the only thing anyone had to go on was one line: target closed. No screenshot, no idea what the page even looked like.",
+        "mid": "That one log line is equally consistent with a crash, a redirect, or an overlay stealing the click — you genuinely cannot tell which from the text alone.",
+        "staff": "This is exactly why flaky failures cost so much more than their frequency suggests — every one turns into a re-run-and-guess cycle instead of an actual diagnosis."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Playwright can record a full trace for a test — turn it on with trace colon on-first-retry, and any failing test saves a timeline you can actually open and scrub through.",
+        "mid": "On first retry only records when a test gets retried after failing, so it costs nothing on the tests that pass, and you get a real DOM reconstruction, not a screen recording.",
+        "staff": "The trace captures the accessibility tree at each step, plus assertion diffs and source-mapped stack frames, so a failure buried in a page object still points at a specific line."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try both modes here on the same failed test and see how much you can actually work out from each one.",
+        "mid": "The broken mode is the log line alone. The fixed mode shows you the DOM snapshot, the screenshot, and the network call at the exact moment things went wrong.",
+        "staff": "Watch for the overlay element in the fixed mode — that's the real root cause, and it was never mentioned anywhere in the original error text."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A bare error tells you where the test gave up, not what the page looked like. Turn tracing on so next time you get a real timeline instead of a guess.",
+        "mid": "Trace on first retry, or retain on failure if you're not using retries — either way you get a full DOM, network, and console timeline for the cost of a CI artifact upload.",
+        "staff": "DOM snapshots close a gap video can't — they show you the actual overlay or timing race, not just pixels. Budget the storage and wire up the CI upload, or the capability sits unused."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

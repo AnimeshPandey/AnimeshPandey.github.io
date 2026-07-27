@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Command Palette for Power Users"
+description: "Why a Cmd+K search box that looks like a command palette often isn't one — and what real keyboard-first interaction design (navigation, fuzzy match, focus trap and restore) takes to actually earn that name."
+slug: command-palette-keyboard
+track: patterns-ux
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Power UX
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/command-palette-keyboard-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The Cmd+K box that made you reach for the mouse anyway</h2>
+  <div class="tone-junior">
+    <p>
+      A team shipped a Cmd+K command palette: press the shortcut, a search box pops up, type to filter a list of actions. It looked exactly like the ones in every tool their users already loved. Then support tickets came in — "the arrow keys don't do anything," "I have to click the result, pressing Enter does nothing," "when I close it, my cursor is gone and I don't know where focus went."
+    </p>
+    <p>
+      The box searched. That was it. Everything past "type text, see filtered list" required a mouse — which meant it wasn't actually a command palette, it was a search input wearing a command palette's keyboard shortcut.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The whole value proposition of a command palette is "never touch the mouse." A search box that filters but doesn't support arrow-key navigation, Enter-to-select, or predictable focus handling fails at the one job that justifies its existence — it's slower than the menu it's supposedly replacing, because now the user has to switch input modes mid-task.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a focus-management problem wearing a search-UX costume. The filtering logic was the easy 20%; arrow-key navigation, roving <code>aria-activedescendant</code>, a focus trap while the palette is open, and focus restoration on close are the 80% that actually makes it usable without a pointer — and it's exactly the part that's invisible in a screenshot or a quick demo, so it's the part that gets skipped under deadline pressure.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Keyboard-first means the keyboard drives everything, not just typing</h2>
+  <div class="tone-junior">
+    <p>
+      A real command palette needs three things working together: arrow keys move a visible "selected" highlight through the results, Enter activates whatever's highlighted, and Escape closes the palette and returns focus to wherever it was before — no clicking required at any step.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Under the hood, the highlighted item usually isn't given real DOM focus on every arrow press (that would fire a wall of focus events and confuse assistive tech) — instead the input keeps DOM focus the whole time, and <code>aria-activedescendant</code> on the input points at the id of the currently-highlighted option, a pattern from the ARIA combobox spec. Visually it looks like focus moved; structurally the input never let go.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Two failure modes compound if you skip the accessibility layer: a keyboard trap (Tab can escape the palette into the page behind it while it's still open, or never find its way back in) and a lost-focus bug on close (the palette unmounts and focus silently falls back to <code>&lt;body&gt;</code>, so the next Tab press starts from the top of the page instead of where the user was). Both are functionally invisible to a sighted mouse user clicking through a demo, and both make the feature unusable for anyone navigating by keyboard alone.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The palette that ejected users into the page behind it</h2>
+  <div class="tone-junior">
+    <p>
+      A B2B dashboard's command palette was built by wiring an existing autocomplete input to a global keyboard shortcut. It filtered fine. But because it was never designed as a modal overlay, pressing Tab while it was open moved focus straight into the dashboard sidebar underneath it — the palette stayed visually open, but keyboard input now controlled a different part of the page entirely.
+    </p>
+    <p>
+      Power users, the exact audience the feature was built for, hit this constantly, because they were the ones actually using the keyboard instead of clicking through.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team added a real focus trap: while the palette is open, Tab and Shift+Tab cycle only among elements inside it (the input and, once results render, nothing else needs to be independently tabbable since arrow keys handle navigation). They also stored the previously-focused element before opening the palette and explicitly called <code>.focus()</code> on it when the palette closed, instead of letting focus fall wherever the browser's default landed.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also fixed a second-order bug the trap exposed: closing the palette via a result selection (not just Escape) needs the same focus-restoration path as an explicit cancel, or the "happy path" of actually using the palette successfully is the one case where focus gets lost. Every exit route — Escape, click-outside, selecting a result, even the palette triggering a route change — has to funnel through the same restore-focus step, or you fix the bug for the exit path you tested and reintroduce it on the one you didn't.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A filter box with mouse-only selection and no focus trap (broken) vs. full arrow-key navigation, Enter-to-select, and a focus trap that restores on close (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Try navigating both without your mouse</h2>
+  <div class="tone-junior">
+    <p>Open each mode and try using only your keyboard: type to filter, arrow keys to move, Enter to select, Escape to close.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken mode filters on type but arrow keys and Enter do nothing — you're forced back to the mouse. The fixed mode supports full keyboard navigation and traps focus while open.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Try Tabbing in the fixed mode — it stays inside the palette. Close it and check where focus lands; it should return to the trigger, not fall to the document body.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Command palette keyboard interaction: mouse-only selection with no focus trap (broken) vs. full keyboard navigation with focus trap and restore (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="command-palette-keyboard">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a mouse-only command palette against one with full keyboard navigation and focus management; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Mouse-only
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Full keyboard
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Full keyboard</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Fuzzy matching and virtualized lists both have keyboard implications</h2>
+  <div class="tone-junior">
+    <p>
+      Fuzzy matching (so "gh iss" finds "GitHub Issues") is a search-quality feature, but it also has a keyboard-UX side: the highlighted/first result should reset to the top of the list on every keystroke, or a user who types fast can hit Enter on a stale selection from a previous filter pass.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      If the result list is long enough to virtualize (rendering only visible rows), the highlighted-item tracking has to work against the full filtered dataset, not just the currently-rendered DOM slice — arrow-key-down past the last rendered row needs to scroll the list and keep the highlight in sync, not just stop moving because the next item isn't mounted yet.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Verify the whole interaction with a screen reader on, not just visually: <code>aria-activedescendant</code> announcements should read the highlighted option's label as it changes, the palette needs <code>role="dialog"</code> with <code>aria-modal="true"</code> (or equivalent) so background content is excluded from the accessibility tree while open, and the trigger button needs <code>aria-expanded</code> kept in sync with actual open state — a command palette that "looks" keyboard-first in DevTools but wasn't checked with assistive tech reliably has at least one of these missing.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A search box that filters on type isn't a command palette until arrow keys, Enter, and Escape all work without ever touching the mouse.</div>
+        <div class="tone-mid">Track the highlighted result via <code>aria-activedescendant</code> instead of moving real DOM focus per keystroke, and trap Tab/Shift+Tab inside the palette while it's open.</div>
+        <div class="tone-staff">Every exit path — Escape, click-outside, selecting a result, a route change — has to restore focus to the trigger the same way, or the happy path becomes the one case that loses it.</div>
+      </li>
+    </ul>
+  </div>
+</section>
