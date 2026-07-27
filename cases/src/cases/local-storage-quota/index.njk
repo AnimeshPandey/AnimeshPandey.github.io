@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "localStorage Quota and Privacy"
+description: "An autosave that writes to localStorage on every keystroke works fine in testing, then throws an uncaught QuotaExceededError in production once a user's history piles up — and localStorage isn't cleared the way most users expect either."
+slug: local-storage-quota
+track: state-architecture
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Storage
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/local-storage-quota-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The autosave worked for months, then one write silently stopped saving anything again</h2>
+  <div class="tone-junior">
+    <p>
+      A notes app autosaves a draft to <code>localStorage</code> on every keystroke, one <code>setItem</code> call, no bounds on how much history piles up over time. It works in every test, because test sessions are short and drafts are small. Months into real use, a long-time user's stored draft history finally crosses the browser's storage limit for that site, and the very next <code>setItem</code> call throws.
+    </p>
+    <p>
+      Nothing catches it. The throw happens inside the keystroke handler, so the rest of that handler, including the code that would normally show "Draft saved," never runs either. Autosave doesn't show an error. It just quietly stops working, and the user finds out days later when their browser crashes and the last hour of notes isn't there.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>localStorage.setItem()</code> is not guaranteed to succeed. Every browser enforces a real per-origin quota, typically 5&ndash;10MB depending on the browser, and once a write would exceed it, <code>setItem</code> throws synchronously, a <code>QuotaExceededError</code> <code>DOMException</code>, it doesn't truncate the value or silently drop it. Code that calls <code>setItem</code> without a <code>try/catch</code> is one long-lived user session away from an uncaught exception in whatever handler happened to call it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The failure mode compounds because it's rarely reproducible locally. QA sessions are short-lived and start from a clean profile, so the quota is never remotely close to being hit; the bug only shows up for real users after weeks of accumulated writes, or for anyone whose browser applies a smaller quota than the developer's, private browsing windows in some browsers have historically set the quota to zero, meaning the very first write throws, not the thousandth.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The quota is real, the throw is synchronous, and localStorage isn't what "clear cookies" clears</h2>
+  <div class="tone-junior">
+    <p>
+      <code>localStorage</code> gives each origin a shared bucket, typically 5&ndash;10MB total, for every key it ever writes, combined. Once a write would push the total past that limit, the browser doesn't shrink the value or ignore the call, it throws an exception right there, synchronously, and whatever called <code>setItem</code> needs to be ready to catch it. Handling it well means wrapping writes in <code>try/catch</code> and having an actual fallback ready: delete some older entries first, keep only the most important data, or fall back to holding that particular write in memory for the rest of the session instead of crashing.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      There's a separate, non-obvious gap most users (and plenty of engineers) don't expect: clearing cookies, the button most users reach for to "reset a site," does not reliably clear <code>localStorage</code>. It's a different storage bucket with its own settings surface, so data written months ago can outlive several rounds of a user "clearing everything" through the cookie-focused UI they actually know about.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Storage partitioning adds another layer worth knowing: modern browsers increasingly partition storage per top-level site to block cross-site tracking (Safari's Intelligent Tracking Prevention, Firefox's Enhanced Tracking Protection), so the same origin embedded as a third-party iframe on different sites gets separate, isolated <code>localStorage</code> instances rather than one shared bucket, data written in one embedding context is invisible in another. And some private/incognito browsing implementations have set the effective quota to zero rather than disabling <code>localStorage</code> outright, which means <code>setItem</code> is reachable and throws immediately, indistinguishable from a real quota-exceeded error unless the code is written to treat both the same way.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>It shipped clean, then broke for every user on a private-browsing window</h2>
+  <div class="tone-junior">
+    <p>
+      A team shipped a "recently viewed items" feature that appended to a <code>localStorage</code> array on every page view, unbounded, no cap on how many entries it kept. It worked in every review and every demo. A batch of support tickets started arriving from users saying the app "wouldn't load" or "crashed instantly," and every one of them turned out to be using a private/incognito window.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      In the private-browsing configuration those users hit, the browser's effective <code>localStorage</code> quota for the session was zero. The very first <code>setItem</code> call in the app's init path, writing an empty default state, threw immediately. Because that call sat in a critical startup function with no <code>try/catch</code>, the exception propagated up and stopped the app's initial render entirely, a real quota edge case took down the whole page, not just the recently-viewed feature.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix treated every <code>localStorage</code> write in the app as fallible by construction: a small wrapper function that tries <code>setItem</code>, and on any thrown error, whether from quota, private-browsing restrictions, or storage being disabled by policy, falls back to an in-memory <code>Map</code> for that session instead of propagating. The recently-viewed feature itself got a bound: cap at 50 entries, evict the oldest on overflow, so it would no longer be the thing eventually tripping the quota for long-lived users even once the crash-on-write bug was fixed.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">An unwrapped localStorage.setItem() throws uncaught once quota is hit and autosave silently stops (broken) vs. a try/catch that evicts the oldest entry and keeps saving (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Keep adding draft entries until the (simulated) quota is hit</h2>
+  <div class="tone-junior">
+    <p>Click "Add draft entry" repeatedly in each mode and watch what happens once storage fills up. (This demo uses a small simulated quota so you can hit it in a few clicks — real localStorage limits are much larger, 5&ndash;10MB.)</p>
+  </div>
+  <div class="tone-mid">
+    <p>In broken mode, the write past quota throws and nothing catches it — the console-style log shows the uncaught error, and autosave stops updating from that point on. In fixed mode, the same condition is caught, the oldest entry is evicted to make room, and saving continues.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Entries under the simulated quota are written to real <code>localStorage</code> (a namespaced demo key, cleared on reset) so the surrounding read/write plumbing is genuine; only the quota threshold itself is scaled down to make the failure reachable in a few clicks instead of megabytes.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Repeatedly adding draft entries to localStorage until a simulated quota is exceeded, comparing an unhandled setItem throw that silently kills autosave (broken) against a caught error that evicts the oldest entry and keeps saving (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="local-storage-quota">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo repeatedly writes draft entries toward a small simulated storage quota, comparing an unhandled setItem throw that silently kills autosave against a caught error that evicts the oldest entry and keeps saving; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Unhandled quota error
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Caught + evicted
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Caught + evicted</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:240px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Treat every write as fallible, and know what actually resets this data</h2>
+  <div class="tone-junior">
+    <p>
+      The simplest durable fix is a small wrapper around every <code>localStorage.setItem</code> call that catches any thrown error and falls back to doing nothing worse than "this particular write didn't persist," rather than letting the exception escape into whatever handler triggered it. Chrome DevTools can simulate a smaller storage quota (Application panel → Storage) specifically so this fallback path can be tested without waiting weeks for real data to accumulate.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A real eviction strategy needs more than "catch and ignore": track roughly how much is stored (or just cap the number of entries outright) and evict the oldest, or least useful, entries before writing new data, so the app degrades gracefully at the boundary instead of intermittently failing writes forever once it's near the limit. <code>sessionStorage</code> shares the same synchronous, string-only, quota-bound API, it doesn't solve this problem, it just adds "also cleared when the tab closes" on top of it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      For data that genuinely needs to survive indefinitely and at real scale, IndexedDB is the better-suited API, it doesn't remove the need for error handling, but its quota is typically far larger and it wasn't designed as a small synchronous key-value scratchpad. For localStorage specifically, keep in mind that the browser's "clear browsing data" flows generally do offer a path to clear it (usually filed under "site data" or "cookies and other site data," not just "cookies"), but that path is opt-in and separate from what most users think of as "clearing cookies," so don't rely on it as an implicit reset mechanism, and don't store anything in localStorage a user would reasonably expect to disappear when they clear cookies from the simpler, more visible control.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">localStorage.setItem() can throw once its quota is full, and the throw is real, not silent truncation — wrap writes in try/catch or a long enough session will eventually hit an uncaught error.</div>
+        <div class="tone-mid">Give every write a real fallback: evict the oldest entries, cap what's stored, or fall back to in-memory for that session — don't just catch and ignore the error.</div>
+        <div class="tone-staff">localStorage isn't cleared by a user's "clear cookies" flow and can be partitioned per top-level site or quota-zeroed in private browsing — treat every write as fallible by construction, and never store data a user would expect to vanish with their cookies.</div>
+      </li>
+    </ul>
+  </div>
+</section>

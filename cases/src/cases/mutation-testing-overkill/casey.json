@@ -1,0 +1,97 @@
+{
+  "slug": "mutation-testing-overkill",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Coverage only answers whether the code ran. Mutation testing answers whether a bug in it would actually get caught.",
+      "mid": "Mutating the whole codebase overnight turns a 5-minute CI run into 3 hours, and most survived mutants come from files where it barely matters.",
+      "staff": "The one mutant that mattered, a missing idempotency check, was in there the whole time — buried as one line in a two-hundred-line report nobody fully read."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Run mutation testing in each mode and see how long it takes and whether the real bug is easy to find.",
+      "mid": "Mutating everything buries the real survivor under hundreds of low-value ones. Scoping to the high-risk modules puts it front and center in minutes.",
+      "staff": "Same injected bug in both runs — only the amount of surrounding noise, and therefore whether anyone notices it, changes."
+    },
+    {
+      "chapter": "concept",
+      "junior": "A mutant that survives means the tests wouldn't notice if the code actually changed that way — a much stronger signal than 'this line ran.'",
+      "mid": "The cost is combinatorial, not linear — a handful of conditionals in one file can generate dozens of mutants, each needing its own full test run.",
+      "staff": "Some survived mutants are equivalent code changes that can never be killed by any test — chasing 100% past a reasonable point is its own narrower version of the same overkill."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Point mutation testing at the folders where a missed bug is actually expensive — payments, auth — not the whole repository.",
+      "mid": "Incremental runs re-mutate only changed files, or run the scoped set as a nightly job instead of blocking every PR.",
+      "staff": "Treat the mutation score target as scoped too — a high bar makes sense for money-handling code, and produces busywork chasing equivalent mutants everywhere else."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a payment bug that had full test coverage and still shipped, and about the tool built to catch exactly that kind of gap, and what happens when a team points it at everything at once.",
+        "mid": "Coverage only tells you whether a line ran during a test. Mutation testing tells you whether a test would actually notice if that line's behavior changed.",
+        "staff": "The one mutant that mattered was really there the whole time, sitting in a report with two hundred other entries that nobody had time to read all the way through."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Mutation testing makes small deliberate changes to the code and reruns the real test suite against each one, and if the tests still pass, that's a gap worth knowing about.",
+        "mid": "The cost isn't linear, it's combinatorial — a handful of conditions in one file can produce dozens of mutants, and each one needs its own full test run to check.",
+        "staff": "Not every survived mutant is a real gap either, some are equivalent to the original code in every observable way and can never be killed, so chasing a perfect score past a certain point stops being useful."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Run the same underlying bug through both scopes and watch how long each takes and how easy the real result is to spot.",
+        "mid": "Mutating everything produces hundreds of low-value survivors that bury the one that matters. Scoping to the high-risk modules puts that same survivor front and center.",
+        "staff": "It's the identical injected bug in both runs — the only thing that changes between them is how much noise is standing between it and someone actually reading it."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Mutation testing catches gaps coverage can't see, but running it on everything buries the result that actually matters under noise nobody reads.",
+        "mid": "Scope it to a small set of genuinely high-risk modules so a real survived mutant is a short report, not one line among hundreds.",
+        "staff": "Match the mutation score target to where a gap is genuinely expensive — chasing a perfect score everywhere is its own quieter version of the same mistake."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
