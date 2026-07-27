@@ -1,0 +1,97 @@
+{
+  "slug": "e2e-smoke-critical-path",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Zero tests couldn't catch the bug at all — and forty tests buried it in so much routine flake that a real failure got clicked past.",
+      "mid": "Neither team lacked a test count problem. Neither team had a red result they actually trusted to mean something.",
+      "staff": "Every E2E test is slower and flakier than the layer below it by nature — dozens of them either bottleneck CI or get ignored on sight. Both destroy trust in a red result."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Run CI in each mode and see whether the checkout bug makes it to production.",
+      "mid": "The blanket suite's real failure looks identical to routine flake and gets auto-retried into green. The one-smoke suite fails deterministically and blocks the merge.",
+      "staff": "Same underlying bug in both runs — the only variable is how many E2E tests are competing for attention when one turns red."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Unit and integration tests are fast and cheap and belong on logic and edge cases — E2E is the only layer that verifies the real stack connects, and that's exactly why it's slower and flakier.",
+      "mid": "A critical path is the smallest real user sequence that, if it silently broke, would stop the product's core value from being deliverable — not every path a user might take.",
+      "staff": "The filter: would a human notice within minutes and would it be worth paging someone, and does verifying it require multiple real systems wired together, not mocked at any boundary that would hide the bug."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A smoke test earns its keep by being reliable, not thorough — keep it to the one happy path and resist bolting on more assertions.",
+      "mid": "Run it against a real staging-like environment, and protect its credibility with policy — never silently retry a failure into a merge.",
+      "staff": "The moment E2E count starts tracking feature count instead of criticality count, the suite is drifting back toward the blanket-suite failure mode — audit for that periodically."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about the exact same checkout bug shipping to production twice — once past a team with zero end-to-end tests, and once past a team with forty of them.",
+        "mid": "Neither team's real problem was how many tests they had — it was that neither one had a red result they actually trusted to mean something.",
+        "staff": "Every end-to-end test is slower and flakier than the layer underneath it by nature, so a suite with dozens of them either bottlenecks CI or gets ignored, and both outcomes destroy the one thing the suite exists to provide."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Unit and integration tests are fast and cheap and should cover logic and edge cases, while end-to-end tests are the only layer that proves the real stack actually connects, which is exactly why they're slower and more fragile.",
+        "mid": "A critical path means the smallest sequence of real actions that, if it silently broke, would stop the product's core value from being delivered — not every path a user could possibly take.",
+        "staff": "The filter that actually matters: would a human notice within minutes, and does verifying it require real systems wired together rather than mocked at the one boundary that would hide the bug."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Run the same broken build through both suites and watch whether the checkout bug actually gets caught before it ships.",
+        "mid": "In the blanket suite, the real failure looks exactly like routine flake and gets retried into a passing build. In the one-smoke suite it fails once, clearly, and blocks the merge.",
+        "staff": "It's the same regression in both runs — the only thing that changes is how much noise is competing with it for someone's attention."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Zero end-to-end tests and dozens of flaky ones can both let the same bug through — what matters is having at least one that a red result truly means something on.",
+        "mid": "Give each genuinely critical path exactly one end-to-end smoke, and push everything else down to faster, more deterministic tests.",
+        "staff": "Protect that smoke test's credibility with policy, not just code — never silently retry a failure into green."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

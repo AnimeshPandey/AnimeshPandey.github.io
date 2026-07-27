@@ -1,0 +1,97 @@
+{
+  "slug": "indexeddb-offline-cache",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Nothing was ever actually saved — the project list was held in a JS variable for as long as the tab happened to stay open, and a reload wipes that clean.",
+      "mid": "A reload doesn't reset in-memory state, it destroys the JS context entirely. The only path back to data is the network, with no fallback if that fails.",
+      "staff": "Keeping a value in memory, persisting it across loads, and supporting real offline use are three different things — IndexedDB is the only one of the three that does the last two."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Load projects, then try Simulate reload with Go offline both off and on, in each mode, and watch what the list does.",
+      "mid": "Broken mode always empties the list on reload and has to refetch. Fixed mode reads the same data back from a real IndexedDB object store, instantly.",
+      "staff": "The fixed mode calls real indexedDB.open/put/getAll — check DevTools' Application → IndexedDB panel while it runs to watch the store fill in live."
+    },
+    {
+      "chapter": "concept",
+      "junior": "IndexedDB stores real JS objects, not just strings, and every read/write is async — you listen for success or error instead of getting a value back immediately.",
+      "mid": "open() → onupgradeneeded creates stores → transaction().objectStore().put()/getAll(), each a request with its own success/error handler.",
+      "staff": "A transaction auto-commits once it has no pending requests queued — await unrelated work inside one and the next request throws TransactionInactiveError."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "More code than a plain variable, worth it when losing data on reload genuinely hurts — not worth it for data that's cheap and fast to refetch.",
+      "mid": "idb (a small promise wrapper) removes most of the callback ceremony without changing the transaction rules — worth it past one or two call sites.",
+      "staff": "Read-cache-first-then-revalidate is the same stale-while-revalidate idea SWR/React Query apply to network responses, just backed by disk instead of an in-memory query cache."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a project list that only ever lived in a JS variable — it looked fine in every demo, but a reload or a dead connection wiped it clean with no way back.",
+        "mid": "In-memory state only exists for the lifetime of the current JS runtime — a reload destroys that context entirely, and if the network's down when it tries to refetch, there's nothing to fall back on.",
+        "staff": "The real gap is between keeping a value in memory, persisting it across page loads, and actually supporting offline use — those are three different guarantees, and only IndexedDB delivers the last two."
+      },
+      {
+        "chapter": "concept",
+        "junior": "IndexedDB stores real objects, not just strings, inside named object stores, and every read and write is asynchronous instead of instant like local storage.",
+        "mid": "You open the database, create your stores in the upgrade hook, then read and write through transactions, each operation returning a request you attach handlers to.",
+        "staff": "The sharp edge is transaction lifetime — a transaction commits itself the moment it has no pending requests, so awaiting something unrelated inside one and then trying to use it again throws an error."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Load the projects, then try reloading with the network on and with it switched off, in each mode, and watch whether the list survives.",
+        "mid": "Broken mode starts from nothing on every reload and depends entirely on the network. Fixed mode reads the same data straight back out of a real IndexedDB store first.",
+        "staff": "Every write and read in fixed mode here is a genuine indexedDB call — open DevTools and watch the actual object store fill in as you click through it."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A JS variable is not a cache. If losing the data on reload would actually hurt, IndexedDB is what persists it and keeps working offline.",
+        "mid": "Write every successful fetch into an IndexedDB read model, read from it first on load, then revalidate over the network in the background.",
+        "staff": "Keep async work outside the transaction boundary, and only reach for this where losing data on reload has a real cost — cheap-to-refetch data doesn't need it."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

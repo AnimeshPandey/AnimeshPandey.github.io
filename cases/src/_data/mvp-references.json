@@ -967,5 +967,61 @@
     "staff": [
       "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — Clickjacking Defense Cheat Sheet</a>"
     ]
+  },
+  "indexeddb-offline-cache": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB\" rel=\"noopener noreferrer\">MDN — Using IndexedDB</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API\" rel=\"noopener noreferrer\">MDN — IndexedDB API</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria\" rel=\"noopener noreferrer\">MDN — Storage quotas and eviction criteria</a>"
+    ],
+    "staff": [
+      "<a href=\"https://github.com/jakearchibald/idb\" rel=\"noopener noreferrer\">jakearchibald/idb — IndexedDB with promises</a>"
+    ]
+  },
+  "lifted-state-prop-drill": {
+    "junior": [
+      "<a href=\"https://react.dev/learn/sharing-state-between-components\" rel=\"noopener noreferrer\">React docs — Sharing State Between Components</a>"
+    ],
+    "mid": [
+      "<a href=\"https://react.dev/learn/passing-data-deeply-with-context\" rel=\"noopener noreferrer\">React docs — Passing Data Deeply with Context</a>"
+    ],
+    "staff": [
+      "<a href=\"https://kentcdodds.com/blog/prop-drilling\" rel=\"noopener noreferrer\">Kent C. Dodds — Prop Drilling</a>"
+    ]
+  },
+  "local-storage-quota": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API\" rel=\"noopener noreferrer\">MDN — Web Storage API</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria\" rel=\"noopener noreferrer\">MDN — Storage quotas and eviction criteria</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/storage-for-the-web\" rel=\"noopener noreferrer\">web.dev — Storage for the web</a>"
+    ]
+  },
+  "e2e-smoke-critical-path": {
+    "junior": [
+      "<a href=\"https://kentcdodds.com/blog/write-tests\" rel=\"noopener noreferrer\">Kent C. Dodds — Write tests. Not too many. Mostly integration.</a>"
+    ],
+    "mid": [
+      "<a href=\"https://playwright.dev/docs/best-practices\" rel=\"noopener noreferrer\">Playwright — Best Practices</a>"
+    ],
+    "staff": [
+      "<a href=\"https://testing.googleblog.com/2015/04/just-say-no-to-more-end-to-end-tests.html\" rel=\"noopener noreferrer\">Google Testing Blog — Just Say No to More End-to-End Tests</a>"
+    ]
+  },
+  "mutation-testing-overkill": {
+    "junior": [
+      "<a href=\"https://stryker-mutator.io/docs/stryker-js/introduction/\" rel=\"noopener noreferrer\">Stryker Mutator — Introduction to mutation testing</a>"
+    ],
+    "mid": [
+      "<a href=\"https://testing.googleblog.com/2021/04/mutation-testing.html\" rel=\"noopener noreferrer\">Google Testing Blog — Mutation Testing</a>"
+    ],
+    "staff": [
+      "<a href=\"https://stryker-mutator.io/docs/stryker-js/incremental/\" rel=\"noopener noreferrer\">Stryker Mutator — Incremental mutation testing</a>"
+    ]
   }
 }

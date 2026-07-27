@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "IndexedDB for Offline Read Models"
+description: "A project list cached only in a JS variable disappears on refresh and breaks offline — an IndexedDB-backed read model survives both, at the cost of a genuinely harder async API."
+slug: indexeddb-offline-cache
+track: state-architecture
+readMin: 10
+flagship: false
+demoType: toggle
+principle: IDB
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/indexeddb-offline-cache-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The dashboard refreshed and every project the user had open was just gone</h2>
+  <div class="tone-junior">
+    <p>
+      An app loads a list of projects into state on mount, one <code>fetch</code>, stashed in a <code>useState</code> or a store, and renders it. It works fine on office wifi. Then someone accidentally hits refresh, or their laptop wakes from sleep and re-runs the page, and the list is empty again, replaced by a loading spinner. If the network happens to be down at that exact moment, tunnel, elevator, flaky coffee-shop wifi, the spinner never resolves into anything. The data the user was just looking at ten seconds ago is simply gone, and the app has no way to get it back except asking the network again.
+    </p>
+    <p>
+      Nothing was ever actually saved. It was held in memory for as long as the page happened to stay open, which is not the same thing as being cached.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      In-memory state, a <code>useState</code>, a Redux store, a plain module-level variable, only exists for the lifetime of the current JS runtime. A reload doesn't "reset" that state; it destroys the JS context entirely and starts a new one with nothing in it. The app's only path back to real data is the network, and if that request fails, there's no fallback layer underneath it. Teams frequently call this "caching" because it avoids a re-render or a redundant fetch mid-session, but it provides zero resilience to the two things that actually break user sessions: reloads and connectivity gaps.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The real gap is between three things that get casually conflated: keeping a value in memory to avoid re-computing it, persisting a value across page loads, and supporting genuine offline use. A JS variable does only the first. <code>localStorage</code> can do the second for small string data, synchronously, but blocks the main thread on large payloads and caps out around 5&ndash;10MB per origin. Neither one is a client-side database. IndexedDB is the browser's actual transactional, structured-storage engine, per-origin, disk-backed, capable of storing real JS objects (not just strings), and it's the only one of the three that supports the read-model pattern this case is about: paint instantly from what's on disk, then revalidate over the network.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>IndexedDB gives you a real client-side database, at the cost of an async, transaction-based API</h2>
+  <div class="tone-junior">
+    <p>
+      IndexedDB stores structured JavaScript objects (not just strings, like <code>localStorage</code>) in named "object stores" inside a per-origin database. Every read and write happens inside a transaction, and every operation is asynchronous, you get a request object back and listen for a <code>success</code> or <code>error</code> event (or use a promise wrapper), rather than getting a value back immediately the way <code>localStorage.getItem()</code> does. In exchange for that extra step, whatever gets written is genuinely persisted: it survives a reload, closing the tab, even restarting the browser, because it's written to disk, not held in memory.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The basic pattern is <code>indexedDB.open(name, version)</code>, which fires <code>onupgradeneeded</code> the first time (or on a version bump) to create object stores and indexes, then <code>onsuccess</code> with a usable <code>db</code> handle. Reads and writes go through <code>db.transaction([store], mode).objectStore(store).put(obj)</code> or <code>.getAll()</code>, each returning a request you attach <code>onsuccess</code>/<code>onerror</code> to. That's meaningfully more ceremony than <code>localStorage.setItem(key, JSON.stringify(value))</code>, but it buys real structured storage: whole objects and arrays without manual serialization, indexed queries, and a quota that's typically an order of magnitude larger than <code>localStorage</code>'s 5&ndash;10MB (often hundreds of MB to several GB, scaled to available disk).
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The sharpest footgun in raw IndexedDB is transaction lifetime: a transaction auto-commits as soon as it has no pending IDB requests queued in the current turn of the event loop. If you <code>await</code> something unrelated, a <code>fetch()</code>, a <code>setTimeout</code>, in the middle of a transaction and then try to issue another request against it, the transaction has often already closed, and you get a <code>TransactionInactiveError</code>. This is why idiomatic IndexedDB code looks like a chain of synchronous-looking request calls inside one transaction scope, and it's exactly the awkwardness promise-based wrapper libraries like <code>idb</code> exist to smooth over, without changing the underlying constraint: keep async work outside the transaction, keep the transaction itself tight.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The team that cached in `useState` until the train wifi cut out</h2>
+  <div class="tone-junior">
+    <p>
+      A small team building a project tracker kept the project list in a top-level <code>useState</code>, populated by one <code>fetch</code> on mount. It shipped, worked in every demo, and nobody thought about it again until a user on a commuter train reported that the app "loses everything" whenever the connection drops. Losing signal mid-session didn't just pause the app, it meant the next reload (or the phone's browser silently re-creating the tab) came back to a blank list and a spinner that had nothing to resolve to, because the fetch it depended on had nothing to talk to.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Once support started tagging the pattern, it showed up constantly: commutes, coffee shops, spotty office wifi. Any reload during a network gap produced the same failure, a totally blank state, not even the item the user had open moments before, because nothing before the in-memory <code>useState</code> had ever actually been saved anywhere.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix the team reached for first, and rejected, was a full offline-first service worker layer: intercept every request, cache every asset, sync in the background. That's a real pattern, but it's a much bigger project than the actual problem warranted. The narrower fix: after every successful <code>fetch</code>, write the normalized response into an IndexedDB object store as the app's read model. On load, read from IndexedDB first, near-instant despite being async, to paint something on screen immediately, then kick off the real network fetch in the background to revalidate and overwrite both the UI and the IndexedDB store once it resolves. When the network fails, the IndexedDB-sourced data just stays visible. Stale beats blank.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Reload or offline wipes memory-only state to a blank spinner forever (broken) vs. an IndexedDB-backed read model repaints instantly from the last cached data, then revalidates over the network in the background (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Load some projects, then reload, with and without a network</h2>
+  <div class="tone-junior">
+    <p>Click "Load projects," then try "Simulate reload" with "Go offline" both unchecked and checked, in each mode, and watch what the list does.</p>
+  </div>
+  <div class="tone-mid">
+    <p>In broken mode, "Simulate reload" always empties the in-memory list and has to refetch, if offline is checked, that refetch fails and the list never comes back. In fixed mode, reload reads the same data straight back out of a real <code>IndexedDB</code> object store, instantly, then revalidates over the network in the background.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The fixed mode here calls real <code>indexedDB.open()</code>, <code>put()</code>, and <code>getAll()</code>, this is the actual browser API doing the persisting, not a log pretending to be one. Open DevTools' Application → IndexedDB panel while running it to see the object store fill in live.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A project list held only in a JS variable that's empty after every simulated reload and fails outright offline (broken) vs. the same list backed by a real IndexedDB object store that repaints instantly on reload and survives being offline (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="indexeddb-offline-cache">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo loads a small project list, then lets you simulate a page reload with and without a simulated network, comparing memory-only state (empty after every reload, broken outright while offline) against an IndexedDB-backed read model (repaints instantly from the cache, survives offline); it requires JavaScript and a browser with IndexedDB support to run.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Memory-only state
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            IndexedDB read model
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: IndexedDB read model</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>IndexedDB isn't free, and not every cache needs it</h2>
+  <div class="tone-junior">
+    <p>
+      IndexedDB is more code than a plain in-memory variable, opening a database, defining object stores, writing async handlers. That cost is worth paying when losing the data on reload or offline genuinely hurts the user, a project list someone was mid-edit on, a form draft, anything slow or annoying to refetch. If the data is cheap and fast to refetch and staleness for a second or two doesn't matter, plain memory state (or even nothing at all, just refetch on every mount) is simpler and has less to maintain, and adding IndexedDB there is complexity with no real payoff.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A library like <code>idb</code> (a small promise-based wrapper) removes most of the callback ceremony without changing the underlying transaction rules, worth reaching for the moment a project has more than one or two IndexedDB call sites. Schema changes go through the same <code>onupgradeneeded</code> hook, keyed to a version number, so plan the object store's shape with some headroom; migrating existing IndexedDB data on a schema change is real, if straightforward, work.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This pattern, read from cache first, then revalidate over the network, is the same "stale-while-revalidate" idea that HTTP caching and libraries like SWR/React Query apply to network responses; the difference here is that the cache layer is a real disk-backed store instead of an in-memory query cache, so it survives a reload and works fully offline, not just across component remounts within one session. It composes with a service worker for full offline asset support, but doesn't require one, this pattern alone gets an app most of the perceived resilience of "offline mode" for its data layer, without taking on request interception or asset caching at all.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A JS variable isn't a cache — it's gone the instant the page reloads. IndexedDB actually persists structured data across reloads and works without a network.</div>
+        <div class="tone-mid">Write every successful fetch into an IndexedDB read model, then read from IndexedDB first on load and revalidate over the network in the background — stale data beats a blank screen.</div>
+        <div class="tone-staff">Keep async work outside the transaction boundary — a transaction auto-commits once it has no pending requests, and awaiting unrelated work inside it throws TransactionInactiveError. Reach for it only where losing data on reload genuinely costs something; cheap-to-refetch data doesn't need it.</div>
+      </li>
+    </ul>
+  </div>
+</section>

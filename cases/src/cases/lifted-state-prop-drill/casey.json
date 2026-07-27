@@ -1,0 +1,97 @@
+{
+  "slug": "lifted-state-prop-drill",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Layout, Sidebar, and UserPanel don't render anything about the user — they just take the prop in and immediately hand it back out.",
+      "mid": "Prop drilling isn't a correctness bug, it's a maintenance tax — every new deep prop means editing every intermediate component's signature.",
+      "staff": "The real cost is coupling: components that have zero logic depending on a value still carry it in their prop types, and refactoring them risks breaking a data path they don't participate in."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Ship in each mode and watch which components light up as edited.",
+      "mid": "Prop drilling ripples the new prop through every intermediate signature. Composition only changes the owner and the consumer.",
+      "staff": "The files-touched count is the concrete, measurable difference — same visual feature, a different number of contracts that had to change."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Pass the already-built child element down as children instead of the raw data — the components in between never need to know the data exists.",
+      "mid": "The owner builds the deep child directly and hands it down as children; intermediate components just render {children} wherever it belongs.",
+      "staff": "This fits one-owner, one-consumer data through structural components — it's the wrong tool when the same data is needed at many scattered points, that's a Context problem instead."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "One or two levels of prop passing isn't a real problem — the pain starts around three or more untouched layers.",
+      "mid": "Context is for data needed at many scattered points; composing it through every leaf that happens to want it just relocates the same coupling.",
+      "staff": "Composition has no re-render fan-out the way Context does — it's plain JSX passed as a prop, not a shared subscription every consumer re-renders on."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a user prop that had to pass through three components that never actually use it, just to reach an avatar five levels down.",
+        "mid": "Prop drilling couples every intermediate component to a prop it only ever forwards, and that coupling compounds every time a new piece of deep data needs the same path.",
+        "staff": "The real cost isn't the extra typing, it's that components end up carrying values in their signatures that have nothing to do with what they actually render."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Instead of forwarding the raw user data through every layout component, the component that owns the data builds the deep child itself and passes that finished piece down as children.",
+        "mid": "The owner composes the tree top down, handing already-built elements to the layout components, which just render whatever was passed to them.",
+        "staff": "This is composition doing the job people often reach for prop drilling, or prematurely, context, to solve — it fits one owner flowing to one consumer, not data that's scattered across many unrelated points."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Ship the same feature in both modes and watch which component cards flash as edited versus which stay untouched.",
+        "mid": "In prop drilling mode every layout component's signature changes. In composition mode only the top and bottom of the chain change.",
+        "staff": "Watch the files-touched count at the bottom — that's a direct, countable measure of how much surface area each approach exposes to a small feature change."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "If a component only takes a prop to hand it straight to a child, pass the already-built child down instead so the middle never needs that prop.",
+        "mid": "Compose from the top: the data's owner builds the deep consumer and hands it down as children, so layout components only ever describe layout.",
+        "staff": "Composition suits one-owner-one-consumer data flowing through structural components. Data needed at many scattered points across the tree calls for context instead, not composition."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

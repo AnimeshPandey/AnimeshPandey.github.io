@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "One E2E Smoke per Critical Path"
+description: "A checkout-breaking regression reached production twice, once with zero E2E coverage to catch it, once with forty flaky E2E tests nobody trusted enough to read — one reliable smoke test on the critical path caught what both extremes missed."
+slug: e2e-smoke-critical-path
+track: testing-quality
+readMin: 10
+flagship: false
+demoType: toggle
+principle: E2E
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/e2e-smoke-critical-path-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The same checkout bug shipped twice, once past zero E2E tests and once past forty</h2>
+  <div class="tone-junior">
+    <p>
+      Team A has no end-to-end tests at all, just unit tests that mock the network layer. A config change quietly breaks the connection between checkout and the payment provider. Every unit test still passes, because none of them ever talk to a real payment provider, that's exactly what they mock. The bug ships, and the first anyone hears about it is a spike in "why can't I check out" support tickets.
+    </p>
+    <p>
+      Team B, a different company, has the opposite setup: 40 end-to-end tests covering nearly every button and edge case. Their suite takes 45 minutes and fails intermittently often enough that engineers have a habit, see a red X, click re-run, don't read why. The exact same kind of checkout-breaking regression shows up in their suite too, fails once, gets auto-retried, passes the second time because the flake and the real failure look identical from the outside, and merges straight to production.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Neither team's mistake was "not testing enough" in the raw-count sense, Team B had thirty-nine more tests than Team A. The mistake was the same in both directions: neither team had a test they actually trusted to mean something when it turned red. Team A never had a test capable of catching the failure in the first place. Team B had one, buried in enough noise that a real signal was indistinguishable from routine flake.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the actual argument for "the right number of E2E tests is small," and it isn't really about count, it's about trust. Every E2E test is slower and flakier than the layer below it by nature, real browser, real network stack, real timing, so a suite with dozens of them either takes long enough that CI becomes a bottleneck, or gets treated as noisy enough that failures stop being investigated on sight. Both outcomes destroy the one thing an E2E suite exists to provide: a red result someone actually believes.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>One E2E smoke per genuinely critical path, everything else lives lower in the stack</h2>
+  <div class="tone-junior">
+    <p>
+      Unit and integration tests are fast, deterministic, and cheap to run constantly, they're the right place to cover logic, edge cases, and alternate flows. End-to-end tests are the only layer that verifies the whole real stack actually connects, frontend, backend, and any third-party service in between, but that realism is exactly why they're slower and flakier. The sweet spot is a small number of E2E tests, one per path whose failure means the core business is broken right now, and pushing everything else down to the faster, more reliable layers underneath.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A "critical path" here means something specific: the smallest sequence of real user actions that, if it silently broke, would stop the product's core value from being deliverable, sign up, log in, complete a purchase. It's not "every path a user might take," it's the handful where a failure is unambiguous and severe enough that catching it before a real user does is worth an E2E test's cost, one covering guest checkout end to end is worth having; one covering "checkout with a specific discount-code edge case" almost never is, that belongs in an integration test that mocks the payment call.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The concrete filter worth applying per candidate test: does it fail closed (would a human notice within minutes, would it be worth paging someone over)? Does it require multiple real systems to be wired together correctly to verify at all, i.e., is a mock at any boundary hiding exactly the kind of bug this test exists to catch? If both are true, it earns an E2E smoke. If either is false, edge cases, cosmetic states, alternate flows, a faster and more deterministic test layer can verify it just as well, and testing it end-to-end only adds runtime and flake surface without adding real confidence.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The one 90-second test that caught what forty tests, and zero tests, both missed</h2>
+  <div class="tone-junior">
+    <p>
+      An e-commerce team picked exactly one end-to-end test: a guest adds an item to their cart and completes checkout with a test card. It ran on every pull request and took about 90 seconds. Every other checkout scenario, discount codes, expired cards, cart persistence across tabs, got fast unit and integration coverage instead, no browser involved, no network flake possible.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      When a config change later broke the live connection between checkout and the payment provider, exactly the kind of regression a mocked unit test can't see and a noisy 40-test suite can bury in retries, it was the one E2E smoke that caught it, failing reliably in staging before the change ever reached production. It wasn't the number of tests that made the difference, it was that this one test covered the actual path where a silent failure would have cost real money within minutes.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team's rule for that single test was as important as having it: if it ever failed, nobody was allowed to just re-run it. A red result on the checkout smoke meant stop and investigate, full stop, no retry-until-green. That rule is only sustainable because there's exactly one test carrying that weight, if the same rule applied to forty E2E tests with normal browser-automation flake rates, the team would be blocked constantly on false alarms, which is precisely how Team B's culture of reflexive re-running got started in the first place.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A blanket 40-test E2E suite buries a real checkout regression in routine flake and it gets retried into green (broken) vs. one reliable E2E smoke on the checkout path fails deterministically and blocks the merge (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Run CI against the same checkout regression, two different suites</h2>
+  <div class="tone-junior">
+    <p>Click "Run CI" in each mode and see whether the checkout bug makes it to production.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The blanket suite's real failure looks identical to its routine flake and gets auto-retried into a passing build. The one-smoke suite fails the same regression once, deterministically, and blocks the merge.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Same underlying bug in both runs — the only variable is how many E2E tests are competing for a human's attention when one of them turns red.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Running CI against the same checkout regression through a blanket 40-test end-to-end suite where the real failure gets lost in retried flake (broken) vs. through a single reliable end-to-end smoke test on the checkout path that fails deterministically and blocks the merge (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="e2e-smoke-critical-path">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo runs CI against the same checkout regression through a blanket 40-test end-to-end suite versus a single reliable end-to-end smoke test, comparing whether the real bug reaches production; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Blanket E2E suite
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            One smoke per critical path
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: One smoke per critical path</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Writing an E2E smoke worth trusting, and the retry policy that protects it</h2>
+  <div class="tone-junior">
+    <p>
+      A smoke test earns its keep by being reliable, not by being thorough. Keep it to the single happy path, select elements by role or an explicit test attribute rather than CSS classes that change for unrelated reasons, and avoid arbitrary waits, wait for the actual state the next step depends on. Resist the urge to bolt extra assertions onto it "since it's already there," that's the exact mechanism that turns one trustworthy smoke test back into a slow, flaky suite.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Run the smoke against a real, staging-like environment, not one where every downstream dependency is mocked, mocking the payment provider in the one test whose entire purpose is verifying the real integration defeats it. And protect the test's credibility with policy, not just code: a failing E2E smoke should never be silently retried into a merge; treat a flaky result the same as a real one, quarantine and fix it immediately, because a smoke test nobody trusts is worse than no smoke test, it creates false confidence instead of an honest gap.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This scales past "just one test" as a product genuinely grows more critical paths, sign-up, checkout, and say, subscription cancellation, might each earn their own smoke, but the discipline stays the same: each one is chosen because a silent failure there is unambiguous and costly, not because a feature exists. The moment E2E count starts tracking feature count instead of criticality count, the suite is drifting back toward Team B's failure mode, and it's worth periodically auditing the E2E suite specifically for tests that could be demoted to integration coverage without losing real confidence.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Zero E2E tests and dozens of flaky E2E tests can both let the same critical bug reach production — what matters is having at least one E2E test a red result actually means something on.</div>
+        <div class="tone-mid">Give each genuinely critical path (signup, checkout, core conversion) exactly one E2E smoke, and push edge cases and alternate flows down to faster, more deterministic unit and integration tests instead.</div>
+        <div class="tone-staff">Protect a smoke test's credibility with policy as much as code — never silently retry a failure into green, and audit the E2E suite periodically for tests tracking feature count instead of real criticality.</div>
+      </li>
+    </ul>
+  </div>
+</section>
