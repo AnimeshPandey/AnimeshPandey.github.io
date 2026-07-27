@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a filtered list that showed items you'd already deleted, because the filtered result was stored as its own state instead of just being computed.",
-        "mid": "",
-        "staff": ""
+        "mid": "Storing a value that's fully computable from other state creates a second source of truth — it's fine right up until one update path forgets to trigger the recompute.",
+        "staff": "This is a category error, not a missing dependency — a useEffect that exists solely to keep one state variable in sync with another is a sign the derived value shouldn't be state at all."
       },
       {
         "chapter": "concept",
         "junior": "The fix is simple: if you can calculate a value from state you already have, just calculate it every render instead of keeping a second copy around.",
-        "mid": "",
-        "staff": ""
+        "mid": "Computing the filtered list inline during render replaces both the extra state variable and the effect that used to update it — wrap it in useMemo for performance, not correctness.",
+        "staff": "State should hold the smallest set of values that can't be derived from anything else — everything else is a view computed on demand, which eliminates the drift bug by construction."
       },
       {
         "chapter": "demo",
         "junior": "Compare the two code paths — one keeps a separate synced copy that can drift, the other computes the value fresh every time so there's nothing to keep in sync.",
-        "mid": "",
-        "staff": ""
+        "mid": "The comparison is static, deliberately, since the bug is about a synchronization gap over time, not something a single render can show live.",
+        "staff": "The fixed version has no dependency array to get wrong, no effect to forget to run, and no window where the two values can disagree."
       },
       {
         "chapter": "takeaway",
         "junior": "If it can be computed from state you already have, don't give it its own state. Compute it every render instead, and the sync bug becomes impossible.",
-        "mid": "",
-        "staff": ""
+        "mid": "A useEffect whose only job is setting one state variable from another is a sign the derived value should be a plain expression instead of its own state.",
+        "staff": "State should hold the smallest set of values that can't be derived from anything else — everything else is a view computed on demand."
       }
     ]
   },
@@ -60,28 +60,55 @@
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

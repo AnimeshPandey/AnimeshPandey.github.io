@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Today's case is about line coverage versus risk coverage — a payment retry function that hit 100% coverage with a fully green test suite, and still double-charged a real customer in production.",
-        "mid": "",
-        "staff": ""
+        "mid": "Line coverage answers one question — did this line execute — not whether the test asserted anything true about what should have happened.",
+        "staff": "This isn't even a missed branch — the catch block did run during the test. The mock's scenario just doesn't match the production scenario that actually occurred, and no coverage percentage can tell those two apart."
       },
       {
         "chapter": "concept",
         "junior": "Coverage only tells you which lines ran, not whether the test checked anything true about the result. Mutation testing asks a better question: if this code were deliberately broken, would any test actually notice?",
-        "mid": "",
-        "staff": ""
+        "mid": "Mutation testing introduces small, deliberate bugs into your code and reruns the suite against each one — if every test still passes, that bug would ship undetected regardless of what the coverage number said.",
+        "staff": "Mutation testing has real cost and doesn't fully solve this either — it only catches faults in code your tests exercise with realistic inputs. The reliable complement is a risk-weighted review naming the worst realistic failure the code enables."
       },
       {
         "chapter": "demo",
         "junior": "Both versions show the same green coverage report at the top. Try simulating a lost response and watch what actually happens to the charge underneath it.",
-        "mid": "",
-        "staff": ""
+        "mid": "The version without an idempotency key creates a second real charge when the first response is merely delayed, not failed — the coverage number never moves in either version.",
+        "staff": "This is deliberately not a coverage-number toggle — the number that usually gets cited as well-tested doesn't change at all between the safe version and the one that silently double-charges."
       },
       {
         "chapter": "takeaway",
         "junior": "100% coverage means every line ran, not that anything was verified correctly. Pair it with mutation testing or a deliberate risk review for anything touching money or data integrity.",
-        "mid": "",
-        "staff": ""
+        "mid": "Mutation testing asks a different question than coverage — if this code were deliberately broken, would any test notice?",
+        "staff": "Pair mutation testing where practical with a risk-weighted review question for any code touching money, auth, or data integrity."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try no idempotency key", "target": "[data-demo-state=broken]" },
-        { "label": "Try with idempotency key", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try no idempotency key",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try with idempotency key",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle no key", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle with key", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle no key",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle with key",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "No idempotency key state", "target": "[data-demo-state=broken]" },
-        { "label": "Idempotency key state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "No idempotency key state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Idempotency key state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "The third argument to addEventListener controls which walk a listener hears — { capture: true } attaches it to the downward pass, omitting it attaches it to the upward pass, the default almost everyone uses without thinking.",
+        "staff": "This is defined by the DOM Events spec's dispatch algorithm, not a browser quirk — stopPropagation() halts whichever phase is currently in progress, it can't retroactively cancel listeners that already ran in an earlier phase."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for capture-vs-bubble.",
-        "mid": "",
-        "staff": ""
+        "junior": "Capture-then-target-then-bubble is defined by spec, identical across every browser. A capture-phase listener can''t be silenced by an inner element''s stopPropagation — it already ran before that element was even reached.",
+        "mid": "This is exactly why real \"click outside to close\" implementations register on document with { capture: true }, not the bubble-phase default — stopPropagation() can't reach back and cancel a listener that already ran.",
+        "staff": "stopPropagation() halts whichever pass is currently in progress — it cannot retroactively cancel listeners that already ran in an earlier phase."
       }
     ]
   },
@@ -67,37 +67,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try bubble", "target": "[data-demo-state=broken]" },
-        { "label": "Try capture", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try bubble",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try capture",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle bubble", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle capture", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle bubble",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle capture",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Bubble phase", "target": "[data-demo-state=broken]" },
-        { "label": "Capture phase", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Bubble phase",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Capture phase",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
-      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
-      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
-      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

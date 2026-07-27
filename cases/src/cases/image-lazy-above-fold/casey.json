@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a well-meaning performance fix that added lazy loading to every image on a page, including the hero image right at the top.",
-        "mid": "",
-        "staff": ""
+        "mid": "loading=\"lazy\" delays a fetch until it's near the viewport — for an image already in the viewport on load, the browser still has to finish layout and run the intersection check first, so the fetch starts later than if the attribute weren't there at all.",
+        "staff": "This is exactly backwards for Largest Contentful Paint — a hero image is very often the LCP element, so deferring its fetch start delays the specific metric the team was trying to improve."
       },
       {
         "chapter": "concept",
         "junior": "The fix is matching the loading attribute to whether an image is actually visible when the page loads. Above the fold gets eager and high priority, below the fold stays lazy.",
-        "mid": "",
-        "staff": ""
+        "mid": "For the image likely to be your LCP candidate, add fetchpriority=\"high\" too — images start at a lower fetch priority by default until layout determines their size.",
+        "staff": "loading controls when the fetch starts relative to viewport proximity, fetchpriority controls how urgently it's scheduled relative to other requests — an eager image at default priority can still lose the queue to a dozen other eager requests."
       },
       {
         "chapter": "demo",
         "junior": "Load the page in both modes and watch exactly when the hero image finishes, and when the LCP marker fires because of it.",
-        "mid": "",
-        "staff": ""
+        "mid": "Below-fold images stay lazy in both modes — only the hero's loading strategy changes between broken and fixed.",
+        "staff": "The timings here are illustrative, not measured — the mechanism, delayed fetch start and deprioritized scheduling, is what to internalize."
       },
       {
         "chapter": "takeaway",
         "junior": "Lazy loading is great below the fold and actively harmful above it. Check which images are visible on load before you apply it everywhere.",
-        "mid": "",
-        "staff": ""
+        "mid": "Use loading=\"eager\", or just omit loading, plus fetchpriority=\"high\" on the LCP candidate, and keep lazy loading only on genuinely below-fold images.",
+        "staff": "Use fetchpriority sparingly, on one or two real LCP candidates, not everywhere."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

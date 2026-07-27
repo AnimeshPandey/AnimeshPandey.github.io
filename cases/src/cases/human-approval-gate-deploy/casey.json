@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about an agent that decided on a production action and executed it in the very same step, with nobody able to catch a mistake in between.",
-        "mid": "",
-        "staff": ""
+        "mid": "Giving an agent tool access to production-affecting actions with no review step means every mistake in its plan becomes a mistake in production instantly, with no chance to catch it.",
+        "staff": "This isn't primarily an AI-safety framing — it's the same reason production deploys have had a review-then-execute step for humans for decades."
       },
       {
         "chapter": "concept",
         "junior": "The fix is separating proposing an action from executing it, so the agent's plan sits in a pending state until a human explicitly approves it.",
-        "mid": "",
-        "staff": ""
+        "mid": "The tool's interface stays the same, but instead of executing, it enqueues the action with its full parameters and returns a pending state until a human explicitly approves.",
+        "staff": "The gate needs to show the actual parameters the action will run with, not a paraphrase — approving a summary isn't approving the action."
       },
       {
         "chapter": "demo",
         "junior": "Compare an action that runs the moment the agent decides on it against one that waits for your explicit approval or rejection.",
-        "mid": "",
-        "staff": ""
+        "mid": "The pending state shows the real parameters, not a summary, which is exactly what makes the approval meaningful.",
+        "staff": "Reject is a real, first-class outcome here, not just \"don't click approve\" — it explicitly cancels the queued action."
       },
       {
         "chapter": "takeaway",
         "junior": "Anything with real production side effects needs a review step before it runs, not just good reasoning behind it.",
-        "mid": "",
-        "staff": ""
+        "mid": "Separate proposing an action from executing it — show the real parameters, and require an explicit approval click before anything runs.",
+        "staff": "Reserve the gate for genuinely high-blast-radius actions — gating everything trains reviewers to rubber-stamp instead of actually reading."
       }
     ]
   },

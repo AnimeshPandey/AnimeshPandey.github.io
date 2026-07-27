@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about an AI suggestion tool that applied every suggestion the same way, even when the model itself was barely confident in the guess.",
-        "mid": "",
-        "staff": ""
+        "mid": "Every model call that drives an auto-applied action returns a confidence score alongside its output — most integrations just never read it.",
+        "staff": "This isn't a model-accuracy problem, it's a UI design problem — a model with ninety-five percent accuracy is still wrong on the other five, and without a gate the UI can't tell those apart."
       },
       {
         "chapter": "concept",
         "junior": "The fix is a confidence threshold: high-confidence suggestions still apply automatically, but low-confidence ones wait for a human to actually look at them first.",
-        "mid": "",
-        "staff": ""
+        "mid": "A threshold turns one uniform behavior into two: score above it auto-applies, anything below sits in a reviewable pending state with the suggestion visible but not yet committed.",
+        "staff": "The threshold should scale with the action's blast radius — auto-tagging a ticket at seventy percent is low-stakes, auto-sending a customer email at the same seventy percent is a much riskier default."
       },
       {
         "chapter": "demo",
         "junior": "Watch four simulated suggestions with different confidence scores, and see which ones apply themselves versus which ones wait for review.",
-        "mid": "",
-        "staff": ""
+        "mid": "The threshold here is fixed for clarity — in a real system it's tuned per action, not one global constant.",
+        "staff": "The broken mode gives zero visual signal about which applied suggestions were actually low-confidence guesses — that information existed and was simply discarded."
       },
       {
         "chapter": "takeaway",
         "junior": "A model's confidence score is a real signal. Use it: auto-apply the confident output, and make the rest wait for a human to say yes.",
-        "mid": "",
-        "staff": ""
+        "mid": "Gate auto-apply behind a confidence threshold — high-confidence suggestions apply automatically, low-confidence ones wait for explicit review.",
+        "staff": "Set the threshold per action based on blast radius, and re-validate the cutoff whenever the underlying model changes."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

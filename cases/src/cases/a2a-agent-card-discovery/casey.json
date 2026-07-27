@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! This one's about a dashboard that routed customer refunds to an agent that literally could not process refunds, because it picked the agent by its name instead of checking what it could actually do.",
-        "mid": "",
-        "staff": ""
+        "mid": "Under A2A, every compliant agent publishes a card describing what it supports — an orchestrator that routes by name instead of reading it has no way to know it guessed wrong until the agent's own response says so.",
+        "staff": "This is a discovery problem, not a routing-logic problem — the bug is treating an agent's name as its interface when A2A hands you the real interface as structured data."
       },
       {
         "chapter": "concept",
         "junior": "The fix is simple to say: every agent in this protocol publishes a card, a JSON file at a fixed address, listing exactly what it can do and what login it needs. Fetch that card first, match the task against it, then route.",
-        "mid": "",
-        "staff": ""
+        "mid": "A GET to the agent's well-known agent-card.json returns a skills array of named capabilities plus a securitySchemes object listing what auth it accepts — route only where both actually match.",
+        "staff": "Skill match and auth match are independent checks — a card check that only inspects skills will still send unroutable requests, they'll just fail on a 401 instead of skill-not-found."
       },
       {
         "chapter": "demo",
         "junior": "Try routing the same refund request both ways and watch what happens. One mode guesses from the agent's name. The other actually fetches each agent's card and checks it can do the job before sending anything.",
-        "mid": "",
-        "staff": ""
+        "mid": "Broken mode matches keywords against agent names with no verification. Fixed mode fetches each agent's real card and checks its declared skills and security scheme first.",
+        "staff": "Watch the auth check too, not just the skill match — the fixed path verifies both conditions are true before it sends anything."
       },
       {
         "chapter": "takeaway",
         "junior": "An agent's name is not its interface. Fetch the card, check the skill, check the login it needs, then route. Skipping that step doesn't make routing faster, it just makes the failure quieter.",
-        "mid": "",
-        "staff": ""
+        "mid": "Fetch the Agent Card before routing, verify both skill match and auth match independently, cache with a short TTL, and re-validate before anything security-sensitive.",
+        "staff": "Skill match and auth match are independent checks against the card — verify both before trusting an agent with a task."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

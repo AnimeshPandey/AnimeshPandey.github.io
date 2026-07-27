@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Today's case is about focus traps in modals — specifically a confirmation dialog that looked keyboard accessible because you could tab through its fields, but was never actually trapping focus at the one moment that mattered.",
-        "mid": "",
-        "staff": ""
+        "mid": "Tabbing through fields in order and actually trapping focus inside the dialog are two different claims — most modal implementations only build the first one.",
+        "staff": "The real failure mode is only handling keyboard Tab and nothing else, or worse, fighting a screen reader's own virtual cursor by yanking focus back on a timer."
       },
       {
         "chapter": "concept",
         "junior": "A correct focus trap does two things. Tab from the last field wraps back to the first instead of leaving the dialog, and closing the dialog returns focus to whatever button opened it, instead of resetting to the top of the page.",
-        "mid": "",
-        "staff": ""
+        "mid": "Intercept Tab at the boundary with a keydown handler, explicitly call preventDefault and focus, and save the trigger element on open so you can refocus it on close.",
+        "staff": "The trap breaks in practice when the focusable-elements list is cached once at open time instead of recomputed on every Tab press, so it goes stale the moment the dialog's contents change."
       },
       {
         "chapter": "demo",
         "junior": "Try opening the dialog and pressing tab past the last field in each mode, then watch where focus actually ends up.",
-        "mid": "",
-        "staff": ""
+        "mid": "In broken mode, Tab off the Delete button lands on a decoy element behind the dialog. In fixed mode, it wraps back to Name, and closing explicitly refocuses the trigger.",
+        "staff": "Every focus change here is a real .focus() call on a real element — the only difference between modes is whether a keydown handler intercepts Tab at the boundary."
       },
       {
         "chapter": "takeaway",
         "junior": "Fields tabbing through in order is not the same as a real focus trap. Check the boundary: does tab wrap at the ends, and does closing the dialog give focus back to whatever opened it?",
-        "mid": "",
-        "staff": ""
+        "mid": "Intercept Tab against a freshly computed focusable list, restore focus to the trigger on close, and mark the boundary declaratively with role=\"dialog\" and aria-modal so assistive tech understands it too.",
+        "staff": "Yanking focus back reactively can fight a screen reader's own virtual cursor — mark the boundary declaratively instead of enforcing it by force."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]
