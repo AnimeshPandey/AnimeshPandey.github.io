@@ -1,0 +1,190 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "MSW for Contract-First FE"
+description: "Hand-written fixture objects scattered across test files drift silently when the real API's shape changes. Mock Service Worker intercepts at the network level with a shared schema, keeping mocks honest by construction."
+slug: contract-tests-msw
+track: testing-quality
+readMin: 10
+flagship: false
+demoType: code-only
+principle: Mocking
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/contract-tests-msw-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Every test passed. Production was returning something else entirely.</h2>
+  <div class="tone-junior">
+    <p>
+      A component fetches a user's profile and renders <code>user.fullName</code>. Its test hardcodes a fake response: <code>{ fullName: "Jane Doe" }</code>. The test passes, every time, forever, right up until the backend team renames <code>fullName</code> to <code>displayName</code> in a real API change. Production breaks immediately, the test suite stays green, because the test was never actually checking against the real API, it was checking against a guess about the real API frozen in a hardcoded object.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A hand-written fixture is a snapshot of what someone believed the API returned on the day they wrote the test. Nothing connects that fixture to the real endpoint's actual current shape, so a backend change and a frontend fixture can drift apart indefinitely with zero signal, no failing test, no warning, until a real user hits it in production.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a contract problem, not a testing-diligence problem: the frontend and backend each have their own belief about the response shape, and nothing forces those beliefs to reconcile. More tests, or more careful fixture-writing, doesn't fix this, it just adds more independent copies of the same possibly-wrong belief that could each individually be well-written and still collectively be stale.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Intercept the network, not the function call, and share the schema</h2>
+  <div class="tone-junior">
+    <p>
+      Mock Service Worker (MSW) doesn't replace your fetch code with a fake function, it intercepts the actual network request your app already makes, at the network layer, and returns a mocked response. Your component's real <code>fetch('/api/profile')</code> call runs exactly as it would in production, only the response is substituted, so nothing about the component's actual data-fetching code is bypassed or specially mocked.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The bigger win is pairing MSW's mocked responses with a schema (a Zod schema, an OpenAPI spec, a JSON Schema file) that's shared with, or validated against, the real backend's actual contract. Instead of a hand-typed <code>{ fullName: "Jane Doe" }</code> that nobody checks against reality, the mock response is generated from, or validated against, the same schema the real API is supposed to honor, so a schema mismatch is a build-time or test-time failure instead of a silent runtime one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This still requires the schema itself to be trustworthy, MSW plus an unvalidated hand-maintained schema is the same drift problem one level removed. The strongest version of this pattern generates the schema from something the backend actually enforces (an OpenAPI spec the backend validates its own responses against, a shared TypeScript types package published from the backend's source of truth), so the frontend's mock and the backend's real behavior are both downstream of one document, instead of being two independent guesses.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The date field that was a string until it wasn't</h2>
+  <div class="tone-junior">
+    <p>
+      A team's order-history component had tests mocking the orders API with hand-written fixtures like <code>{ orderId: "1", placedAt: "2024-01-15" }</code>. The backend later changed <code>placedAt</code> from a date string to an ISO timestamp with milliseconds and a timezone offset, a reasonable, well-documented change on their end. Every frontend test kept passing, they were still asserting against the old hardcoded string. The date-formatting logic that assumed a plain date string broke in production for every order placed after the deploy.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team adopted MSW with response mocks generated from the backend's published OpenAPI schema rather than hand-typed per test. The next time the backend changed a field's shape, the generated mock changed with it automatically (the schema generation step failed loudly, flagging exactly which field's shape no longer matched what the frontend's TypeScript types expected), surfacing the break at build time, in CI, instead of after a real deploy.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team also added a contract-test suite that runs the same MSW-backed component tests against the schema in CI on every backend PR that touches the OpenAPI spec, not just on frontend PRs, closing the gap where a backend-only change previously had zero automated signal on the frontend at all until someone happened to notice in staging.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Hand-typed fixture objects scattered across test files, nothing checks them against the real API shape (broken) vs. MSW intercepting the real network call with responses generated from a schema shared with the backend's actual contract (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>The same field rename, two different test outcomes</h2>
+  <div class="tone-junior">
+    <p>Compare a test file with a hand-typed mock fixture against one using MSW with a schema-derived mock, both facing the same backend field rename.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The hand-typed fixture has no relationship to the real endpoint at all, it's just an object literal. The MSW version's mock is generated from the same schema the real API is validated against.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice where each one fails: the hand-typed version fails in production, silently, weeks later. The schema-derived version fails in CI, loudly, at the PR that introduced the mismatch.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Mocking strategy comparison: hand-typed fixture objects with no relationship to the real API (broken) vs. MSW with schema-derived mocks (fixed)"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="contract-tests-msw">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a hand-typed test fixture against an MSW handler using a schema-derived mock, both facing the same backend field rename; it requires JavaScript to load the code comparison in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: hand-typed fixture, no relationship to the real API
+// profile.test.ts
+test('renders profile name', () => {
+  const mockUser = { fullName: 'Jane Doe' }; // <- someone's guess, frozen
+  render(&lt;Profile user={mockUser} /&gt;);
+  expect(screen.getByText('Jane Doe')).toBeVisible();
+});
+// Backend renames fullName -> displayName. This test still passes.
+// Production renders "undefined" for every real user. Nothing caught it.
+
+
+// Fixed: MSW intercepts the real request, response comes from a shared schema
+// handlers.ts
+import { http, HttpResponse } from 'msw';
+import { UserSchema } from '../contracts/user.schema'; // shared w/ backend
+
+export const handlers = [
+  http.get('/api/profile', () => {
+    const mockUser = UserSchema.parse({ displayName: 'Jane Doe' });
+    return HttpResponse.json(mockUser); // throws at test-time if shape drifts
+  }),
+];
+
+// profile.test.ts — component's real fetch() call runs, MSW intercepts it
+test('renders profile name', async () => {
+  render(&lt;Profile /&gt;); // fetches /api/profile for real, MSW returns the mock
+  expect(await screen.findByText('Jane Doe')).toBeVisible();
+});
+// Backend renames fullName -> displayName: UserSchema.parse() throws at
+// test-time, this test fails loudly in CI instead of production, silently.</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The schema still has to be the real contract, not a second guess</h2>
+  <div class="tone-junior">
+    <p>
+      MSW alone doesn't fix drift, it's the network-interception mechanism, not the source of truth. The actual fix is pairing it with a schema that's genuinely shared with (or generated from) the backend's real contract. MSW with a hand-maintained schema nobody validates against the backend is a smaller version of the same original problem, one layer removed.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Where possible, generate frontend types and MSW mock schemas directly from the backend's own OpenAPI spec or a shared schema package, rather than hand-writing a frontend-side approximation of what the backend does. A generated schema can only be wrong if the backend's own spec is wrong, a hand-written one can be wrong for an unlimited number of independent human-error reasons.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Consider running the same MSW-backed contract tests in CI on backend PRs that touch the shared schema, not just frontend PRs, since a backend-only change is exactly the failure mode this pattern exists to catch, and it produces zero signal if only the frontend repository's CI ever runs it. For services without a formal OpenAPI spec, a lighter version still works: generate the schema from the backend's actual runtime response via a contract-testing tool (Pact and similar) that verifies both sides against a shared, versioned contract rather than trusting either side's independent belief.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A hand-typed test fixture is a frozen guess about the API's shape from the day it was written — nothing checks it against reality, so it can drift silently until production breaks.</div>
+        <div class="tone-mid">MSW intercepts the real network call your component already makes, and pairing it with a shared schema turns a shape mismatch into a loud CI failure instead of a silent production one.</div>
+        <div class="tone-staff">The schema has to be the real contract, generated from or validated against the backend's actual spec, not a second hand-written guess — and run the same contract tests on backend PRs too, not just frontend ones.</div>
+      </li>
+    </ul>
+  </div>
+</section>

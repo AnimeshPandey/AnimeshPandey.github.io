@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "CSP Without Breaking Your Static Site"
+description: "Why adding a Content-Security-Policy header silently kills every inline <script> and onclick handler already on your site, and how a nonce or hash-based policy fixes that without opening the door to injected script."
+slug: csp-inline-script
+track: security
+readMin: 10
+flagship: false
+demoType: toggle
+principle: CSP
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/csp-inline-script-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>You shipped a security header and the page went quiet</h2>
+  <div class="tone-junior">
+    <p>
+      A team adds <code>Content-Security-Policy: script-src 'self'</code> to their static site's response headers, a well-known recommendation from every security checklist. They deploy it, reload the homepage, and the mobile nav menu no longer opens. The analytics snippet stopped firing. A little <code>&lt;script&gt;</code> block that used to set up a dropdown is just gone.
+    </p>
+    <p>
+      Nothing crashed loudly. The browser console shows a line reading something like <code>Refused to execute inline script because it violates the following Content Security Policy directive: "script-src 'self'"</code>, and every inline <code>&lt;script&gt;</code> block and <code>onclick="..."</code> attribute on the page simply never ran.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>script-src 'self'</code> means exactly what it says: only scripts loaded from the page's own origin, as external files, are allowed to execute. It says nothing about where the script physically sits in the markup, it's about how the browser knows to trust it. Inline <code>&lt;script&gt;</code> content and inline event handler attributes are both, by CSP's default rules, untrusted by definition, because an attacker who can inject markup into the page (the exact threat CSP exists to contain) can just as easily inject an inline script tag as an external one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is CSP doing its job correctly, not a bug to route around. The entire value of a script-src policy against XSS comes from the assumption that an attacker's injected payload is unauthenticated markup, if inline script executed by default, an attacker's injected <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code> would run exactly as freely as your own. The fix isn't loosening the policy back to <code>'unsafe-inline'</code>, that reopens the exact hole CSP was added to close, it's giving your own legitimate inline scripts a way to prove they're yours.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Nonces and hashes: proving an inline script is yours, not an attacker's</h2>
+  <div class="tone-junior">
+    <p>
+      There are two real fixes, and "add <code>'unsafe-inline'</code> to make the errors stop" is not one of them, it disables the exact protection you were adding. The first fix is to stop using inline script at all: move the code into an external <code>.js</code> file and load it with <code>&lt;script src="/app.js"&gt;&lt;/script&gt;</code>, which <code>script-src 'self'</code> already allows. The second fix, for cases where inline script genuinely can't move (a small per-page config value, a CMS that injects a snippet), is to explicitly allowlist that one inline block with a nonce or a hash.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A nonce-based policy looks like <code>script-src 'nonce-r4nd0mVaLu3'</code>, and every inline <code>&lt;script&gt;</code> tag you actually authored gets a matching <code>nonce="r4nd0mVaLu3"</code> attribute, generated fresh on the server for every single response. Since an attacker's injected payload was never given that response's nonce, their inline script gets blocked while yours executes. A hash-based policy (<code>script-src 'sha256-abc123...'</code>) works without a server generating anything per-request: it allowlists a specific inline script by the exact hash of its contents, so it only works for inline script whose text never changes between deploys.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Neither mechanism extends to inline event handler attributes like <code>onclick="doThing()"</code>, only <code>&lt;script&gt;</code> elements and (with <code>'unsafe-hashes'</code> explicitly added) certain inline handlers get nonce/hash treatment, and browser support for hashing handler attributes is inconsistent. In practice, migrating away from inline <code>on*</code> attributes to <code>addEventListener</code> in an external script is the more portable fix, and it also removes a whole separate legacy code smell independent of CSP.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The CMS snippet that broke the checkout page</h2>
+  <div class="tone-junior">
+    <p>
+      A marketing team rolled out a CSP header site-wide after a security audit flagged its absence. Most pages were fine, the JS was already bundled into external files. But the checkout page had a small inline <code>&lt;script&gt;</code> block, injected by the CMS template, that read a discount code from a URL parameter and displayed it. With CSP live, that script silently stopped running, and the discount banner never appeared, quietly costing conversions for two days before anyone noticed a pattern.
+    </p>
+    <p>
+      Nobody had touched the checkout page's own code, the header change alone was enough to break it, because the CMS's template inserted the value as literal inline script rather than through the site's external bundle.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team's first instinct was to add <code>'unsafe-inline'</code> back to unblock the banner immediately, which worked, and also silently disabled CSP's script protection sitewide, not just on that one snippet. A follow-up review caught it before the next deploy: they instead generated a per-request nonce server-side, injected it into that one CMS-templated script tag, and added <code>'nonce-&lt;value&gt;'</code> to the policy, leaving every other injected script still blocked.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The retrospective's real finding was that "add the CSP header" had been treated as a single deploy rather than an audit: nobody had inventoried which pages actually depended on inline script or handler attributes before turning the policy on globally. They added a pre-deploy step scanning built HTML for <code>&lt;script&gt;</code> blocks with no <code>src</code> and <code>on*=</code> attributes, specifically so the next policy tightening wouldn't ship blind again.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">script-src 'self' with no nonce/hash silently blocks every inline script and onclick handler (broken) vs. a per-response nonce on the policy and matching nonce attribute on the legitimate inline script, still blocking anything an attacker injects (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Same inline script, two policies, two very different outcomes</h2>
+  <div class="tone-junior">
+    <p>Toggle between a plain <code>script-src 'self'</code> policy and a nonce-based one, and watch whether the page's own inline script is allowed to run, and whether an attacker's injected script is too.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The inline script's source text never changes. Only the policy, and whether the script tag carries a matching nonce, changes what the simulated browser allows.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the fixed state blocks the injected script for a different reason than the broken state blocks everything: the broken policy blocks all inline script indiscriminately, the fixed policy discriminates by nonce, which is the entire point.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="CSP inline script comparison: script-src 'self' with no allowlist (broken) vs. nonce-based script-src (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="csp-inline-script">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a browser evaluating a Content-Security-Policy against an inline script the page owns and an inline script an attacker injected; it requires JavaScript to run the simulated policy check in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            script-src 'self' only
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Nonce-based policy
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Nonce-based policy</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:200px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Report-only mode, and the parts a nonce doesn't cover</h2>
+  <div class="tone-junior">
+    <p>
+      Before enforcing a new policy, ship it as <code>Content-Security-Policy-Report-Only</code> first. It logs violations to the console (and to a reporting endpoint, if you configure one) without actually blocking anything, so you can find every inline script and handler the real policy would break before it breaks them in production.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A nonce must be freshly random per response, reusing the same nonce across requests (or worse, hardcoding one in a static HTML file) defeats the mechanism entirely: an attacker who can read your page's source can read a static nonce and put it on their own injected script too. This is why nonce-based CSP genuinely requires a server generating each response, a fully static site without per-request generation has to lean on hash-based CSP instead, or move everything to external files.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Hash-based CSP has its own footgun: the hash is computed over the exact bytes of the script's contents, including whitespace, so a minifier or template engine that reformats inline script differently between builds silently breaks the allowlist on every deploy unless the hash is regenerated as part of that same build. Also watch <code>style-src</code> the same way, inline <code>style="..."</code> attributes and <code>&lt;style&gt;</code> blocks are gated by CSP too, and teams that only audit <code>script-src</code> before enabling a policy often get a second, quieter breakage on inline styles they didn't think to check.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A CSP header without a nonce or hash blocks every inline script and onclick handler on your site, not just an attacker's — move code to external files, or explicitly allowlist the inline script you actually own.</div>
+        <div class="tone-mid">Never fix a CSP violation by adding 'unsafe-inline' — that disables the protection sitewide. Use a per-response nonce on both the policy and the script tag instead.</div>
+        <div class="tone-staff">Ship new policies as Content-Security-Policy-Report-Only first to find every inline dependency before enforcing, and remember style-src gates inline styles the same way script-src gates inline script.</div>
+      </li>
+    </ul>
+  </div>
+</section>

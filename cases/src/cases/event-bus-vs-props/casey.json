@@ -1,0 +1,148 @@
+{
+  "slug": "event-bus-vs-props",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The cart total is wrong and a dozen files emit cart:update — any of them could be the culprit, none are visibly connected in the code.",
+      "mid": "emit and on for the same event name can live in files that never import each other, so grepping the string is the debugging tool, not the type system.",
+      "staff": "This is structural to pub-sub: subscribing is a runtime relationship with no compile-time trace, by design, not a bug in this particular bus."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Same stale-total bug, two ways to find it — toggle and see how much searching each one takes.",
+      "mid": "The props version isn't faster because the code is shorter, it's faster because there's exactly one place the value could have come from.",
+      "staff": "Notice the props version doesn't have \"eleven emitters\" as a category of bug at all, a value can only be set from the one place allowed to set it."
+    },
+    {
+      "chapter": "concept",
+      "junior": "With props, finding where a value comes from means following a variable, not grepping a string across the whole codebase.",
+      "mid": "Prop drilling costs typing. An event bus costs traceability. Neither is free, the question is which your team can afford for this state.",
+      "staff": "The real middle ground is colocated state via context for one clear owner, reserving a bus for things that are genuinely cross-cutting and ownerless."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "If prop drilling hurts, reach for context first, it still has one traceable source, it just skips the manual passing.",
+      "mid": "Ask before adding to a bus: can you name the one component that should own this state? If yes, it belongs in a store, not the bus.",
+      "staff": "Keep a typed event map and a discoverable emitter/listener registry for any bus event that survives — bound the debugging cost, don't eliminate it and hope."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a cart total that's wrong, and a dozen files that could all be the reason, thanks to a global event bus.",
+        "mid": "An event bus decouples the sender from needing to know who's listening — emit and on calls for the same event can live in files that never import each other, so grepping the event string is the only debugging tool.",
+        "staff": "This is a structural property of pub-sub, not a bug in this particular bus — subscribing to an event is, by design, a runtime relationship with no compile-time trace."
+      },
+      {
+        "chapter": "concept",
+        "junior": "With props, finding a bug means following a variable to its source. With a bus, it means grepping every file that might emit that event name.",
+        "mid": "Prop drilling costs you typing, passing a value through layers that don't use it. An event bus costs you traceability, since any listener could be the source with no static path from emitter to listener.",
+        "staff": "The middle ground most codebases want is colocated state via context for anything genuinely shared across a subtree, reserving a global bus for things that are legitimately cross-cutting and don't belong to any one owner."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Toggle between the event bus version and the props version, and see what it actually takes to trace the same bug in each.",
+        "mid": "Both versions have the same bug — a stale coupon calculation overwrites a fresh shipping calculation. The difference is entirely in how much you have to search to find it.",
+        "staff": "The props version doesn't have \"eleven emitters\" as a category of problem at all — a value can only be set from the one place that's allowed to set it."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Before you put state on a shared event bus, ask whether one component should really own it. If so, pass it as a prop instead.",
+        "mid": "Before putting state on a bus, ask if one component should own it. If yes, use props or context with a single write path, not a bus.",
+        "staff": "Reserve a global bus for genuinely cross-cutting concerns with no single owner."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

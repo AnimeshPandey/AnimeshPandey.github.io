@@ -1,0 +1,148 @@
+{
+  "slug": "component-storybook-docs",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The docs said size=\"large\" worked. It had been renamed to variant three months earlier and nobody updated the doc page.",
+      "mid": "A markdown doc is a second, independent copy of information the component's source already has, nothing keeps the two in sync.",
+      "staff": "Descriptions of code drift because updating them is a disconnected second step nothing in review flags as affected by a prop change."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Same renamed prop, two doc formats, toggle to see which one still shows the prop that no longer exists.",
+      "mid": "The markdown panel is frozen text someone has to remember to edit, the controls panel regenerates from real prop types every render.",
+      "staff": "The markdown version doesn't error, it just quietly shows a dead prop, that's the dangerous part, it looks confidently correct."
+    },
+    {
+      "chapter": "concept",
+      "junior": "A Storybook story renders the real component, so its controls panel can't show a prop that doesn't exist anymore.",
+      "mid": "Controls are generated from the component's actual prop types, not from anything a human typed into a separate doc file.",
+      "staff": "A story is also a rendered instance, so visual regressions and interaction behavior are inspectable the same way prop shape is."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Storybook can't drift on prop shape, but written guidance text next to a story can still go stale the same way any prose can.",
+      "mid": "Require a story per exported component in CI, so a new component can't ship with zero live documentation.",
+      "staff": "Publish Storybook per-PR so reviewers see a prop change's actual doc impact in the same review, not as a deferred follow-up."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a documented prop that hadn't actually existed on the real component for three months.",
+        "mid": "A markdown doc describing a component's API is a second, independent copy of information the source code already contains — the moment either copy changes without the other, they disagree, and nothing enforces they stay in sync.",
+        "staff": "This is the general problem with documentation that describes code rather than rendering it — nothing in a normal PR review flags a docs file as affected by a prop rename, unless a human specifically remembers to check."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is docs that render the real component, so the controls panel is generated from real prop types instead of hand typed text.",
+        "mid": "Storybook generates the controls panel from the component's actual prop types, not from anything a human typed into a separate file — a prop that no longer exists can't appear in the controls.",
+        "staff": "A story is also a rendered instance, so beyond prop-shape accuracy, a broken hover state or missing focus ring shows up by looking at the running story, not by reading a paragraph that claims the component is accessible."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Toggle between a hand written markdown doc and a live controls panel, both describing the same button after a prop rename.",
+        "mid": "The markdown doc's content is frozen text, someone has to remember to edit it. The controls panel is generated from the component's real prop types every time it renders.",
+        "staff": "The markdown version doesn't error or warn — it just quietly shows a prop that silently no longer does anything, which is the dangerous part."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A markdown doc describing your component's props will drift the moment the component changes. Render the real component instead, so the docs can't lie.",
+        "mid": "Storybook renders the real component with controls generated from its real prop types — the docs can't describe a prop that no longer exists.",
+        "staff": "Require a story per exported component in CI so a prop change's doc impact shows up in the same review, not as a deferred follow-up."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}
