@@ -1,0 +1,103 @@
+{
+  "slug": "feature-flag-ui-flicker",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The flag resolves 700ms after the page painted, and the banner it inserts pushes the paragraph a reader's already scrolled to right out from under them.",
+      "mid": "A flag gated on a network response genuinely has two render states — pre-flag and post-flag — and the transition between them is a real, visible layout event.",
+      "staff": "It's not about the flag being slow — a flag resolved in 50ms still shifts layout if the browser already painted around the pre-flag content."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click \"Simulate page load\" in each mode and watch whether the banner is there from frame one or pops in and pushes content down.",
+      "mid": "Broken mode measures the actual inserted banner height from the DOM after the delay — fixed mode never has anything to measure because nothing moves.",
+      "staff": "The shift number in broken mode isn't a fixed constant — it's read from getBoundingClientRect after insertion, the same way a real CLS score is computed from actual element movement."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Resolve the flag on the server so the client's first paint already reflects the right variant — there's nothing left to swap in later.",
+      "mid": "Reserving space for the flagged content, a skeleton sized to match, keeps the box from moving even when what's inside it swaps in late.",
+      "staff": "Server-side evaluation collapses two round trips into one, removing the client-side transition entirely rather than just making it faster."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A 50ms flag fetch can still cause a visible jump if the browser already painted before it resolved — speed alone doesn't fix that.",
+      "mid": "A skeleton sized to the eventual banner is a legitimate middle-ground fix when moving evaluation server-side genuinely isn't an option yet.",
+      "staff": "Bucketing flags are usually safe to resolve server-side from a hashed user ID — killswitch flags need to stay pollable, so they need additive UI instead."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a feature flag that resolves after the page already painted, and the visible jump that happens when its content swaps in mid-read.",
+        "mid": "Any flag gated on a network response has two real render states, before and after it resolves, and the transition between them is a genuine layout event a reader can see.",
+        "staff": "The flicker isn't really about the flag being slow. It's about the coupling between when the flag resolves and when the browser has already committed to a layout."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The strongest fix is resolving the flag on the server, before the page is even sent to the browser, so there's nothing left to swap in later.",
+        "mid": "When the flag has to resolve on the client, reserving space for it ahead of time means the content changes, but nothing else on the page has to move.",
+        "staff": "Server-side evaluation collapses two round trips into one, so the browser's very first render is already the correct one."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try simulating a page load in both modes, and watch what happens to the paragraph below the banner.",
+        "mid": "Broken mode waits, then inserts the banner and measures how far everything below it actually moved.",
+        "staff": "Fixed mode isn't just a faster version of the same delay, the banner is part of the very first paint, so there's no transition to measure at all."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Resolve the flag before the page renders, or fast enough that nothing has painted yet, so there's nothing to visibly swap in later.",
+        "mid": "Move flag evaluation onto the server or into edge middleware so the browser's first render is already correct.",
+        "staff": "Killswitch flags that must stay live client-side need additive UI that never replaces what the reader is already looking at."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

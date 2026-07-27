@@ -46,8 +46,8 @@
       {
         "chapter": "concept",
         "junior": "The concept chapter is the principle. Read it before the demo so the toggle makes sense.",
-        "mid": "Connect the principle to your component API: what prop or CSS change encodes the fix?",
-        "staff": "Map the pattern to observability: what would you measure in RUM or lab to prove the fix?"
+        "mid": "Setting min-width: 0 on the flex item removes that floor entirely, letting flex-shrink actually work — pair it with overflow: hidden and text-overflow: ellipsis so content truncates gracefully.",
+        "staff": "The same rule applies on the cross axis for column layouts — swap in min-height: 0 there instead. Grid has the equivalent gotcha with minmax(0, 1fr) versus plain 1fr."
       },
       {
         "chapter": "demo",
@@ -57,9 +57,9 @@
       },
       {
         "chapter": "takeaway",
-        "junior": "This section covers takeaway for flex-min-width-zero.",
-        "mid": "",
-        "staff": ""
+        "junior": "Flex items default to min-width: auto, so flex-shrink can''t shrink below content size. Set min-width: 0 to remove that floor, then truncate the content with overflow: hidden and ellipsis.",
+        "mid": "This mostly shows up in production, not development — test data is short and clean, real user data like long filenames is what actually triggers it.",
+        "staff": "Nested flex containers compound this — a parent item's own min-width: auto sets the floor for its whole subtree, so the fix sometimes needs to be applied at more than one level."
       }
     ]
   },
@@ -67,37 +67,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
-      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
-      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
-      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

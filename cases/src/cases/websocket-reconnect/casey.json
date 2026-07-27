@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a WebSocket client that reconnected instantly after every disconnect, and how that turned a brief server hiccup into a full outage.",
-        "mid": "",
-        "staff": ""
+        "mid": "Immediate reconnect works fine for a single client dropping on its own — it fails badly when a server-side event disconnects many clients at once, since instant mass-reconnect is a self-inflicted traffic spike.",
+        "staff": "A recovering server needs headroom to actually recover — an instant-retry client population removes exactly that headroom."
       },
       {
         "chapter": "concept",
         "junior": "The fix is exponential backoff with jitter — wait a bit longer after each failed attempt, and spread those attempts out randomly so clients don't all retry in the same instant.",
-        "mid": "",
-        "staff": ""
+        "mid": "Exponential backoff alone still has a problem — every client computes the same delay sequence, so they retry in sync. Jitter spreads those retries out across time instead.",
+        "staff": "Full jitter, a random delay uniformly chosen between 0 and the exponential cap, tends to outperform smaller-jitter variants under real correlated-failure load."
       },
       {
         "chapter": "demo",
         "junior": "Simulate a few disconnects in each mode and watch how the timing between reconnect attempts differs.",
-        "mid": "",
-        "staff": ""
+        "mid": "The broken mode's attempts land almost immediately after each other — the fixed mode's intervals grow with each attempt.",
+        "staff": "This demo shows one client's own backoff curve — the real benefit is population-level, many clients' jittered curves not overlapping."
       },
       {
         "chapter": "takeaway",
         "junior": "Don't reconnect instantly on every disconnect. Back off exponentially, add jitter, and cap the maximum delay.",
-        "mid": "",
-        "staff": ""
+        "mid": "Exponential backoff with jitter spreads reconnect attempts out over time instead of every client hammering the server in the same instant.",
+        "staff": "Cap the maximum delay, reset the backoff after a sustained connection, and treat different disconnect reasons differently rather than one uniform retry policy."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Shipping a Design System v3 Without Breaking 40 Apps"
+description: "A shared component library's v3 release with renamed props or removed APIs can break every consuming app on the same npm install — a deprecation shim plus a codemod turns that synchronized outage into a rollout each team controls."
+slug: design-system-major-version
+track: advanced-frontend
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Versioning
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/design-system-major-version-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Every one of 40 internal apps breaks in the same release</h2>
+  <div class="tone-junior">
+    <p>
+      A shared design system's v3 ships with a breaking change to a couple of component APIs, say, a <code>&lt;Button size="small"&gt;</code> prop is renamed to <code>size="sm"</code>. The platform team merges the change, publishes v3 to the internal registry, and moves on. The next morning, every one of the roughly 40 internal apps that depend on that package picks it up on a routine <code>npm install</code>, and every app that still used the old prop name breaks at once, not gradually, all together, because they're all consuming the exact same version bump.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      "Just publish v3" isn't really a versioning mistake, semver correctly signals a breaking change with a major bump, it's a rollout mistake: any app pinning a caret range like <code>^2.4.0</code> pulls the new major in on its next install, with no warning, no deprecation period, and no way to opt in on its own timeline. The bug is treating a shared design system's release like one app's own deploy, where a breaking change is scoped to a single team, when a design system with 40 consumers has a blast radius of 40 teams.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The deeper issue is that a single v3 tag conflates two things that should be decoupled: "the new API exists and is documented" and "every consumer is forced onto it right now." A design system with real leverage across an org needs a way to ship v3 as <em>available</em> without making it <em>mandatory</em> the moment someone runs <code>npm install</code>, otherwise every major version becomes a synchronized, org-wide fire drill instead of a rollout each team can pace for itself.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Deprecate first, ship a compatibility shim, let each app migrate on its own clock</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of a single hard cutover, a safer v3 keeps the old API working for a while. When an app uses the deprecated <code>size="small"</code> prop, the component doesn't throw, it silently maps <code>small</code> to <code>sm</code> internally and logs a one-time warning telling the team what changed and pointing at a codemod that fixes it automatically. The app keeps working today. The team gets a real window to run the codemod and update the prop name on its own schedule, not the design system team's.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is a compatibility shim: v3 ships the new implementation, but a thin translation layer inside the component maps old prop names and values to new ones, so the public API stays backward-compatible for a deprecation window even though the internals changed. Real systems automate the far side of that window too, Shopify's Polaris ships a <code>polaris-migrator</code> CLI that runs codemods against a consuming app's source to do the bulk of the rename/remove work automatically, and IBM's Carbon design system ships an equivalent <code>@carbon/upgrade</code> package for the same purpose. The shim buys time; the codemod removes the manual-labor cost of using it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The rollout shape that actually works is staged: publish v3 with the shim active by default so a plain caret-range install doesn't break anyone, instrument the shim to log real usage rather than just warn (so the platform team can watch deprecated-prop usage trend toward zero across the org instead of guessing from a changelog's reach), and only remove the shim, as its own release with its own changelog entry, once telemetry shows adoption is actually done. The version number stops being the forcing function; the shim's measured removal criterion is.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The second attempt shipped a dashboard instead of a Slack message</h2>
+  <div class="tone-junior">
+    <p>
+      A platform team owned a shared component library used by about 40 internal apps across three product lines. For v3, they renamed a handful of props on the Button and Modal components to match new design tokens. The first attempt: publish <code>v3.0.0</code>, post a Slack message. Within a day, 11 apps had failing CI and two were broken in production, teams that had run <code>npm install</code> for an unrelated dependency bump had no idea a design system update was even involved until their build failed.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      For the redo, v3 shipped with every renamed prop still accepted through a shim, logging both a console warning and a hit to an internal telemetry endpoint on every deprecated-prop use. They also published a codemod, <code>npx @internal/ds-upgrade</code>, that rewrote the deprecated props automatically in a consuming app's source. Instead of one synchronized cutover, they got a live number: deprecated-prop usage across all 40 apps, trending down week over week as teams ran the codemod at their own pace.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      What made this durable rather than a one-time save was that the shim wasn't removed on a fixed calendar date, it was removed once telemetry showed zero real-world hits for two consecutive weeks, shipped as its own release with its own changelog entry ("the v2-compatible prop names are no longer accepted; run the v3 codemod if you haven't"). Two apps still hadn't migrated by then, the team reached out to those two directly instead of breaking all 40 again to force the issue.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Hard cutover breaks every consuming app on the same npm install (broken) vs. a deprecation shim plus codemod lets each app migrate on its own schedule (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Roll v3 out to 8 simulated apps two ways</h2>
+  <div class="tone-junior">
+    <p>Toggle between shipping v3 as a hard cutover and shipping it with a compatibility shim. In hard-cutover mode, watch what happens to all 8 apps the instant v3 goes out. In staged mode, click through migrating each app one at a time and watch the rest stay unaffected.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Hard cutover renders every app against the real v3 API immediately, apps still passing the old prop throw. Staged mode keeps the shim active by default so every app stays working, and "Run codemod" migrates one app off the deprecated prop per click without touching the other 7.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The staged-mode counter is the thing to watch: it's tracking real per-app migration state, not a countdown timer, the same shape as the actual removal criterion in the story above (usage telemetry hits zero) rather than a fixed calendar date.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A design system v3 rollout to 8 simulated consuming apps, comparing a hard cutover that breaks every app still on the old prop name against a staged rollout with a compatibility shim and per-app codemod migration"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="design-system-major-version">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates publishing a design system v3 to 8 consuming apps, comparing a hard cutover that breaks every app still using the old prop name against a staged rollout with a compatibility shim and a per-app codemod button; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Hard cutover
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Staged rollout (shim)
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Staged rollout (shim)</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The shim needs a removal criterion, or it becomes permanent debt</h2>
+  <div class="tone-junior">
+    <p>
+      A compatibility shim that never gets removed just becomes a second, permanently-supported API, every future engineer working on the component has to understand both the old and new prop names forever, and the docs have to describe two ways to do the same thing indefinitely.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix isn't a fixed deprecation date so much as an instrumented one, log every real hit of the shim, not just a console warning a developer might not even see, so the platform team has an actual answer to "is anyone still using this" instead of assuming a changelog entry was sufficient notice.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      There's a subtler footgun too: a dual-package hazard, where some consuming apps end up with two different major versions of the design system in their dependency tree simultaneously, one direct, one transitive via another internal package that hasn't updated yet. Bundlers that don't dedupe correctly can ship both, which for a component library often means duplicated CSS-in-JS runtime instances or duplicate context providers misbehaving in ways that are much harder to debug than a plain prop-name breakage. Worth checking for duplicate major versions in the dependency tree before calling a migration done, not just checking that the shim's usage count hit zero.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A hard cutover to a new design-system major version breaks every consuming app at once; a shim that keeps the old API working, paired with a codemod, lets each team migrate on its own schedule.</div>
+        <div class="tone-mid">Ship the new implementation with a compatibility shim active by default so a semver-correct major bump doesn't become a synchronized outage, and pair it with an automated codemod so migrating isn't manual per-app work.</div>
+        <div class="tone-staff">Instrument the shim itself so "is it safe to remove" is a real usage number, not a calendar guess, and check for dual-package hazards when some consumers migrate slower than others.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -808,5 +808,164 @@
       "<a href=\"https://mswjs.io/docs/\" rel=\"noopener noreferrer\">Mock Service Worker — Introduction</a>",
       "<a href=\"https://mswjs.io/docs/best-practices/structuring-handlers\" rel=\"noopener noreferrer\">Mock Service Worker — Structuring handlers</a>"
     ]
+  },
+  "structured-output-json": {
+    "junior": [
+      "<a href=\"https://developers.openai.com/api/docs/guides/structured-outputs\" rel=\"noopener noreferrer\">OpenAI — Structured model outputs</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developers.openai.com/api/docs/guides/structured-outputs\" rel=\"noopener noreferrer\">OpenAI — Structured model outputs</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developers.openai.com/api/docs/guides/structured-outputs\" rel=\"noopener noreferrer\">OpenAI — Structured model outputs</a>"
+    ]
+  },
+  "ai-suggestion-diff-review": {
+    "junior": [
+      "<a href=\"https://docs.github.com/en/copilot/using-github-copilot/code-review/using-copilot-code-review\" rel=\"noopener noreferrer\">GitHub Docs — Using GitHub Copilot code review</a>"
+    ],
+    "mid": [
+      "<a href=\"https://docs.github.com/en/copilot/using-github-copilot/code-review/using-copilot-code-review\" rel=\"noopener noreferrer\">GitHub Docs — Using GitHub Copilot code review</a>"
+    ],
+    "staff": [
+      "<a href=\"https://docs.github.com/en/copilot/using-github-copilot/code-review/using-copilot-code-review\" rel=\"noopener noreferrer\">GitHub Docs — Using GitHub Copilot code review</a>"
+    ]
+  },
+  "confidence-threshold-ui": {
+    "junior": [
+      "<a href=\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\" rel=\"noopener noreferrer\">OWASP — Top 10 for Large Language Model Applications</a>"
+    ],
+    "mid": [
+      "<a href=\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\" rel=\"noopener noreferrer\">OWASP — Top 10 for Large Language Model Applications</a>"
+    ],
+    "staff": [
+      "<a href=\"https://owasp.org/www-project-top-10-for-large-language-model-applications/\" rel=\"noopener noreferrer\">OWASP — Top 10 for Large Language Model Applications</a>"
+    ]
+  },
+  "raf-throttle-scroll": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame\" rel=\"noopener noreferrer\">MDN — Window.requestAnimationFrame()</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame\" rel=\"noopener noreferrer\">MDN — Window.requestAnimationFrame()</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame\" rel=\"noopener noreferrer\">MDN — Window.requestAnimationFrame()</a>"
+    ]
+  },
+  "capture-vs-bubble": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener\" rel=\"noopener noreferrer\">MDN — EventTarget.addEventListener()</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener\" rel=\"noopener noreferrer\">MDN — EventTarget.addEventListener()</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener\" rel=\"noopener noreferrer\">MDN — EventTarget.addEventListener()</a>"
+    ]
+  },
+  "mutation-observer-vs-polling": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver\" rel=\"noopener noreferrer\">MDN — MutationObserver</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver\" rel=\"noopener noreferrer\">MDN — MutationObserver</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver\" rel=\"noopener noreferrer\">MDN — MutationObserver</a>"
+    ]
+  },
+  "flex-min-width-zero": {
+    "junior": [
+      "<a href=\"https://www.w3.org/TR/css-flexbox-1/#min-size-auto\" rel=\"noopener noreferrer\">CSS Flexbox spec — Automatic Minimum Size of Flex Items</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.w3.org/TR/css-flexbox-1/#min-size-auto\" rel=\"noopener noreferrer\">CSS Flexbox spec — Automatic Minimum Size of Flex Items</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/TR/css-flexbox-1/#min-size-auto\" rel=\"noopener noreferrer\">CSS Flexbox spec — Automatic Minimum Size of Flex Items</a>"
+    ]
+  },
+  "cache-control-static": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control\" rel=\"noopener noreferrer\">MDN — Cache-Control header</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control\" rel=\"noopener noreferrer\">MDN — Cache-Control header</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control\" rel=\"noopener noreferrer\">MDN — Cache-Control header</a>"
+    ]
+  },
+  "flaky-test-timers": {
+    "junior": [
+      "<a href=\"https://jestjs.io/docs/timer-mocks\" rel=\"noopener noreferrer\">Jest — Timer Mocks</a>"
+    ],
+    "mid": [
+      "<a href=\"https://jestjs.io/docs/timer-mocks\" rel=\"noopener noreferrer\">Jest — Timer Mocks</a>"
+    ],
+    "staff": [
+      "<a href=\"https://jestjs.io/docs/timer-mocks\" rel=\"noopener noreferrer\">Jest — Timer Mocks</a>"
+    ]
+  },
+  "design-system-major-version": {
+    "junior": [
+      "<a href=\"https://github.com/carbon-design-system/carbon/blob/main/docs/migration/v11.md\" rel=\"noopener noreferrer\">Carbon Design System — v10 to v11 migration guide</a>"
+    ],
+    "mid": [
+      "<a href=\"https://github.com/carbon-design-system/carbon/blob/main/docs/migration/v11.md\" rel=\"noopener noreferrer\">Carbon Design System — v10 to v11 migration guide</a>",
+      "<a href=\"https://polaris-react.shopify.com/version-guides\" rel=\"noopener noreferrer\">Shopify Polaris — Version guides</a>"
+    ],
+    "staff": [
+      "<a href=\"https://polaris-react.shopify.com/version-guides/migrating-from-v11-to-v12\" rel=\"noopener noreferrer\">Shopify Polaris — Migrating from v11 to v12 (polaris-migrator CLI)</a>"
+    ]
+  },
+  "feature-flag-ui-flicker": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Glossary/CLS\" rel=\"noopener noreferrer\">MDN — Cumulative Layout Shift (CLS)</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Glossary/CLS\" rel=\"noopener noreferrer\">MDN — Cumulative Layout Shift (CLS)</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/Performance\" rel=\"noopener noreferrer\">MDN — Web performance</a>"
+    ],
+    "staff": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/LayoutShift\" rel=\"noopener noreferrer\">MDN — LayoutShift API</a>"
+    ]
+  },
+  "env-vars-build-time": {
+    "junior": [
+      "<a href=\"https://vite.dev/guide/env-and-mode\" rel=\"noopener noreferrer\">Vite — Env Variables and Modes</a>"
+    ],
+    "mid": [
+      "<a href=\"https://vite.dev/guide/env-and-mode\" rel=\"noopener noreferrer\">Vite — Env Variables and Modes</a>",
+      "<a href=\"https://webpack.js.org/plugins/define-plugin/\" rel=\"noopener noreferrer\">webpack — DefinePlugin</a>"
+    ],
+    "staff": [
+      "<a href=\"https://webpack.js.org/plugins/define-plugin/\" rel=\"noopener noreferrer\">webpack — DefinePlugin</a>"
+    ]
+  },
+  "esbuild-vs-webpack-dev": {
+    "junior": [
+      "<a href=\"https://esbuild.github.io/faq/\" rel=\"noopener noreferrer\">esbuild — FAQ: why is esbuild fast</a>"
+    ],
+    "mid": [
+      "<a href=\"https://esbuild.github.io/faq/\" rel=\"noopener noreferrer\">esbuild — FAQ: why is esbuild fast</a>",
+      "<a href=\"https://webpack.js.org/guides/build-performance/\" rel=\"noopener noreferrer\">webpack — Build Performance guide</a>"
+    ],
+    "staff": [
+      "<a href=\"https://webpack.js.org/guides/build-performance/\" rel=\"noopener noreferrer\">webpack — Build Performance guide</a>"
+    ]
+  },
+  "clickjacking-frame-ancestors": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/Clickjacking\" rel=\"noopener noreferrer\">MDN — Clickjacking</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors\" rel=\"noopener noreferrer\">MDN — CSP frame-ancestors directive</a>",
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options\" rel=\"noopener noreferrer\">MDN — X-Frame-Options header</a>"
+    ],
+    "staff": [
+      "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — Clickjacking Defense Cheat Sheet</a>"
+    ]
   }
 }

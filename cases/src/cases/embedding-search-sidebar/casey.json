@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! This one's about a docs sidebar that got a smarter search feature and somehow got slower at the same time, because every single search had to round-trip to a server for a doc set that barely ever changed.",
-        "mid": "",
-        "staff": ""
+        "mid": "The round-trip latency was the visible symptom, but for a small, rarely-changing doc set shipped with the app, computing search entirely client-side would have made every query after the first effectively free.",
+        "staff": "The mistake wasn't choosing server-side search, it was choosing it by default without checking whether this corpus actually justified a network round trip on every keystroke."
       },
       {
         "chapter": "concept",
         "junior": "There are really two ways to run this kind of search. Ship the model to the browser and search locally after one upfront download, or send every query to a server and wait for a response each time. Which one wins depends on how big your content is and how often it changes.",
-        "mid": "",
-        "staff": ""
+        "mid": "Client-side pays a one-time cold-start cost before the first search can run; server-side pays a per-query cost, a round trip, every time — a fixed small doc set favors client-side, a large or changing one favors server-side.",
+        "staff": "There's a third variable beyond size: how often the corpus changes. Client-side needs its index rebuilt and re-shipped on every content change — fine on a release cadence, painful for hourly updates."
       },
       {
         "chapter": "demo",
         "junior": "Try searching the same small set of documents both ways. One mode makes a real network call on every search. The other loads once, up front, and then every search after that is instant.",
-        "mid": "",
-        "staff": ""
+        "mid": "Broken mode simulates a real round trip on every query. Fixed mode simulates a one-time model download, then every search after that has no network call at all.",
+        "staff": "The fixed mode's cost isn't gone, it's moved earlier — watch the one-time load happen before the first query, then compare per-query latency after that."
       },
       {
         "chapter": "takeaway",
         "junior": "For a small set of content that doesn't change much, doing search fully in the browser after one upfront load usually wins. For a big or fast-changing set, sending the query to a server usually wins. Pick based on your actual content, not on which one sounds more advanced.",
-        "mid": "",
-        "staff": ""
+        "mid": "Client-side pays once and is free per query after; server-side pays nothing upfront but costs a round trip every time — match the choice to corpus size and change frequency.",
+        "staff": "The two approaches can coexist in the same feature rather than being all-or-nothing."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

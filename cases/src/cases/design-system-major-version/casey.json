@@ -1,0 +1,103 @@
+{
+  "slug": "design-system-major-version",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Every one of 40 apps breaks on the same npm install — a caret range pulls the new major in with no warning and no way to opt in early.",
+      "mid": "A single v3 tag conflates \"the new API exists\" with \"every consumer is forced onto it right now\" — those should be two separate decisions.",
+      "staff": "A design system with 40 consumers has a blast radius of 40 teams — every major version becomes an org-wide fire drill unless the rollout is decoupled from the version bump."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Watch what happens to all 8 apps the instant hard-cutover v3 goes out, versus migrating them one at a time under the shim.",
+      "mid": "Staged mode's \"Run codemod\" button migrates one app off the deprecated prop per click, without touching the other 7.",
+      "staff": "The staged-mode counter tracks real per-app migration state, the same shape as the real removal criterion: usage telemetry hits zero, not a countdown timer."
+    },
+    {
+      "chapter": "concept",
+      "junior": "First request: 200 OK is not how this works — a shim maps the old prop name to the new one internally so the app keeps running while it gets a warning.",
+      "mid": "Real systems automate the far side of the deprecation window too — Polaris ships a migrator CLI, Carbon ships an upgrade codemod package, both doing the rename work automatically.",
+      "staff": "The version number stops being the forcing function — the shim's measured removal criterion (usage telemetry hits zero) is what actually decides when it comes out."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A shim nobody ever removes just becomes a second, permanently-supported API that every future engineer has to learn alongside the real one.",
+      "mid": "Log every real hit of the shim, not just a console warning a developer might never see — that's the difference between a guess and an actual usage number.",
+      "staff": "Watch for a dual-package hazard: two major versions of the same design system landing in one app's dependency tree, one direct and one transitive, which a naive bundler won't dedupe."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about a design system's version 3 release that broke every single one of forty consuming apps on the same install, all at once, with no warning.",
+        "mid": "A caret version range means any consuming app pulls in a new major the next time it installs, with no deprecation period and no way to opt in on its own timeline.",
+        "staff": "The deeper issue is treating a shared design system's release like one team's own deploy, when its actual blast radius is every team that imports it."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Instead of one hard cutover, a safer release keeps the old way of using a component working for a while, and just warns the team that something changed.",
+        "mid": "A compatibility shim maps the old prop names to the new ones internally, so the public API stays backward compatible during a deprecation window even though the internals changed.",
+        "staff": "The version number stops being the forcing function. What actually decides when the shim comes out is real usage telemetry hitting zero, not a date on a calendar."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try switching between a hard cutover and a staged rollout, and watch what happens to the eight simulated apps in each mode.",
+        "mid": "In staged mode, migrating one app never touches the other seven, that's the whole point of the shim.",
+        "staff": "Notice the staged mode is tracked by a real per-app counter, not a timer, matching how the actual removal decision gets made."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A shim that keeps the old way working, plus a tool that updates the code automatically, lets every team migrate on its own schedule instead of all at once.",
+        "mid": "Ship the compatibility layer active by default so a routine install doesn't turn into an outage, and pair it with an automated code migration.",
+        "staff": "Measure real usage of the shim before removing it, and watch for two versions of the same package ending up in one app's dependency tree at once."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try hard cutover", "target": "[data-demo-state=broken]" },
+        { "label": "Try staged rollout", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle hard cutover", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle staged rollout", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Hard cutover state", "target": "[data-demo-state=broken]" },
+        { "label": "Staged rollout state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

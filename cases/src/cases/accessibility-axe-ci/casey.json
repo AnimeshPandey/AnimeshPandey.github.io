@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Today's case is about running axe-core in CI, and why the obvious first setup, fail the build on any violation, gets disabled within a week on a real codebase with any accessibility debt at all.",
-        "mid": "",
-        "staff": ""
+        "mid": "Fail on any violation conflates two questions — does this codebase have accessibility problems, and did this specific change make anything worse. A check that can't tell those apart gets disabled or configured so loosely it stops catching real regressions.",
+        "staff": "This is the same shape as any linter introduced retroactively onto a large codebase — a check that starts red on day one and can't distinguish pre-existing debt from new regressions gets disabled, not fixed."
       },
       {
         "chapter": "concept",
         "junior": "The fix is a baseline. Run axe once, save what it finds as known issues, and from then on only fail the build on a violation that isn't already in that baseline.",
-        "mid": "",
-        "staff": ""
+        "mid": "A baseline entry is the rule id plus the CSS selector, not just the rule id alone, so fixing one instance of a violation doesn't accidentally un-baseline every other instance of that same rule elsewhere on the page.",
+        "staff": "This is deliberately not the same as disabling a rule entirely — that turns it off everywhere, including new code the PR adds, so a brand-new failure would pass silently. The baseline only allowlists specific, already-known pairs."
       },
       {
         "chapter": "demo",
         "junior": "Try running axe in CI under each policy, and then simulate a new violation in baseline mode to see it still gets caught.",
-        "mid": "",
-        "staff": ""
+        "mid": "In baseline mode, simulating a new violation adds one that isn't in the baseline and reruns the check — it still catches the regression instead of just going green forever.",
+        "staff": "The baseline is keyed by rule id plus selector, not just the rule id — that's what lets it catch a brand-new failure on a different element while still ignoring the tracked one."
       },
       {
         "chapter": "takeaway",
         "junior": "Fail on any violation gets disabled fast. Baseline the known issues, fail only on new ones, and track the baseline size so it shrinks instead of growing quietly.",
-        "mid": "",
-        "staff": ""
+        "mid": "Record a baseline of known violations, then diff future runs against it — fail CI only on violations a PR actually introduces.",
+        "staff": "Allowlist specific instances, not whole rules, and track the baseline's size on a dashboard so it burns down instead of quietly growing."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try fail-on-any", "target": "[data-demo-state=broken]" },
-        { "label": "Try baseline diff", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try fail-on-any",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try baseline diff",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle fail-on-any", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle baseline diff", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle fail-on-any",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle baseline diff",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Fail-on-any state", "target": "[data-demo-state=broken]" },
-        { "label": "Baseline diff state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Fail-on-any state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Baseline diff state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

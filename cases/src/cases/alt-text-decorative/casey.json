@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Today's case is about alt text — specifically two images on the same page that were both wrong about their alt attribute, in exactly opposite directions.",
-        "mid": "",
-        "staff": ""
+        "mid": "alt=\"\" and a missing alt attribute look interchangeable in review, but they tell a screen reader opposite things.",
+        "staff": "Two independent authoring paths — a CMS default and a component with no alt prop wired up — converge on the same screenshot and diverge completely in the accessibility tree."
       },
       {
         "chapter": "concept",
         "junior": "There are three states for an image's alt attribute: a real description that gets read aloud, an empty alt that tells the screen reader to skip it on purpose, and a missing attribute entirely, which often makes the screen reader fall back to reading the filename.",
-        "mid": "",
-        "staff": ""
+        "mid": "Ask one question: does this image convey information the surrounding text doesn't already say? Yes, write real alt text. No, mark it alt=\"\" on purpose. Never leave it off.",
+        "staff": "alt=\"\" is a deliberate instruction to remove the image from the accessibility tree — a missing attribute leaves nothing to work from, so it falls back to reading the filename."
       },
       {
         "chapter": "demo",
         "junior": "Try running the simulated screen reader pass in each mode and listen to what actually gets announced for each image.",
-        "mid": "",
-        "staff": ""
+        "mid": "The broken banner announces a raw filename while the real chart goes silent — the fix reverses both at once.",
+        "staff": "Missing alt and wrongly-decorative alt are the same root mistake pointed in opposite directions, which is why fixing one image here touches both."
       },
       {
         "chapter": "takeaway",
         "junior": "An empty alt and a missing alt attribute are not the same thing. Ask whether the image conveys information the text around it doesn't already say — if yes, describe it, if no, mark it empty on purpose.",
-        "mid": "",
-        "staff": ""
+        "mid": "Audit for missing alt attributes and blanket CMS-default empty alt separately — they hide opposite problems and neither shows up in a visual review.",
+        "staff": "Neither failure shows up in a visual review, because both render nothing visible — audit the accessibility tree, not the screenshot."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

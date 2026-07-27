@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a useEffect that seemed to run twice for no reason — spoiler, it's on purpose, React Strict Mode does this deliberately in development.",
-        "mid": "",
-        "staff": ""
+        "mid": "In development, Strict Mode intentionally mounts, cleans up, and re-mounts every component once — every effect runs, its cleanup runs, then it runs again. This never happens in production.",
+        "staff": "Strict Mode's double-invoke is rehearsing a real scenario your effect will eventually hit anyway — a future React feature that unmounts and remounts a component while reusing its state."
       },
       {
         "chapter": "concept",
         "junior": "The real fix isn't stopping the double run — it's writing a cleanup function that actually undoes whatever the effect set up, so running it twice is perfectly safe.",
-        "mid": "",
-        "staff": ""
+        "mid": "An effect whose cleanup exactly reverses its setup behaves identically whether it runs once or twice — the double-invoke only exposes bugs in effects that were never safe to run more than once.",
+        "staff": "This generalizes beyond subscriptions — any effect with a partial cleanup, one that doesn't cancel an in-flight request or unregister every listener it registered, is a latent production bug even if double-invoke never happened."
       },
       {
         "chapter": "demo",
         "junior": "Compare two versions of the same effect — only one of them has a cleanup function that actually reverses the subscription it created.",
-        "mid": "",
-        "staff": ""
+        "mid": "The comparison is static, since the actual failure only shows up over the mount, cleanup, mount sequence Strict Mode runs, not within a single render.",
+        "staff": "Trace what happens to the subscription count under the double-invoke for each version — the broken one ends with two active subscriptions, the fixed one ends with exactly one."
       },
       {
         "chapter": "takeaway",
         "junior": "Strict Mode's double-invoke is a diagnostic, not the bug. Fix the missing cleanup, don't silence the warning.",
-        "mid": "",
-        "staff": ""
+        "mid": "The fix is never stopping it from running twice — it's writing a cleanup function that fully reverses whatever the effect's setup did.",
+        "staff": "A ref-flag workaround that skips the second invocation only hides the symptom in dev — the same bug resurfaces in production the moment the component genuinely remounts."
       }
     ]
   },
@@ -60,28 +60,55 @@
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

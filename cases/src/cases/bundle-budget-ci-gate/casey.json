@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a bundle-size budget that only lived in a doc, and grew from 180 kilobytes to 340 kilobytes without a single PR looking like the one that broke it.",
-        "mid": "",
-        "staff": ""
+        "mid": "Every PR that adds three to eight kilobytes looks reasonable in isolation — no reviewer has the context to say that's the fifteenth small addition this quarter.",
+        "staff": "A documented budget with no automated check has zero cost to violate, so it converges to the largest size nobody complained about yet, not the number the team actually agreed on."
       },
       {
         "chapter": "concept",
         "junior": "The fix is making the budget a real CI check, using something like size-limit, so it fails the pull request the moment your build goes over.",
-        "mid": "",
-        "staff": ""
+        "mid": "The budget config lives in the repo next to the code — when a PR crosses it, the CI check goes red with the exact size delta, right at the PR that caused it.",
+        "staff": "This turns a social problem, remembering to check or challenging someone's PR on size, into a mechanical one — raising the budget still requires a deliberate, visible diff to the budget file itself."
       },
       {
         "chapter": "demo",
         "junior": "Compare a budget that only exists in a wiki page against one wired into CI, and see which one actually catches the regression.",
-        "mid": "",
-        "staff": ""
+        "mid": "The CI-gated version fails loudly at the exact PR that crossed the line, with the size delta right there in the check.",
+        "staff": "The tool was never missing — it existed in a document nobody's CI actually read."
       },
       {
         "chapter": "takeaway",
         "junior": "A documented budget is a wish. A CI-enforced budget is a gate. Only one of them actually holds.",
-        "mid": "",
-        "staff": ""
+        "mid": "Track every meaningful entry point on compressed size, and require a deliberate, reviewed change to the budget file to raise the limit — never a silent one.",
+        "staff": "Raising the budget should always be a visible, reviewed diff to the budget file, never a silent drift."
       }
     ]
   },

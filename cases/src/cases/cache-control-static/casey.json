@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a static file that never changes name between deploys, so browsers end up re-downloading it constantly, or worse, serving a stale copy after you ship a fix.",
-        "mid": "",
-        "staff": ""
+        "mid": "A same-named asset with a short or default cache lifetime forces a permanent tradeoff — cache too long and a real deploy goes unnoticed, cache too short and you're re-serving the same bytes for nothing.",
+        "staff": "Content-hashed filenames dissolve the tradeoff entirely — cache lifetime and correctness become independent variables instead of one knob you have to compromise on."
       },
       {
         "chapter": "concept",
         "junior": "The fix is to bake a content hash into the filename, so the URL itself changes the moment the file does, and cache that URL forever with no risk.",
-        "mid": "",
-        "staff": ""
+        "mid": "Cache-Control: public, max-age=31536000, immutable on a content-hashed asset is safe specifically because the URL is a function of the content — the HTML that references it is what actually changes on deploy.",
+        "staff": "The HTML document and its hashed assets need opposite caching policies — the HTML is the mutable pointer revalidated on every request, while everything it points to is immutable and cached for a year."
       },
       {
         "chapter": "demo",
         "junior": "Try the short-lived cache mode first, then switch to hashed and immutable, and watch how many requests actually go out on the repeat visits.",
-        "mid": "",
-        "staff": ""
+        "mid": "The fixed mode caches the hashed URL for the full session and only re-fetches once the hash itself changes.",
+        "staff": "The broken mode is stale for the entire cache window even after a real deploy — not just slow, actually wrong content served with a 200 from cache."
       },
       {
         "chapter": "takeaway",
         "junior": "Hash your asset filenames, cache them forever, and keep the HTML that points to them on a short lifetime so it always finds the latest hash.",
-        "mid": "",
-        "staff": ""
+        "mid": "Cache hashed assets forever with immutable, and keep the HTML that references them on a short or no-cache lifetime so it always picks up the new hash.",
+        "staff": "A service worker's own cache lifecycle doesn't inherit HTTP Cache-Control semantics — apply the same short-pointer, long-payload discipline to it deliberately."
       }
     ]
   },

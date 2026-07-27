@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a bundle that grew by 170 kilobytes after a merge, and nobody could tell from the code which import caused it.",
-        "mid": "",
-        "staff": ""
+        "mid": "A single gzipped-size number is a symptom, not a diagnosis — it tells you the bundle grew, not which dependency grew it or whether it's pulling in far more than the one function you imported.",
+        "staff": "This is the same class of problem as a memory leak — the fix requires switching from \"what's the number\" to \"what's inside the thing producing the number.\""
       },
       {
         "chapter": "concept",
         "junior": "The fix is a bundle analyzer treemap: every module gets drawn as a box sized by how many bytes it actually takes up, so the oversized one is just visually obvious.",
-        "mid": "",
-        "staff": ""
+        "mid": "Compare two treemaps, before and after the regression, and look for the box that appeared or grew — it's very often a dependency imported more broadly than intended, not your own code.",
+        "staff": "Toggle the analyzer's size mode between stat, parsed, and gzip — a module can look large in source but compress away almost entirely, or the reverse, and which mode you should trust depends on what you're actually optimizing for."
       },
       {
         "chapter": "demo",
         "junior": "Toggle between a raw size number and the treemap, then click through the boxes to find which one is actually huge.",
-        "mid": "",
-        "staff": ""
+        "mid": "Box area is proportional to gzipped size in this demo, same convention real analyzers use — the dominant box is visually obvious before you even click it.",
+        "staff": "In a real analyzer, hovering shows the module's full resolved path — useful for telling two same-named files in different dependency trees apart."
       },
       {
         "chapter": "takeaway",
         "junior": "A total size number can't tell you what's inside it. Open the treemap, look for the biggest box, and click it before you guess.",
-        "mid": "",
-        "staff": ""
+        "mid": "Compare before and after treemaps and look for the box that grew — it's very often a dependency imported more broadly than intended.",
+        "staff": "Automate the diagnosis you did by hand once — a CI check that diffs the top modules by size against main catches the next regression before merge."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

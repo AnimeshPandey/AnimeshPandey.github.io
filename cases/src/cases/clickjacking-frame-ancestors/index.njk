@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "frame-ancestors and Clickjacking"
+description: "A page with no framing defense can be embedded invisibly on an attacker's site, tricking users into clicking real controls they never saw — Content-Security-Policy: frame-ancestors 'self' stops the browser from loading the frame at all."
+slug: clickjacking-frame-ancestors
+track: security
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Headers
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/clickjacking-frame-ancestors-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>A page you never meant to be clickable, embedded invisibly elsewhere</h2>
+  <div class="tone-junior">
+    <p>
+      A page with no defense against being framed can be embedded inside a nearly-invisible <code>&lt;iframe&gt;</code> on an attacker's site. The attacker layers their own decoy content underneath it, a big "Claim your free prize" button, say, directly beneath the real, transparent frame. The user sees the decoy and thinks they're clicking it; the click actually lands on the real page's button on top, one they never saw and never meant to press.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This works because a browser delivers a click event to whatever element is topmost at that screen coordinate at the moment of the click, regardless of what's visible to the human eye. An attacker exploits that by making the sensitive target frame nearly transparent and stacking it above their own decoy UI, so what the user perceives, the decoy, and what actually receives the click, the hidden frame, are two different elements occupying the same pixels.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a framing problem, not a same-origin-policy problem, which matters for reasoning about it correctly: clickjacking doesn't read or steal any data across origins, the attacker never sees the framed page's content. They misdirect a real, authenticated click the victim's own browser is willing to send, cookies and session included, to a page the victim is already logged into. That's exactly why it's dangerous for any state-changing action reachable with a single click while logged in: a "delete account" button, a funds-transfer confirmation, a permission grant.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>frame-ancestors 'self': tell the browser who's allowed to frame you</h2>
+  <div class="tone-junior">
+    <p>
+      The fix is a response header the target page sends: <code>Content-Security-Policy: frame-ancestors 'self'</code>. It tells the browser "only pages on my own origin may embed me in a frame." If any other site tries to put the page in an iframe, the browser simply refuses to load it there, the frame stays empty, and the whole attack has nothing to click through to.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>frame-ancestors</code> is the modern successor to the older <code>X-Frame-Options</code> header. Where X-Frame-Options only supports two meaningful values, <code>DENY</code> (nobody can frame this) and <code>SAMEORIGIN</code> (only the same origin can), <code>frame-ancestors</code> accepts a real source list: multiple specific origins, wildcarded subdomains, <code>'self'</code>, or <code>'none'</code>. A page that legitimately needs to be embedded by a handful of trusted partner domains can allow exactly those, something X-Frame-Options has no syntax for at all.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Both headers are worth sending together in practice: <code>frame-ancestors</code> for the browsers that support CSP Level 2, effectively all current ones, and <code>X-Frame-Options</code> as a defense-in-depth fallback for anything older or for tooling that only checks the legacy header. It's also worth remembering <code>frame-ancestors</code> doesn't fall back to a page's <code>default-src</code> directive the way most other CSP directives do, a policy of <code>default-src 'none'</code> alone still allows framing by anyone unless <code>frame-ancestors</code> is set explicitly.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>One missing header, one silent click away from disabled 2FA</h2>
+  <div class="tone-junior">
+    <p>
+      A security review flagged that a SaaS product's account-settings page, including its "Disable two-factor authentication" button, had no clickjacking defense at all. A researcher built a simple proof-of-concept: an iframe of the real settings page, opacity near zero, positioned exactly over a decoy "Continue to free trial" button on a throwaway page they controlled. Anyone logged into the real product who visited the decoy page and clicked "Continue" would silently disable their own 2FA.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The fix was a single header, added at the CDN and edge layer so every response from the app, not just specific routes, carried <code>Content-Security-Policy: frame-ancestors 'self'</code>. No application code changed, the button, the page, the session logic were all fine, the missing piece was entirely a response header telling browsers the page wasn't meant to be embedded anywhere else.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team also kept <code>X-Frame-Options: SAMEORIGIN</code> alongside it rather than removing it, not because <code>frame-ancestors</code> doesn't work, but because a small percentage of their traffic came through embedded corporate proxies and older WebView-based internal tools whose CSP support was inconsistent enough that the team didn't want to bet the fix on CSP alone. Belt-and-suspenders cost one extra header line and gave real coverage for the long tail.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A transparent frame stacked over a decoy button lets a click meant for the decoy land on a hidden real control (broken) vs. frame-ancestors 'self' makes the browser refuse to load the frame at all, so there's nothing to click through to (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Click the decoy and see what actually receives it</h2>
+  <div class="tone-junior">
+    <p>A decoy button sits at the bottom of a stack. Check "Reveal hidden layer" to see what's really on top of it in each mode, then click the button and watch what happens.</p>
+  </div>
+  <div class="tone-mid">
+    <p>In the vulnerable mode, the topmost element receiving your click is a real, nearly-invisible control, not the decoy you can see. In the protected mode, the frame refused to load at all, so your click falls straight through to the harmless decoy underneath.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This is simulated locally, no real cross-origin iframe is involved, but the layering, opacity, and click-target mechanics are the same ones a real attacker's page relies on.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A simulated decoy button with a hidden real control stacked on top, comparing an unprotected page where the hidden control receives the click against a page sending frame-ancestors 'self' where the frame fails to load and the click falls through to the decoy"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="clickjacking-frame-ancestors">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a decoy button with a hidden real control stacked on top of it, comparing an unprotected page where the hidden control receives the click against a page sending frame-ancestors 'self' where the frame fails to load and the click falls through to the decoy; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No frame-ancestors
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            frame-ancestors 'self'
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: frame-ancestors 'self'</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>frame-ancestors doesn't fall back to default-src</h2>
+  <div class="tone-junior">
+    <p>
+      A CSP with <code>default-src 'none'</code> might look maximally locked-down, but <code>frame-ancestors</code> is one of the few directives that doesn't inherit from <code>default-src</code>. A page still needs to set <code>frame-ancestors</code> explicitly even if every other directive is already restrictive.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A separate, complementary defense is <code>Set-Cookie: ... SameSite=Lax</code> (or <code>Strict</code>) on session cookies, which stops the browser from sending authentication cookies on many cross-site framed requests, so a hidden iframe wouldn't be logged in to hijack in the first place even if a page somehow lacked <code>frame-ancestors</code>. Layering both is standard practice, neither alone covers every path.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Worth testing the header actually took effect rather than assuming a deploy applied it. DevTools' Network tab shows response headers per request, and a quick manual test, try framing the page from a scratch HTML file on a different origin, confirm the browser console shows the "Refused to display" message, catches the common failure mode where the header got set on the main HTML document response but not on an API or SSR edge case that also renders sensitive UI.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A page with no framing defense can be embedded invisibly on an attacker's site, tricking users into clicking real controls they never saw — sending Content-Security-Policy: frame-ancestors 'self' stops the browser from loading the frame at all.</div>
+        <div class="tone-mid">frame-ancestors is the modern replacement for X-Frame-Options, supporting a real list of allowed origins, including wildcards, instead of just DENY or SAMEORIGIN — send both together for defense in depth on older clients.</div>
+        <div class="tone-staff">frame-ancestors doesn't inherit from default-src so it needs to be set explicitly, and it's worth pairing with SameSite cookies as an independent second layer, then verifying the header actually landed on every route that renders sensitive UI, not just the main page.</div>
+      </li>
+    </ul>
+  </div>
+</section>

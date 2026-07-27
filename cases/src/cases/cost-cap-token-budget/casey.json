@@ -33,26 +33,26 @@
       {
         "chapter": "hook",
         "junior": "Hey! Today's case is about a support agent that retried a broken tool call over and over, for twenty minutes, with absolutely no cost signal visible anywhere.",
-        "mid": "",
-        "staff": ""
+        "mid": "Every retry re-sent the conversation so far, including previous failed attempts and their errors, so each retry's cost was larger than the last with no cost signal visible anywhere.",
+        "staff": "This isn't a model-cost problem, it's a missing-feedback-loop problem — every other metered resource in a product gets a visible running total, but token spend on an agent loop usually doesn't."
       },
       {
         "chapter": "concept",
         "junior": "The fix is three things: track cost per session as it happens, show that number somewhere in the UI, and set a hard cap that does something automatic once it's hit, instead of just running forever.",
-        "mid": "",
-        "staff": ""
+        "mid": "At a warning threshold, switch to a cheaper model for the rest of the conversation; at the hard cap, stop making tool calls and tell the user, rather than a silent continue or a raw crash.",
+        "staff": "Scope the budget to a session, not a global daily total — a global cap just delays the same failure and blocks every user at once, while a per-session cap contains a single runaway loop."
       },
       {
         "chapter": "demo",
         "junior": "Run the same retry loop in both modes and see the difference: one shows you nothing, the other shows a live meter, downgrades the model, and eventually stops itself.",
-        "mid": "",
-        "staff": ""
+        "mid": "The broken mode has no meter and no cap, so the loop keeps running and getting more expensive per retry. The fixed mode shows the running cost and swaps to a cheaper model at the warning threshold.",
+        "staff": "The per-retry cost still grows in both modes — the fixed mode doesn't stop that growth, it just makes it visible and bounded instead of invisible."
       },
       {
         "chapter": "takeaway",
         "junior": "If an agent can retry itself, it can retry itself into a huge bill. Give it a visible running cost and a hard stop, so a bug becomes an annoyance instead of an invoice surprise.",
-        "mid": "",
-        "staff": ""
+        "mid": "Track cost per session live, surface it in the UI, and degrade gracefully — a cheaper model at the warning threshold, blocked calls at the hard cap.",
+        "staff": "Check the cap between individual tool calls, not full turns, and enforce it server-side — a UI meter alone is visibility, not a spend control."
       }
     ]
   },
@@ -60,43 +60,88 @@
     {
       "chapter": "demo",
       "junior": [
-        { "label": "Try broken", "target": "[data-demo-state=broken]" },
-        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "mid": [
-        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
-        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
       ],
       "staff": [
-        { "label": "Broken state", "target": "[data-demo-state=broken]" },
-        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
       ]
     },
     {
       "chapter": "hook",
       "junior": [
-        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "mid": [
-        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
       ],
       "staff": [
-        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
       ]
     },
     {
       "chapter": "takeaway",
       "junior": [
-        { "label": "Back to all cases", "href": "/cases/" },
-        { "label": "Reading library", "href": "/cases/library/" }
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
       ],
       "mid": [
-        { "label": "Hub", "href": "/cases/" },
-        { "label": "Library", "href": "/cases/library/" }
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
       ],
       "staff": [
-        { "label": "Case hub", "href": "/cases/" },
-        { "label": "War stories", "href": "/cases/library/" }
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
       ]
     }
   ]

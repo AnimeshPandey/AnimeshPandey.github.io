@@ -1,0 +1,103 @@
+{
+  "slug": "clickjacking-frame-ancestors",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The user sees a decoy button, but the click actually lands on a real, nearly-invisible control stacked on top of it.",
+      "mid": "A browser delivers a click to whatever's topmost at that pixel — an attacker exploits that gap between what's visible and what's actually there.",
+      "staff": "This isn't a same-origin-policy problem — the attacker never reads any data, they misdirect a real, authenticated click the victim's own browser is already willing to send."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Check \"Reveal hidden layer\" to see what's really stacked over the decoy in each mode, then click it and watch what happens.",
+      "mid": "In the vulnerable mode, the topmost element receiving your click isn't the decoy you see — in the protected mode, there's nothing there to receive it at all.",
+      "staff": "This is simulated locally with no real cross-origin iframe, but the layering, opacity, and click-target mechanics mirror a real attacker's page exactly."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Content-Security-Policy: frame-ancestors 'self' tells the browser only your own origin may embed this page — anyone else's frame just fails to load.",
+      "mid": "frame-ancestors accepts a real source list — specific origins, wildcarded subdomains, 'self', or 'none' — unlike X-Frame-Options' blunt DENY/SAMEORIGIN pair.",
+      "staff": "Send both headers together for defense in depth, and remember frame-ancestors doesn't fall back to default-src the way most other CSP directives do."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Even a maximally locked-down default-src 'none' policy still allows framing by anyone unless frame-ancestors is set explicitly.",
+      "mid": "SameSite cookies are a second, independent layer — they can stop authenticated cookies from riding along on a cross-site framed request in the first place.",
+      "staff": "Verify the header actually landed with a real cross-origin framing test — a common failure mode is setting it on the HTML document but missing an API or SSR edge case."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about clickjacking, where a page gets embedded invisibly inside another site so a click meant for a decoy lands on a real, hidden control instead.",
+        "mid": "A browser sends a click to whatever element is topmost at that exact point on screen, whether or not a person can actually see it there.",
+        "staff": "This isn't about stealing data across origins. It's about misdirecting a real, logged-in click the victim's own browser is already willing to send."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Sending one response header tells the browser only your own site is allowed to embed this page in a frame, so nobody else's frame will even load.",
+        "mid": "This header is the modern replacement for an older one that only supported two blunt options, deny everyone or allow only the same origin.",
+        "staff": "It's worth sending both the old and new headers together, and remembering the new one doesn't inherit from a page's other content security policy rules."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Try revealing the hidden layer in both modes to see what's actually stacked over the button you can see.",
+        "mid": "Notice that in the protected mode, your click falls straight through to the harmless decoy, because there's nothing else there to catch it.",
+        "staff": "Everything here runs locally with plain DOM elements, no real iframe or cross-origin request involved, only the mechanics are faithful."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Send the frame-ancestors header so the browser refuses to load your page inside anyone else's frame in the first place.",
+        "mid": "It replaces the older X-Frame-Options header with a real list of allowed origins, and sending both together covers older clients too.",
+        "staff": "Remember it doesn't inherit from your other policy rules, pair it with SameSite cookies, and actually verify it landed on every route that matters."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
