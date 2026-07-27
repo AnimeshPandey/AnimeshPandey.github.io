@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Playwright Trace on Failure"
+description: "Why a CI failure with only a text log is nearly impossible to debug, and how Playwright's trace viewer turns 'I have no idea why this failed' into 'I can see exactly which element wasn't there.'"
+slug: playwright-trace-debug
+track: testing-quality
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Debug
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/playwright-trace-debug-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>"Expected element to be visible" and nothing else</h2>
+  <div class="tone-junior">
+    <p>
+      A checkout E2E test failed in CI overnight. The log said: <code>TimeoutError: locator.click: Target closed</code>, then a stack trace pointing at line 47 of a test file. That's it. No screenshot, no idea what the page actually looked like, no way to tell if a modal was covering the button, if the button never rendered, or if the whole page had redirected somewhere else.
+    </p>
+    <p>
+      The engineer on call re-ran the test locally. It passed. They re-ran it five more times. It kept passing. Whatever broke it in CI wasn't reproducing on a laptop, and the only evidence that it ever happened was one line of text.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A bare error message tells you where the test's code was when it gave up, not what the browser was actually showing at that moment. Without a DOM snapshot, "target closed" is equally consistent with a crashed tab, a client-side redirect, an overlay stealing the click, or a genuinely slow render that just needed more time — four different root causes, one indistinguishable log line.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the same gap that makes flaky CI failures expensive out of proportion to how often they occur: each one costs a full re-run-and-guess cycle, and a fix that "seems to work" because the failure didn't reproduce, not because anyone found the actual cause. A test suite with no failure artifacts isn't giving you less debugging information by accident, it's giving you exactly what you configured it to keep, which by default is nothing beyond stdout.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Capture the whole timeline, not just the error line</h2>
+  <div class="tone-junior">
+    <p>
+      Playwright can record a "trace" for a test: a timeline of everything that happened, action by action. Turn it on with <code>trace: 'on-first-retry'</code> (or <code>'retain-on-failure'</code>) in your config, and any test that fails saves a <code>trace.zip</code> file as a CI artifact. Open it in the Trace Viewer and you get a DOM snapshot before and after every action, a screenshot filmstrip, the network requests, and the console output — all synced to a scrubbable timeline.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>on-first-retry</code> only records when a test is retried after failing once, so passing tests cost nothing and you're not storing gigabytes of traces for green runs. <code>retain-on-failure</code> records every test but deletes the trace for ones that pass, which costs more during the run but doesn't require retries to be enabled. Either way, the artifact you get back is a real reconstruction of the DOM at each step, not a video recording — you can inspect it, click through it, and see the exact locator that failed to resolve.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The DOM snapshots are the part that actually closes the debugging gap: a video shows you pixels, a trace shows you the accessibility tree and computed state at the moment of failure, so you can right-click an element in the viewer and jump straight to "why didn't this locator match." Traces also capture <code>expect</code> assertion diffs and source-mapped stack frames, so a failure two network calls deep in a page object still resolves to a specific line in your test file, not just "somewhere in the click chain."
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The checkout test that failed once a week for a month</h2>
+  <div class="tone-junior">
+    <p>
+      A team's checkout flow test failed intermittently in CI — maybe once a week, never locally. Each time, the fix was the same: look at the one-line error, shrug, re-run the job, watch it pass, move on. Nobody actually knew what was happening on the eighth run of the week that didn't happen on the other seven.
+    </p>
+    <p>
+      They turned on <code>trace: 'on-first-retry'</code>. The next time it failed, they downloaded the trace artifact from the CI run and opened it. The DOM snapshot at the moment of failure showed a cookie-consent banner sitting directly on top of the "Place order" button — a banner that only appeared for the small fraction of CI runs where a third-party consent script loaded slowly.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      That's a root cause a text error can never surface: <code>locator.click: Target closed</code> and "an invisible banner is eating the click" produce the exact same log line. The trace's screenshot filmstrip showed the banner sliding in two frames before the click attempt, and the network tab showed the third-party script's request taking 340ms longer than usual on that specific run — slow enough to lose the race.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The actual fix was to wait for the consent banner's dismiss button (or its absence) before interacting with checkout, instead of trusting that the page was "loaded" once the order button existed in the DOM. Without the trace, this would have stayed a re-run-until-green flake indefinitely, because the local repro rate was close to zero — the timing race only lost often enough to matter under CI's specific load and network conditions, not on a warm laptop.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A bare CI error log with no context (broken) vs. a full trace with DOM snapshots, screenshots, network and console synced to a timeline (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Debug the same failure two ways</h2>
+  <div class="tone-junior">
+    <p>Click through both modes. Both represent debugging the exact same failed test — notice how much you can actually figure out in each one.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken mode is what you get with no trace: one error line, guesswork from there. The fixed mode is a simplified trace viewer showing the DOM snapshot, screenshot, and network entry at the point of failure.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the fixed mode doesn't just show more data, it shows the <em>overlay element</em> that was never in the error message at all — that's the actual root cause, and it was only ever visible in a DOM snapshot, never in stdout.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Debugging a failed checkout test: bare error log (broken) vs. Playwright trace viewer with DOM snapshot, screenshot, and network (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="playwright-trace-debug">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares debugging a failed Playwright test from a bare CI log against debugging the same failure with a full trace; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Bare CI log
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Trace viewer
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Trace viewer</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Traces are an artifact-storage decision too</h2>
+  <div class="tone-junior">
+    <p>
+      Traces have to actually leave the CI runner to be useful — upload the <code>trace.zip</code> as a build artifact in your CI config, and link it from the failed job's summary so nobody has to go spelunking through logs to find it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>on-first-retry</code> needs at least one retry configured (<code>retries: 1</code> or more) to ever fire — a common gotcha is turning on tracing and seeing no traces show up, because retries are still at the default of 0. <code>retain-on-failure</code> doesn't have that dependency, at the cost of recording (and then discarding) a trace for every passing test too.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Trace files aren't small — a busy suite can produce gigabytes of them across a CI run, so most teams set a retention policy (days, not indefinitely) and upload only the traces for actually-failed tests rather than every retry attempt. It's also worth recording traces for tests you're actively trying to de-flake even when they're not failing outright, via <code>trace: 'on'</code> temporarily scoped to that one file — you get the full timeline for a test that's merely slow or borderline, not just one that hard-fails.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A bare CI error log tells you where the test gave up, not what the page actually looked like — turn on Playwright's trace so the next flaky failure comes with a real timeline instead of a guess.</div>
+        <div class="tone-mid">Use <code>trace: 'on-first-retry'</code> (needs retries enabled) or <code>'retain-on-failure'</code> so failed tests save a full DOM/network/console timeline as a CI artifact, at effectively no cost to passing runs.</div>
+        <div class="tone-staff">The DOM snapshots are what close the debugging gap a video can't — they let you find the actual overlay/timing/race root cause, not just watch pixels. Budget for trace storage and upload them as linked CI artifacts, or the capability is invisible when it matters most.</div>
+      </li>
+    </ul>
+  </div>
+</section>

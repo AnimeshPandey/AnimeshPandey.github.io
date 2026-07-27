@@ -1,0 +1,148 @@
+{
+  "slug": "dark-mode-tokens",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A pricing card three components deep stayed white-on-white in dark mode — the override that would've fixed it targeted a different class name.",
+      "mid": "40-plus dark-mode override rules scattered across a dozen files, and nobody could say for sure they covered every component.",
+      "staff": "The real defect was treating color as a per-component detail instead of a themeable value with one source of truth — that burden compounds with every component and every theme."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle dark mode, then add a card in each panel — watch what happens to the new card's colors.",
+      "mid": "Broken mode's new card ships hardcoded and needs its own override. Token mode's new card already themes correctly with zero extra code.",
+      "staff": "Broken mode's override count grows with every component added. Token mode's stays flat at 'redefine 5 tokens once.'"
+    },
+    {
+      "chapter": "concept",
+      "junior": "Name the color by what it's for, not what it looks like — --color-surface instead of a hex value — then redefine it once per theme at the root.",
+      "mid": "Every component references the token, never a raw value, so a theme is just a different value block for the same token names.",
+      "staff": "This moves the theming decision from 'asked separately for every component' to 'asked once at the root' — the same cascade mechanism that already scales CSS, applied to color."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Name tokens by role (--color-surface), not appearance (--color-gray-100) — a role survives a theme changing what it looks like.",
+      "mid": "A two-layer system — primitive values aliased to semantic roles — lets a theme remap which primitive backs a token without renaming what components depend on.",
+      "staff": "A component reading a token via getComputedStyle in JS needs to re-read it on theme change — JS doesn't get cascade updates the way CSS declarations do."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "A team added dark mode the fast way, component by component, override by override. Three weeks in, a pricing card buried a few levels deep was still white on white, because the override that would've caught it targeted a totally different class name.",
+        "mid": "By then there were over 40 dark-mode override rules scattered across a dozen files, and nobody could say with confidence they actually covered every component.",
+        "staff": "The real problem wasn't the missing override, it was treating color as a per-component detail instead of a themeable value with one source of truth."
+      },
+      {
+        "chapter": "concept",
+        "junior": "A design token names what a color is for, not what it looks like — surface instead of white, ink instead of near-black. Components reference the token, and a theme just redefines it once at the root.",
+        "mid": "Switching themes becomes swapping which value block is active. Every component that already referenced the token updates automatically, with zero component code changed.",
+        "staff": "This flips where the theming decision lives — instead of asking 'what should this look like in dark mode' once per component, you ask it exactly once, at the root, and the cascade does the rest."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Toggle dark mode in each panel, then add a new card, and watch what happens to its colors.",
+        "mid": "The hardcoded panel's new card needs its own override to look right. The token panel's new card already themes correctly, no extra code at all.",
+        "staff": "Notice the cost curve — the override panel grows with every component you add, the token panel stays flat no matter how many components exist."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Hardcoded colors plus reactive overrides never stop growing. Name colors by role and redefine them once per theme instead.",
+        "mid": "Reference the token everywhere, redefine the token set once at the root per theme, and components need zero changes to support a new one.",
+        "staff": "A two-layer token system scales further, but the real win is structural — the theming decision moves from per-component to once, at the root."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

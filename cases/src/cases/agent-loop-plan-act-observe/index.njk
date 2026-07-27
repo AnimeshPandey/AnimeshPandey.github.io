@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Plan → Act → Observe Loops"
+description: "Why an agent that calls the model once and executes whatever it says can't recover from an unexpected result, and how a plan/act/observe loop that feeds the real outcome back in lets it actually adapt mid-task."
+slug: agent-loop-plan-act-observe
+track: agent-architecture
+readMin: 10
+flagship: false
+demoType: animation
+principle: Agent loop
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/agent-loop-plan-act-observe-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The agent that restarted the wrong service and called it done</h2>
+  <div class="tone-junior">
+    <p>
+      A team built an ops assistant: describe a problem, the model picks a remediation command, the backend runs it. Someone typed "the payments service is down, restart it." The model replied with a shell command to restart a service — a real one, just the wrong one, because two services shared a similar name and the prompt didn't disambiguate which environment.
+    </p>
+    <p>
+      The backend ran the command exactly as returned, saw the process restart cleanly, and reported "Done — payments service restarted." Payments was still down. The agent had no way to know that, because nothing in its design ever checked.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The agent called the model exactly once and executed exactly what came back, with no step that compared "what actually happened" against "what the task needed." Command succeeded — that's what it verified. Command solved the problem — that's what it never checked, and structurally couldn't, because there was no second model call to look at the result and decide whether to continue.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the ceiling every single-shot agent design hits eventually: it can only be as good as its first guess, because there's no mechanism to notice the first guess was wrong. Multi-step tasks and real-world tool output are both inherently uncertain — a single forward pass through the model treats that uncertainty as if it didn't exist, and the failure mode isn't "the agent makes mistakes," every agent does, it's "the agent has no way to find out it made one."
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Decide, act, look at what actually happened, repeat</h2>
+  <div class="tone-junior">
+    <p>
+      A plan/act/observe loop breaks a task into a repeating cycle instead of one shot: <strong>plan</strong> — decide the next single action toward the goal; <strong>act</strong> — actually execute it (run the command, call the tool, make the API request); <strong>observe</strong> — look at the real result and feed it back to the model. Then repeat from plan, using that real result as new context, until the model itself decides the task is actually done.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The observe step is what makes this a loop instead of a longer single-shot: the model's next planning step sees the actual output of the previous action, not just its own prediction of what that output would be. If restarting the payments service produces "service still unhealthy: wrong container," that string goes back into the model's context, and the next planning step can react to it — target the correct container, ask a clarifying question, or escalate — instead of the outer system reporting success because a command merely executed without erroring.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the same structure as the classic ReAct (reason + act) pattern, and it's what "agent loop" means concretely in most current agent frameworks: a runner that keeps calling the model with accumulated context, executing whatever tool calls come back, and re-invoking the model with the tool results appended, until a turn produces a final answer with no further tool calls. The loop's termination condition matters as much as its iteration: it should end on the model's own judgment that the goal state is reached, verified against real observations, not on a fixed step count or the mere absence of a thrown exception.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The deploy bot that noticed its own mistake</h2>
+  <div class="tone-junior">
+    <p>
+      A different team's deploy assistant used a plan/act/observe loop from the start. Asked to "roll back the checkout service to the last known-good version," it planned a first action: fetch the deployment history. It acted — actually called the deploy API. It observed the real response: a list of the last five deployments, tagged with health status.
+    </p>
+    <p>
+      It planned again, now with that real data in context: the most recent deployment before the current one was itself marked unhealthy, so "the last known-good version" wasn't simply "one step back" — it was three deployments back. It acted on the corrected plan, rolled back to the actually-healthy version, then observed the rollback's own result to confirm the service came back healthy before reporting done.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A single-shot version of this same assistant would have had to guess "one step back" from its training assumptions about what "last known-good" usually means, with no way to check that guess against this specific deployment history — because it never called an API to see the real history before acting. The loop's second planning step is the entire reason the agent could get this right: it had real data to reason from that didn't exist yet at the first planning step.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Notice the loop also naturally produces an audit trail for free: every plan/act/observe cycle is a discrete, loggable event — what the model decided, what actually executed, what actually came back — which is exactly the evidence you need afterward to answer "why did the agent do that" for a production incident. A single-shot agent's failure leaves you with one input and one output; a looped agent's failure leaves you with a full decision trace.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">One model call, execute blindly, report done (broken) vs. a cycling plan → act → observe loop that replans on the real result (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch the loop actually run</h2>
+  <div class="tone-junior">
+    <p>Watch both modes handle the same "restart the payments service" task. One stops after a single pass; the other keeps cycling and correcting itself.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken mode makes one plan, acts on it, and reports done without ever checking the real result. The fixed mode's dot keeps moving through plan → act → observe, replanning once it sees the observation doesn't match the goal.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Watch specifically for the second "plan" phase in the fixed mode — that's the model reasoning over real tool output it didn't have at the first plan, which is the entire mechanism the broken mode structurally lacks.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Agent execution as a single unchecked model call (broken) vs. a continuously cycling plan, act, observe loop that replans on real results (fixed)"
+           data-required="true"
+           data-demo-type="animation"
+           data-demo-slug="agent-loop-plan-act-observe">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo animates a single unchecked agent call against a continuously cycling plan/act/observe loop; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Single-shot call
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Plan → act → observe
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Plan → act → observe</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Loops need a way to stop, and a way to be watched</h2>
+  <div class="tone-junior">
+    <p>
+      A loop that can replan also needs a hard iteration cap — without one, an agent stuck between "act" and "observe" a wrong result can cycle indefinitely, retrying variations of the same failing action instead of ever surfacing that it's stuck.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Surface the loop's state in the UI as it runs, not just its final answer — a live "currently: observing tool result" indicator turns a black-box multi-second wait into a legible process, and it's the same UI investment that makes a stuck loop visible as "stuck," rather than indistinguishable from a slow one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Decide up front how much of each cycle's raw content gets appended back into context indefinitely — a naive loop that concatenates every full tool response into a growing message history will blow through a context window on a long task; most production agent loops summarize or truncate older observations while keeping the most recent ones verbatim, which is a design decision with its own failure mode (losing an early detail that turns out to matter three iterations later) worth making deliberately rather than defaulting into.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">An agent that calls the model once and executes blindly can only be as right as its first guess — it has no way to notice a wrong one.</div>
+        <div class="tone-mid">Plan the next action, act on it for real, observe the actual result, and feed that observation back into the next plan — repeat until the model's own judgment says the goal is met.</div>
+        <div class="tone-staff">Cap the iteration count, surface the loop's live state in the UI, and decide deliberately how much raw observation content stays in context — a loop that can replan also needs a way to stop and a way to be watched.</div>
+      </li>
+    </ul>
+  </div>
+</section>

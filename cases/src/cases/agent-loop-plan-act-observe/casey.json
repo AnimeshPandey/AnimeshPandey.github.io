@@ -1,0 +1,148 @@
+{
+  "slug": "agent-loop-plan-act-observe",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The model picked the wrong service to restart, the backend ran it exactly as returned, and reported 'Done' — payments stayed down the whole time.",
+      "mid": "The agent verified the command succeeded, never whether it solved the problem — those are two different checks, and only the first one existed.",
+      "staff": "Every single-shot agent hits this same ceiling eventually: it can only be as good as its first guess, because nothing ever checks whether the guess was right."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Watch both modes handle the same task — one stops after a single pass, the other keeps cycling and correcting itself.",
+      "mid": "Broken mode plans once, acts once, reports done with no check. Fixed mode's dot keeps moving through plan, act, observe, and replans on what it actually sees.",
+      "staff": "Watch for the second plan phase in fixed mode — that's the model reasoning over real tool output the first plan never had access to."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Plan the next action, act on it for real, observe what actually happened, then repeat from plan using that real result.",
+      "mid": "The observe step is what makes it a loop instead of a longer single-shot — the next plan sees the actual tool output, not a prediction of it.",
+      "staff": "This is the ReAct structure most agent frameworks run today — keep calling the model with accumulated context and tool results until a turn produces a final answer with no more tool calls."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A loop that can replan also needs a hard iteration cap, or it can cycle indefinitely retrying variations of a failing action.",
+      "mid": "Surface the loop's live state in the UI as it runs — a 'currently observing' indicator turns a black-box wait into something legible, and makes 'stuck' visibly different from 'slow.'",
+      "staff": "Decide deliberately how much raw observation content stays in context — concatenating every full tool response forever blows through the context window on a long task."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "So an ops assistant was asked to restart the payments service, picked the wrong one because two services had similar names, ran the command, saw it succeed, and reported done — payments stayed down the entire time.",
+        "mid": "The agent verified the command succeeded, which is not the same thing as verifying it solved the problem, and there was no second check to catch the difference.",
+        "staff": "This is the ceiling every single-shot agent hits eventually — it can only be as good as its first guess, because there's no mechanism built in to notice a wrong one."
+      },
+      {
+        "chapter": "concept",
+        "junior": "A plan, act, observe loop breaks the task into a repeating cycle — decide the next action, actually do it, look at what really happened, then go plan again with that real result in hand.",
+        "mid": "The observe step is the whole trick — the next planning pass sees the actual tool output, not the model's own prediction of what that output would look like.",
+        "staff": "This is basically the ReAct pattern, and it's what agent loop means in most frameworks today — keep calling the model with the accumulated results until a turn comes back with no more tool calls."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Watch both modes work through the same restart-the-service task and see how differently they handle it.",
+        "mid": "The broken one plans once, acts once, and calls it done with no verification at all. The fixed one keeps cycling through plan, act, and observe, and corrects itself along the way.",
+        "staff": "Keep an eye on that second plan phase in the fixed mode — that's the model reasoning over real tool output that simply didn't exist yet at the first plan."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "An agent that calls the model once and just executes what comes back can only be as right as its first guess, with no way to catch a wrong one.",
+        "mid": "Plan, act for real, observe the actual result, feed it back in, and repeat until the model itself judges the goal is met.",
+        "staff": "Cap the iterations, surface the loop's state live, and be deliberate about how much raw observation stays in context — a loop that can replan also needs a way to stop."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

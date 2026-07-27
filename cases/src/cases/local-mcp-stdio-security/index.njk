@@ -1,0 +1,181 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Local MCP over stdio: Env and Secrets"
+description: "A local MCP server launched over stdio inherits the parent process's full environment by default — including secrets that have nothing to do with what the server actually needs. Scope the env explicitly instead."
+slug: local-mcp-stdio-security
+track: agent-architecture
+readMin: 10
+flagship: false
+demoType: code-only
+principle: Local agents
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/local-mcp-stdio-security-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The dev-tool MCP server that could read your cloud credentials</h2>
+  <div class="tone-junior">
+    <p>
+      A developer wired up a local MCP server for a code-formatting tool — nothing more than "read this file, format it, write it back." They launched it the easy way: spawn the server as a child process, pass it the same environment the terminal already had. It worked immediately, so nobody looked closer.
+    </p>
+    <p>
+      That same terminal session also had <code>AWS_SECRET_ACCESS_KEY</code> and a database connection string sitting in its environment, left over from an unrelated task earlier that day. The formatting server never asked for them, never used them — but nothing stopped it from reading <code>process.env.AWS_SECRET_ACCESS_KEY</code> if its code (or a compromised dependency inside it) ever did.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A child process launched without an explicit <code>env</code> option inherits the entire parent environment by default — that's how <code>child_process.spawn</code> (and equivalents in most languages) work, not an MCP-specific behavior. For a local MCP server, that means every environment variable in the developer's shell, unrelated secrets included, is available to a process whose actual job might be "format a file" or "list open GitHub issues."
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a least-privilege violation baked into the default plumbing, not a deliberate design choice anyone made — full inheritance is what happens when nobody scopes anything, because it's the path of least resistance for getting a local server running quickly. It's exactly the kind of gap that matters more for MCP servers than for typical child processes, because MCP servers are explicitly designed to be extended with third-party tools and dependencies a developer may not have fully audited.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Pass exactly the env vars the server actually needs, nothing else</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of handing a spawned MCP server the whole environment, build an explicit object with only the variables it actually needs — a formatting tool needs <code>PATH</code> to find its binaries, maybe nothing else; a server that calls a specific API needs that API's token and nothing about your cloud provider, your database, or any other service's secrets.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Concretely, that means constructing the <code>env</code> passed to the spawn call as an allowlist rather than a passthrough — copy in <code>PATH</code> and a small set of OS variables most processes need to start correctly (things like <code>HOME</code>), then add only the specific keys the server was actually built to consume. The official MCP TypeScript SDK's stdio client transport does exactly this by default via a curated <code>getDefaultEnvironment()</code> allowlist, rather than passing through the full parent environment — that default exists specifically to prevent the leak this case describes, so a hand-rolled spawn wrapper that skips it is opting back into the less-safe behavior.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Scoping is a blast-radius decision, not a correctness one — the formatting server was never going to misuse the AWS key under normal operation, but "normal operation" isn't the threat model. A supply-chain compromise in one of the server's own dependencies, a prompt-injected instruction that gets the agent to ask the tool to dump its environment, or simply a bug that logs <code>process.env</code> during a crash are all real vectors, and every one of them is neutralized by a secret that was never in the child process's environment to begin with, regardless of how the compromise happened.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The postmortem that found nothing, because there was nothing to find</h2>
+  <div class="tone-junior">
+    <p>
+      A different team ran a security review across their local dev tooling and found the same full-environment-inheritance pattern in three separate MCP servers — a linter, a git helper, and an internal API client. None had ever leaked anything. But none of them had ever been asked to prove they couldn't, either, and "no incident yet" isn't the same claim as "not exploitable."
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      They rewrote all three spawn configs to pass an explicit <code>env</code> object: the linter got <code>PATH</code> only, the git helper got <code>PATH</code> plus <code>GIT_SSH_COMMAND</code>, and the internal API client got <code>PATH</code> plus its one scoped API token — nothing else, deliberately including nothing about cloud credentials, database URLs, or any other service's secrets that happened to live in a developer's shell.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The real value showed up a month later, when the internal API client picked up a new third-party dependency that turned out to have a known vulnerability allowing arbitrary file reads within the process's own permissions. Because that process's environment held exactly one secret — its own scoped token — the actual exposure from the vulnerability was "attacker can read the API client's own token," not "attacker can read every secret that happened to be in the developer's terminal that day." Scoping the environment didn't prevent the vulnerability; it capped what the vulnerability could reach.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Spawning a local MCP server with the full parent environment inherited (broken) vs. an explicit allowlisted env object with only the variables the server actually needs (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Full inheritance vs. an explicit allowlist</h2>
+  <div class="tone-junior">
+    <p>Compare the two ways of launching the same local MCP server below — one hands over everything in the shell, one hands over exactly what the server declared it needs.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The broken version is the default you get from not specifying <code>env</code> at all, or explicitly passing <code>process.env</code> for convenience. The fixed version builds the <code>env</code> object from an explicit allowlist.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Note the fixed version's allowlist is the same shape as the MCP TypeScript SDK's own <code>getDefaultEnvironment()</code> — this isn't a novel pattern, it's what the SDK already does when you don't override it.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Spawning a local MCP server with full environment inheritance vs. an explicit allowlisted environment"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="local-mcp-stdio-security">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares spawning a local MCP server with full environment inheritance against an explicit allowlisted environment; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: the child process inherits the ENTIRE parent environment
+const child = spawn('node', ['format-server.js'], {
+  env: process.env, // AWS_SECRET_ACCESS_KEY, DATABASE_URL, everything — all of it
+});
+// format-server.js never asked for these, but nothing stops it from reading:
+console.log(process.env.AWS_SECRET_ACCESS_KEY); // defined, readable, unrelated to formatting
+
+// Fixed: build an explicit allowlist — only what this server actually needs
+const ALLOWED_ENV_KEYS = ['PATH', 'HOME']; // formatting needs a shell PATH, nothing else
+
+const scopedEnv = Object.fromEntries(
+  Object.entries(process.env).filter(([key]) => ALLOWED_ENV_KEYS.includes(key))
+);
+
+const child = spawn('node', ['format-server.js'], {
+  env: scopedEnv, // AWS_SECRET_ACCESS_KEY was never here to leak
+});
+console.log(process.env.AWS_SECRET_ACCESS_KEY); // undefined inside the child — not present, not readable</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The allowlist itself needs to be per-server, not global</h2>
+  <div class="tone-junior">
+    <p>
+      Don't build one shared "safe env" object and reuse it for every MCP server you spawn — a git helper genuinely needs <code>GIT_SSH_COMMAND</code>, a formatting tool doesn't, and giving every server the union of what any server might need quietly recreates the over-broad-inheritance problem one variable at a time.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      If a server's config format supports declaring its own required env keys (many MCP client configs do, alongside <code>command</code> and <code>args</code>), treat that declaration as the actual allowlist source, not documentation — deriving the runtime allowlist from the same declaration a human reads keeps the two from drifting apart the way a hand-maintained duplicate list eventually would.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This same reasoning extends past MCP: any local tool that spawns a subprocess with access to a broader environment than its stated job requires is making the same trade, whether it's a build tool, a linter, a git hook, or a language server. Treat "does this child process need <code>env: process.env</code>, or does it need three specific variables" as a question worth asking on every spawn call in a codebase, not a special case reserved for the MCP servers that happen to be labeled "agent tooling."
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A locally spawned MCP server gets your whole shell environment by default unless you explicitly limit it — including secrets that have nothing to do with what the server does.</div>
+        <div class="tone-mid">Build the <code>env</code> passed to the spawn call as an explicit allowlist of exactly the variables that server needs, the same way the MCP SDK's own <code>getDefaultEnvironment()</code> does by default.</div>
+        <div class="tone-staff">Scoping doesn't prevent a compromise, it caps the blast radius of one — a vulnerability in a scoped server can only leak what was actually in its environment, not everything that happened to be in the developer's shell that day.</div>
+      </li>
+    </ul>
+  </div>
+</section>
