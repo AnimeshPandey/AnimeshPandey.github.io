@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Storybook as Living Docs"
+description: "A markdown doc listing a component's props drifts the moment someone changes the component. A Storybook story that renders the real component with controls for its real props can't drift the same way — the docs are the running code."
+slug: component-storybook-docs
+track: testing-quality
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Docs
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/component-storybook-docs-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The doc said the button had a size prop. It hadn't, for three months.</h2>
+  <div class="tone-junior">
+    <p>
+      A new engineer reads the design system's markdown docs page for <code>&lt;Button&gt;</code>, sees a <code>size="large"</code> example, and writes <code>&lt;Button size="large"&gt;Continue&lt;/Button&gt;</code>. Nothing breaks, nothing warns, the button just renders at its default size, because <code>size</code> was renamed to <code>variant</code> during a refactor three months ago and nobody updated the doc page. The prop is silently ignored, not rejected, so there's no error to notice.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A markdown doc describing a component's API is a second, independent copy of information the component's source code already contains, its prop names, types, and defaults. The moment either copy changes without the other, they disagree, and nothing in the toolchain enforces that they stay in sync, a markdown file doesn't know the component it's describing exists.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the general problem with any documentation that's a description of code rather than a rendering of it: descriptions drift because updating them is a second, easily-skipped step disconnected from the change that made them stale, and nothing in a normal PR review flags a docs file as "affected" by a prop rename in a component file, unless a human specifically remembers to check.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Docs that render the actual component can't describe a prop that doesn't exist</h2>
+  <div class="tone-junior">
+    <p>
+      A Storybook story imports and renders the real <code>&lt;Button&gt;</code> component, the same one shipped to production, with interactive controls generated from its actual prop types. If <code>size</code> gets renamed to <code>variant</code> in the component's source, the story's controls panel updates automatically, because it's reading the real prop types, not a hand-written description of them.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Storybook (and similar tools: Ladle, Histoire) generate the controls panel from the component's actual TypeScript prop types or PropTypes definition, not from anything a human typed into a separate file. A prop that no longer exists can't appear in the controls, because there's no longer a type for it to be generated from, the docs page is a live reflection of the component's real shape at build time, every build.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The deeper guarantee is that a story is also a rendered instance, so beyond prop-shape accuracy, visual regressions and interaction behavior are inspectable the same way, a broken hover state or a missing focus ring shows up by looking at the running story, not by reading a paragraph that claims the component is accessible. That said, this only holds if stories are actually kept current with real usage, an abandoned story for a prop combination nobody uses anymore is a smaller, but real, version of the same drift problem.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The design system doc site nobody trusted anymore</h2>
+  <div class="tone-junior">
+    <p>
+      A design system team maintained a hand-written docs site (a separate repo, markdown files per component) alongside the actual component library. Every few weeks, someone would report that a documented prop didn't actually work, or that a component had new props the docs never mentioned. Engineers started skipping the docs site entirely and just reading the component's source code directly, which meant the docs site had stopped serving its purpose while still costing time to maintain.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team migrated to Storybook, generating a story per component variant directly alongside the component's source file, in the same package. A prop-rename or prop-removal PR now visibly changes what the story's controls panel shows in the PR's Storybook preview deployment, reviewers see the doc impact of a prop change in the same review, not as a separate, easily-deferred follow-up ticket.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also wired a CI check requiring at least one story per exported component, so a genuinely new or renamed component can't ship with zero live documentation, closing the gap where "we'll add docs later" quietly meant "never." The old markdown site was archived rather than migrated prop-by-prop, hand-porting stale content would have just carried the drift forward into the new format.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Markdown doc describing a prop the component no longer has, silently stale since the last refactor (broken) vs. a Storybook story rendering the real component with controls generated from its real prop types (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>The same refactor, two different doc outcomes</h2>
+  <div class="tone-junior">
+    <p>Toggle between the hand-written markdown doc and the Storybook-style live controls panel, both describing the same Button after its size prop was renamed to variant.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The markdown doc's content is frozen text, someone has to remember to edit it. The controls panel is generated from the component's real prop types every time it renders.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the markdown version doesn't error or warn, it just quietly shows a prop that silently no longer does anything, that's the dangerous part, not that it's wrong, but that it looks confidently correct.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Component docs comparison: hand-written markdown showing a removed prop (broken) vs. a live Storybook-style controls panel generated from real prop types (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="component-storybook-docs">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a hand-written markdown doc describing a Button component's props against a live, generated controls panel reflecting the component's real current props, after a size-to-variant prop rename; it requires JavaScript to render both panels in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Markdown doc
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Storybook controls
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Storybook controls</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Living docs still need a reason to get looked at, and kept honest</h2>
+  <div class="tone-junior">
+    <p>
+      Storybook can't drift on prop shape, but a story someone wrote once and never revisited can still describe outdated usage guidance in its own text (the "docs" markdown blocks Storybook itself supports alongside a story). The prop controls stay accurate automatically, the prose around them still needs the same care any documentation does.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Require a story per exported component in CI (a lint rule, or a script diffing exported component names against existing story files) so new components can't ship silently undocumented, this closes the same "we'll add it later" gap that let the old markdown site fall behind in the first place, just enforced automatically instead of by memory.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Treat Storybook's build as a real CI artifact, not just a local dev tool, publish it per-PR (Chromatic and similar services do this) so reviewers see the actual live docs diff for a prop change in the same review, and consider visual regression testing against stories as a byproduct, since every story is already a rendered instance of every documented variant, it's a natural place to also catch unintended visual changes.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A markdown doc describing a component's props is a separate copy of information the code already has, and it silently drifts the moment someone changes the component without updating the doc.</div>
+        <div class="tone-mid">Storybook (or similar) renders the real component with controls generated from its real prop types — the docs can't describe a prop that no longer exists, because there's no longer a type to generate it from.</div>
+        <div class="tone-staff">Require a story per exported component in CI and publish Storybook per-PR so a prop change's doc impact shows up in the same review, not as a deferred follow-up nobody circles back to.</div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Mutation Testing: When Worth It"
+description: "Mutation testing catches the exact bugs 100% line coverage misses — but running it across an entire codebase buries the one survived mutant that mattered under hundreds that don't, and teams abandon it within a month."
+slug: mutation-testing-overkill
+track: testing-quality
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Mutation
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/mutation-testing-overkill-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>100% coverage didn't catch the double-charge bug. Mutation testing would have</h2>
+  <div class="tone-junior">
+    <p>
+      A payment retry function has 100% line coverage, every line runs during tests, and it still ships a bug where a lost network response causes the same charge to fire twice. The tests exercise the retry path, but none of them actually check whether an idempotency key was reused, so nothing ever notices when that specific piece of behavior is missing. Coverage only answers "did this code run," never "would a bug here get caught."
+    </p>
+    <p>
+      Mutation testing answers the second question directly: it automatically changes the code in small, deliberate ways, removing the idempotency check, flipping a comparison, and reruns the existing test suite against each change. If the tests still pass, that's the whole story right there, plainly, before the bug ever reaches production.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A team excited by that result turns mutation testing on for the entire codebase overnight, hundreds of files, thousands of small mutated variants, each one requiring a full test-suite run to check. CI, previously a five-minute unit run, balloons past three hours. Most of the "survived mutants" it reports are in presentational components and trivial utilities, changes to code where behavior barely matters and plenty of the mutants are equivalent, semantically identical to the original in every observable way, so they can never be "killed" no matter how good the tests are.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Within a month the team quietly stops running it. Not because the technique failed, the one mutant that mattered, the missing idempotency check in the payment module, really was sitting there the whole time, but because it was one entry in a report of two hundred, most of them noise from files where a survived mutant costs nothing. The signal that would have prevented a real production incident got buried by the same tool that generated it.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>A stronger signal than coverage, at a cost that scales with how much code you point it at</h2>
+  <div class="tone-junior">
+    <p>
+      Mutation testing works by generating "mutants," small automatic changes to the code, flip a comparison operator, change a boundary condition, delete a line, and then running the real test suite against each mutant version. If a test fails, the mutant is "killed," the suite would have caught that exact regression. If every test still passes, the mutant "survived," meaning there's a real gap: the tests wouldn't notice if the code actually changed that way. The mutation score, the percentage of mutants killed, is a much more honest measure of test quality than line coverage, which only checks whether a line executed at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The cost is combinatorial, not linear. A single file with a handful of conditionals can generate dozens of mutants, and each one needs its own full test run to evaluate. Modern tools apply real optimizations, running only the tests that actually cover the mutated line, caching unaffected results, but the fundamental shape doesn't change: mutating every file in a large codebase multiplies total test-suite runtime by roughly the number of mutants generated, which is exactly why running it unscoped turns a fast CI pipeline into an unusably slow one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Not every survived mutant represents a real gap worth closing, either. Some mutants are semantically equivalent to the original code in every observable way, dead branches, boundary conditions on values that can never occur given real input constraints, and those can never be killed regardless of test quality. Chasing a 100% mutation score, rather than treating something like 85&ndash;90% on genuinely high-value code as a reasonable target, is its own narrower version of the same overkill this case is about: burning effort on a signal past the point where it's still telling you something actionable.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>From "mutate everything" to three directories, and the survived mutant nobody could miss</h2>
+  <div class="tone-junior">
+    <p>
+      A fintech team's first mutation-testing run covered the whole repository overnight, payment logic, auth, and hundreds of presentational React components alike. The report came back with over two hundred survived mutants. Almost all of them were in components like a price-formatting label or a tooltip's hover delay, places where a missed mutant costs essentially nothing. The one that actually mattered, a removed idempotency check in the payment retry path, was in there too, indistinguishable in the report from the noise around it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Nobody read all two hundred. The mutation stage got skipped in review after review, then quietly dropped from CI entirely a few weeks later. Six months on, an audit found the payment module's mutation score had regressed without anyone noticing, because the one tool built to notice it had been unusable since the week it was introduced.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The recovery scoped mutation testing to exactly three directories: <code>src/payments/</code>, <code>src/auth/</code>, and a shared money-math utility module, the code where a silent behavioral regression is genuinely expensive. That's a few hundred mutants instead of tens of thousands, a run time under five minutes, and a report short enough that a survived mutant gets read and acted on the same day it appears, instead of scrolling past as one more line in an ignored wall of output.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Mutating the entire codebase turns CI into a multi-hour run and buries the one real survived mutant under hundreds of low-value ones (broken) vs. scoping mutation testing to payments/auth/money-math surfaces it in minutes, impossible to miss (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Run the same payment regression through both scopes</h2>
+  <div class="tone-junior">
+    <p>Click "Run mutation testing" in each mode and see how long it takes, and whether the one real bug is easy to find in the results.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Mutating everything generates hundreds of low-value survivors from trivial UI code that bury the one that matters. Scoping to the high-risk modules produces a short, fast, readable report with that same real survivor front and center.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The underlying bug, a removed idempotency check, is identical in both runs. Only the surrounding noise, and therefore whether a human actually notices it, changes.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Running mutation testing across the entire codebase, which buries a real survived mutant in the payment module under hundreds of low-value survivors from trivial UI code (broken) vs. scoping mutation testing to the payments, auth, and money-math modules, which surfaces the same real survivor in a fast, readable report (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="mutation-testing-overkill">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo runs mutation testing against the same payment-module regression, comparing an unscoped whole-codebase run that buries the real result in noise against a scoped run limited to high-risk modules; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Mutate everything
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Mutate high-risk modules only
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Mutate high-risk modules only</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Scoping mutation testing so it stays a signal instead of becoming noise</h2>
+  <div class="tone-junior">
+    <p>
+      Point mutation testing at specific folders or file globs, the payment logic, auth, anything handling money or data integrity, rather than the whole repository. Presentational components and low-risk utility code get real value from unit and integration tests already; running mutation analysis on them mostly generates noise, mutants that are technically survived but practically meaningless, without adding confidence anyone will actually use.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Most mutation tools support incremental runs, only re-mutating files that changed since the last run, which keeps a scoped setup fast enough to run on every pull request touching those directories. A lighter alternative for teams not ready for that: run it as a nightly or periodic job against the critical modules only, rather than blocking every PR, trading immediacy for still catching regressions before they compound.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Treat the mutation score target itself as scoped, too, not a single number for the whole codebase. A high bar, 85&ndash;90% or higher, makes sense for the money-handling and auth modules where a survived mutant is genuinely expensive; that same bar applied uniformly elsewhere just produces busywork chasing equivalent mutants that can't be killed by any test, however well-written. The discipline that keeps this sustainable is the same one that keeps an E2E suite trustworthy: match the tool's cost to where a gap in test quality actually matters, not to how much code exists.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Mutation testing catches gaps line coverage can't see, but running it across an entire codebase generates so much low-value noise that teams stop reading the results, and eventually stop running it at all.</div>
+        <div class="tone-mid">Scope mutation testing to a small set of genuinely high-risk modules, payments, auth, data integrity, so a real survived mutant is a short, readable report instead of one line in hundreds.</div>
+        <div class="tone-staff">Not every survived mutant is a real gap — some are equivalent mutants that can never be killed. Chasing 100% everywhere is its own version of the same overkill; match the mutation score target to where the cost of a gap is genuinely high.</div>
+      </li>
+    </ul>
+  </div>
+</section>

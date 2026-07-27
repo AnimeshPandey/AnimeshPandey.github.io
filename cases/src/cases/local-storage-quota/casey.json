@@ -1,0 +1,97 @@
+{
+  "slug": "local-storage-quota",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Nothing catches the throw — it happens inside the keystroke handler, so the code that shows 'Draft saved' never even runs after it.",
+      "mid": "setItem() isn't guaranteed to succeed. Once a write would exceed the origin's quota it throws synchronously, it doesn't truncate or silently drop the value.",
+      "staff": "This bug is rarely reproducible locally — QA sessions start clean and never get near the quota, so it only shows up for real users after weeks of accumulated writes."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Add draft entry repeatedly in each mode and watch what happens once storage fills up.",
+      "mid": "Broken mode throws uncaught past quota and autosave silently stops. Fixed mode catches it, evicts the oldest entry, and keeps saving.",
+      "staff": "Entries under the simulated quota hit real localStorage — only the threshold itself is scaled down so the failure is reachable in clicks, not megabytes."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Once a write would push the origin's total past its quota, the browser throws right there instead of shrinking or ignoring the value.",
+      "mid": "Clearing cookies does not reliably clear localStorage — it's a separate storage bucket most users don't know exists as a distinct thing to clear.",
+      "staff": "Storage can be partitioned per top-level site to block cross-site tracking, and some private-browsing modes have set the quota to zero rather than disabling localStorage outright."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A small wrapper that catches every setItem error and falls back to doing nothing worse than 'this write didn't persist' is the simplest durable fix.",
+      "mid": "Cap the number of entries or track rough size and evict the oldest before writing — catch-and-ignore alone just fails silently forever once you're near the limit.",
+      "staff": "For data that needs to survive at real scale, IndexedDB is the better-suited API — its quota is far larger, though it doesn't remove the need for error handling either."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Today's case is about an autosave that wrote to local storage on every keystroke, worked fine for months, and then quietly stopped saving anything at all once one user's history got too big.",
+        "mid": "Local storage has a real per-origin quota, and once a write would exceed it, the call throws synchronously instead of failing quietly — code that never catches that is one long session away from breaking.",
+        "staff": "This kind of bug almost never shows up in testing, because test sessions start clean and never get anywhere near the quota that real, long-lived users eventually hit."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Local storage gives each site a shared bucket, usually somewhere around five to ten megabytes, and once a write would go over that, the browser throws right there instead of shrinking the value.",
+        "mid": "A detail a lot of people don't expect: clearing cookies does not reliably clear local storage, it's a completely separate storage bucket with its own settings.",
+        "staff": "Storage is increasingly partitioned per top-level site for tracking protection, and some private browsing modes have historically set the quota to zero, so the very first write throws, not the thousandth."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Keep adding draft entries in each mode and watch what happens once the storage fills up.",
+        "mid": "In broken mode, the write past quota throws and nothing catches it, so saving quietly stops. In fixed mode, the same condition gets caught and the oldest entry is evicted to make room.",
+        "staff": "Entries under the simulated limit are written to real local storage here — only the quota threshold itself is scaled down so you can reach it in a handful of clicks."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A local storage write can throw once its quota is full, and that throw is real, not a silent truncation — wrap it in a try catch.",
+        "mid": "Give every write an actual fallback: evict the oldest entries, cap what's stored, or fall back to memory for that session, don't just catch and ignore the error.",
+        "staff": "Local storage isn't cleared by a user's clear-cookies flow and can be quota-zeroed in private browsing — treat every write as fallible by construction."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

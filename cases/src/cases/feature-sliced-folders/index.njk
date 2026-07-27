@@ -1,0 +1,168 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Feature-Sliced Folders (Static Site Scale)"
+description: "Organizing by technical layer (components/, hooks/, utils/) scatters one feature's code across four folders and interleaves unrelated features in each. Organizing by feature slice keeps a feature's own files together instead."
+slug: feature-sliced-folders
+track: state-architecture
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Structure
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/feature-sliced-folders-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Deleting one feature meant editing files in four different folders</h2>
+  <div class="tone-junior">
+    <p>
+      A team is told to remove the "saved searches" feature, it's being replaced. Someone opens <code>components/</code> and deletes <code>SavedSearchList.jsx</code> and <code>SavedSearchCard.jsx</code>. Then <code>hooks/</code>, to delete <code>useSavedSearches.js</code>. Then <code>utils/</code>, to find <code>formatSavedSearchLabel.js</code> buried between forty other unrelated helper files. Then <code>services/</code>, for the API client. Four folders, four separate hunts, and no single place that told them "this is everything saved-searches touches."
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Organizing by technical layer, <code>components/</code>, <code>hooks/</code>, <code>utils/</code>, <code>services/</code>, groups files by what kind of code they are, not by what they're for. Every feature ends up with its code smeared across all four folders, and every one of those folders ends up containing pieces of every feature, interleaved with no boundary between them.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The deeper cost isn't just navigation friction, it's that layer-based folders provide no structural signal about coupling. Nothing stops <code>utils/formatSavedSearchLabel.js</code> from being imported by an unrelated feature's component, because the folder structure never expressed that it belonged to saved-searches in the first place, it just looked like "a util," available to anyone.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Group by what the code is for, not what kind of code it is</h2>
+  <div class="tone-junior">
+    <p>
+      A feature-sliced layout puts a feature's component, hook, util, and API client together, in one folder: <code>features/saved-searches/</code> holds <code>SavedSearchList.jsx</code>, <code>SavedSearchCard.jsx</code>, <code>useSavedSearches.js</code>, <code>formatSavedSearchLabel.js</code>, and its API client, all in one place. Deleting the feature means deleting one folder.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The organizing question flips from "what type of file is this" to "what does this belong to." A shared <code>components/</code> or <code>utils/</code> folder still exists, but it's reserved for things genuinely used by more than one feature, a <code>Button</code>, a <code>formatDate</code> helper, not a dumping ground every feature's incidental helper ends up in by default.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the same principle behind bounded contexts in domain-driven design applied to folder structure: a feature slice's internal files are an implementation detail of that feature, and a real feature-sliced convention (feature-sliced design, Nx's module boundaries, similar prior art) typically enforces that other slices can only import from a slice's public entry point, not reach into its internals directly, turning an informal convention into something a lint rule can actually check.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The utils folder that had become an unofficial second app</h2>
+  <div class="tone-junior">
+    <p>
+      A growing static site's <code>utils/</code> folder had 63 files in it after two years, one flat list, alphabetical, no subfolders. Nobody could tell from the folder listing which utils belonged to the blog, which belonged to the pricing calculator, and which were genuinely shared. New engineers routinely wrote a near-duplicate helper because they didn't realize an existing one already did almost the same thing, it was buried at position 40 of 63.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A migration moved each util into the feature folder of its actual single caller, keeping only genuinely multi-feature helpers in a slimmed-down shared <code>utils/</code>. The flat file count there dropped from 63 to 9, and the remaining 9 were things like <code>formatDate</code> and <code>debounce</code> that legitimately earned their shared status by being used in five or more features.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The migration also surfaced coupling nobody had tracked: three "single-feature" utils turned out to have a second, unexpected caller in a completely unrelated feature, imported directly from the old flat <code>utils/</code> path because nothing prevented it. Moving those into their true owning feature's folder, then re-exporting from a proper shared location for the second caller, made that cross-feature dependency visible and intentional instead of an accident of folder structure.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Layer folders (components/, hooks/, utils/) scatter one feature across 4+ directories and interleave unrelated features in each (broken) vs. a feature folder holding that feature's component, hook, and util together, deletable as one unit (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Find and delete "saved searches" two different ways</h2>
+  <div class="tone-junior">
+    <p>Toggle between the layer-based tree and the feature-sliced tree, and see what it takes to find (and safely delete) everything one feature owns.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The same eight files exist in both trees, only their grouping differs, one groups by file type, the other groups by feature.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice in the layer tree, unrelated features' files sit directly beside saved-searches' files in every folder, there's no boundary that would even hint one doesn't belong with the others.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Folder structure comparison: files grouped by technical layer (broken) vs. files grouped by feature slice (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="feature-sliced-folders">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a layer-based folder tree (components/, hooks/, utils/, services/) against a feature-sliced folder tree, both containing the same files for a "saved searches" feature mixed with two other features; it requires JavaScript to render the folder trees in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            By layer
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            By feature
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: By feature</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:240px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Where the real shared code should live, and where the boundary bites</h2>
+  <div class="tone-junior">
+    <p>
+      Not everything belongs inside a feature folder, things truly used by every feature (a design-system Button, a date formatter, the app's root layout) still belong in a shared location. The test is simple: does more than one feature genuinely need this, or does it just feel more "official" sitting in a shared folder? If only one feature uses it today, it starts in that feature's folder, and moves to shared only when a second feature actually needs it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A feature-sliced structure earns its value fastest at the point of deletion or hand-off, "remove this feature" or "here's the folder, it's yours now" become one-line, low-risk operations instead of a multi-folder archaeology dig. It costs a little more thinking up front: a new file requires deciding "whose is this" instead of just "what type is this," which is a real, if small, tax on day-to-day authoring speed.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Enforce the boundary, don't just adopt the folder names, a feature-sliced layout with no import restriction degrades back into the same coupling problem over time, just with different folder names, once someone reaches directly into <code>features/saved-searches/formatSavedSearchLabel.js</code> from an unrelated feature instead of going through a shared location. An ESLint rule restricting cross-slice imports to each slice's declared public entry point (an <code>index.js</code> re-export, for example) turns the convention into something CI actually catches.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Grouping by file type (components/, hooks/, utils/) scatters one feature across four folders — grouping by feature keeps everything a feature owns in one place, deletable as a unit.</div>
+        <div class="tone-mid">Reserve shared folders for code genuinely used by more than one feature. A single-caller helper starts inside that feature's own folder, not in a shared dumping ground.</div>
+        <div class="tone-staff">Enforce the slice boundary with a lint rule restricting cross-feature imports to a public entry point — without it, feature folders degrade back into the same coupling, just with different folder names.</div>
+      </li>
+    </ul>
+  </div>
+</section>

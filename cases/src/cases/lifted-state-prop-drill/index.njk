@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Prop Drilling vs Composition"
+description: "A user prop passed through four components that never use it means every new deep feature edits files that have nothing to do with it — composition lets the untouched layers stay untouched."
+slug: lifted-state-prop-drill
+track: state-architecture
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Data flow
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/lifted-state-prop-drill-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Adding one badge to an avatar meant editing four files that don't render an avatar</h2>
+  <div class="tone-junior">
+    <p>
+      A dashboard fetches the current user once, at the top, in <code>&lt;Dashboard&gt;</code>. The component that actually needs it, <code>&lt;Avatar&gt;</code>, sits five levels down: <code>Dashboard &rarr; Layout &rarr; Sidebar &rarr; UserPanel &rarr; Avatar</code>. So <code>user</code> gets passed as a prop into <code>Layout</code>, which passes it into <code>Sidebar</code>, which passes it into <code>UserPanel</code>, which finally hands it to <code>Avatar</code>. None of those three middle components render anything about the user, they just take the prop in and immediately pass it back out.
+    </p>
+    <p>
+      Then a new feature needs a <code>notificationCount</code> badge on the same avatar. That value also has to travel through <code>Layout</code>, <code>Sidebar</code>, and <code>UserPanel</code>, none of which care about it either. Three files get edited for a feature that visually only touches one component.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is prop drilling: every component between the state's owner and its consumer becomes coupled to a prop it never reads, just forwards. It's not a correctness bug, the app still works, it's a maintenance tax that compounds. Each new piece of deep data means editing every intermediate component's signature and every call site that renders it, even though those components' actual behavior never changes.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The deeper cost isn't the typing, it's the coupling it creates. <code>Sidebar</code> and <code>UserPanel</code> now have <code>user</code> and <code>notificationCount</code> in their prop types even though neither component has any logic that depends on either value. Anyone reading <code>Sidebar</code>'s signature has to trace two more components down before learning those props are just being relayed, and refactoring <code>Sidebar</code> (splitting it, reordering its children) risks breaking a data path it doesn't actually participate in.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Pass the already-rendered component down, not the raw data through every layer</h2>
+  <div class="tone-junior">
+    <p>
+      Instead of giving <code>Layout</code> and <code>Sidebar</code> a <code>user</code> prop to forward, the component that owns the data renders the deep child itself, <code>&lt;Avatar user={user} /&gt;</code>, and passes that already-built element down as <code>children</code> (or a named slot prop). <code>Layout</code> and <code>Sidebar</code> just render <code>{children}</code> wherever it belongs in their own markup. They never see <code>user</code> at all, because they're not the ones creating the element that needs it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Concretely: <code>Dashboard</code> builds the tree top-down, <code>&lt;Layout sidebar={&lt;Sidebar userPanel={&lt;UserPanel avatar={&lt;Avatar user={user} /&gt;} /&gt;} /&gt;} /&gt;</code>, or more idiomatically nests it as JSX children rather than named slot props. Either way, the data flows directly from where it's owned to where it's consumed; the intermediate components only handle layout, arranging whatever element was handed to them. Their prop signatures describe what they actually do (render a sidebar shape) instead of what they merely relay.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is React's composition model doing the job people often reach for prop drilling (or prematurely, Context) to solve. It specifically fits data with one owner and one consumer connected by a chain of purely structural components, exactly this case's shape. It's the wrong tool when the same piece of data is genuinely needed at many scattered, unrelated points in the tree, that's the shape Context is for, not this one, and reaching for composition there just relocates the coupling instead of removing it.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Every new sidebar feature meant a four-file diff that touched no sidebar logic</h2>
+  <div class="tone-junior">
+    <p>
+      A team's dashboard passed <code>currentUser</code>, <code>theme</code>, and <code>permissions</code> down through <code>Layout &rarr; Sidebar &rarr; NavPanel &rarr; UserBadge</code>. Every one of those three middle components existed to arrange layout, not to use any of those three props. When product asked for a small unread-notifications badge on the same avatar, the team added a fourth prop, <code>notificationCount</code>, and once again touched <code>Layout</code>, <code>Sidebar</code>, and <code>NavPanel</code> just to get it past them.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Code review kept flagging the same pattern: PRs for small, cosmetic Avatar-area features consistently touched three or four unrelated files, and reviewers had to check each one just to confirm it was purely a pass-through and not something that also, coincidentally, used the value.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The refactor moved <code>Layout</code>, <code>Sidebar</code>, and <code>NavPanel</code> to accept <code>children</code> instead of typed data props, and had <code>Dashboard</code> compose the whole tree itself: build <code>&lt;UserBadge user={currentUser} notificationCount={n} /&gt;</code>, hand it to <code>NavPanel</code> as children, hand that to <code>Sidebar</code>, hand that to <code>Layout</code>. After the refactor, the next deep feature (an avatar status dot) touched exactly two files, <code>Dashboard</code> and <code>UserBadge</code>, and code review time on Avatar-area PRs dropped correspondingly, because there was nothing left in the middle to review.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A new deep prop edits every intermediate component's signature on the way down (broken) vs. composing the already-rendered element as children touches only the owner and the consumer (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Ship the same feature down a prop-drilled tree and a composed one</h2>
+  <div class="tone-junior">
+    <p>Click "Ship: add notification badge" in each mode and watch which components light up as "edited."</p>
+  </div>
+  <div class="tone-mid">
+    <p>In prop-drilling mode, the new prop's signature change ripples through every intermediate component. In composition mode, the same feature only changes the owner (<code>Dashboard</code>) and the consumer (<code>UserBadge</code>) — the layout components in between never change.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The "files touched" count at the bottom is the concrete, measurable difference this case is about — same visual feature, a different number of components whose contracts had to change to deliver it.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Shipping a new deeply-nested feature through a prop-drilled component tree, touching every intermediate component's signature (broken) vs. through a composed tree where intermediate components only render children (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="lifted-state-prop-drill">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo ships a new deep feature down a five-level component tree and highlights which components had to change, comparing prop drilling (every intermediate component's signature changes) against composition (only the owner and the consumer change); it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Prop drilling
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Composition
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Composition</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Composition isn't the fix for every deep-data problem, and neither is prop drilling always wrong</h2>
+  <div class="tone-junior">
+    <p>
+      Passing a prop through one, or even two, intermediate components isn't a real problem, it's explicit and easy to trace. The pain shows up around three or more untouched layers, or when the same data needs to reach several different, unrelated branches of the tree. Don't reach for a bigger pattern to solve a two-level pass-through; that's adding complexity, not removing it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Composition specifically fits data that has one owner and flows to one consumer through purely structural components. When the same value (an authenticated user, a locale, a theme) is genuinely needed at many scattered, unrelated points across the tree, not just one path, Context (or a state library) is the right tool instead; composing that data through every leaf that happens to need it just relocates the coupling rather than removing it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Context has its own cost worth knowing before reaching for it reflexively: every consumer of a context re-renders when its value changes, so a context value that changes often and is read by many components can cause broad re-render fan-out unless the value is split into narrower providers or memoized carefully. Composition doesn't have this failure mode, the data isn't flowing through a shared subscription at all, it's just JSX passed as a prop, so intermediate components that don't consume it don't re-render because of it. That's a real advantage composition has over Context for the specific "one path, one destination" shape, worth stating explicitly rather than treating Context as the universal upgrade from prop drilling.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">If a component only takes a prop to immediately pass it to a child, that's prop drilling — pass the already-built child element down instead, so the middle components never need that prop at all.</div>
+        <div class="tone-mid">Compose the tree from the top: the owner of the data renders the deep consumer directly and hands it down as children, so intermediate layout components only ever describe layout.</div>
+        <div class="tone-staff">Composition fits one-owner, one-consumer data flowing through structural components. Data needed at many scattered points across the tree is a Context problem, not a composition one — don't use either where a simple one- or two-level prop is fine as-is.</div>
+      </li>
+    </ul>
+  </div>
+</section>

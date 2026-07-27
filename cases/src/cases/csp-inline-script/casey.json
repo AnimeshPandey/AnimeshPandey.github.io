@@ -1,0 +1,148 @@
+{
+  "slug": "csp-inline-script",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A CSP header went in, the console filled with 'Refused to execute inline script' — and the nav menu that used inline JS just stopped working.",
+      "mid": "script-src 'self' says nothing about where a script sits in the markup, only whether the browser trusts it, inline is untrusted by default.",
+      "staff": "This is CSP working as designed, an attacker's injected inline script would run exactly as freely as yours if inline executed by default."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle the policy and watch which inline script runs, your own, an attacker's, both, or neither.",
+      "mid": "The script's text never changes, only the policy and whether the tag carries a matching nonce decide what runs.",
+      "staff": "The fixed state blocks the injected script for a different reason than the broken state blocks everything, discrimination by nonce is the whole point."
+    },
+    {
+      "chapter": "concept",
+      "junior": "'unsafe-inline' makes the errors stop and also reopens the exact hole CSP was added to close, don't reach for it.",
+      "mid": "A nonce is generated fresh per response and matched on the script tag, an attacker's payload never gets that response's nonce.",
+      "staff": "Nonces and hashes don't cover onclick=\"...\" attributes without 'unsafe-hashes', moving to addEventListener is the more portable fix."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Ship a new policy as Content-Security-Policy-Report-Only first, it logs violations without blocking anything, so you can find breakage before it ships.",
+      "mid": "A nonce reused across requests, or hardcoded into a static file, defeats the mechanism entirely, it has to be freshly random every response.",
+      "staff": "A hash is computed over exact bytes, a minifier that reformats inline script differently between builds silently breaks the allowlist on every deploy."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about adding a Content Security Policy header and watching the nav menu and other inline scripts quietly stop working.",
+        "mid": "script-src 'self' means only external scripts from the page's own origin execute — inline script and inline event handlers are untrusted by default, because an attacker who can inject markup can inject an inline script just as easily.",
+        "staff": "This is CSP doing its job, not a bug to route around — the fix isn't loosening the policy back to unsafe-inline, that reopens the exact hole CSP was added to close."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is a nonce, a random value generated fresh for every response, added to the policy and matched on the script tag you actually own.",
+        "mid": "A nonce-based policy gives every inline script you actually authored a matching nonce attribute generated fresh per response — an attacker's injected script was never given that nonce, so it gets blocked while yours executes.",
+        "staff": "Neither nonces nor hashes extend to inline event handler attributes like onclick — migrating to addEventListener in an external script is the more portable fix, and removes a legacy code smell independent of CSP."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Toggle between a plain policy and a nonce based one, and watch whether your own script runs and whether an attacker's injected one does too.",
+        "mid": "The inline script's source text never changes — only the policy, and whether the script tag carries a matching nonce, changes what the browser allows.",
+        "staff": "The fixed state blocks the injected script for a different reason than the broken state blocks everything — the fixed policy discriminates by nonce, which is the entire point."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Don't fix a CSP error by allowing unsafe inline scripts everywhere. Give your own inline script a nonce instead, and keep everything else blocked.",
+        "mid": "Never fix a CSP violation by adding unsafe-inline — use a per-response nonce on both the policy and the script tag instead.",
+        "staff": "Ship new policies as report-only first to find every inline dependency before enforcing."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}

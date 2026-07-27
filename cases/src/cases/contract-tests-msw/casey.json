@@ -1,0 +1,115 @@
+{
+  "slug": "contract-tests-msw",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The test hardcoded fullName: \"Jane Doe\" forever. The backend renamed the field, production broke, the test stayed green.",
+      "mid": "A hand-written fixture is a snapshot of a belief about the API frozen on the day someone wrote it, nothing keeps it current.",
+      "staff": "This is a contract problem, not a diligence problem, more careful fixtures just add more independent copies of a possibly-wrong belief."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Same field rename, two test files, one guesses at the shape, one is generated from a shared schema.",
+      "mid": "The hand-typed fixture has zero relationship to the real endpoint, the schema-derived mock is downstream of the same contract the backend honors.",
+      "staff": "Notice where each fails, the hand-typed version fails in production weeks later, the schema-derived version fails loudly in CI at the PR that broke it."
+    },
+    {
+      "chapter": "concept",
+      "junior": "MSW intercepts the real network request your component already makes, it doesn't replace your fetch code with a fake function.",
+      "mid": "Pairing MSW with a schema shared with the backend means a mismatch is a build-time failure instead of a silent runtime one.",
+      "staff": "MSW plus an unvalidated hand-maintained schema is the same drift problem one level removed, the schema has to trace back to something the backend enforces."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "MSW is the interception mechanism, not the source of truth, the real fix is the shared schema it's paired with.",
+      "mid": "Generate frontend types and mock schemas from the backend's own OpenAPI spec rather than hand-writing a frontend-side approximation.",
+      "staff": "Run the same contract tests on backend PRs that touch the shared schema too, a backend-only change is exactly the failure mode this exists to catch."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about a hardcoded test fixture that stayed green for months after the real API it was mocking had already changed shape.",
+        "mid": "A hand-written fixture is a snapshot of what someone believed the API returned on the day they wrote the test — nothing connects it to the real endpoint's actual current shape, so they can drift apart with zero signal.",
+        "staff": "This is a contract problem, not a testing-diligence problem — the frontend and backend each have their own belief about the response shape, and nothing forces those beliefs to reconcile."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is Mock Service Worker, intercepting the real network call your component makes, paired with a schema shared with the real backend.",
+        "mid": "Pairing MSW's mocked responses with a schema shared with, or validated against, the real backend's contract turns a shape mismatch into a build-time or test-time failure instead of a silent runtime one.",
+        "staff": "The strongest version generates the schema from something the backend actually enforces, so the frontend's mock and the backend's real behavior are both downstream of one document, instead of two independent guesses."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Compare a hand typed fixture against an MSW handler using a schema derived mock, both facing the same backend field rename.",
+        "mid": "The hand-typed fixture has no relationship to the real endpoint at all — the MSW version's mock is generated from the same schema the real API is validated against.",
+        "staff": "The hand-typed version fails in production, silently, weeks later. The schema-derived version fails in CI, loudly, at the PR that introduced the mismatch."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Stop hand typing mock API responses in tests. Use MSW with a schema shared with the real backend, so a shape mismatch fails loudly instead of silently.",
+        "mid": "MSW intercepts the real network call your component already makes — pairing it with a shared schema turns a shape mismatch into a loud CI failure instead of a silent production one.",
+        "staff": "The schema has to be the real contract, generated from or validated against the backend's actual spec, not a second hand-written guess."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}
