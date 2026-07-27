@@ -750,5 +750,63 @@
     "staff": [
       "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Dialog (Modal) Pattern</a>"
     ]
+  },
+  "csp-inline-script": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP\" rel=\"noopener noreferrer\">MDN — Content Security Policy (CSP)</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src\" rel=\"noopener noreferrer\">MDN — Content-Security-Policy: script-src directive</a>",
+      "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — Content Security Policy Cheat Sheet</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/strict-csp\" rel=\"noopener noreferrer\">web.dev — Mitigate cross-site scripting (XSS) with a strict Content Security Policy</a>"
+    ]
+  },
+  "event-bus-vs-props": {
+    "junior": [
+      "<a href=\"https://react.dev/learn/passing-data-deeply-with-context\" rel=\"noopener noreferrer\">React — Passing Data Deeply with Context</a>"
+    ],
+    "mid": [
+      "<a href=\"https://kentcdodds.com/blog/prop-drilling\" rel=\"noopener noreferrer\">Kent C. Dodds — Prop Drilling</a>"
+    ],
+    "staff": [
+      "<a href=\"https://endlesswhileloop.com/blog/2015/06/11/stop-using-event-buses/\" rel=\"noopener noreferrer\">Endless While Loop — Why you should avoid using an event bus</a>"
+    ]
+  },
+  "feature-sliced-folders": {
+    "junior": [
+      "<a href=\"https://feature-sliced.design/\" rel=\"noopener noreferrer\">Feature-Sliced Design — Architectural methodology for frontend projects</a>"
+    ],
+    "mid": [
+      "<a href=\"https://feature-sliced.design/\" rel=\"noopener noreferrer\">Feature-Sliced Design — Architectural methodology for frontend projects</a>",
+      "<a href=\"https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md\" rel=\"noopener noreferrer\">bulletproof-react — Project Structure</a>"
+    ],
+    "staff": [
+      "<a href=\"https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md\" rel=\"noopener noreferrer\">bulletproof-react — Project Structure</a>"
+    ]
+  },
+  "component-storybook-docs": {
+    "junior": [
+      "<a href=\"https://storybook.js.org/docs/writing-stories\" rel=\"noopener noreferrer\">Storybook — How to write stories</a>"
+    ],
+    "mid": [
+      "<a href=\"https://storybook.js.org/docs/writing-docs/autodocs\" rel=\"noopener noreferrer\">Storybook — Automatic documentation and Storybook (Autodocs)</a>"
+    ],
+    "staff": [
+      "<a href=\"https://storybook.js.org/docs/writing-docs/autodocs\" rel=\"noopener noreferrer\">Storybook — Automatic documentation and Storybook (Autodocs)</a>"
+    ]
+  },
+  "contract-tests-msw": {
+    "junior": [
+      "<a href=\"https://mswjs.io/docs/\" rel=\"noopener noreferrer\">Mock Service Worker — Introduction</a>"
+    ],
+    "mid": [
+      "<a href=\"https://mswjs.io/docs/best-practices/structuring-handlers\" rel=\"noopener noreferrer\">Mock Service Worker — Structuring handlers</a>"
+    ],
+    "staff": [
+      "<a href=\"https://mswjs.io/docs/\" rel=\"noopener noreferrer\">Mock Service Worker — Introduction</a>",
+      "<a href=\"https://mswjs.io/docs/best-practices/structuring-handlers\" rel=\"noopener noreferrer\">Mock Service Worker — Structuring handlers</a>"
+    ]
   }
 }

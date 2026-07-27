@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Event Bus vs Props (When to Stop)"
+description: "Prop drilling is annoying enough that teams reach for a global event bus to skip it — but that trades explicit, traceable data flow for implicit coupling that's much harder to debug. Here's how to tell when the trade is actually worth it."
+slug: event-bus-vs-props
+track: state-architecture
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Coupling
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/event-bus-vs-props-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>A cart total is wrong. Nobody can find who set it.</h2>
+  <div class="tone-junior">
+    <p>
+      The shopping cart total on screen shows $42, but the actual items add up to $38. Someone has to find the code that sets that number. They open the cart component, it doesn't set the total directly, it just displays whatever value it's given. They search the codebase for anywhere the total gets written, and find a dozen different files each doing <code>eventBus.emit('cart:update', { total })</code>, from a coupon component, a shipping estimator, a loyalty-points widget, a promo banner. Any of them could be the culprit. None of them are visibly connected to the cart component in the code.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      An event bus decouples the sender from needing to know who's listening, which is exactly what makes this kind of bug expensive to trace: <code>emit</code> and <code>on</code> calls for the same event name can live in files that never import each other, so there's no call stack, no prop chain, no static reference connecting cause to effect. Grepping for the event string name is the debugging tool, not the type system or the file structure.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a structural property of pub-sub, not a bug in this particular bus: subscribing to an event is, by design, a runtime relationship with no compile-time trace. Any component can `emit` any event any other component might be listening for, and the set of active listeners for a given event at a given moment is something you can only discover by running the code and instrumenting it, not by reading it.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Props make the dependency visible in the code that has the bug</h2>
+  <div class="tone-junior">
+    <p>
+      With props, the cart component receives its total as an argument: <code>&lt;Cart total={cartTotal} /&gt;</code>. To find where that number comes from, you don't grep for a string, you follow the variable. Click "go to definition" on <code>cartTotal</code> in most editors and you land exactly where it's computed. The connection between "who sets this" and "who displays this" is written directly into the code, not into a shared runtime registry.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is the actual trade being made: prop drilling costs you typing (passing a value through 3-4 layers of components that don't use it themselves, just forward it), an event bus costs you traceability (any listener could be the source, and there's no static path from emitter to listener). Neither cost is free, the question is which one your team can better afford for a given piece of state, not which pattern is universally "better."
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The middle ground most codebases actually want isn't "props all the way" or "bus for everything," it's colocated state via context/a store for state genuinely shared across a subtree, reserving global pub-sub for things that are legitimately cross-cutting and don't belong to any one owner (analytics events, a toast notification system, cross-tab sync). The failure mode is using a bus for state that has one clear semantic owner, like a cart total, just because passing it through props felt tedious.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The bus that outlived the reason it was added</h2>
+  <div class="tone-junior">
+    <p>
+      A team's cart total started as three levels of prop drilling: a page component held the total, passed it down through a layout wrapper, to the cart widget. Someone found this annoying and swapped it for an event bus, emit from wherever the total changes, listen wherever it's displayed. It worked, and adding a fourth listener (a floating cart-preview badge in the header) took one line instead of threading a new prop through three unrelated components.
+    </p>
+    <p>
+      Eighteen months later there were eleven places emitting <code>cart:update</code>, added by different engineers at different times, none of whom had reason to know about the others. When the total started showing a stale value intermittently, nobody could point to the emitter at fault without adding console logs to all eleven and reproducing the bug live.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The actual root cause was two emitters racing: a coupon-applied event and a shipping-estimate-changed event both recalculated and emitted the total within the same tick, and whichever fired second silently won, even if it was computing from stale inputs. Nothing in the code suggested these two features could interact at all, they were emitting to the same event name for entirely separate reasons.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix consolidated cart-total computation into a single owning store with one write path, reading from the individual line-item/coupon/shipping values as inputs rather than letting each feature independently emit its own version of the derived total. The event bus stayed in the codebase, but scoped down to genuinely cross-cutting concerns like analytics, not state with a clear single owner. The team's new rule: if you can name one component that should own a piece of state, it doesn't go on the bus.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Event bus: any component can emit or listen to cart:update, tracing a bad value means grepping every emitter (broken) vs. explicit props: the cart total's source is one traceable variable reference (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Trace the same bug two different ways</h2>
+  <div class="tone-junior">
+    <p>A cart total is wrong. Toggle between the event-bus version and the props version and see what it takes to find the emitter that caused it.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Both versions have the same bug (a stale coupon calculation overwrites a fresh shipping calculation). The difference is entirely in how much you have to search to find it.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the props version doesn't have "eleven emitters" as a category of problem at all — a value can only be set from the one place that's allowed to set it.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Debugging trace comparison: global event bus with many emitters (broken) vs. explicit props with one traceable source (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="event-bus-vs-props">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates tracing a stale cart-total bug through a global event bus with multiple emitters, versus through an explicit props chain with a single source; it requires JavaScript to run the trace simulation in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Event bus
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Explicit props
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Explicit props</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Context and stores are usually the actual middle ground</h2>
+  <div class="tone-junior">
+    <p>
+      If prop drilling is the pain point, the first thing to reach for isn't a bus, it's context (React) or an equivalent provide/inject mechanism, which still has one traceable place a value is set, it just skips passing it manually through components that don't use it. Only reach for a bus when you genuinely need "anyone, anywhere, can react to this," not as a generic fix for tedious prop passing.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A useful test before adding an event to a shared bus: can you name the one component that should own this state? If yes, it belongs in a store or context with a single write path, not a bus. If the honest answer is "lots of independent things care about this and none of them own it" (page-view analytics, a global toast queue, cross-tab logout sync), that's the actual bus use case.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Even for legitimate bus use cases, keep a typed event map (a discriminated union of event name → payload shape) so at minimum the compiler catches a payload mismatch, and consider a lightweight lint rule or code-search convention (a consistent `EVENT_` naming prefix, a checked-in registry of event names and their known emitters/listeners) so "who else touches this event" is discoverable without running the app. The debugging cost never fully goes away, but it can be bounded instead of open-ended.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A global event bus skips prop drilling but makes bugs harder to trace — any component can emit or listen to an event, and the code doesn't show you which one is which.</div>
+        <div class="tone-mid">Before putting state on a bus, ask if one component should own it. If yes, use props or context with a single write path, not a bus.</div>
+        <div class="tone-staff">Reserve a global bus for genuinely cross-cutting concerns with no single owner. For everything else, keep a typed event map and a discoverable emitter/listener registry if you must use one at all.</div>
+      </li>
+    </ul>
+  </div>
+</section>

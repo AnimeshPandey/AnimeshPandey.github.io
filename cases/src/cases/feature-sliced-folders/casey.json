@@ -1,0 +1,148 @@
+{
+  "slug": "feature-sliced-folders",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Deleting one feature meant hunting through components/, hooks/, utils/, and services/ separately, no folder said \"this is everything.\"",
+      "mid": "Layer folders group by what kind of code it is, not what it's for, so every feature ends up smeared across all four.",
+      "staff": "Layer folders give no structural signal about coupling, nothing stops an unrelated feature quietly importing a \"util\" that was never really shared."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Same eight files, two trees, toggle to see what it takes to find and delete one feature's worth of them.",
+      "mid": "Only the grouping differs between the two trees, the files themselves are identical.",
+      "staff": "In the layer tree, unrelated features sit beside saved-searches in every folder with nothing hinting they don't belong together."
+    },
+    {
+      "chapter": "concept",
+      "junior": "A feature folder holds that feature's component, hook, and util together, deleting the feature means deleting one folder.",
+      "mid": "Shared components/ and utils/ still exist, but only for things genuinely used by more than one feature.",
+      "staff": "Real feature-sliced conventions restrict cross-slice imports to a public entry point, turning the convention into something a lint rule can check."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "If only one feature uses something today, it starts in that feature's folder, it moves to shared only once a second feature needs it.",
+      "mid": "A feature-sliced structure earns its value most at deletion or hand-off time, not during day-to-day authoring, which gets a small added tax.",
+      "staff": "Without an enforced import boundary, feature folders degrade back into the same coupling over time, just with different folder names."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "Hey! Today's case is about deleting one feature and having to hunt through four different folders just to find everything it owns.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is grouping files by what they're for instead of what type of file they are, so one feature's code lives in one folder.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "demo",
+        "junior": "Toggle between a layer based tree and a feature based tree, and see what it takes to find and delete one feature in each.",
+        "mid": "",
+        "staff": ""
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Group your files by feature, not by file type. It makes deleting or handing off a feature a one folder operation instead of a scavenger hunt.",
+        "mid": "",
+        "staff": ""
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        {
+          "label": "Try broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Try fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Toggle broken",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Toggle fixed",
+          "target": "[data-demo-state=fixed]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Broken state",
+          "target": "[data-demo-state=broken]"
+        },
+        {
+          "label": "Fixed state",
+          "target": "[data-demo-state=fixed]"
+        }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        {
+          "label": "Jump to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Skip to demo",
+          "target": "[data-chapter=demo]"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Demo chapter",
+          "target": "[data-chapter=demo]"
+        }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        {
+          "label": "Back to all cases",
+          "href": "/cases/"
+        },
+        {
+          "label": "Reading library",
+          "href": "/cases/library/"
+        }
+      ],
+      "mid": [
+        {
+          "label": "Hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "Library",
+          "href": "/cases/library/"
+        }
+      ],
+      "staff": [
+        {
+          "label": "Case hub",
+          "href": "/cases/"
+        },
+        {
+          "label": "War stories",
+          "href": "/cases/library/"
+        }
+      ]
+    }
+  ]
+}
