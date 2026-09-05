@@ -1,0 +1,220 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Context Without a Re-render Storm"
+description: "Why one React Context holding several unrelated values re-renders every consumer whenever any one of those values changes, and how splitting contexts (plus memoizing the value) scopes re-renders to only the components that actually care."
+slug: context-rerender-storm
+track: react
+readMin: 10
+flagship: false
+demoType: code-only
+principle: Context perf
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/context-rerender-storm-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The theme toggle that re-rendered every time a notification arrived</h2>
+  <div class="tone-junior">
+    <p>
+      An app has one <code>AppContext</code> providing everything global: the logged-in <code>user</code>, the current <code>theme</code>, and a live <code>notifications</code> array that grows every time a new notification arrives over a websocket. A small header component reads only <code>theme</code> from that context to decide which icon to show.
+    </p>
+    <p>
+      With React DevTools' render highlighting on, that theme icon lights up on every single incoming notification, dozens of times a minute during busy periods, even though its own props and the specific value it reads, <code>theme</code>, never change. The component is doing real re-render work for data it doesn't use and never displays.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This isn't a bug in React, it's exactly how <code>useContext</code> is specified to behave: every component that calls <code>useContext(AppContext)</code> re-renders whenever the Provider's <code>value</code> changes, full stop, regardless of which fields inside that value the component actually reads. React has no built-in way to subscribe to "just the <code>theme</code> field" of a context, the subscription granularity is the whole context, not any part of it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This scales badly in a specific, predictable direction: the more unrelated concerns get bundled into one context "for convenience," the more of the app re-renders on every unrelated update to any one of them. A notifications feed updating multiple times a second turns every context consumer in the tree, no matter how unrelated its actual concern, into a component re-rendering multiple times a second, unless something explicitly stops it (<code>React.memo</code> alone won't, since the component still re-renders when its context value's identity changes, only its own re-render from a parent prop change would be skipped).
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Split the context by what actually changes together, then memoize each value</h2>
+  <div class="tone-junior">
+    <p>
+      The fix is to stop putting unrelated data in one context. Give <code>user</code>, <code>theme</code>, and <code>notifications</code> each their own context, so a component that only calls <code>useContext(ThemeContext)</code> only re-renders when theme-related state actually changes, not when notifications does.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      There's a second, easy-to-miss half of this fix: even a single-purpose context still needs its <code>value</code> to be memoized. If a provider does <code>value=&#123;&#123; theme, setTheme &#125;&#125;</code> inline, that object is a brand-new reference on every render of the provider, and every consumer re-renders on every provider render regardless of whether <code>theme</code> itself changed, because React compares context value by reference, not by deep equality.
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>// Broken: one context, unmemoized value
+const AppContext = createContext();
+function AppProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState('light');
+  const [notifications, setNotifications] = useState([]);
+  const value = { user, setUser, theme, setTheme, notifications, setNotifications };
+  return &lt;AppContext.Provider value={value}&gt;{children}&lt;/AppContext.Provider&gt;;
+  // every consumer re-renders on ANY state change above, AND on every
+  // AppProvider render even if nothing changed, since `value` is a new
+  // object literal every time
+}
+
+// Fixed: split contexts, each value memoized independently
+const ThemeContext = createContext();
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  const value = useMemo(() =&gt; ({ theme, setTheme }), [theme]);
+  return &lt;ThemeContext.Provider value={value}&gt;{children}&lt;/ThemeContext.Provider&gt;;
+}
+// NotificationsProvider and UserProvider follow the same shape, each with
+// their own useMemo'd value — a component calling useContext(ThemeContext)
+// now only re-renders when `theme` itself actually changes.</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Splitting contexts scopes re-renders by concern, but within one context, every consumer still re-renders together whenever that context's value changes, splitting <code>notifications</code> into its own context doesn't help a component that reads only the notification <em>count</em> avoid re-rendering on every individual notification's content change. For that finer granularity, either derive and memoize a narrower value close to where it's read, or reach for a selector-based library (<code>use-context-selector</code>, or state libraries built around fine-grained subscriptions like Zustand or Jotai) that subscribes components to a slice of state rather than a whole context value.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The dashboard that got measurably faster from three fewer lines of coupling</h2>
+  <div class="tone-junior">
+    <p>
+      A team profiled a dashboard that felt sluggish during live data updates and found, via React DevTools' Profiler, that a sidebar's user-avatar component was re-rendering on every one of dozens of per-second data-grid updates, despite the avatar's own props never changing. Tracing it back, both the avatar and the data grid read from the same single <code>DashboardContext</code>, and the grid's frequent updates were the ones actually changing the shared context value.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Splitting <code>DashboardContext</code> into a <code>UserContext</code> (rarely changes) and a <code>LiveDataContext</code> (changes constantly) immediately removed the avatar, and every other user-info consumer, from the Profiler's flame graph during data updates, they simply stopped subscribing to the thing that was actually changing.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team also found, while doing this, a provider that memoized its context value correctly but recreated the setter functions inside it on every render (<code>value=&#123;&#123; theme, setTheme: (t) =&gt; setThemeState(t) &#125;&#125;</code> instead of a stable, top-level <code>setTheme</code>), which defeated the <code>useMemo</code> entirely since the object's contents, and therefore whether the memo's dependency array should be considered "changed," included a function recreated fresh every render. The general lesson: memoizing the context value object is necessary but not sufficient, everything inside that object needs a stable identity too, or the memoization is cosmetic.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">One Context bundling user/theme/notifications re-renders every consumer on any single value's change (broken) vs. splitting into focused, individually memoized contexts so each consumer only re-renders for the value it actually reads (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Reading the split, annotated side by side</h2>
+  <div class="tone-junior">
+    <p>This case's demo is a code comparison, not a live toggle: read the broken and fixed versions below and follow the comments explaining exactly which consumers re-render in each.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The fixed version isn't just "add more contexts," notice the <code>useMemo</code> on each provider's value, that's the half of the fix that's easy to add a context split without and still not fix anything.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice the comment on the setter functions: a memoized value object with an unstable function inside it still breaks the optimization, memoization has to be structural all the way down, not just at the outermost object.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="One Context holding user, theme, and notifications together re-renders every consumer on any change (broken) vs. splitting into focused, memoized contexts so each consumer only re-renders for what it reads (fixed)"
+           data-required="true"
+           data-demo-type="code-only"
+           data-demo-slug="context-rerender-storm">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares one shared Context re-rendering every consumer on any value change against split, individually memoized contexts that scope re-renders to only interested consumers; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;">
+        <pre class="case-demo__code"><code>// Broken: one context, unmemoized value — ThemeToggle re-renders on
+// every notification too, even though it never reads `notifications`
+const AppContext = createContext();
+function AppProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [theme, setTheme] = useState('light');
+  const [notifications, setNotifications] = useState([]);
+  const value = { user, setUser, theme, setTheme, notifications, setNotifications };
+  return &lt;AppContext.Provider value={value}&gt;{children}&lt;/AppContext.Provider&gt;;
+}
+function ThemeToggle() {
+  const { theme, setTheme } = useContext(AppContext); // re-renders on ANY AppContext change
+  return &lt;button onClick={() =&gt; setTheme(t =&gt; t === 'light' ? 'dark' : 'light')}&gt;{theme}&lt;/button&gt;;
+}
+
+// Fixed: split by concern, each value memoized — ThemeToggle now only
+// re-renders when theme itself changes
+const ThemeContext = createContext();
+const NotificationsContext = createContext();
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  const value = useMemo(() =&gt; ({ theme, setTheme }), [theme]); // stable identity unless theme changes
+  return &lt;ThemeContext.Provider value={value}&gt;{children}&lt;/ThemeContext.Provider&gt;;
+}
+function NotificationsProvider({ children }) {
+  const [notifications, setNotifications] = useState([]);
+  const value = useMemo(() =&gt; ({ notifications, setNotifications }), [notifications]);
+  return &lt;NotificationsContext.Provider value={value}&gt;{children}&lt;/NotificationsContext.Provider&gt;;
+}
+function ThemeToggle() {
+  const { theme, setTheme } = useContext(ThemeContext); // only re-renders when theme changes
+  return &lt;button onClick={() =&gt; setTheme(t =&gt; t === 'light' ? 'dark' : 'light')}&gt;{theme}&lt;/button&gt;;
+}</code></pre>
+      </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Memoize all the way down, and know when splitting still isn't enough</h2>
+  <div class="tone-junior">
+    <p>
+      A context split with an unmemoized value object still re-renders every consumer on every render of the provider itself, not just on real data changes, because the object literal is a new reference each time. Always wrap a context's <code>value</code> in <code>useMemo</code> with the actual dependencies listed, not an empty array and not the whole state object by habit.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Setter functions from <code>useState</code> are already stable across renders, use them directly in the memoized value rather than wrapping them in a new inline arrow function, an inline wrapper is a fresh function reference every render and defeats the memo the same way an unmemoized object would.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Splitting contexts and memoizing values solves re-renders caused by <em>unrelated</em> data sharing one context, it does not solve a consumer that reads a large, single, frequently-changing value (a big <code>notifications</code> array) and only cares about a derived slice of it (the count). For that, memoize the derived value at the point of use (<code>useMemo(() =&gt; notifications.length, [notifications])</code> still re-renders when the array reference changes, so this specific case usually wants the count tracked as its own piece of state, or a selector-based state library that can subscribe to a computed slice without subscribing to the whole array's identity.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Every component reading a Context re-renders whenever that context's value changes, even if the component only cares about one field inside it that didn't change.</div>
+        <div class="tone-mid">Split unrelated data into separate contexts by what actually changes together, and wrap each provider's value in useMemo so an unrelated render doesn't create a new object reference.</div>
+        <div class="tone-staff">Memoization has to be structural all the way down, an inline setter wrapper or an unstable nested value inside a memoized object defeats the optimization, and splitting contexts doesn't help a consumer that only needs a derived slice of one large, frequently-changing value.</div>
+      </li>
+    </ul>
+  </div>
+</section>

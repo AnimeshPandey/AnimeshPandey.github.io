@@ -1,0 +1,97 @@
+{
+  "slug": "aesthetic-usability-effect",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Two teams shipped the identical settings form with the identical slow-save bug — the plain-styled one got called clunky, the polished one barely got the bug mentioned at all.",
+      "mid": "This isn't selective feedback reading, it's a documented bias — people rate a more attractive interface as more usable, independent of its actual measured usability.",
+      "staff": "Polish genuinely buys goodwill, that's a legitimate reason to invest in it, but reading 'users love the redesign' as 'the usability problems are fixed' can mask a task-completion metric that barely moved."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Save in each mode — both versions run the exact same code and the exact same delay before saving.",
+      "mid": "Both buttons call the identical save function with the identical timeout, nothing about the interaction logic differs, only the CSS.",
+      "staff": "This is a narrow illustration of the mechanism, not a controlled experiment — real studies measure this across many participants with rated surveys, not a single toggle."
+    },
+    {
+      "chapter": "concept",
+      "junior": "The aesthetic-usability effect is the finding that people perceive good-looking designs as easier to use, even with zero actual difference in how they function.",
+      "mid": "Kurosu and Kashimura's 1995 ATM study varied visual layout while holding the functional layout constant, and perceived ease-of-use tracked the visuals far more than the measured usability.",
+      "staff": "The mechanism runs through affect, not reasoning — a positive first impression puts users in a more generous evaluative mode before they've interacted with anything, a halo effect applied to interface design."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Visual polish is worth investing in, it's a real driver of goodwill, just don't let glowing feedback after a redesign stand in for checking whether the underlying flow actually got fixed.",
+      "mid": "Separate perception (sentiment, survey scores) from task performance (completion rate, error rate) as two distinct signals when evaluating a redesign.",
+      "staff": "Moderated usability sessions on a good-looking prototype can produce artificially generous feedback — pair subjective ratings with objective task metrics and weight the objective side when they disagree."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about two teams that shipped the exact same settings form, with the exact same slow-save bug, and got completely different reactions from users, purely because one version looked a lot more polished than the other.",
+        "mid": "The plain version got called clunky, the polished one got called smooth, even though the underlying logic and the same delayed save were identical in both.",
+        "staff": "This is a documented cognitive bias with real product stakes, since a team can read glowing feedback after a redesign as proof that usability problems got fixed, when really only the perception of them changed."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The aesthetic-usability effect is the finding that people rate a good-looking design as easier to use, even when it functions exactly the same as a plain one.",
+        "mid": "The original study varied how an ATM interface looked while keeping its actual functional layout the same, and how good it looked predicted perceived ease of use far more than actual usability did.",
+        "staff": "It runs through affect rather than reasoning, a positive first impression makes people more generous in every judgment that follows, including judgments that are supposed to be purely about function."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Click save in each mode and notice how differently the exact same delay feels depending on how polished the surrounding form looks.",
+        "mid": "Both buttons run the identical save function with the identical timeout, the only difference between the two modes is the visual styling.",
+        "staff": "This is meant to illustrate the mechanism, not to serve as data, real studies measure this with rated surveys across many participants."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A good-looking interface gets rated easier to use than a plain one even when the actual functionality is identical, that's a real, documented bias, not a coincidence.",
+        "mid": "Polish buys real goodwill and forgiveness for small friction, but it doesn't change the underlying interaction cost, track sentiment and task performance separately.",
+        "staff": "When a redesign gets glowing qualitative feedback but flat completion-rate numbers, trust the objective task metric over the subjective rating for deciding what still needs fixing."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try rough version", "target": "[data-demo-state=broken]" },
+        { "label": "Try polished version", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle rough version", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle polished version", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Rough state", "target": "[data-demo-state=broken]" },
+        { "label": "Polished state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "slug": "context-rerender-storm",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A theme-icon component that only reads `theme` from context lit up on every incoming notification, dozens of times a minute, because it shared one context with the notifications array.",
+      "mid": "This is exactly how useContext is specified to work: every consumer re-renders when the Provider's value changes, full stop, regardless of which field the consumer actually reads.",
+      "staff": "React.memo alone won't save a context consumer here, since it still re-renders when the context value's identity changes, that's not the same trigger memo guards against."
+    },
+    {
+      "chapter": "demo",
+      "junior": "This case's demo is a code comparison, not a live toggle, read the broken and fixed versions and follow the comments on which consumers re-render.",
+      "mid": "The fixed version isn't just 'add more contexts,' notice the useMemo on each provider's value, that's the half of the fix easy to skip.",
+      "staff": "Watch the note on setter functions, a memoized object with an unstable function inside it still breaks the optimization, memoization has to be structural all the way down."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Give user, theme, and notifications each their own context so a component reading only theme stops re-rendering when notifications changes.",
+      "mid": "An unmemoized inline value object is a new reference every render of the provider, so every consumer re-renders on every provider render, not just on real state changes, since context compares by reference, not deep equality.",
+      "staff": "Splitting contexts scopes re-renders by concern, it doesn't give a consumer of one context a way to subscribe to just a slice of that context's value, that needs a selector-based library or a narrower piece of state."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Always wrap a context's value in useMemo with real dependencies listed, not an empty array and not the whole state object out of habit.",
+      "mid": "useState setters are already stable, use them directly in the memoized value instead of wrapping them in a new inline arrow function, which defeats the memo the same way an unmemoized object would.",
+      "staff": "Splitting and memoizing doesn't help a consumer that only needs a derived slice of one large, frequently-changing value, track that slice as its own state or reach for a selector-based state library instead."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about a theme icon that kept re-rendering every single time a notification came in, even though it never reads the notifications data at all, just because both lived in the same context.",
+        "mid": "That's not a bug, it's exactly how useContext is specified to work, every consumer re-renders whenever the provider's value changes, no matter which specific field that consumer actually reads.",
+        "staff": "React.memo doesn't save you here either, a component still re-renders when its context value's identity changes, that's a different trigger than the prop changes memo is built to guard against."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is giving each piece of unrelated data its own context, so a component reading only the theme stops caring what happens to notifications.",
+        "mid": "The easy-to-miss half of the fix is memoizing each provider's value, an inline object literal is a brand new reference every render, and context compares by reference, not by what's actually inside it.",
+        "staff": "Splitting contexts scopes re-renders by concern, but a consumer that only needs a small slice of one still-large context still re-renders on every change to that whole value, that needs a different tool entirely."
+      },
+      {
+        "chapter": "demo",
+        "junior": "This one's a code comparison rather than something to click, read through the broken and fixed versions and follow the comments.",
+        "mid": "Pay attention to the useMemo call on each provider, adding more contexts without it doesn't actually fix anything.",
+        "staff": "Notice the callout about setter functions, wrapping a stable setState function in a new arrow function every render quietly breaks the memoization around it."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Every component reading a context re-renders when that context's value changes, even if it only cares about one field that didn't actually change.",
+        "mid": "Split unrelated data into separate contexts by what changes together, and memoize each provider's value so an unrelated render doesn't create a new object reference.",
+        "staff": "Memoize all the way down, including setter functions, and reach for a selector-based approach when a consumer needs only a derived slice of one large, frequently-changing value."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

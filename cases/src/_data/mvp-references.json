@@ -1146,5 +1146,64 @@
       "<a href=\"https://temporal.io\" rel=\"noopener noreferrer\">Temporal — Durable Execution Platform</a>",
       "<a href=\"https://docs.langchain.com/oss/python/langgraph/persistence\" rel=\"noopener noreferrer\">LangChain — LangGraph persistence</a>"
     ]
+  },
+  "markdown-render-sanitize": {
+    "junior": [
+      "<a href=\"https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html\" rel=\"noopener noreferrer\">OWASP — Cross Site Scripting Prevention Cheat Sheet</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML#security_considerations\" rel=\"noopener noreferrer\">MDN — Element: innerHTML property (Security considerations)</a>"
+    ],
+    "staff": [
+      "<a href=\"https://github.com/cure53/DOMPurify\" rel=\"noopener noreferrer\">GitHub — DOMPurify</a>"
+    ]
+  },
+  "fallback-model-degraded": {
+    "junior": [
+      "<a href=\"https://developers.openai.com/api/docs/guides/error-codes\" rel=\"noopener noreferrer\">OpenAI — API error codes</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developers.openai.com/api/docs/guides/error-codes\" rel=\"noopener noreferrer\">OpenAI — API error codes</a>",
+      "<a href=\"https://platform.claude.com/docs/en/api/errors\" rel=\"noopener noreferrer\">Anthropic — Claude API errors</a>"
+    ],
+    "staff": [
+      "<a href=\"https://platform.claude.com/docs/en/api/errors\" rel=\"noopener noreferrer\">Anthropic — Claude API errors</a>"
+    ]
+  },
+  "aesthetic-usability-effect": {
+    "junior": [
+      "<a href=\"https://www.nngroup.com/articles/aesthetic-usability-effect/\" rel=\"noopener noreferrer\">Nielsen Norman Group — The Aesthetic-Usability Effect</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.nngroup.com/articles/aesthetic-usability-effect/\" rel=\"noopener noreferrer\">Nielsen Norman Group — The Aesthetic-Usability Effect</a>",
+      "<a href=\"https://en.wikipedia.org/wiki/Aesthetic%E2%80%93usability_effect\" rel=\"noopener noreferrer\">Wikipedia — Aesthetic–usability effect</a>"
+    ],
+    "staff": [
+      "<a href=\"https://en.wikipedia.org/wiki/Aesthetic%E2%80%93usability_effect\" rel=\"noopener noreferrer\">Wikipedia — Aesthetic–usability effect</a>"
+    ]
+  },
+  "anchoring-first-number": {
+    "junior": [
+      "<a href=\"https://en.wikipedia.org/wiki/Anchoring_effect\" rel=\"noopener noreferrer\">Wikipedia — Anchoring effect</a>"
+    ],
+    "mid": [
+      "<a href=\"https://en.wikipedia.org/wiki/Anchoring_effect\" rel=\"noopener noreferrer\">Wikipedia — Anchoring effect</a>",
+      "<a href=\"https://www.nngroup.com/articles/anchoring-principle/\" rel=\"noopener noreferrer\">Nielsen Norman Group — The Anchoring Principle</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.nngroup.com/articles/anchoring-principle/\" rel=\"noopener noreferrer\">Nielsen Norman Group — The Anchoring Principle</a>"
+    ]
+  },
+  "context-rerender-storm": {
+    "junior": [
+      "<a href=\"https://react.dev/learn/passing-data-deeply-with-context\" rel=\"noopener noreferrer\">React — Passing Data Deeply with Context</a>"
+    ],
+    "mid": [
+      "<a href=\"https://react.dev/learn/passing-data-deeply-with-context\" rel=\"noopener noreferrer\">React — Passing Data Deeply with Context</a>",
+      "<a href=\"https://react.dev/reference/react/useContext#optimizing-re-renders-when-passing-objects-and-functions\" rel=\"noopener noreferrer\">React — useContext (Optimizing re-renders)</a>"
+    ],
+    "staff": [
+      "<a href=\"https://react.dev/reference/react/useContext#optimizing-re-renders-when-passing-objects-and-functions\" rel=\"noopener noreferrer\">React — useContext (Optimizing re-renders)</a>"
+    ]
   }
 }

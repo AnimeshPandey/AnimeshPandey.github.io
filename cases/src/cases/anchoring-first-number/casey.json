@@ -1,0 +1,97 @@
+{
+  "slug": "anchoring-first-number",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Same three plans, same three prices — reorder them so Enterprise appears first instead of last, and the complaint that Pro at $29 felt expensive mostly disappeared.",
+      "mid": "Seeing $9 first makes $29 look like more than three times as much; seeing $99 first makes the same $29 look like less than a third — both true, both shaping the same number's perceived expense.",
+      "staff": "The original research shows this holding up even when people are told an anchor is arbitrary and explicitly told to ignore it — a pricing page's order isn't a neutral formatting choice."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle the two orderings below — same three prices and features in both, only the order changes, notice which plan reads as pricey each time.",
+      "mid": "The cheapest-first ordering is what most pricing pages ship by default without thinking about it; the priciest-first ordering deliberately sets a high anchor before Pro.",
+      "staff": "The Most Popular badge stays on the same card, same price, same relative position to the other two in both orderings — only which price anchors the reader first changes."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Anchoring means the first number someone sees becomes the reference point every later number gets judged against, not some absolute sense of what's fair.",
+      "mid": "Ordering the highest tier first sets a high anchor so a mid-tier price reads as reasonable by comparison; a crossed-out 'original price' does the same thing even when nobody paid it.",
+      "staff": "Ordering off a real, purchasable option is informative framing; a crossed-out price that was never actually charged is closer to manufacturing a false reference point — the mechanism is identical, the honesty isn't."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "If you have a plan you want most people to pick, put a higher-priced option ahead of it in reading order instead of defaulting to plain cheapest-first.",
+      "mid": "Test tier ordering for real outcomes, fewer 'why is this so expensive' conversations is a measurable result, and watch for a ceiling effect, anchoring shifts perception, it doesn't manufacture willingness to pay from nothing.",
+      "staff": "Keep reference pricing honest — an anchor from a price never actually charged is a false-reference-price problem in some advertising law, not just a UX nitpick, and it's easy for readers to catch today."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about a pricing page where the exact same middle plan felt expensive in one card order and felt like a good deal in another, with absolutely nothing about the plan itself changed.",
+        "mid": "The first price someone sees sets a reference point, and every price after it gets judged against that reference rather than against some independent sense of what's fair.",
+        "staff": "This isn't a trick that only works on inattentive readers, research shows the effect holding up even when people are explicitly warned the anchor number is arbitrary and told to ignore it."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Anchoring means whatever number you see first becomes the yardstick you measure everything after it against, even if that number wasn't meant to be a yardstick at all.",
+        "mid": "Putting the highest-priced tier first sets a high anchor, so a middle plan that follows reads as comparatively reasonable, that's the exact mechanism behind the ordering.",
+        "staff": "A real option ordered first is honest framing, but a crossed-out price nobody ever actually paid is manufacturing a reference point that never existed, same mechanism, very different honesty."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Switch between the two orderings and notice which plan your eye judges as the expensive one each time.",
+        "mid": "All three prices and features are identical in both versions, only the order the cards appear in changes.",
+        "staff": "The popular badge stays on the same card in both versions, so you can see clearly that only the ordering, not the plan itself, is doing the work here."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "The first price a reader sees sets the scale for every price that follows, the same plan can feel expensive or reasonable purely based on what came before it.",
+        "mid": "Order pricing tiers deliberately, put a higher anchor ahead of the plan you actually want people to choose.",
+        "staff": "Keep any anchor honest, ordering real purchasable options is legitimate, but a fabricated crossed-out price is a false reference point, not just a UX technique."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try cheapest first", "target": "[data-demo-state=broken]" },
+        { "label": "Try priciest first", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle cheapest first", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle priciest first", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Cheapest-first state", "target": "[data-demo-state=broken]" },
+        { "label": "Priciest-first state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

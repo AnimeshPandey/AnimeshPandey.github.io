@@ -1,0 +1,179 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Rendering Model Markdown Safely in React"
+description: "Why piping an LLM's markdown reply through a markdown-to-HTML converter and dangerouslySetInnerHTML is a real XSS vector, and how sanitizing the resulting HTML before render closes it without losing formatting."
+slug: markdown-render-sanitize
+track: ai-frontend-integration
+readMin: 10
+flagship: false
+demoType: toggle
+principle: XSS
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/markdown-render-sanitize-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The support copilot that ran a script tag from inside a customer's own ticket</h2>
+  <div class="tone-junior">
+    <p>
+      A support dashboard adds an AI panel that summarizes a ticket and, when asked, quotes the customer's original message back for context. The model's reply comes back as markdown, bold text, a bullet list, a blockquote for the quoted message, so the frontend runs it through a markdown-to-HTML converter and drops the result straight into the page with <code>dangerouslySetInnerHTML</code>. It looked fine in every demo, formatted nicely, quote indented, done.
+    </p>
+    <p>
+      One ticket had a customer who'd pasted a chunk of HTML into their original message, not maliciously at first, just a copy-pasted email signature with an image tag in it. The model, asked to "quote the customer's message," reproduced it verbatim inside its markdown reply. The markdown converter left the embedded HTML untouched, that's normal markdown behavior, and the moment it landed in the DOM, the image's <code>onerror</code> handler fired and ran arbitrary JavaScript inside the support agent's dashboard, in their logged-in session.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Nothing about this required the model provider to be compromised or "jailbroken." The model was doing exactly what it was asked, quoting text back, and most markdown parsers pass through raw inline HTML by design, that's a documented feature, not a bug in the parser. The vulnerability was entirely in the frontend's assumption that "it came from our AI panel" meant "it's safe to inject as HTML."
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is a textbook stored/reflected XSS chain with an LLM sitting in the middle instead of a traditional form field, the attacker-controlled string enters through user input (a pasted ticket message), transits through a system that doesn't strip or escape it (the model faithfully reproducing text, and a markdown-to-HTML pass that intentionally preserves raw HTML), and lands in <code>innerHTML</code> with no sanitization step in between. Treating "the AI said it" as a trust boundary is the actual bug; the AI is a pass-through for whatever it was shown or influenced to produce.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Model output is untrusted input, sanitize the HTML after conversion, not before</h2>
+  <div class="tone-junior">
+    <p>
+      Markdown converters like <code>marked</code> or <code>markdown-it</code> turn <code>**bold**</code> into <code>&lt;strong&gt;bold&lt;/strong&gt;</code>, that part is safe. The problem is that most of them also let raw HTML the input already contained pass straight through unchanged, so a <code>&lt;script&gt;</code> tag or an <code>&lt;img onerror=...&gt;</code> sitting in the model's reply comes out the other side exactly as dangerous as it went in. The fix is a second pass after markdown conversion: run the resulting HTML string through a sanitizer, a library built specifically to strip anything that can execute, before it ever reaches <code>dangerouslySetInnerHTML</code>.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <a href="https://github.com/cure53/DOMPurify" rel="noopener noreferrer">DOMPurify</a> is the standard choice: it parses the HTML, walks every node, and removes script tags, inline event handler attributes (<code>onerror</code>, <code>onclick</code>, and dozens of others), <code>javascript:</code> URLs, and other execution vectors, while keeping the formatting tags you actually want.
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>import { marked } from 'marked';
+import DOMPurify from 'dompurify';
+
+function renderModelMarkdown(modelText) {
+  const rawHtml = marked.parse(modelText);      // HTML string, may contain raw &lt;script&gt;/&lt;img onerror&gt;
+  const safeHtml = DOMPurify.sanitize(rawHtml);  // strips anything that can execute
+  return &lt;div dangerouslySetInnerHTML=&#123;&#123; __html: safeHtml &#125;&#125; /&gt;;
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Sanitize <em>after</em> markdown conversion, not the raw model text before it, some payloads only become dangerous once assembled into HTML (a markdown link syntax resolving to a <code>javascript:</code> href, for instance), so sanitizing pre-conversion text can miss what the converter later produces. Also disable raw-HTML passthrough at the markdown parser itself where the library supports it (<code>marked</code>'s <code>sanitize</code> option is deprecated in favor of exactly this DOMPurify-after pattern; <code>markdown-it</code>'s <code>html: false</code> stops raw HTML from ever being emitted in the first place), and still run DOMPurify afterward, defense in depth beats relying on any single library's default configuration staying safe across every version.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The fix that also had to survive markdown's own weird corners</h2>
+  <div class="tone-junior">
+    <p>
+      The team's first fix was to add DOMPurify with its default settings, run the ticket back through the demo payload, and confirm the injected image tag no longer fired. That part worked immediately. But the fix also had to not break the feature, quoted customer text with real formatting, bullet points in a summary, a link back to the original ticket, all still needed to render exactly as before.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      DOMPurify's default allowlist already covers exactly that: standard formatting tags, safe attributes, links, stay intact; anything that can execute is gone. The team added one explicit hook on top of the default config to force <code>rel="noopener noreferrer"</code> and <code>target="_blank"</code> onto every link DOMPurify let through, since a model-generated link with a bare <code>target="_blank"</code> and no <code>rel</code> is its own smaller footgun (reverse tabnabbing) even once the obviously dangerous tags are stripped.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      They also disabled raw-HTML passthrough in the markdown parser itself as a second layer, so a payload would have to survive two independent sanitization steps, not one, to reach the DOM. And they added a regression fixture: the exact payload from the original incident, run through the render pipeline in CI on every change, asserting the output contains no <code>&lt;script&gt;</code>, no <code>on</code>-prefixed attributes, and no <code>javascript:</code> scheme, so the fix couldn't silently regress the next time someone touched the markdown pipeline.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Model markdown piped through a converter and straight into dangerouslySetInnerHTML lets embedded HTML execute unchecked (broken) vs. sanitizing the converted HTML before render, stripping scripts and event handlers while keeping formatting (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch the payload actually run, then watch it get stripped</h2>
+  <div class="tone-junior">
+    <p>The sample "model reply" below has a hidden <code>&lt;img onload&gt;</code> payload sitting inside an otherwise normal-looking quoted message. Render it in each mode and watch the warning banner at the top of the viewport.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode runs a real markdown-to-HTML pass with raw HTML left intact, then sets it via <code>innerHTML</code>, the same mechanism as <code>dangerouslySetInnerHTML</code>. The payload's <code>onload</code> handler genuinely fires in this page (safely contained to the demo's own banner, nothing leaves this viewport) — a real payload just as often rides on a valid, always-loading image as on a broken one.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Fixed mode runs the same markdown conversion, then a sanitize pass that strips <code>&lt;script&gt;</code>/<code>&lt;style&gt;</code> tags entirely and removes every <code>on*</code> attribute and <code>javascript:</code>-scheme URL from what's left, the demo's own minimal stand-in for what a library like DOMPurify does at production scale; ship the real library, not a hand-rolled version of this, see FE depth below.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Rendering a model reply containing a hidden script-executing payload: unsanitized HTML actually runs the payload (broken) vs. sanitized HTML stripping it before render (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="markdown-render-sanitize">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo renders a model markdown reply containing a hidden script-executing payload, comparing an unsanitized render (the payload runs) against a sanitized one (the payload is stripped); it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Unsanitized render
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Sanitized render
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Sanitized render</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Use a real sanitizer library, and remember it isn't a one-time fix</h2>
+  <div class="tone-junior">
+    <p>
+      Don't hand-roll a sanitizer with regular expressions for real production code, matching every dangerous HTML shape with regex is famous for missing edge cases (case variations, encoded characters, nested tags), which is exactly why DOMPurify exists as a maintained, widely-audited library instead of a snippet everyone reinvents slightly wrong.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Sanitization needs to stay current: DOMPurify ships updates specifically because new mutation-XSS techniques and browser parsing quirks keep getting discovered, pin a real version and keep it updated rather than vendoring a snapshot. Also add a Content-Security-Policy header as a second, independent layer, if a sanitizer bug ever lets something through, a strict <code>script-src</code> can still block it from executing.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This applies regardless of which model or provider you're using, and regardless of how much you trust that provider's alignment work, the vulnerable step is entirely on your own rendering path, not inside the model. Prompt injection (text hidden in a document the model reads, or in this case a customer's own pasted content) can steer what a model reproduces even when the model itself is behaving exactly as designed; the only reliable boundary is treating every string that reaches your DOM through a markdown-to-HTML-to-innerHTML pipeline as untrusted, the same way you'd treat a raw form field, no matter how many systems it passed through first.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">Markdown converters typically pass raw HTML through unchanged, so a model reply piped into dangerouslySetInnerHTML can execute a script or an onerror handler exactly like a malicious form field would.</div>
+        <div class="tone-mid">Run the converted HTML through a sanitizer like DOMPurify before it reaches the DOM, strip scripts, event handler attributes, and javascript: URLs while keeping real formatting intact.</div>
+        <div class="tone-staff">Treat model output as untrusted input regardless of provider or prompt design, sanitize as a second independent layer alongside a strict CSP, and keep the sanitizer library itself updated as new bypass techniques get discovered.</div>
+      </li>
+    </ul>
+  </div>
+</section>
