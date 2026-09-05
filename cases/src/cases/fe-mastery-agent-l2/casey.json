@@ -1,0 +1,103 @@
+{
+  "slug": "fe-mastery-agent-l2",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A whole sprint went into debugging duplicate ticket processing and silent hangs — none of it touched the agent's actual triage logic.",
+      "mid": "The core prompt and tools had been stable for months; nearly all recent engineering time went into orchestration nobody meant to build a career around.",
+      "staff": "Durable execution is easy to underestimate because the loop itself is trivial to write — until a production incident forces you to build the hard parts anyway, under worse time pressure."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Toggle between hand-rolled and hosted and watch what each team actually spent last week's time on.",
+      "mid": "Same team, same feature — the hand-rolled column is dominated by infra debugging, the hosted column by real agent-logic work.",
+      "staff": "This isn't 'hosted is strictly better' — it's a reallocation of the same total effort, which is the right lens to evaluate a graduation call on."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Persistence, retries, observability, and scaling are the four recurring needs a hosted platform solves once, for every agent that runs on it.",
+      "mid": "The signal is real production pain on two or more of those four, not a hypothesis about future scale.",
+      "staff": "Graduating is a build-vs-buy call scoped to orchestration only — the agent's actual decision logic is usually portable and doesn't need to be rewritten."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "What moves to the platform is the execution scaffolding, not the prompt, tools, or business logic — the team still owns those.",
+      "mid": "Tag last quarter's incidents 'agent logic' vs 'orchestration' — if orchestration dominates, that's concrete evidence for graduating, not a vague feeling.",
+      "staff": "A platform won't make an unsafe-to-retry side effect safe by itself — idempotency for things like a payment charge still needs deliberate design at the step level."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "A team building a support ticket triage agent spent an entire sprint debugging why some tickets got processed twice, why a slow call could make the whole thing silently hang, and why nobody could tell what step a stuck ticket was actually on. None of that was the agent's real logic, it was all infrastructure they'd hand built around the loop.",
+        "mid": "The team's prompt and tools had been stable for months, but nearly all their recent time went into orchestration problems that have nothing to do with ticket triage specifically.",
+        "staff": "The loop itself is so easy to write that it's easy to underestimate everything durable execution actually needs, until an incident forces you to build all of it anyway, under worse time pressure."
+      },
+      {
+        "chapter": "concept",
+        "junior": "A hand rolled loop is a fine place to start, but a hosted platform earns its cost once the team spends more time worrying about failed steps and visibility than about what the agent actually decides.",
+        "mid": "The four recurring needs are persistence, retries, observability, and scaling, and the real signal is hitting production pain on two or more of them, not just imagining you might someday.",
+        "staff": "This is really a build versus buy call scoped just to orchestration, the agent's actual decision logic usually stays portable, it's the loop and retry code underneath that gets replaced."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Switch between the hand rolled team and the graduated team and see where each one's week actually went.",
+        "mid": "Same team, same size, but one column is full of infrastructure firefighting and the other is full of real agent work.",
+        "staff": "The total effort here doesn't disappear, it just moves off this team's plate and onto the platform's, which is the actual trade worth evaluating."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "If a team spends more time on retries and lost state than on the agent's real logic, that's the actual signal to graduate.",
+        "mid": "Watch persistence, retries, observability, and scaling specifically, and graduate once real pain shows up on two or more of them.",
+        "staff": "Graduating moves the orchestration burden, not the decision logic, and it doesn't automatically make an unsafe retry safe, that still needs deliberate design."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

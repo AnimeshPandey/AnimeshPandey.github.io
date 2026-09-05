@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Error Boundaries That Actually Recover"
+description: "A React error boundary that shows 'Something went wrong' forever isn't recovering — it's just containing. See why a working boundary needs a reset path, not only a catch."
+slug: error-boundary-recovery
+track: react
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Resilience
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/error-boundary-recovery-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The fallback that outlived the bug</h2>
+  <div class="tone-junior">
+    <p>
+      A dashboard widget crashed whenever the websocket delivered a malformed price update — a genuine, occasional bug on the backend. The frontend team wrapped it in a React error boundary, which is exactly the right instinct: instead of a blank white screen, users saw a calm "Something went wrong" card. Shipped, tested, closed the ticket.
+    </p>
+    <p>
+      Then the backend bug got fixed a few seconds later, and the feed started sending valid data again. The widget never came back. Every user who'd hit the crash once kept seeing "Something went wrong" for the rest of their session, even though the data feeding it was fine again — the only way back was a full page reload.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The error boundary did exactly what its <code>getDerivedStateFromError</code>/<code>componentDidCatch</code> contract promises: it caught the render-phase exception and swapped in fallback UI instead of unmounting the whole app. What it didn't do — because nothing told it to — was ever attempt to render the real subtree again. <code>hasError</code> stayed <code>true</code> in the boundary's own state for the rest of that component instance's lifetime, so every subsequent re-render, no matter what changed upstream, rendered the same fallback branch.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the gap between "catches an error" and "recovers from an error," and it's easy to miss in code review because the fallback UI looks like success — no crash, no blank screen, a friendly message. But a boundary with no reset path degrades every subsequent render of that subtree to the fallback for the lifetime of the component, regardless of whether the triggering condition still holds. It quietly converts a transient error into a permanent one.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Give the boundary a reason to try again</h2>
+  <div class="tone-junior">
+    <p>
+      A React error boundary is a component that implements <code>static getDerivedStateFromError()</code> (to flip into fallback rendering) and <code>componentDidCatch()</code> (to log or report). Once that internal flag is set, React keeps rendering the fallback branch — there's no built-in timer or condition that flips it back automatically. Recovery means something external gives the boundary a reason to attempt a real mount again: either changing the <code>key</code> prop on the boundary (React treats a new key as "this is a different component instance," so it discards the old tree — including the error state — and mounts a fresh one), or calling an explicit reset function — like the <code>resetErrorBoundary()</code> the popular <code>react-error-boundary</code> library hands to your fallback — from a "Try again" button, which clears <code>hasError</code> and re-attempts the render.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Two real mechanisms, same underlying idea: force a fresh mount attempt instead of continuing to render a stale caught-error branch. Bumping the key (<code>&lt;ErrorBoundary key={connectionId}&gt;</code>) makes React discard and remount the whole subtree whenever <code>connectionId</code> changes — useful when you already have a natural signal that the underlying condition changed. Calling a reset callback from a "Try again" button clears the boundary's internal error state and re-renders children directly — useful when the user, not a prop, should control the retry. <code>react-error-boundary</code>'s <code>resetKeys</code> prop combines both: pass an array, and the boundary auto-resets whenever any entry in it changes, without you hand-wiring the comparison.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Both mechanisms produce a genuine new render attempt of the previously-crashing children — not a cached "looks fixed" state. That matters: if the underlying cause hasn't actually changed, the fresh attempt throws again and the boundary re-catches it, which is correct behavior, not a bug in the reset. The dangerous version is a reset that fires unconditionally — on a timer, or on every parent re-render — which produces a crash-reset-crash loop that can pin the main thread or spam an error-reporting service. A <code>resetKeys</code> array (or an explicit, user-triggered button) that only fires on an actual state change is the safer default over an automatic interval retry.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The retry button that told the truth</h2>
+  <div class="tone-junior">
+    <p>
+      A different team building the same kind of live-data widget added a "Try again" button inside their error boundary's fallback from the start. The button called a reset function that cleared the caught-error flag and rendered the widget's children fresh. The first time a user hit the same malformed-data bug and clicked "Try again" immediately, the widget crashed a second time — because the bad data was still arriving. That's expected: the button gives a real second chance, it doesn't guarantee success.
+    </p>
+    <p>
+      A few seconds later, once the backend actually recovered, the same user clicked "Try again" once more, and the widget rendered correctly — no reload, no lost scroll position, no lost session.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The interesting design detail is that the second crash wasn't a failure of the pattern — a boundary reset is supposed to attempt a real render and let it fail again if the cause is still active. What made this version trustworthy was pairing the manual "Try again" button with a <code>resetKeys</code> entry tied to the websocket's last-message timestamp: even without the user clicking anything, a genuinely new message arriving reset the boundary automatically, so recovery didn't strictly depend on someone noticing and clicking.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This also fixed an error-reporting problem the previous team didn't have a name for yet: <code>componentDidCatch</code> fired once per crash, which is correct, but a version with no working reset meant one root cause generated exactly one report per user even though the fallback then displayed for the rest of the session — undercounting how many render attempts users were actually blocked on. Once resets were wired in, each real re-crash produced its own <code>componentDidCatch</code> call, giving an honest count of how many times users kept hitting the same still-broken condition — which is what actually justified escalating the backend fix's priority.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A caught error with no reset renders the same fallback forever (broken) vs. a reset key or callback that gives the subtree a genuine fresh mount attempt on every retry (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch a reset actually try again</h2>
+  <div class="tone-junior">
+    <p>Push a malformed update to crash the widget, then try to bring it back. In broken mode, nothing works except reloading the page. In fixed mode, watch "Try again" actually attempt a fresh render — and actually fail again if the data's still bad.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode's fallback state never changes once <code>hasError</code> is true, no matter what button you click. Fixed mode's "Try again" clears that flag and re-renders the real children, so it succeeds or fails based on the data at that exact moment.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice fixed mode can crash twice in a row — click "Try again" before pushing a valid update, and it re-crashes immediately. That's the reset path working correctly, not a demo bug: a genuine remount attempt against a still-broken condition should fail again.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Error boundary with no reset path stuck on a fallback forever (broken) vs. a boundary with a working reset that attempts a genuine fresh mount (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="error-boundary-recovery">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a crashing widget inside a React error boundary with and without a working reset path; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No reset path
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Reset on retry
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Reset on retry</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>What a boundary still can't catch — and how resets can misfire</h2>
+  <div class="tone-junior">
+    <p>
+      Error boundaries only catch errors thrown while React is rendering, in lifecycle methods, or in constructors of the components below them — not errors inside event handlers (an <code>onClick</code> that throws needs its own <code>try</code>/<code>catch</code>), not errors in asynchronous code like a <code>setTimeout</code> or a fetch callback, and not errors in the boundary component itself. A recovery design that only wires up the render-phase boundary and assumes it also protects a broken click handler will leave that click handler crashing the whole page anyway.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This means "add error boundary recovery" is really two separate jobs: the boundary/<code>resetKeys</code> pattern covers render-phase failures in descendants, while event-handler and async failures need their own <code>try</code>/<code>catch</code> (or a wrapping utility) that reports and recovers locally, often by just setting local component state rather than involving the boundary at all. Conflating the two leads to false confidence — "we have an error boundary" — while a crash in an async callback still takes down the page.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The other real footgun is a reset that fires too eagerly. <code>resetKeys</code> is a shallow comparison against the previous render's array — if you accidentally include a value that changes on every render (an inline object or array literal, a timestamp recomputed on each pass), the boundary resets on every single render, which defeats the point of catching anything: it immediately re-attempts and re-throws in a tight loop. The safe pattern ties a <code>resetKeys</code> entry to something that only changes when the actual upstream condition changes — a request ID, a websocket connection ID, a data version number — verified in DevTools by confirming the reset only fires when you'd expect it to, not on every parent re-render.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A boundary that catches an error but never gets a reason to try again will show the same fallback forever, even after the real problem is gone — recovery needs an explicit reset path, not just a catch.</div>
+        <div class="tone-mid">Wire a key change, a resetKeys array, or an explicit reset callback into every error boundary that's meant to recover, not just contain — a caught error with no way back is a permanent one.</div>
+        <div class="tone-staff">Reset on a real changed signal (a connection ID, a request ID, a resetKeys entry that isn't recomputed every render) rather than an unconditional timer, and remember the boundary only ever covers render-phase errors in descendants, not event handlers or async callbacks.</div>
+      </li>
+    </ul>
+  </div>
+</section>

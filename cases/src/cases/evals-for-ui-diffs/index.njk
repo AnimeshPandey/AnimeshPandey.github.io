@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Evals for UI Diff Suggestions"
+description: "An AI code-review bot that suggests UI fixes has no way to know if a prompt change made it better or worse without a real eval set — see what a minimal golden-set harness catches before it ships."
+slug: evals-for-ui-diffs
+track: agentic-ai
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Evals
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/evals-for-ui-diffs-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The prompt tweak that quietly made every suggestion worse</h2>
+  <div class="tone-junior">
+    <p>
+      A team built a bot that reviews pull requests and suggests small UI fixes — a missing <code>alt</code> attribute, a color-contrast issue, an unlabeled button. It worked well enough that people trusted its suggestions and started auto-applying the "safe" ones. A few weeks in, someone tweaked the prompt to make suggestions "more concise," shipped it the same afternoon, and moved on.
+    </p>
+    <p>
+      Suggestion quality quietly dropped — the bot started proposing fixes that were syntactically valid but semantically wrong (removing an <code>aria-label</code> instead of fixing the element it was warning about), and nobody noticed for two weeks, because nothing was measuring quality before or after that change. The only signal was a growing trickle of engineers grumbling that "the bot's suggestions have been kind of bad lately."
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team had strong intuitions about individual examples — "this suggestion looks right," "that one looks off" — but no standing way to compare suggestion quality across a prompt or model change at the scale that actually matters: dozens of real diffs, scored consistently, before shipping. Every iteration was a bet made on vibes and a handful of manually-eyeballed examples, which don't scale past the first few changes and don't catch a regression on an input nobody happened to check by hand.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the general failure mode of any AI feature with an open-ended, subjective output — a suggestion isn't right or wrong the way a unit test assertion is, so it's tempting to skip building an eval and just ship-and-watch. But "ship and watch for complaints" is a detection mechanism with a multi-week latency and a strong bias toward missing quiet regressions entirely, since most affected users don't complain, they just quietly stop trusting the suggestions.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>A fixed set of inputs with known-good expected outputs, scored every time</h2>
+  <div class="tone-junior">
+    <p>
+      An eval set (or "golden set") is a small, fixed collection of real inputs — real diffs, in this case — each paired with a known-good expected output or a rubric for judging one. Every time the prompt or model changes, you run the whole set through the new version and score the results the same way, automatically, instead of eyeballing a few examples by hand. The score is a number you can compare across versions: did this change make things better or worse, on average, across the same fixed set of cases.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The two moving parts are the golden set itself (input diffs chosen to cover the range of cases the bot actually sees — an obvious fix, an ambiguous one, an edge case that should produce "no suggestion" rather than a forced one) and the scoring function, which for a subjective output like a code suggestion is usually a mix of a few cheap deterministic checks (does the diff apply cleanly, does it touch the file the issue was actually in) plus either a rubric an LLM judge scores against, or a human-labeled "acceptable/not acceptable" verdict per case that a new run gets compared against.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The discipline that actually pays off is treating a regression on the golden set as a merge blocker, not a lagging indicator someone checks later — wiring the eval run into CI on every prompt/model-affecting change means a regression is caught in the same PR that introduced it, while the diff causing it is still in the reviewer's short-term memory, instead of surfacing two weeks later as a vague quality complaint with no obvious commit to blame.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The eval that caught the regression in the same PR</h2>
+  <div class="tone-junior">
+    <p>
+      A different team building a similar suggestion bot kept a golden set of 40 real past diffs, each with a human-reviewed "good suggestion" example and a short rubric. When someone proposed the same kind of "make it more concise" prompt change, CI ran the new prompt against all 40 cases automatically and flagged that 6 of them now failed a basic check — the suggested diff referenced a line number that didn't exist in the file, because the more concise prompt had dropped the instruction to always quote the exact surrounding lines.
+    </p>
+    <p>
+      The regression was visible in the PR itself, before merge, with the exact 6 failing cases listed out. The fix was a two-line prompt adjustment; the whole detour cost an extra ten minutes of that PR, not two weeks of silently degraded suggestions in production.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      What made this catch fast rather than eventually-maybe was that the eval ran on every PR touching the prompt, not on a schedule or "before a big release" — the feedback loop matched the size of the change under review, so a two-line prompt edit got checked within minutes, the same speed a unit test failure would be caught, rather than waiting for a periodic audit that might run days after the change had already shipped.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The golden set itself grew from real incidents, not from someone imagining edge cases up front: every time a bad suggestion made it to production and someone reported it, that diff got added to the golden set with the correct expected behavior, so the eval set organically covered the actual failure modes this specific bot had actually hit, rather than a generic list of "things that might go wrong" imagined in the abstract.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Shipping a prompt change with no eval set means a quality regression is only found weeks later from complaints (broken) vs. a golden-set harness that scores every change automatically and blocks the PR on a regression (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Ship the same prompt change with and without an eval gate</h2>
+  <div class="tone-junior">
+    <p>Apply the same "more concise" prompt change in both modes and watch what happens next. One ships blind; the other runs it against a golden set first and shows you exactly what broke.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode has no scoring step between "prompt changed" and "shipped" — the regression is invisible until the complaints log fills in later. Fixed mode runs the same golden set through both prompt versions and diffs the pass rate before merge.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Watch which specific golden-set cases flip from pass to fail in fixed mode — that's the information a "ship and watch" approach never produces, because it only ever sees aggregate complaints, never which input triggered the regression.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="Shipping a prompt change with no eval harness, regression discovered later from complaints (broken) vs. running the change against a golden set first and blocking on a regression (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="evals-for-ui-diffs">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates shipping a prompt change to an AI suggestion bot with and without a golden-set eval gate; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No eval gate
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Golden-set gate
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Golden-set gate</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:200px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Keeping a golden set honest as the bot changes</h2>
+  <div class="tone-junior">
+    <p>
+      A golden set isn't "write it once and forget it" — every real bad suggestion that reaches production is a case that was missing from the set. Adding it after the fact, with the correct expected output, is how the eval set actually grows to cover the bot's real failure modes over time instead of staying a fixed snapshot of what someone thought to test on day one.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A golden set that's too small or too narrow gives false confidence — 8 cases that are all "obvious, easy" suggestions will show 100% pass rate on almost any prompt change, including a genuinely worse one, simply because none of the 8 cases exercise the part of the behavior that regressed. The set needs deliberate coverage of the ambiguous and edge cases, not just the ones the bot already handles well.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      When the scoring function itself is an LLM judge rather than a deterministic check, the judge's own prompt is part of what needs versioning and stability-checking — a judge that silently changes its own scoring criteria between runs (because the underlying judge model was upgraded, say) can show a false "quality improved" or "quality regressed" signal that has nothing to do with the suggestion bot's actual output. Pin the judge model version, and periodically spot-check judge scores against human labels on a subset, the same way you'd validate any other automated grader before trusting its verdict on a merge-blocking gate.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">An AI suggestion feature with no eval set has no way to know if a prompt or model change made it better or worse until users start complaining — usually weeks after it shipped.</div>
+        <div class="tone-mid">Build a small golden set of real inputs with known-good expected outputs, score every prompt/model change against it automatically, and treat a regression there as a merge blocker, not a lagging indicator.</div>
+        <div class="tone-staff">Grow the golden set from real production failures rather than imagined edge cases, watch for eval sets too small or too easy to catch a real regression, and version/spot-check an LLM judge's own scoring the same way you'd validate any other grader.</div>
+      </li>
+    </ul>
+  </div>
+</section>

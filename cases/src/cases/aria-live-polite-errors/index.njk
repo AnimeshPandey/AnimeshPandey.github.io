@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "aria-live for Form Errors"
+description: "A form error with a red border and red text can still be completely silent to a screen reader — see why aria-live='polite' (and when role='alert' instead) is what actually announces it."
+slug: aria-live-polite-errors
+track: accessibility
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Live regions
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/aria-live-polite-errors-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The error only sighted users could see</h2>
+  <div class="tone-junior">
+    <p>
+      A signup form validated email addresses on submit: an invalid address got a red border and red text underneath the field — "Please enter a valid email address." Sighted users noticed it immediately; the layout barely moved, and the red instantly signals "fix something here."
+    </p>
+    <p>
+      A screen reader user filled out the same form, clicked submit, and heard nothing. The page hadn't reloaded, no confirmation was announced, nothing seemed to happen at all. They had no way to know the submit had failed, let alone why — the error text existed on the page, but nothing ever told their screen reader to read it.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The error message was inserted into the DOM correctly — the markup and the CSS were both fine. What was missing was any mechanism for assistive technology to notice the insertion: no <code>aria-live</code> attribute on the container, no <code>role="alert"</code>, and focus never moved to the error text. A screen reader only announces a content change it's told to watch, or content that focus lands on — a plain DOM mutation is invisible to it by default.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This gap is common precisely because it's asymmetric: the failure is completely undetectable to anyone testing the form by looking at it, which is how most PR review and most manual QA happens. It only shows up under an actual screen reader, or an automated scan flagging the missing live region, which means it survives in production far longer than a visually broken layout would — exactly because the visual layer works perfectly.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Mark the container as live before the error ever appears</h2>
+  <div class="tone-junior">
+    <p>
+      <code>aria-live</code> is an ARIA attribute you put on a container up front, before anything inside it changes — it tells assistive technology "watch this element, and announce it out loud whenever its content changes." <code>aria-live="polite"</code> is the usual choice for form errors: when the error text appears, the screen reader speaks it, but only after finishing whatever it's currently reading, not by interrupting mid-sentence.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The attribute has to be present on the container before the mutation happens — adding <code>aria-live</code> to an element at the same moment you also fill it with the error text is unreliable across screen readers, because the live-region registration itself needs to happen first. The usual pattern: render an empty <code>aria-live="polite"</code> container as part of the form's initial markup, then only update its <code>textContent</code> when validation fails. The empty container costs nothing visually, and nothing is announced until it actually has something to say.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>role="alert"</code> is the more urgent sibling — it implies <code>aria-live="assertive"</code>, which interrupts whatever the screen reader is currently announcing to speak immediately. That's correct for something the user must not miss right now — a failed payment, a session timeout — but it's the wrong choice for routine per-field validation, where interrupting a user who's still mid-sentence reading label text to announce "invalid email" every time they tab away from a field is disruptive rather than helpful. <code>polite</code> for expected, non-blocking validation feedback; <code>assertive</code>/<code>role="alert"</code> reserved for the errors that actually need to cut in line.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The checkout error nobody heard until it interrupted them</h2>
+  <div class="tone-junior">
+    <p>
+      A checkout form used <code>aria-live="polite"</code> uniformly for every error, including a failed payment after clicking "Place order." A screen reader user submitted, and the polite announcement queued up behind whatever they navigated to next — by the time it spoke, they'd already tabbed past the button assuming the order went through, and only found out it hadn't several actions later.
+    </p>
+    <p>
+      The team split the two cases: field-level validation errors stayed polite, since they're expected and shouldn't interrupt typing. The payment-failure banner switched to <code>role="alert"</code> — now it interrupts immediately, because a failed charge is exactly the kind of thing a user must not walk away from.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The distinction that mattered here wasn't "is this an error" — both cases were errors — it was "can this wait for a natural pause, or does it need to preempt whatever the user is doing right now." A field error is recoverable and expected mid-form; a failed charge after the user has committed to submitting changes what they should do next, and a polite announcement that gets silently deprioritized behind their next action defeats the point of announcing it at all.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This also surfaced a subtler bug: the same polite live region was being reused for every field's error by clearing and rewriting its <code>textContent</code>, and some screen reader/browser combinations coalesce or drop rapid successive updates to the same live region — a second error overwriting the first before it finished being announced could silently swallow it. The fix gave the submit-level alert its own dedicated <code>role="alert"</code> region, separate from the per-field polite region, so a submit failure was never competing with a field error for the same announcement slot.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">A visible error with no aria-live or role attribute is never announced to screen readers (broken) vs. an aria-live="polite" container that announces the same error automatically the moment it appears (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch what a screen reader actually hears</h2>
+  <div class="tone-junior">
+    <p>Submit the form with a bad email in each mode and watch the "What a screen reader hears" log next to it — not just the red text everyone can see.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The visual error looks identical in both modes. The difference is entirely in whether the error container was marked <code>aria-live="polite"</code> before the error text was written into it.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Watch for the log staying silent in broken mode even though the DOM update is real and correct — this is exactly the failure mode a visual QA pass can't catch.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A form error with no live-region attribute never reaching a simulated screen reader log (broken) vs. an aria-live='polite' container announcing the same error into the log (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="aria-live-polite-errors">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates submitting a form with an invalid email and shows what a screen reader would (or wouldn't) announce; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No live region
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            aria-live=polite
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: aria-live=polite</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Announcement timing, and what else needs the same treatment</h2>
+  <div class="tone-junior">
+    <p>
+      <code>aria-live</code> isn't limited to red error text — any content that updates without a full page navigation (a "saved" confirmation, a cart item count, a search results count) needs the same consideration: will a screen reader user know it changed at all if they're not currently focused there?
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Clearing and rewriting the exact same error text back-to-back can fail to re-announce in some screen reader/browser pairings, since there's technically no textual diff to notice — a common workaround is briefly clearing the live region to an empty string, then setting the real message on the next frame, forcing a genuine mutation the live region has to react to.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Live regions and <code>role="alert"</code> both only work reliably if the element carrying the attribute is present in the DOM before the content change — inserting a brand-new element with <code>aria-live="polite"</code> already containing the error text, versus updating an existing empty live region, are not equivalent across every screen reader/browser combination; some announce the former inconsistently because the live-region registration and the content mutation land in the same paint. Render the empty live-region container up front, and only ever mutate its contents afterward — verified with an actual screen reader (VoiceOver + Safari, or NVDA + Firefox), not just an automated scan, since automated tools catch the missing attribute but can't confirm the announcement timing actually works.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A form error with no aria-live or role attribute might be perfectly visible and still be completely silent to a screen reader user — the visual fix isn't automatically the accessible fix.</div>
+        <div class="tone-mid">Render an empty aria-live="polite" container in the form's initial markup and only write the error text into it afterward — that ordering is what makes the announcement reliable.</div>
+        <div class="tone-staff">Reserve role="alert" (assertive) for errors the user must not miss right now, like a failed payment, and keep routine field validation on aria-live="polite" so it doesn't interrupt whatever they're still doing.</div>
+      </li>
+    </ul>
+  </div>
+</section>

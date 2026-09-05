@@ -1,0 +1,103 @@
+{
+  "slug": "error-boundary-recovery",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "The widget crashed once on bad websocket data — and kept showing 'Something went wrong' long after the data was fine again.",
+      "mid": "hasError flipped to true in componentDidCatch and just stayed true. Nothing ever told the boundary to check again.",
+      "staff": "A caught error and a recovered error are not the same event — this boundary only implemented the first one."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Try 'Push malformed update' then 'Try again' in each mode — one comes back, one just repeats the same fallback.",
+      "mid": "Fixed mode's Try again literally re-renders the children — that's why it can crash twice in a row if you click it before the data's fixed.",
+      "staff": "Watch the mount timestamp in fixed mode change on every successful Try again — that's proof it's a genuine new render, not a cached view."
+    },
+    {
+      "chapter": "concept",
+      "junior": "A key change or a 'Try again' button that calls resetErrorBoundary() are both ways to force React to mount the subtree fresh.",
+      "mid": "resetKeys does the key-bump for you — pass values that should trigger a real remount when they change, and skip wiring the comparison by hand.",
+      "staff": "A reset that fires on a still-broken condition should re-crash and re-catch — that's correct, not a demo bug."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "A boundary doesn't catch errors from a broken onClick handler or a failed fetch callback — those need their own try/catch.",
+      "mid": "'We have an error boundary' can be false confidence if the actual crash lives in an event handler the boundary never sees.",
+      "staff": "A resetKeys entry that's a fresh object or timestamp on every render will reset (and re-crash) on every render — tie it to something that only changes when the real condition does."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "A dashboard widget kept crashing on bad data from a websocket, so the team wrapped it in an error boundary and shipped a friendly fallback message instead of a blank screen. But once the real bug got fixed a few seconds later, the widget never came back, and users were stuck looking at that fallback for the rest of their session.",
+        "mid": "The boundary did exactly what it was built to do, catch the error and swap in a fallback, but nothing ever told it to try rendering the real content again, so that fallback became permanent instead of temporary.",
+        "staff": "The tricky part is that a fallback with no reset path looks like success in review, no crash, no blank page, but it quietly turns a one time error into a permanent one for the rest of that component's life."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Once a boundary catches an error it just keeps showing the fallback, since nothing built in ever flips it back automatically. Recovery means giving it a reason to try again, either by changing its key so React mounts a fresh copy, or by calling an explicit reset function from a try again button.",
+        "mid": "Bumping the key forces React to throw away the old tree and mount a new one, which is great when you have a natural signal like a connection ID changing. Calling a reset callback from a button works when you want the user in control of the retry instead.",
+        "staff": "Both approaches produce a real new render attempt, not a fake fixed state, so if the underlying problem is still there, it should crash and get caught again, and that's correct behavior. The dangerous version is a reset that fires on every render for no real reason, which just loops crash after crash."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Push a bad update to crash the widget, then see what happens when you try to bring it back in each mode.",
+        "mid": "In broken mode nothing you click actually resets the caught error, so it just sits on the fallback forever. In fixed mode, try again actually attempts a fresh render, so it can succeed or fail depending on the data at that moment.",
+        "staff": "Notice fixed mode can crash twice if you hit try again before pushing valid data, that's the reset genuinely working, not a bug in the demo."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "If a boundary catches an error but never gets a reason to try again, it'll show the same fallback forever even after the real problem's gone.",
+        "mid": "Always wire a key change or a reset callback into a boundary that's supposed to recover, not just contain the crash.",
+        "staff": "Reset on a real changed signal, never on an unconditional timer, and remember a boundary only ever covers render errors in the components below it."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
