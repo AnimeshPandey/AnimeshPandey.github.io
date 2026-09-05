@@ -1,0 +1,103 @@
+{
+  "slug": "aria-live-polite-errors",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "Sighted users saw the red error text instantly. A screen reader user clicked submit and heard nothing at all.",
+      "mid": "The DOM update was correct — the markup and CSS were fine. Nothing told assistive tech to watch that container for changes.",
+      "staff": "This bug survives forever precisely because it's invisible to anyone testing the form by looking at it."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Watch the 'What a screen reader hears' log, not just the red error text — that's where the real difference shows up.",
+      "mid": "Same visual error in both modes. The only difference is whether aria-live='polite' was on the container before the text changed.",
+      "staff": "The log staying silent in broken mode is the exact failure a visual-only QA pass can't catch."
+    },
+    {
+      "chapter": "concept",
+      "junior": "aria-live='polite' on a container tells assistive tech to watch it and read out loud whenever the content inside changes.",
+      "mid": "Render the empty live-region container in the initial markup first — adding aria-live at the same moment you fill it with text is unreliable.",
+      "staff": "role='alert' implies assertive and interrupts immediately — right for a failed payment, wrong for routine per-field validation."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Any content that updates without a page navigation — a saved confirmation, a cart count — needs the same live-region thinking.",
+      "mid": "Rewriting a live region with the exact same text back-to-back can fail to re-announce — clear it first, then set the real message next frame.",
+      "staff": "Registering the live-region attribute and mutating its content in the same paint isn't reliably equivalent to updating an already-present empty region — verify with a real screen reader, not just an automated scan."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "A signup form showed a red border and red error text when someone typed an invalid email, and sighted users noticed it right away. But a screen reader user submitted that same form and heard absolutely nothing, so they had no idea it had failed or why.",
+        "mid": "The error text was inserted into the page correctly, the markup and styling were both fine. What was missing was any signal telling assistive technology to actually watch that spot and announce the change.",
+        "staff": "This kind of gap survives a long time in production because it's completely invisible to anyone testing the form by eye, which is how most manual review actually happens."
+      },
+      {
+        "chapter": "concept",
+        "junior": "Marking a container as a live region tells a screen reader to watch it and read the content out loud whenever it changes, and polite means it waits for a natural pause instead of cutting in.",
+        "mid": "You need to put that live attribute on the container before the error text ever gets written into it, so render an empty live region up front and only fill it in later.",
+        "staff": "An alert role is the more urgent version, it interrupts right away, which is right for something like a failed payment but way too disruptive for a routine field validation message."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Submit the form with a bad email in each mode and watch the little transcript panel that shows what a screen reader would actually say.",
+        "mid": "The red error text looks the same in both modes, the only difference is whether that container was set up as a live region before the text changed.",
+        "staff": "Notice the transcript panel stays completely silent in broken mode even though the error text update itself is perfectly correct."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A form error can be perfectly visible on screen and still be completely silent to someone using a screen reader.",
+        "mid": "Render an empty live region in the form's markup from the start, and only write the error text into it once validation actually fails.",
+        "staff": "Save the interrupting alert role for things a user truly must not miss right now, and keep ordinary field errors polite so they don't talk over whatever the person's still doing."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

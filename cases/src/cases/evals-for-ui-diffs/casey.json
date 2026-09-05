@@ -1,0 +1,103 @@
+{
+  "slug": "evals-for-ui-diffs",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A 'make it more concise' prompt tweak shipped the same afternoon, and nobody noticed suggestion quality had dropped for two weeks.",
+      "mid": "Strong intuitions about individual examples don't scale — nothing was scoring quality before or after that prompt change.",
+      "staff": "Ship-and-watch-for-complaints has a multi-week latency and misses quiet regressions entirely, since most affected users just stop trusting the bot instead of reporting it."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Ship the same prompt change in both modes and see what happens next — one ships blind, one checks first.",
+      "mid": "Broken mode has nothing between 'prompt changed' and 'shipped.' Fixed mode runs the golden set through both versions before merge.",
+      "staff": "Fixed mode tells you exactly which golden-set cases flipped from pass to fail — information aggregate complaints never produce."
+    },
+    {
+      "chapter": "concept",
+      "junior": "A golden set is a fixed collection of real inputs with known-good expected outputs, scored the same way every time a prompt or model changes.",
+      "mid": "The two moving parts are the golden set itself and a scoring function — some deterministic checks plus either an LLM judge or human-labeled verdicts.",
+      "staff": "Wire the eval into CI as a merge blocker, not a lagging indicator — catch the regression in the same PR that introduced it."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Every real bad suggestion that reaches production is a case that was missing from the golden set — add it after the fact.",
+      "mid": "A golden set that's too small or too easy gives false confidence — it'll show 100% pass on a genuinely worse prompt if it doesn't exercise what regressed.",
+      "staff": "An LLM judge's own prompt needs versioning too — pin the judge model and spot-check its scores against human labels before trusting it on a merge-blocking gate."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "A team's PR review bot suggested small UI fixes, and someone tweaked the prompt to make suggestions more concise and shipped it the same afternoon. Suggestion quality quietly dropped for two weeks before anyone noticed, because nothing was actually measuring quality before or after that change.",
+        "mid": "The team had good instincts about individual examples, this one looks right, that one looks off, but no standing way to compare suggestion quality at scale before shipping a change.",
+        "staff": "Shipping and watching for complaints has a multi week delay built in, and it mostly misses quiet regressions, because most people who get a bad suggestion just stop trusting the bot instead of filing a complaint."
+      },
+      {
+        "chapter": "concept",
+        "junior": "A golden set is just a fixed group of real inputs paired with known good expected outputs, and every time the prompt or model changes you run the whole set through it and score the results the same way.",
+        "mid": "You need the golden set itself, chosen to cover the range of real cases, and a scoring function, usually a few deterministic checks plus either an automated judge or a human labeled verdict.",
+        "staff": "The part that actually pays off is treating a regression on that golden set as something that blocks the merge, not something someone notices later, so it gets caught in the same pull request that caused it."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Ship the exact same prompt change in each mode and watch what happens next, one just goes live, the other checks it against a saved set of examples first.",
+        "mid": "The broken version has no step at all between changing the prompt and it being live, so nothing catches a problem before users do.",
+        "staff": "Pay attention to which specific test cases flip from passing to failing in the fixed version, that's exactly the detail a pile of vague user complaints never gives you."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Without an eval set, a prompt or model change has no way to be checked for quality before it reaches users.",
+        "mid": "Keep a small golden set of real inputs with known good outputs, score every change against it automatically, and block the merge if it regresses.",
+        "staff": "Grow the golden set from real production failures, and don't forget to version and spot check an automated judge's own scoring, the same way you'd validate any other grader."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

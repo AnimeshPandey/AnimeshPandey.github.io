@@ -1,0 +1,103 @@
+{
+  "slug": "autocomplete-attributes",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "No autocomplete attribute meant the password manager never offered to generate or save a password — the user typed it by hand and had nothing saved to log back in with.",
+      "mid": "Browsers don't read label text to guess a field's purpose — that's for humans, not autofill.",
+      "staff": "Unreliable password autofill pushes people toward typing or copy-pasting passwords by hand, which is worse for security, not neutral."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Same-looking form, same labels — only the autocomplete attribute differs between the two modes.",
+      "mid": "Broken mode's fields have nothing for autofill to key off; fixed mode's tokens tell it exactly what each field is.",
+      "staff": "No real password-manager API can be scripted from a public page, so this simulates the same present/correct-token → fill, absent/generic → skip decision the real thing makes."
+    },
+    {
+      "chapter": "concept",
+      "junior": "current-password for login forms, new-password for signup/change-password forms — that's the pair that matters most.",
+      "mid": "new-password on both the password and confirm fields signals 'this is where a new one gets created,' which is also the cue managers use to offer generating a strong one.",
+      "staff": "autocomplete='on' or a missing value isn't 'figure it out' — most browsers just decline to fill sensitive fields rather than guess wrong."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Email, phone, name, address, and payment fields all have their own specific autocomplete tokens, not just passwords.",
+      "mid": "A confirm-password field left without new-password (or copy-pasted as current-password) can get autofilled with an old saved password by mistake.",
+      "staff": "autocomplete='off' doesn't reliably block saving on password fields in modern browsers — a fresh, unseen name attribute is the mechanism that actually works for that."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "A signup form had password fields with no autocomplete attribute at all, so a password manager never offered to generate a strong password for it. The user typed one by hand, and when they came back later to log in, there was nothing saved to autofill.",
+        "mid": "Browsers don't read a field's label or placeholder to figure out what it's for, that's meant for humans, not for autofill. Without the right attribute, the field's purpose is just ambiguous.",
+        "staff": "This really matters for security, because unreliable autofill pushes people who rely on a password manager toward typing or copy pasting passwords by hand instead, which is a worse habit, not a neutral one."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The autocomplete attribute takes specific values that describe exactly what a field is for, current password for logging in, new password for signing up or changing one, one time code for a verification step.",
+        "mid": "Use new password on both the password and confirm fields during signup, that tells the manager not to fill an old saved value and instead offer to generate a fresh strong one.",
+        "staff": "Turning autocomplete on or just leaving it off isn't the same as letting the browser figure it out, most browsers would rather skip filling a sensitive field than risk guessing wrong."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Click simulate autofill on the same looking login form in each mode and see what happens, the labels are identical, only the attribute underneath is different.",
+        "mid": "In broken mode there's nothing for autofill to key off of, so it can't identify the fields. In fixed mode the real tokens are there and it fills correctly.",
+        "staff": "There's no real password manager API you can script from a public demo page, so this mirrors the actual decision, a correct token gets filled, a missing or generic one gets skipped."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "A password field with no autocomplete value, or the wrong one, just doesn't get autofilled or offered a generated password.",
+        "mid": "Give every autofill relevant field its specific token, labels and placeholders are for people, autocomplete is what autofill actually reads.",
+        "staff": "Don't rely on turning autocomplete off to block saving on password fields, modern browsers mostly ignore that, and a fresh unseen field name is the mechanism that actually works instead."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try broken", "target": "[data-demo-state=broken]" },
+        { "label": "Try fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle broken", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle fixed", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Broken state", "target": "[data-demo-state=broken]" },
+        { "label": "Fixed state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [
+        { "label": "Jump to demo", "target": "[data-chapter=demo]" }
+      ],
+      "mid": [
+        { "label": "Skip to demo", "target": "[data-chapter=demo]" }
+      ],
+      "staff": [
+        { "label": "Demo chapter", "target": "[data-chapter=demo]" }
+      ]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

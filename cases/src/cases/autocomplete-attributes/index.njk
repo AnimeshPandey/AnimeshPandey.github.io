@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "autocomplete for Password Managers"
+description: "A password field with no autocomplete value, or the wrong one, silently breaks password-manager and browser autofill — see the exact token values that make it work."
+slug: autocomplete-attributes
+track: accessibility
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Forms
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/autocomplete-attributes-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The login form your password manager refused to fill</h2>
+  <div class="tone-junior">
+    <p>
+      A signup form had a "Create password" field and a "Confirm password" field, both plain <code>&lt;input type="password"&gt;</code> elements with no <code>autocomplete</code> attribute at all. A user with a password manager opened the page expecting it to offer a strong generated password, the way it does everywhere else. Nothing happened — no suggestion, no icon in the field, no autofill.
+    </p>
+    <p>
+      They typed a password by hand, twice, and moved on. The manager never saved it either, because it couldn't confidently tell this was a new-password field rather than, say, a search box. Weeks later, that same person needed to log back in and had no saved credential to autofill — because the field that created the password was never recognized as one in the first place.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Browsers and password managers don't guess a field's purpose from its label text or placeholder — those are for humans, not autofill heuristics, and relying on them is unreliable across browsers and managers. The <code>autocomplete</code> attribute is the actual machine-readable contract: its absence, or a wrong value like the generic <code>autocomplete="on"</code>, leaves the field's purpose ambiguous, and ambiguous fields get skipped rather than guessed at.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This isn't cosmetic. For password fields specifically, unreliable autofill pushes users who depend on a password manager — rather than memorizing or reusing passwords — toward typing passwords by hand or copy-pasting from another app, both of which are worse for account security and worse for anyone with a motor or cognitive disability for whom retyping a long generated string is a real barrier, not an inconvenience.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>autocomplete tells autofill exactly what a field is for</h2>
+  <div class="tone-junior">
+    <p>
+      The <code>autocomplete</code> attribute takes specific token values that describe a field's purpose: <code>autocomplete="email"</code> for an email field, <code>autocomplete="current-password"</code> for a login form's password field, <code>autocomplete="new-password"</code> for a signup or password-change field, and <code>autocomplete="one-time-code"</code> for an SMS/authenticator verification code. Browsers and password managers read these tokens directly — get the right one on the right field, and autofill (and password-manager save prompts) work the way users expect.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      <code>current-password</code> and <code>new-password</code> matter as a pair, not individually: a login form should use <code>current-password</code> so a manager offers the one saved credential for that site, while a signup or change-password form should use <code>new-password</code> on both the new-password and confirm fields, which signals "don't autofill an old saved value here — this is where a new one gets created," and is also the cue a manager uses to offer generating a strong password instead of filling an existing one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>autocomplete="on"</code> or an omitted attribute are not equivalent to "figure it out" — most browsers treat a missing or generic value as insufficient signal and simply won't populate anything for sensitive fields like passwords, rather than risk guessing wrong and filling a credential into the wrong place. The values are standardized in the HTML spec's autofill detail tokens, and password managers largely converge on reading exactly those tokens rather than layering their own heuristics on top for password fields specifically, precisely because guessing wrong there is a security-relevant mistake.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The 2FA field that made autofill guess</h2>
+  <div class="tone-junior">
+    <p>
+      A different team's login flow added a one-time SMS code step, with a plain numeric input and no <code>autocomplete</code> value. On iOS and Android, browsers can read an incoming SMS code and offer to fill it into the right field automatically — but only if that field is marked <code>autocomplete="one-time-code"</code>. Without it, users had to switch to their messages app, copy the code, switch back, and paste it, every single time.
+    </p>
+    <p>
+      Adding <code>autocomplete="one-time-code"</code> (plus <code>inputmode="numeric"</code> for the right keyboard) turned that into a one-tap suggestion above the keyboard. No code change to the verification logic itself — the field already worked once a code was typed in — the entire fix was telling the platform what the field was for.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is a useful example because the field was functionally correct the whole time — it accepted input, validated it, submitted it. The bug was entirely in a layer most functional testing never touches: whether the browser's own autofill heuristics could identify the field's purpose well enough to help. A form can pass every manual QA pass and every unit test and still fail this, because none of those check the attribute autofill actually reads.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Worth separating from password autofill specifically: <code>one-time-code</code> is about platform-level SMS/WebOTP integration, not a password manager's save/fill logic, and it composes with the <code>autocomplete="new-password"</code>/<code>current-password</code> tokens without conflict — a full auth flow (password field, then a separate OTP step) typically needs the correct token on each step's own field, not one blanket value reused everywhere.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">No autocomplete attribute (or autocomplete="on") leaves a password field's purpose ambiguous and autofill stays silent (broken) vs. autocomplete="current-password"/"new-password" telling the browser and password manager exactly what to do (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Watch autofill respond to the attribute, not the label</h2>
+  <div class="tone-junior">
+    <p>Click "Simulate autofill" on the same-looking login form in each mode. The label text and placeholder are identical — only the autocomplete attribute differs.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode's fields have no autocomplete value; the simulated autofill has nothing to key off and reports it can't identify the fields. Fixed mode's fields carry the real tokens and get filled correctly.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This demo simulates the browser's autofill decision rather than triggering a real password manager (no such API exists to script from a page for a public demo) — but the decision logic mirrors the real one: token present and correct → fill; token absent or generic → skip.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A login form with no autocomplete attribute failing simulated autofill (broken) vs. the same form with autocomplete='current-password' filling correctly (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="autocomplete-attributes">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates a password manager attempting to autofill a login form with and without correct autocomplete attributes; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No autocomplete
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Correct tokens
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Correct tokens</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:160px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>The token map, and where it quietly breaks</h2>
+  <div class="tone-junior">
+    <p>
+      Beyond passwords: <code>autocomplete="email"</code>, <code>autocomplete="tel"</code>, <code>autocomplete="name"</code>, <code>autocomplete="street-address"</code>, and the payment triad <code>autocomplete="cc-number"</code>, <code>autocomplete="cc-exp"</code>, <code>autocomplete="cc-csc"</code> all follow the same pattern — a specific token per field purpose, not a generic on/off switch. Every field that autofill should ever touch benefits from getting its specific token, not just password fields.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A common regression: a signup form correctly uses <code>new-password</code> on the password field, then a "confirm password" field right next to it is left with no <code>autocomplete</code> at all (or copy-pasted as <code>current-password</code> by mistake) — some managers then fill the confirm field with an old saved password instead of the newly generated one, producing a mismatch the user has to debug themselves. Both password fields in a signup form need <code>new-password</code>, not just the first one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      <code>autocomplete="off"</code> on a password field is explicitly not a reliable way to prevent saving in modern browsers — most major browsers ignore <code>off</code> for login and password fields specifically, on the reasoning that letting sites opt out of password-manager support outright is worse for user security than respecting the site's preference. If a field genuinely shouldn't be saved (a one-time admin-impersonation password, say), the more effective mitigation is a fresh, randomly-suffixed <code>name</code> attribute the manager has never seen before, not the <code>autocomplete</code> attribute — that's a meaningfully different mechanism from choosing the correct token for a field that should autofill.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">A password field with no autocomplete value, or a generic one, doesn't get autofilled or offered a generated password — use autocomplete="current-password" for login and autocomplete="new-password" for signup/change-password fields.</div>
+        <div class="tone-mid">Give every autofill-relevant field its specific token (email, current-password, new-password, one-time-code, and the address/payment tokens) — labels and placeholders are for humans, autocomplete is what autofill actually reads.</div>
+        <div class="tone-staff">autocomplete="off" doesn't reliably block saving on password fields in modern browsers; use both new-password fields consistently in a signup form, and don't rely on this attribute for anything that needs to be truly excluded from autofill.</div>
+      </li>
+    </ul>
+  </div>
+</section>

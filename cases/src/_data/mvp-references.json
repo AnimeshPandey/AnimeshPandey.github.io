@@ -1085,5 +1085,66 @@
     "staff": [
       "<a href=\"https://stryker-mutator.io/docs/stryker-js/incremental/\" rel=\"noopener noreferrer\">Stryker Mutator — Incremental mutation testing</a>"
     ]
+  },
+  "error-boundary-recovery": {
+    "junior": [
+      "<a href=\"https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary\" rel=\"noopener noreferrer\">React — Catching rendering errors with an Error Boundary</a>"
+    ],
+    "mid": [
+      "<a href=\"https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary\" rel=\"noopener noreferrer\">React — Catching rendering errors with an Error Boundary</a>",
+      "<a href=\"https://github.com/bvaughn/react-error-boundary\" rel=\"noopener noreferrer\">GitHub — react-error-boundary</a>"
+    ],
+    "staff": [
+      "<a href=\"https://github.com/bvaughn/react-error-boundary\" rel=\"noopener noreferrer\">GitHub — react-error-boundary (resetKeys)</a>"
+    ]
+  },
+  "aria-live-polite-errors": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions\" rel=\"noopener noreferrer\">MDN — ARIA live regions</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions\" rel=\"noopener noreferrer\">MDN — ARIA live regions</a>",
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/alert/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Alert Pattern</a>"
+    ],
+    "staff": [
+      "<a href=\"https://www.w3.org/WAI/ARIA/apg/patterns/alert/\" rel=\"noopener noreferrer\">WAI-ARIA APG — Alert Pattern</a>"
+    ]
+  },
+  "autocomplete-attributes": {
+    "junior": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete\" rel=\"noopener noreferrer\">MDN — autocomplete attribute</a>"
+    ],
+    "mid": [
+      "<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete\" rel=\"noopener noreferrer\">MDN — autocomplete attribute</a>",
+      "<a href=\"https://web.dev/articles/sign-in-form-best-practices\" rel=\"noopener noreferrer\">web.dev — Sign-in form best practices</a>"
+    ],
+    "staff": [
+      "<a href=\"https://web.dev/articles/sign-in-form-best-practices\" rel=\"noopener noreferrer\">web.dev — Sign-in form best practices</a>"
+    ]
+  },
+  "evals-for-ui-diffs": {
+    "junior": [
+      "<a href=\"https://hamel.dev/blog/posts/evals/\" rel=\"noopener noreferrer\">Hamel Husain — Your AI Product Needs Evals</a>"
+    ],
+    "mid": [
+      "<a href=\"https://hamel.dev/blog/posts/evals/\" rel=\"noopener noreferrer\">Hamel Husain — Your AI Product Needs Evals</a>",
+      "<a href=\"https://github.com/openai/evals\" rel=\"noopener noreferrer\">GitHub — openai/evals</a>"
+    ],
+    "staff": [
+      "<a href=\"https://github.com/openai/evals\" rel=\"noopener noreferrer\">GitHub — openai/evals</a>"
+    ]
+  },
+  "fe-mastery-agent-l2": {
+    "junior": [
+      "<a href=\"https://www.anthropic.com/research/building-effective-agents\" rel=\"noopener noreferrer\">Anthropic — Building Effective AI Agents</a>"
+    ],
+    "mid": [
+      "<a href=\"https://www.anthropic.com/research/building-effective-agents\" rel=\"noopener noreferrer\">Anthropic — Building Effective AI Agents</a>",
+      "<a href=\"https://temporal.io\" rel=\"noopener noreferrer\">Temporal — Durable Execution Platform</a>"
+    ],
+    "staff": [
+      "<a href=\"https://temporal.io\" rel=\"noopener noreferrer\">Temporal — Durable Execution Platform</a>",
+      "<a href=\"https://docs.langchain.com/oss/python/langgraph/persistence\" rel=\"noopener noreferrer\">LangChain — LangGraph persistence</a>"
+    ]
   }
 }

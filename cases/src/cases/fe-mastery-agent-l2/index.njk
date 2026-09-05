@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "When to Graduate to Hosted Mastery (L2)"
+description: "A hand-rolled agent loop works fine until persistence, retries, and observability start eating more engineering time than the agent's actual logic — here's the concrete signal that it's time to graduate to a hosted platform."
+slug: fe-mastery-agent-l2
+track: agentic-ai
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Platform
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/fe-mastery-agent-l2-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The team that spent a sprint debugging their own retry logic</h2>
+  <div class="tone-junior">
+    <p>
+      A small team built an agent that triages support tickets: read the ticket, call a few internal APIs, draft a reply. It started as a simple loop — call the model, run whatever tool it asked for, feed the result back — and it worked. Six months later, that same team spent an entire sprint debugging why some tickets got processed twice after a deploy, why a slow API call sometimes made the whole agent silently hang, and why nobody could tell which step a stuck ticket was actually stuck on.
+    </p>
+    <p>
+      None of that sprint touched the agent's actual logic — the part that decides what a good triage reply looks like. All of it was infrastructure the team had hand-rolled around the loop: a retry mechanism that occasionally double-fired, a persistence layer that lost in-flight state on redeploy, and no real visibility into which step of which ticket's run was currently executing.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team's core agent logic — prompt, tools, triage rules — had been stable for months. Nearly all of their recent engineering time on this feature had gone into orchestration concerns that have nothing to do with triage specifically: at-least-once vs. exactly-once tool execution, surviving a mid-run deploy, and giving a human a way to see where a given run currently stood. Those are the same problems every team running an agent in production eventually hits, solved from scratch, again, by a team whose actual job was ticket triage.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      This is the generic shape of "premature infrastructure debt" applied to agents specifically: the loop itself is trivial to write, which makes it easy to underestimate everything durable execution actually requires — idempotent step tracking, crash-safe state persistence, backoff-with-jitter retries, and structured tracing — until a production incident forces the team to build all of it anyway, under worse time pressure and with less design care than a dedicated platform already applied to the same problem.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Graduate when the infra, not the agent, is the bottleneck</h2>
+  <div class="tone-junior">
+    <p>
+      A hand-rolled agent loop is the right starting point — it's fast to build and easy to understand end to end. A hosted agent platform (the kind of managed runtime that runs your agent loop for you) earns its cost once the team is spending more time on things like "what happens if this step fails halfway through," "how do we see what our agent is currently doing," and "how do we make sure a retry doesn't run a side effect twice" than on the actual decision-making logic of the agent itself. Those are exactly the problems a hosted platform is built to solve once, well, for every agent that runs on it — not problems specific to any one team's use case.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Concretely: persistence (a run's state survives a redeploy or a crash without losing progress or restarting from scratch), retries (a failed step retries with backoff, and a successful step isn't accidentally re-executed with a side effect the second time), observability (a human can see exactly which step of which run is executing right now, and what it did, without grepping logs across services), and scaling (many concurrent runs don't require the team to hand-manage worker pools or queue depth) are the four recurring needs. A team hitting real production pain on two or more of these, rather than hypothesizing about them in advance, is the actual signal — not a fixed timeline or headcount threshold.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The graduation decision is really a build-vs-buy call scoped narrowly to orchestration, not to the agent's domain logic — moving to a hosted platform doesn't change what the agent decides or how it's prompted, it changes who's responsible for durable execution semantics underneath it. That's a meaningfully smaller migration than it sounds: the agent's actual decision logic (prompts, tool definitions, business rules) is usually portable, while the loop, retry, and persistence code is what gets replaced — which is also why waiting too long to graduate isn't fatal, just increasingly expensive, since it's the surrounding scaffolding that has to be unwound, not the core logic rewritten.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The team that graduated a quarter too early — and the one that waited too long</h2>
+  <div class="tone-junior">
+    <p>
+      One team adopted a hosted agent platform for a single internal tool used by three people, before they'd hit any real operational pain — they spent two weeks learning the platform's concepts and adapting their simple loop to its execution model, for a workload that had never actually failed in a way persistence or retries would have fixed. The migration cost more than the problem it solved.
+    </p>
+    <p>
+      A different team kept hand-rolling their retry and persistence logic long after hitting duplicate side effects in production twice, reasoning each incident was "a one-off, we patched it." By the third incident — a customer-facing action executed twice because a redeploy interrupted an in-flight retry — the fix finally was migrating to a hosted platform, at a point where the surrounding hand-rolled infrastructure had grown large and tangled enough that separating it from the actual agent logic took real, dedicated migration work.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Both mistakes are versions of the same error: not tying the decision to an observed signal. The early team graduated on a hypothetical ("this might need to scale someday"); the late team kept patching symptoms individually instead of recognizing that three separate incidents against the same four categories — persistence, retries, observability, scaling — were the same underlying signal appearing three times, not three unrelated bugs.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The actionable version of "watch for the signal" is auditing engineering time allocation on the feature every so often, not just counting incidents — if a team's recent commits and recent incident write-ups on an agent feature are dominated by orchestration concerns (retry logic, persistence bugs, "why did this run twice") rather than by changes to what the agent actually does, that ratio itself is the graduation signal, whether or not it's yet produced a customer-visible incident.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Engineering time going into hand-rolled retries, lost state, and invisible run status instead of agent logic (premature/stuck) vs. persistence, retries, and observability handled by a hosted platform so the team ships agent features again (graduated)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Compare where the week actually went</h2>
+  <div class="tone-junior">
+    <p>Toggle between a team still hand-rolling orchestration and one that graduated to a hosted platform, and watch what each spent last week's engineering time on.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Same feature, same team size. The hand-rolled column is dominated by infra debugging; the hosted-platform column is dominated by actual agent-logic work — the four recurring needs stop being anyone's weekly problem.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Notice this isn't "hosted platform is strictly better" — it's a reallocation. The total effort didn't vanish, it moved off this team's plate and onto the platform's, which is exactly the trade a graduation decision should be evaluated on.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A team's engineering time dominated by hand-rolled retry, persistence, and observability debugging (premature/stuck) vs. the same team's time after graduating to a hosted agent platform (graduated)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="fe-mastery-agent-l2">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a team's weekly engineering-time breakdown before and after graduating a hand-rolled agent loop to a hosted platform; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Hand-rolled (stuck)
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Hosted platform (graduated)
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Hosted platform (graduated)</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:220px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Graduating doesn't mean giving up control</h2>
+  <div class="tone-junior">
+    <p>
+      Moving to a hosted platform doesn't mean losing the ability to customize how the agent behaves — the prompt, the tool definitions, and the business logic for what a good response looks like still live in code the team owns and edits directly. What moves to the platform is specifically the execution scaffolding underneath: how a step's state gets saved, how a retry gets scheduled, how a run's progress gets surfaced.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      A useful gut check before graduating: list every incident or debugging session from the last quarter related to this agent feature, and tag each one "agent logic" (the prompt made a bad decision, a tool call had wrong parameters) or "orchestration" (a retry misfired, state was lost, a run appeared stuck with no visibility). If orchestration tags dominate, that's the concrete evidence for the graduation call — not a vague sense that "this feels like it needs to be more robust."
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Watch for the reverse anti-pattern too: treating "we're on a hosted platform now" as license to stop thinking about failure modes at the agent-logic layer. A platform gives you durable execution of whatever steps you defined — it won't notice that a tool call's retry is semantically unsafe to repeat (a payment charge, an email send) unless you've explicitly designed that step to be idempotent or gated the platform's retry behavior around it. Graduating solves the orchestration-layer problems; it doesn't retroactively make every step in your agent safe to retry.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">When a team spends more time debugging retries, lost state, and invisible run status than building the agent's actual logic, that's the real signal it's time to graduate to a hosted platform, not a fixed timeline or team size.</div>
+        <div class="tone-mid">Watch four recurring needs specifically — persistence, retries, observability, and scaling — and graduate once you're hitting real production pain on two or more of them, rather than hypothesizing about the need in advance.</div>
+        <div class="tone-staff">Graduating moves orchestration responsibility to the platform, not the agent's decision logic, which stays yours — and it doesn't make an unsafe-to-retry side effect safe by itself, so idempotency still needs deliberate design at the step level.</div>
+      </li>
+    </ul>
+  </div>
+</section>
