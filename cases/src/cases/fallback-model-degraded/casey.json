@@ -1,0 +1,97 @@
+{
+  "slug": "fallback-model-degraded",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A summarize button's spinner ran forever the moment the model API got rate-limited, because the click handler only ever had a success path, nothing for failure.",
+      "mid": "Every user hitting that endpoint at once saw the identical stuck spinner — one shared upstream rate limit doesn't degrade gracefully user by user, it fails for everyone at the same moment.",
+      "staff": "A missing fallback turns a transient, provider-side 429 into a synchronized product-wide outage right when traffic, and support ticket volume, is highest."
+    },
+    {
+      "chapter": "demo",
+      "junior": "Click Summarize in each mode — this demo deliberately makes the request fail so you can see what each handler does about it.",
+      "mid": "Broken mode's handler has no catch block, so the rejection just leaves the loading state stuck there permanently, nothing runs afterward.",
+      "staff": "Retry a few times in fixed mode — the simulated attempts fail on purpose, then the fallback banner appears once retries are exhausted, exactly where continuing to retry silently stops helping anyone."
+    },
+    {
+      "chapter": "concept",
+      "junior": "An AI call can fail like any network request — the UI needs a real plan for that: stop showing loading, and show something the user can actually act on.",
+      "mid": "Treat the request as three outcomes, not two: success, a clear retryable failure, and a degraded fallback that doesn't depend on the model at all.",
+      "staff": "A 429 with Retry-After is worth an automatic backoff retry; a malformed-request 4xx is not — collapsing every failure into one generic retry loop wastes retries on requests that were never going to succeed."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Always give a network call a timeout — without one, a hung request and a still-working one look identical, and the UI never knows to give up.",
+      "mid": "Respect Retry-After on a 429 rather than guessing a backoff interval, and cap automatic retries before falling through to the degraded state.",
+      "staff": "Log the AI call path's own error rate specifically — a spike in 429s or 5xx from one upstream should page someone before the support queue does."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about a summarize button whose loading spinner never stopped spinning, because the code that handled the AI request only ever had a path for success, and one day the request started failing instead.",
+        "mid": "A traffic spike pushed the team's model provider into rate limiting, and because the frontend had no catch block for that, every user who clicked the button during that window got stuck on an infinite spinner with no way out.",
+        "staff": "The failure mode compounds because most AI features call one shared upstream, so a single rate limit doesn't degrade gracefully person by person, it fails for everyone hitting that endpoint at exactly the same moment."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix treats a failed AI request as a real, expected outcome, not an afterthought — catch the error, clear the loading state, and show something the user can actually do next.",
+        "mid": "Split the outcome into three states instead of two: success, a clear error the user can retry, and a fallback that works even without the model at all.",
+        "staff": "Different failures deserve different handling — a rate limit is worth a backoff retry, but a malformed request never will succeed no matter how many times you retry it."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Click Summarize in each mode and watch what happens once the simulated request fails.",
+        "mid": "The broken handler has no catch block at all, so once the request rejects, the loading state just stays there, nothing ever runs to clear it.",
+        "staff": "Try retrying a few times in the fixed mode — once the retries are used up, the fallback view appears instead of spinning forever."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Never write only the success path for an AI call — write the failure branch too, or a single failed request leaves users staring at a spinner that will never resolve.",
+        "mid": "Give every model call a timeout, a caught error state with retry, and a non-AI fallback so the feature stays usable when the model isn't.",
+        "staff": "Cap retries with backoff, respect Retry-After, and monitor the AI call path's error rate on its own so an outage pages someone before it turns into a wave of support tickets."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try no fallback", "target": "[data-demo-state=broken]" },
+        { "label": "Try degraded mode", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle no fallback", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle degraded mode", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "No-fallback state", "target": "[data-demo-state=broken]" },
+        { "label": "Degraded-mode state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}

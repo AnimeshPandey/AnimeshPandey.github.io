@@ -1,0 +1,174 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Pretty UI Feels More Usable"
+description: "Identical functionality, identical friction, identical bugs — a visually polished interface still gets rated easier to use than a rough one, a real cognitive bias with direct implications for how much a redesign can and can't fix."
+slug: aesthetic-usability-effect
+track: psychology-perception
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Aesthetic-usability
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/aesthetic-usability-effect-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>Two forms, the same bug, wildly different reviews</h2>
+  <div class="tone-junior">
+    <p>
+      Two teams ship the same settings form, same fields, same validation rules, same minor bug where the save button takes a beat too long to respond and gives no loading feedback while it does. One team's version uses default, unstyled inputs and a harsh red error banner. The other uses generous spacing, a refined type scale, and a soft, well-placed error state.
+    </p>
+    <p>
+      User feedback comes back completely different for the two, even though the underlying form logic, the field set, the slow-save bug, all of it, is identical. The plain version gets called "clunky" and "annoying." The polished version gets called "smooth," and the same delayed-save bug barely gets mentioned at all.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This isn't teams reading feedback selectively, it's a documented, replicated cognitive bias: people rate a more visually attractive interface as more usable, independent of its actual, measured usability. The polish isn't fixing the bug. It's changing how forgivingly the bug gets perceived.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The effect has real product implications in both directions: visual polish genuinely buys goodwill and tolerance for minor friction, which is a legitimate reason to invest in it, but it's also a real risk, a team that reads "users love the new design" as "the usability problems are fixed" can ship a redesign that looks better and tests better in casual feedback while a real task-completion metric barely moves, because the bias affects perception, not the underlying interaction cost.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>The aesthetic-usability effect: attractive things get graded on a curve</h2>
+  <div class="tone-junior">
+    <p>
+      The aesthetic-usability effect is the finding that people perceive good-looking designs as easier to use, even when there's no actual difference in how the design functions. It's a real, named bias, not just a vague sense that "nice things feel nicer." First-impression appeal colors every judgment that follows, including judgments that are supposed to be about function, not appearance.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The foundational study is Kurosu and Kashimura's 1995 work on ATM interfaces: they built several versions of the same ATM interaction, varying the visual layout while keeping the actual functional layout (button positions, task flow) constant, and found that perceived ease-of-use correlated much more strongly with how good the interface looked than with its measured, functional usability. The apparent usability and the inherent usability were measurably different things, and appearance was doing most of the work in what people reported.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The mechanism runs through affect, not reasoning: a positive first impression puts users in a more generous, more patient evaluative mode before they've interacted with anything, and that initial affective state biases subsequent judgments of usability, sometimes called the "halo effect" applied to interface design. It's why a jarring, dated-looking interface gets blamed for problems a well-designed one wouldn't even be noticed for, and why the same friction reads as "charmingly quirky" in one visual context and "broken" in another.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>The redesign that "fixed" a bug it never touched</h2>
+  <div class="tone-junior">
+    <p>
+      A team ran a visual refresh on a checkout flow, new type scale, better spacing, a cleaner layout, no changes to the underlying logic or validation rules at all. Post-launch user feedback specifically praised how much "smoother" and "more reliable" checkout felt. One piece of feedback even thanked the team for fixing "that annoying delay" on the payment step.
+    </p>
+    <p>
+      Nobody had touched the payment step's code. The exact same processing delay that existed before the redesign still existed after it, unchanged, same number of milliseconds, same lack of a progress indicator. The delay didn't get faster. It got easier to forgive.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The team pulled the actual funnel metrics to check whether checkout completion had improved along with the qualitative feedback, and it had moved, but only slightly, well short of what the enthusiastic user comments would have predicted. The visual redesign had clearly earned real goodwill, but it hadn't meaningfully changed the task itself, and the gap between "users say it's better" and "the completion rate says it's better" was the aesthetic-usability effect showing up directly in two different data sources that told two different stories.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The useful move here wasn't to distrust the qualitative feedback, it was accurate about how the redesign felt, it was to stop treating it as a proxy for whether the underlying interaction friction had actually been resolved. The team kept the visual work (it was earning real user goodwill, a legitimate outcome) and separately opened a ticket to add real progress feedback to the payment step, the thing that would move the completion-rate number rather than just the sentiment around it.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">Identical form logic and an identical unlabeled save-delay in a rough, unstyled interface reads as clunky (broken) vs. the same logic and the same delay in a polished interface reads as smooth (fixed) — the friction didn't change, its perception did</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Same form, same delay, same bug — only the visual polish changes</h2>
+  <div class="tone-junior">
+    <p>Click "Save" in each mode. Both versions run the exact same code and the exact same unannounced delay before saving, watch how differently that delay reads depending on the surrounding visual polish.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Open your browser's dev tools if you want to confirm it: both buttons call the identical save function with the identical timeout. Nothing about the interaction logic differs between the two modes, only the CSS.</p>
+  </div>
+  <div class="tone-staff">
+    <p>This is a deliberately narrow demonstration of the mechanism, not a controlled experiment, real studies measuring the effect use rated perceived-usability surveys across many participants, not a single side-by-side toggle. Treat this as illustrating the concept, not as data.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A settings form with an identical unannounced save delay, shown with rough, unstyled visual treatment (broken) versus polished visual treatment (fixed) — same logic, same delay, different perceived polish"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="aesthetic-usability-effect">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a settings form with identical logic and an identical unannounced save delay, shown with rough, unstyled visual treatment versus polished visual treatment; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Rough visual treatment
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Polished visual treatment
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Polished visual treatment</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Use the goodwill, don't mistake it for a fix</h2>
+  <div class="tone-junior">
+    <p>
+      Visual polish is worth investing in, it's a real, measurable driver of how forgiving users are of small friction, first impressions, and overall satisfaction. Just don't let glowing qualitative feedback after a visual refresh stand in for checking whether an underlying interaction problem, a confusing flow, a missing loading state, a genuinely broken edge case, actually got fixed.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      When evaluating a redesign, separate the two questions explicitly: did perception improve (surveys, sentiment, support-ticket tone) and did the task itself improve (completion rate, time on task, error rate, support ticket volume for that specific flow). A redesign can legitimately win on the first and be flat on the second, and that's useful information, not a contradiction, it tells you the visual work earned trust but a follow-up pass on the actual interaction is still owed.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Be especially careful with this bias in usability testing itself: a moderated session testing a good-looking prototype can produce artificially generous think-aloud feedback and lower reported friction than the same flow will get once it's live at scale with real, high-stakes tasks and no researcher in the room being polite to. Where possible, pair subjective usability ratings (SUS-style surveys, which are themselves subject to this bias) with objective task metrics, and weight redesign decisions on the objective side when the two disagree.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">People rate a good-looking interface as easier to use even when the actual functionality is identical to a plain one — this is a documented bias, the aesthetic-usability effect, not a coincidence.</div>
+        <div class="tone-mid">Visual polish buys real goodwill and forgiveness for minor friction, but it doesn't change the underlying interaction cost — a redesign can win on sentiment while task-completion metrics stay flat.</div>
+        <div class="tone-staff">Track perception (sentiment, surveys) and task performance (completion rate, error rate) as two separate signals, and weight objective task metrics over subjective ratings when a redesign's glowing feedback doesn't match its funnel numbers.</div>
+      </li>
+    </ul>
+  </div>
+</section>

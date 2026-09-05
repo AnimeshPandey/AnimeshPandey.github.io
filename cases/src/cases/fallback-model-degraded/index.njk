@@ -1,0 +1,186 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Degraded Mode When the Model Is Down"
+description: "An AI feature with no fallback for a rate-limited or erroring model API doesn't fail quietly, it strands every user on an infinite spinner at once — how a real error state and a non-AI fallback path keep the feature usable."
+slug: fallback-model-degraded
+track: ai-frontend-integration
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Resilience
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/fallback-model-degraded-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The "Summarizing…" spinner that never once stopped spinning</h2>
+  <div class="tone-junior">
+    <p>
+      A meeting-notes tool adds a "Summarize with AI" button. Click it, a spinner appears with the label "Summarizing…", a few seconds later the summary replaces it. It works perfectly in every demo, every test account, every walkthrough anyone gave a customer.
+    </p>
+    <p>
+      Then a product-wide email drives a wave of new usage at once, and the underlying model API starts returning <code>429 Too Many Requests</code>. The button's click handler <code>await</code>s the API call and, on success, replaces the spinner with the summary. Nobody wrote the failure branch. When the request fails, nothing runs, the spinner just keeps spinning, forever, because the code that would remove it only exists inside the success path.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is the most common shape a missing-fallback bug takes: not a crash, not a visible error, a UI stuck in a "loading" state that structurally cannot resolve because the code path that would resolve it never runs. Every user who clicked the button during the rate-limited window saw the exact same thing, at the exact same time, with no way to tell whether the page was broken or just slow.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The failure mode compounds because AI features usually call a single shared upstream, one rate limit or one outage doesn't degrade gracefully user-by-user, it fails simultaneously for everyone hitting that endpoint at that moment. A feature with no fallback path turns a transient, provider-side problem into a synchronized, product-wide outage the instant traffic crosses that provider's rate limit, exactly when traffic (and support ticket volume) is highest.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Handle the failure branch as a first-class UI state, not an afterthought</h2>
+  <div class="tone-junior">
+    <p>
+      An AI call is a network request like any other, it can fail, and the UI needs a real plan for when it does: catch the error, stop showing "loading," and show something the user can act on, "Couldn't generate a summary right now, try again" with a working retry button, not a spinner with nowhere to go.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Treat the request as three distinct outcomes, not two: success, a clear failure the user can retry, and (where it's viable) a degraded but still-useful fallback that doesn't depend on the model at all, showing the raw notes unsummarized, or the last successfully generated summary from cache, so the feature keeps giving the user something rather than nothing.
+    </p>
+    <pre style="overflow-x:auto;background:var(--casebook-surface-2);padding:12px;border-radius:8px;font-size:0.8125rem;"><code>async function summarize(notes) {
+  setStatus('loading');
+  try {
+    const res = await fetch('/api/summarize', { body: notes, signal: AbortSignal.timeout(15000) });
+    if (!res.ok) throw new Error(`API returned ${res.status}`);
+    setStatus('success');
+    return await res.json();
+  } catch (err) {
+    setStatus('error');            // spinner clears no matter what happened
+    return { fallback: notes };    // degraded path: raw notes, not nothing
+  }
+}</code></pre>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Distinguish error types where the response gives you one: a <code>429</code> with a <code>Retry-After</code> header is a temporary capacity problem worth an automatic backoff retry; a <code>4xx</code> from a malformed request is not something retrying will fix; a network timeout or <code>5xx</code> is provider-side and worth one or two retries with backoff before giving up. Collapsing all of these into one generic "error" state is fine for the user-facing copy, but the retry logic behind it should behave differently, or a transient rate limit ends up retried forever against a request that was never going to succeed, or a genuinely broken request gets retried needlessly against a provider that's already struggling.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>One rate limit, forty support tickets, zero code paths that could have shown an error</h2>
+  <div class="tone-junior">
+    <p>
+      The team's meeting-notes tool sent a feature-announcement email for "AI Summaries" to its full customer list on a Tuesday morning. Within twenty minutes, usage of the summarize button spiked far past anything the team's model-provider account had ever sustained, and the provider started returning <code>429</code> responses. The frontend's summarize handler had a success path and nothing else, no <code>catch</code>, no timeout, no fallback. Every rate-limited request left its button's spinner running indefinitely.
+    </p>
+    <p>
+      Support started getting tickets within the hour, "the AI feature is broken," "stuck loading forever," "is the site down." Because the failure was silent (no error in the UI, no obvious crash), the on-call engineer's first reaction was to check whether the whole app was down, it wasn't, only this one feature, and only because of how it failed.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The rate limit itself cleared within about ninety minutes as the traffic spike settled, but the damage was in how many separate support conversations it generated for what was, underneath, a single well-understood, temporary condition. Nothing about the underlying failure was unusual for a provider API during a traffic spike, <code>429</code>s under load are expected and documented behavior, the bug was entirely that the frontend had never been written to expect one.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The fix added an explicit error state with a retry button, a 15-second client-side timeout (the original request had none, so a slow provider response and a hung network connection were indistinguishable from "still working"), and a degraded fallback: if summarization failed twice in a row, the UI showed the raw meeting notes with a banner explaining AI summarization was temporarily unavailable, so the feature's actual job, letting someone read their meeting notes, still worked even while the summarization step didn't.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">An AI call with no catch or timeout leaves the "loading" spinner running forever the moment the API errors or rate-limits (broken) vs. a clear retryable error state plus a non-AI fallback that keeps the feature usable (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Force the API to fail, and watch what each mode does about it</h2>
+  <div class="tone-junior">
+    <p>Click "Summarize" in each mode. This demo deliberately makes the request fail (simulating a rate limit) so you can see the two outcomes side by side.</p>
+  </div>
+  <div class="tone-mid">
+    <p>Broken mode's handler has no catch block, so once the simulated request rejects, nothing updates the UI again, the loading state is terminal. Fixed mode catches the same rejection and shows a real error state with a working retry and a fallback view of the raw notes.</p>
+  </div>
+  <div class="tone-staff">
+    <p>Click "Retry" a few times in fixed mode: the first two attempts fail (simulated), matching a real backoff-then-fallback flow, and the fallback banner appears once retries are exhausted, exactly the point at which continuing to retry silently would stop being useful to the user.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="An AI summarize call that fails: no error handling leaves the spinner running forever (broken) vs. a caught error with retry and a non-AI fallback view (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="fallback-model-degraded">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo simulates an AI summarize call that fails, comparing a handler with no error handling (the spinner never stops) against one with a caught error, retry, and a non-AI fallback view; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            No fallback
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Degraded mode
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Degraded mode</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:240px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Backoff, timeouts, and knowing when to stop retrying</h2>
+  <div class="tone-junior">
+    <p>
+      Always give a network call a timeout. Without one, a request that never comes back looks identical to one that's "still working," and the UI has no way to know it should give up and show an error. A simple client-side timeout (<code>AbortSignal.timeout(15000)</code> or similar) turns "hung forever" into "failed after 15 seconds," which is a state the UI can actually react to.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      For a rate limit specifically, respect the <code>Retry-After</code> header when the API sends one rather than guessing a backoff interval, and cap the number of automatic retries, two or three attempts with exponential backoff is a reasonable default before falling through to the degraded state, an unbounded retry loop against a provider that's actively rate-limiting you is part of the same problem, not a fix for it.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Log the failure rate of the AI call path specifically, not just generic request errors, a spike in <code>429</code>/<code>5xx</code> responses from one upstream is exactly the signal that should page someone before the support queue does, and let the team make a proactive call (a status banner, a temporary "AI summaries are running slowly" notice) instead of finding out from a wave of tickets. At larger scale, a circuit breaker that stops sending new requests to a provider that's already failing consistently (rather than letting every user's request individually time out) reduces both wasted load on a struggling provider and the number of users who have to personally wait through a timeout before seeing the fallback.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">An AI call with only a success path leaves the loading spinner running forever the moment the request fails — always write the failure branch, not just the happy path.</div>
+        <div class="tone-mid">Give every model API call a timeout and a caught error state with a working retry, and add a non-AI fallback (raw content, cached result) so the feature stays usable when the model isn't available.</div>
+        <div class="tone-staff">Respect Retry-After on 429s, cap automatic retries with backoff before falling through to the degraded state, and monitor the AI call path's own error rate so a provider outage pages someone before it becomes a support-ticket wave.</div>
+      </li>
+    </ul>
+  </div>
+</section>

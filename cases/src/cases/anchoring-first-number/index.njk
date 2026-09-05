@@ -1,0 +1,171 @@
+---
+layout: layouts/case-layout.njk
+permalink: false # DO NOT change by hand — flip only via confirm-publish.py at real publish time
+title: "Anchoring in Pricing UIs"
+description: "The first price a reader sees sets the scale for every price after it — the same three tiers, in a different order or framing, can make an identical middle plan read as either expensive or a bargain."
+slug: anchoring-first-number
+track: psychology-perception
+readMin: 10
+flagship: false
+demoType: toggle
+principle: Anchoring
+schemaType: Article
+relatedCases: []
+ogImage: https://anmshpndy.com/brand/cases/anchoring-first-number-og.png
+---
+
+{# ── Chapter: Hook ── #}
+<section class="case-chapter" data-chapter="hook">
+  <h2>The $29 plan that felt expensive, then felt cheap, with nothing else changed</h2>
+  <div class="tone-junior">
+    <p>
+      A pricing page lists three plans: Basic at $9, Pro at $29, Enterprise at $99. Laid out left to right in that order, cheapest first, user interviews kept coming back with the same reaction to the middle plan: "$29 feels like a lot for what it is." The same three numbers, the same three feature lists, reordered so Enterprise appeared first, and the complaint about Pro being expensive mostly disappeared. Some people even called it "a good deal."
+    </p>
+    <p>
+      Nothing about Pro changed, not the price, not the features, not its position relative to Basic or Enterprise in absolute terms. The only thing that changed was which number the reader's eyes landed on first.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      This is anchoring: the first number a person encounters in a comparison sets a reference point that every subsequent number gets judged against, not against some independent, absolute sense of "is $29 a lot of money." Seeing $9 first makes $29 look like more than three times as much, seeing $99 first makes $29 look like less than a third as much, both true, both simultaneously shaping the exact same number's perceived expensiveness.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      What makes this a genuinely load-bearing bias for pricing-page design, rather than a curiosity, is that it's not a persuasion trick that only works on inattentive readers, the original research shows the effect holding up even when people are told an anchor number is arbitrary and explicitly warned to ignore it. A pricing page's number order isn't a neutral formatting choice, it's actively setting the scale the reader will use to judge everything else on the page.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Concept ── #}
+<section class="case-chapter" data-chapter="concept">
+  <h2>Anchoring: judgments are relative to the first reference point, not absolute</h2>
+  <div class="tone-junior">
+    <p>
+      Anchoring is a well-documented cognitive bias where the first piece of information someone sees, even an arbitrary or irrelevant one, becomes a reference point that skews every judgment made afterward. In pricing, the first number a reader's eyes land on becomes the implicit "normal" they measure every other price against, whether or not that's the price the page actually wants them to focus on.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Two pricing-page techniques put this to direct, deliberate use. Ordering: presenting the highest-priced tier first sets a high anchor, so a mid-tier price that follows reads as comparatively reasonable, the exact mechanism in the hook above. Reference pricing: showing a crossed-out "was $49" next to a "now $29," even when few customers ever actually paid $49, anchors the reader's sense of the item's value at $49 before the real price is presented as a discount off that anchor.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Both techniques work on the same underlying mechanism (the anchor sets the scale) but differ in where the anchor comes from: high-to-low ordering anchors off a real, purchasable option elsewhere on the same page, while a crossed-out reference price anchors off a number that may never have been a real transacted price at all, which is also where anchoring shades into a genuine ethics question for pricing-page design, an anchor drawn from a real competing option is informative framing, an anchor drawn from an inflated, never-charged "original price" is closer to manufacturing a false reference point, and that distinction is worth being deliberate about, not just defaulting to whichever converts better.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: Story ── #}
+<section class="case-chapter" data-chapter="story-1">
+  <h2>Reordering three cards, nothing else, and watching the complaints shift</h2>
+  <div class="tone-junior">
+    <p>
+      A small SaaS product ran a simple A/B test on its pricing page: the same three plans, same copy, same feature comparisons, with only the left-to-right card order changed, ascending price (control) versus descending price (variant). Support and sales both started fielding noticeably fewer "the middle plan feels overpriced" comments once the descending-order variant was live for existing traffic that reached pricing through a support link.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      The plan the company actually wanted most customers to choose was the middle tier, it was the best margin-to-support-cost balance for their business, so the anchoring effect wasn't incidental, it was the entire point of the ordering test. Putting the priciest, feature-heaviest plan first gave every reader a high anchor before they ever reached the plan the company was steering them toward, making it read as the sensible middle ground rather than the expensive option.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      The team was careful to distinguish this from a dark pattern: all three plans' actual prices and features stayed identical and fully accurate in both card orders, nothing was misrepresented, no fabricated "original price," no countdown timer, no scarcity claim. The lever was purely which real, honestly-priced option the reader's eye met first, a legitimate framing choice, the same one grocery stores make when they decide which price per unit gets the bigger font, not a claim about a price or value that wasn't true.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: UI strip ── #}
+<section class="case-chapter" data-chapter="ui-strip">
+  <h2>Pattern at a glance</h2>
+  <div class="case-ui-strip">
+    <p class="case-ui-strip__label">The same three prices shown cheapest-first anchors the reader low, so the middle tier reads as expensive (broken) vs. the same three prices shown priciest-first anchors the reader high, so the identical middle tier reads as reasonable (fixed)</p>
+  </div>
+</section>
+
+<section class="case-chapter" data-chapter="demo">
+  <h2>Same three prices, reordered — watch which one reads as "the expensive one"</h2>
+  <div class="tone-junior">
+    <p>Toggle between the two orderings below. All three prices and feature lists are identical in both, only the order changes, notice which plan your eye judges as pricey each time.</p>
+  </div>
+  <div class="tone-mid">
+    <p>The "broken" ordering is the default most pricing pages ship without thinking about it, cheapest to most expensive. The "fixed" ordering deliberately puts the highest anchor first.</p>
+  </div>
+  <div class="tone-staff">
+    <p>The highlighted "Most popular" tier is the same card, same price, same position relative to the other two in every version, only the ordering (and therefore which price anchors your scale first) changes.</p>
+  </div>
+
+  <section class="case-demo"
+           aria-label="A three-tier pricing table shown cheapest-first, anchoring low so the middle tier reads as expensive (broken), versus the same table shown priciest-first, anchoring high so the identical middle tier reads as reasonable (fixed)"
+           data-required="true"
+           data-demo-type="toggle"
+           data-demo-slug="anchoring-first-number">
+
+    <div class="case-demo__header">
+      <span class="case-demo__title">⚡ Interactive demo</span>
+    </div>
+
+    <div class="case-demo__body">
+      <noscript>
+        <div class="case-demo__noscript">
+          <p><strong>Demo requires JavaScript.</strong> This demo compares a three-tier pricing table shown cheapest-first against the same table shown priciest-first, illustrating how reordering identical prices shifts which one reads as expensive; it requires JavaScript to run in your browser.</p>
+        </div>
+      </noscript>
+
+      <div class="case-demo__interactive" hidden>
+        <div class="case-demo__controls" role="group" aria-label="Demo controls">
+          <button type="button" class="case-demo__btn" data-demo-state="broken" aria-pressed="false">
+            Cheapest first
+          </button>
+          <button type="button" class="case-demo__btn" data-demo-state="fixed" aria-pressed="true">
+            Priciest first
+          </button>
+        </div>
+        <p class="case-demo__state-label" aria-live="polite">Showing: Priciest first</p>
+        <div class="case-demo__viewport" id="demo-viewport" style="min-height:260px;"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+{# ── Chapter: FE Depth ── #}
+<section class="case-chapter" data-chapter="fe-depth">
+  <h2>Order deliberately, and don't let the anchor become a lie</h2>
+  <div class="tone-junior">
+    <p>
+      If your pricing page has a plan you want most people to pick, put a higher-priced option ahead of it in reading order (usually meaning to its left, or above it on mobile), so readers form their price scale before they reach the plan you're steering them toward, rather than defaulting to plain ascending order out of habit.
+    </p>
+  </div>
+  <div class="tone-mid">
+    <p>
+      Test this like any other pricing change, not just for conversion but for support/sales sentiment (fewer "why is this so expensive" conversations is a real, measurable outcome, as in the story above), and watch for a ceiling effect: anchoring shifts perception, it doesn't manufacture willingness to pay out of nothing, a genuinely overpriced middle tier will still convert poorly no matter which order it's shown in.
+    </p>
+  </div>
+  <div class="tone-staff">
+    <p>
+      Keep reference pricing (crossed-out "original" prices, "you save X%" framing) honest, an anchor drawn from a price that was never actually charged to a meaningful number of real customers is a false-reference-price claim in some jurisdictions' advertising law, not just a UX nitpick, and it erodes trust immediately if a reader notices, price-comparison browser extensions and screenshots of price history make inflated "original" prices easy to catch today in a way they weren't a decade ago. The honest version of this technique, ordering real, currently-purchasable options to set a scale, doesn't carry that risk, because every number shown is one a reader could actually pay.
+    </p>
+  </div>
+</section>
+
+{# ── Chapter: References ── #}
+{# Renders automatically from mvp-references.json[slug] if an entry exists — #}
+{# add one there with real, human-verified links; do not fabricate URLs. #}
+{% include 'partials/case-references.njk' %}
+
+{# ── Chapter: Takeaway ── #}
+<section class="case-chapter" data-chapter="takeaway">
+  <h2>Remember</h2>
+  <div class="case-takeaway">
+    <h3>Key takeaways</h3>
+    <ul>
+      <li>
+        <div class="tone-junior">The first price a reader sees sets the scale they judge every other price against — the same middle-tier price can read as expensive or reasonable purely based on what came before it.</div>
+        <div class="tone-mid">Order pricing tiers deliberately: put a higher anchor ahead of the plan you want most people to choose, rather than defaulting to plain cheapest-first order.</div>
+        <div class="tone-staff">Keep any anchor honest — ordering real, purchasable options is legitimate framing, but a crossed-out "original price" that was never actually charged is a false reference point, not just a UX technique, and it's increasingly easy for readers to catch.</div>
+      </li>
+    </ul>
+  </div>
+</section>

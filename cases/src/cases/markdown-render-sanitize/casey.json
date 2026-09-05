@@ -1,0 +1,97 @@
+{
+  "slug": "markdown-render-sanitize",
+  "hints": [
+    {
+      "chapter": "hook",
+      "junior": "A customer's pasted HTML signature, quoted back verbatim by the model, ran an onerror handler inside the support agent's own dashboard the moment it hit the DOM.",
+      "mid": "The model wasn't jailbroken or compromised, it just quoted text back like it was asked. Most markdown parsers pass raw HTML through by design, that's not a parser bug.",
+      "staff": "This is a standard XSS chain with an LLM in the middle instead of a form field, the actual bug is treating 'the AI said it' as a trust boundary when the AI is just a pass-through."
+    },
+    {
+      "chapter": "demo",
+      "junior": "The sample reply has a hidden img-onload payload inside a normal-looking quote — render it in each mode and watch the banner at the top.",
+      "mid": "Broken mode sets the converted HTML via innerHTML with nothing stripped — the payload's handler genuinely fires inside this page's own demo viewport.",
+      "staff": "Fixed mode strips script tags, on* attributes, and javascript: URLs before render — a simplified stand-in for DOMPurify; ship the real library in production, not this."
+    },
+    {
+      "chapter": "concept",
+      "junior": "Markdown converters turn **bold** into safe HTML, but most also let any raw HTML already in the text pass straight through, script tags included.",
+      "mid": "DOMPurify parses the converted HTML and strips anything that can execute, script tags, on* event handlers, javascript: URLs, while keeping real formatting intact.",
+      "staff": "Sanitize after markdown conversion, not the raw text before it, some payloads only become dangerous once assembled into HTML by the converter itself."
+    },
+    {
+      "chapter": "fe-depth",
+      "junior": "Don't hand-roll a sanitizer with regex for real production code, matching every dangerous HTML shape that way is famous for missing edge cases.",
+      "mid": "Keep the sanitizer library updated, new mutation-XSS techniques keep getting discovered, and add a Content-Security-Policy header as an independent second layer.",
+      "staff": "The vulnerable step is entirely your own rendering path, not the model, prompt injection can steer what a model reproduces even when it's behaving exactly as designed."
+    }
+  ],
+  "anecdotes": [],
+  "voice": {
+    "enabled": true,
+    "sections": [
+      {
+        "chapter": "hook",
+        "junior": "This case is about a support dashboard where a customer's own pasted HTML got quoted back by an AI panel and ran a script inside the support agent's browser, because nothing sanitized it before it hit the page.",
+        "mid": "Most markdown parsers pass raw HTML straight through by design, so when a model faithfully quotes text containing a script or an image with an error handler, that payload survives the conversion completely intact.",
+        "staff": "The model wasn't compromised here, it did exactly what it was asked. The actual trust boundary failure was treating anything that came out of the AI panel as safe to inject directly into the page."
+      },
+      {
+        "chapter": "concept",
+        "junior": "The fix is running the converted HTML through a sanitizing library before it ever touches the page, so anything that could run as a script gets stripped out first.",
+        "mid": "DOMPurify strips script tags, event handler attributes, and dangerous URL schemes from the HTML while keeping the formatting you actually want, bold text, links, quotes.",
+        "staff": "Sanitize after the markdown conversion happens, not before, because some dangerous shapes only exist once the converter has assembled the final HTML."
+      },
+      {
+        "chapter": "demo",
+        "junior": "Watch the warning banner at the top while you switch between the two render modes for the same sample reply.",
+        "mid": "In the unsanitized mode, the hidden payload actually runs inside this page, safely contained to the demo, nothing leaves this viewport.",
+        "staff": "The sanitized mode strips the dangerous parts before render, and this demo's version is intentionally simplified, ship a real maintained library for production code."
+      },
+      {
+        "chapter": "takeaway",
+        "junior": "Never pipe a model's markdown reply straight into dangerouslySetInnerHTML without sanitizing the HTML first, treat it exactly like untrusted user input.",
+        "mid": "Run the converted HTML through a real sanitizer like DOMPurify before render, and keep that library updated as new bypass techniques get found.",
+        "staff": "Add a strict Content-Security-Policy as a second independent layer, and never assume model output is safe just because it came from an AI feature instead of a raw form field."
+      }
+    ]
+  },
+  "actions": [
+    {
+      "chapter": "demo",
+      "junior": [
+        { "label": "Try unsanitized", "target": "[data-demo-state=broken]" },
+        { "label": "Try sanitized", "target": "[data-demo-state=fixed]" }
+      ],
+      "mid": [
+        { "label": "Toggle unsanitized", "target": "[data-demo-state=broken]" },
+        { "label": "Toggle sanitized", "target": "[data-demo-state=fixed]" }
+      ],
+      "staff": [
+        { "label": "Unsanitized state", "target": "[data-demo-state=broken]" },
+        { "label": "Sanitized state", "target": "[data-demo-state=fixed]" }
+      ]
+    },
+    {
+      "chapter": "hook",
+      "junior": [{ "label": "Jump to demo", "target": "[data-chapter=demo]" }],
+      "mid": [{ "label": "Skip to demo", "target": "[data-chapter=demo]" }],
+      "staff": [{ "label": "Demo chapter", "target": "[data-chapter=demo]" }]
+    },
+    {
+      "chapter": "takeaway",
+      "junior": [
+        { "label": "Back to all cases", "href": "/cases/" },
+        { "label": "Reading library", "href": "/cases/library/" }
+      ],
+      "mid": [
+        { "label": "Hub", "href": "/cases/" },
+        { "label": "Library", "href": "/cases/library/" }
+      ],
+      "staff": [
+        { "label": "Case hub", "href": "/cases/" },
+        { "label": "War stories", "href": "/cases/library/" }
+      ]
+    }
+  ]
+}
